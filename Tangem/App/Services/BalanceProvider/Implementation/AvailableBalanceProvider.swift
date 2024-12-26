@@ -72,15 +72,13 @@ private extension AvailableBalanceProvider {
         switch state {
         case .created:
             return .empty(.noData)
-        case .noDerivation:
-            return .empty(.noDerivation)
         case .loading:
             return .loading(cachedBalance())
         case .loaded(let balance):
             storeBalance(balance: balance)
             return .loaded(balance)
-        case .noAccount:
-            return .noAccount
+        case .noAccount(let message, _):
+            return .empty(.noAccount(message: message))
         case .failed:
             return .failure(cachedBalance())
         }

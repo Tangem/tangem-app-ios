@@ -134,7 +134,6 @@ struct NotificationView: View {
             case .image(let image):
                 image
                     .resizable()
-                    .renderingMode(.template)
                     .foregroundColor(settings.event.icon.color)
             case .icon(let tokenIconInfo):
                 TokenIcon(tokenIconInfo: tokenIconInfo, size: settings.event.icon.size)

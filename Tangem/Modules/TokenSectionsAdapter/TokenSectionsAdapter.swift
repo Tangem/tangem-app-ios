@@ -214,7 +214,7 @@ final class TokenSectionsAdapter {
 
             // We don't sort section items by balance if some of them don't have balance information
             let hasWalletModelsWithoutBalanceInfo = allWalletModels
-                .contains { $0.balanceValue == nil }
+                .contains { $0.balanceState == .none }
 
             if hasWalletModelsWithoutBalanceInfo {
                 return sectionItems
@@ -248,8 +248,8 @@ final class TokenSectionsAdapter {
 
     private func compareWalletModels(_ lhs: WalletModel, _ rhs: WalletModel) -> Bool {
         // Fiat balances that aren't loaded (e.g. due to network failures) fallback to zero
-        let lFiatValue = lhs.totalBalance.fiat ?? .zero
-        let rFiatValue = rhs.totalBalance.fiat ?? .zero
+        let lFiatValue = lhs.combineFiatBalanceProvider.balanceType.value ?? .zero
+        let rFiatValue = rhs.combineFiatBalanceProvider.balanceType.value ?? .zero
 
         return lFiatValue > rFiatValue
     }
@@ -314,7 +314,7 @@ private extension TokenSectionsAdapter.Section {
         return items.reduce(into: .zero) { partialResult, item in
             switch item {
             case .default(let walletModel):
-                if let fiatValue = walletModel.totalBalance.fiat {
+                if let fiatValue = walletModel.combineFiatBalanceProvider.balanceType.value {
                     partialResult += fiatValue
                 }
             case .withoutDerivation:

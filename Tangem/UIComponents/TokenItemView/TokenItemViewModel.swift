@@ -84,7 +84,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
         self.contextActionsProvider = contextActionsProvider
         self.contextActionsDelegate = contextActionsDelegate
 
-        setupState(infoProvider.tokenItemState)
+        setupView(infoProvider.balance)
         bind()
     }
 
@@ -97,11 +97,35 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func bind() {
-        infoProvider.tokenItemStatePublisher
+        infoProvider.balancePublisher
             .receive(on: DispatchQueue.main)
-            // We need this debounce to prevent initial sequential state updates that can skip `loading` state
-            .debounce(for: 0.1, scheduler: DispatchQueue.main)
-            .sink(receiveValue: weakify(self, forFunction: TokenItemViewModel.setupState(_:)))
+            .sink(receiveValue: { [weak self] type in
+                self?.setupView(type)
+            })
+            .store(in: &bag)
+
+        infoProvider
+            .balanceTypePublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] type in
+                self?.setupBalance(type)
+            })
+            .store(in: &bag)
+
+        infoProvider
+            .fiatBalanceTypePublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] type in
+                self?.setupFiatBalance(type)
+            })
+            .store(in: &bag)
+
+        infoProvider
+            .quotePublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] type in
+                self?.setupPrice(type)
+            })
             .store(in: &bag)
 
         infoProvider.actionsUpdatePublisher
@@ -113,52 +137,32 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
         infoProvider.isStakedPublisher
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] isStaked in
-                guard let self else { return }
-                self.isStaked = isStaked
-                // balances may be updated on changing staking state
-                setupState(infoProvider.tokenItemState)
-            })
+            .assign(to: \.isStaked, on: self, ownership: .weak)
             .store(in: &bag)
     }
 
-    private func setupState(_ state: TokenItemViewState) {
-        switch state {
-        case .noDerivation:
+    private func setupView(_ type: TokenBalanceType) {
+        switch type {
+        case .empty(.noDerivation):
             missingDerivation = true
-            networkUnreachable = false
-            updateBalances()
-            updatePriceChange()
-        case .networkError:
+        default:
             missingDerivation = false
-            networkUnreachable = true
-        case .notLoaded:
-            missingDerivation = false
-            networkUnreachable = false
-        case .loaded, .noAccount:
-            missingDerivation = false
-            networkUnreachable = false
-            updateBalances()
-            updatePriceChange()
-        case .loading:
-            break
         }
 
         updatePendingTransactionsStateIfNeeded()
         buildContextActions()
     }
 
-    private func updatePendingTransactionsStateIfNeeded() {
-        hasPendingTransactions = infoProvider.hasPendingTransactions
+    private func setupBalance(_ type: FormattedTokenBalanceType) {
+        balanceCrypto = LoadableTokenBalanceViewStateBuilder().build(type: type)
     }
 
-    private func updateBalances() {
-        balanceCrypto = .loaded(text: .string(infoProvider.balance))
-        balanceFiat = .loaded(text: .string(infoProvider.fiatBalance))
+    private func setupFiatBalance(_ type: FormattedTokenBalanceType) {
+        balanceFiat = LoadableTokenBalanceViewStateBuilder().build(type: type, icon: .leading)
     }
 
-    private func updatePriceChange() {
-        guard let quote = infoProvider.quote else {
+    private func setupPrice(_ quote: TokenQuote?) {
+        guard let quote else {
             tokenPrice = .noData
             priceChangeState = .empty
             return
@@ -168,6 +172,10 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
         let priceText = priceFormatter.formatPrice(quote.price)
         tokenPrice = .loaded(text: priceText)
+    }
+
+    private func updatePendingTransactionsStateIfNeeded() {
+        hasPendingTransactions = infoProvider.hasPendingTransactions
     }
 
     private func buildContextActions() {

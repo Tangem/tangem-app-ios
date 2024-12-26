@@ -13,8 +13,8 @@ import SwiftUI
 class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     // MARK: - Public Properties
 
-    @Published var balanceCrypto: LoadableTextView.State = .loading
-    @Published var balanceFiat: LoadableTextView.State = .loading
+    @Published var balanceCrypto: LoadableTokenBalanceView.State = .loading()
+    @Published var balanceFiat: LoadableTokenBalanceView.State = .loading()
     @Published var contextActions: [TokenActionType] = []
 
     @Published var hasPendingTransactions: Bool = false
@@ -77,7 +77,7 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
         self.contextActionsDelegate = contextActionsDelegate
 
         bind()
-        setupState(tokenItemInfoProvider.tokenItemState)
+        setupView(tokenItemInfoProvider.balance)
     }
 
     func showContextActions() {
@@ -93,14 +93,32 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     // MARK: - Private Implementation
 
     private func bind() {
-        tokenItemInfoProvider.tokenItemStatePublisher
+        tokenItemInfoProvider
+            .balancePublisher
             .receive(on: DispatchQueue.main)
-            // We need this debounce to prevent initial sequential state updates that can skip `loading` state
-            .debounce(for: 0.1, scheduler: DispatchQueue.main)
-            .sink(receiveValue: weakify(self, forFunction: MarketsPortfolioTokenItemViewModel.setupState(_:)))
+            .sink(receiveValue: { [weak self] type in
+                self?.setupView(type)
+            })
             .store(in: &bag)
 
-        tokenItemInfoProvider.actionsUpdatePublisher
+        tokenItemInfoProvider
+            .balanceTypePublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] type in
+                self?.setupBalance(type)
+            })
+            .store(in: &bag)
+
+        tokenItemInfoProvider
+            .fiatBalanceTypePublisher
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] type in
+                self?.setupFiatBalance(type)
+            })
+            .store(in: &bag)
+
+        tokenItemInfoProvider
+            .actionsUpdatePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.buildContextActions()
@@ -108,28 +126,24 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
             .store(in: &bag)
     }
 
-    private func setupState(_ state: TokenItemViewState) {
-        switch state {
-        case .noDerivation:
+    private func setupView(_ type: TokenBalanceType) {
+        switch type {
+        case .empty(.noDerivation):
             missingDerivation = true
-            networkUnreachable = false
-            updateBalances()
-        case .networkError:
+        default:
             missingDerivation = false
-            networkUnreachable = true
-        case .notLoaded:
-            missingDerivation = false
-            networkUnreachable = false
-        case .loaded, .noAccount:
-            missingDerivation = false
-            networkUnreachable = false
-            updateBalances()
-        case .loading:
-            break
         }
 
         updatePendingTransactionsStateIfNeeded()
         buildContextActions()
+    }
+
+    private func setupBalance(_ type: FormattedTokenBalanceType) {
+        balanceCrypto = LoadableTokenBalanceViewStateBuilder().build(type: type)
+    }
+
+    private func setupFiatBalance(_ type: FormattedTokenBalanceType) {
+        balanceFiat = LoadableTokenBalanceViewStateBuilder().build(type: type, icon: .leading)
     }
 
     private func updatePendingTransactionsStateIfNeeded() {
@@ -142,10 +156,5 @@ class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
             walletModelId: tokenItemInfoProvider.id,
             userWalletId: userWalletId
         ) ?? []
-    }
-
-    private func updateBalances() {
-        balanceCrypto = .loaded(text: tokenItemInfoProvider.balance)
-        balanceFiat = .loaded(text: tokenItemInfoProvider.fiatBalance)
     }
 }

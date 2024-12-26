@@ -9,171 +9,89 @@
 import Foundation
 import TangemStaking
 
-// MARK: - Balance
+// MARK: - BalanceState
 
 extension WalletModel {
-    var balanceValue: Decimal? {
-        availableBalance.crypto
+    /// Simple flag to check exactly BSDK balance
+    var balanceState: BalanceState? {
+        switch wallet.amounts[amountType]?.value {
+        case .none: .none
+        case .zero: .zero
+        case .some: .positive
+        }
     }
 
-    var balance: String {
-        availableBalanceFormatted.crypto
-    }
-
-    var isZeroAmount: Bool {
-        wallet.amounts[amountType]?.isZero ?? true
-    }
-
-    var fiatBalance: String {
-        availableBalanceFormatted.fiat
-    }
-
-    var fiatValue: Decimal? {
-        availableBalance.fiat
-    }
-
-    var isSuccessfullyLoaded: Bool {
-        let isStakingSuccessfullyLoaded = stakingManager?.state.isSuccessfullyLoaded ?? true
-        return state.isSuccessfullyLoaded && isStakingSuccessfullyLoaded
-    }
-
-    var isLoading: Bool {
-        let isStakingLoading = stakingManager?.state.isLoading ?? false
-        return state.isLoading || isStakingLoading
-    }
-
-    var totalBalance: Balance {
-        let cryptoBalance: Decimal? = {
-            switch (availableBalance.crypto, stakedBalance.crypto) {
-            case (.none, _):
-                return nil
-            case (.some(let available), .none):
-                // staking unsupported
-                guard let stakingManager else {
-                    return available
-                }
-
-                // no staked balance
-                if stakingManager.state.isSuccessfullyLoaded {
-                    return available
-                }
-
-                // staking error
-                return nil
-
-            case (.some(let available), .some(let blocked)):
-                return available + blocked
-            }
-        }()
-
-        let fiatBalance: Decimal? = {
-            guard let cryptoBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(cryptoBalance, currencyId: currencyId)
-        }()
-
-        return .init(crypto: cryptoBalance, fiat: fiatBalance)
-    }
-
-    var availableBalance: Balance {
-        let cryptoBalance: Decimal? = {
-            if state.isNoAccount {
-                return 0
-            }
-
-            return wallet.amounts[amountType]?.value
-        }()
-
-        let fiatBalance: Decimal? = {
-            guard let cryptoBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(cryptoBalance, currencyId: currencyId)
-        }()
-
-        return .init(crypto: cryptoBalance, fiat: fiatBalance)
-    }
-
-    var stakedRewards: Balance {
-        let rewardsToClaim = stakingManager?.balances?.rewards().sum()
-        let fiatBalance: Decimal? = {
-            guard let rewardsToClaim, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(rewardsToClaim, currencyId: currencyId)
-        }()
-
-        return .init(crypto: rewardsToClaim, fiat: fiatBalance)
-    }
-
-    var allBalanceFormatted: BalanceFormatted {
-        formatted(totalBalance)
-    }
-
-    var availableBalanceFormatted: BalanceFormatted {
-        formatted(availableBalance)
-    }
-
-    var stakedWithPendingBalanceFormatted: BalanceFormatted {
-        formatted(stakedWithPendingBalance)
-    }
-
-    var stakedBalanceFormatted: BalanceFormatted {
-        formatted(stakedBalance)
-    }
-
-    var stakedRewardsFormatted: BalanceFormatted {
-        formatted(stakedRewards)
-    }
-
-    private var stakedBalance: Balance {
-        let stakingBalance = stakingManager?.balances?.blocked().sum()
-        let fiatBalance: Decimal? = {
-            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
-        }()
-
-        return .init(crypto: stakingBalance, fiat: fiatBalance)
-    }
-
-    private var stakedWithPendingBalance: Balance {
-        let stakingBalance = stakingManager?.balances?.stakes().sum()
-        let fiatBalance: Decimal? = {
-            guard let stakingBalance, let currencyId = tokenItem.currencyId else {
-                return nil
-            }
-
-            return converter.convertToFiat(stakingBalance, currencyId: currencyId)
-        }()
-
-        return .init(crypto: stakingBalance, fiat: fiatBalance)
-    }
-
-    private func formatted(_ balance: Balance) -> BalanceFormatted {
-        let cryptoFormatted = formatter.formatCryptoBalance(balance.crypto, currencyCode: tokenItem.currencySymbol)
-        let fiatFormatted = formatter.formatFiatBalance(balance.fiat)
-
-        return .init(crypto: cryptoFormatted, fiat: fiatFormatted)
+    enum BalanceState {
+        case zero
+        case positive
     }
 }
 
+// MARK: - Providers
+
 extension WalletModel {
-    struct Balance: Hashable {
-        let crypto, fiat: Decimal?
+    var availableBalanceProvider: TokenBalanceProvider {
+        AvailableBalanceProvider(walletModel: self)
+    }
+
+    var stakingBalanceProvider: TokenBalanceProvider {
+        StakingBalanceProvider(walletModel: self)
+    }
+
+    var combineBalanceProvider: TokenBalanceProvider {
+        CombineBalanceProvider(
+            walletModel: self,
+            availableBalanceProvider: availableBalanceProvider,
+            stakingBalanceProvider: stakingBalanceProvider
+        )
+    }
+
+    var availableFiatBalanceProvider: TokenBalanceProvider {
+        FiatBalanceProvider(walletModel: self, cryptoBalanceProvider: availableBalanceProvider)
+    }
+
+    var stakingFiatBalanceProvider: TokenBalanceProvider {
+        FiatBalanceProvider(walletModel: self, cryptoBalanceProvider: stakingBalanceProvider)
+    }
+
+    var combineFiatBalanceProvider: TokenBalanceProvider {
+        FiatBalanceProvider(walletModel: self, cryptoBalanceProvider: combineBalanceProvider)
+    }
+}
+
+// MARK: - Rate
+
+extension WalletModel {
+    enum Rate: Hashable {
+        case custom
+        case loading(cached: TokenQuote?)
+        case failure(cached: TokenQuote?)
+        case loaded(TokenQuote)
+
+        var isLoading: Bool {
+            switch self {
+            case .loading: true
+            case .custom, .failure, .loaded: false
+            }
+        }
+
+        var cached: TokenQuote? {
+            switch self {
+            case .custom, .loaded: nil
+            case .loading(let cached), .failure(let cached): cached
+            }
+        }
+
+        var quote: TokenQuote? {
+            switch self {
+            case .custom: nil
+            case .loading(let cached), .failure(let cached): cached
+            case .loaded(let quote): quote
+            }
+        }
     }
 
     struct BalanceFormatted: Hashable {
         let crypto, fiat: String
     }
-
-    // Don't use yet
-    // TODO: https://tangem.atlassian.net/browse/IOS-8906
-    typealias Rate = TokenBalanceType
 }

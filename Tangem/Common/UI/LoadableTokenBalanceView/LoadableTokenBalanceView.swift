@@ -29,21 +29,31 @@ struct LoadableTokenBalanceView: View {
                 .fill(Colors.Background.tertiary)
                 .frame(size: loader.size)
                 .modifier(Shimmer())
-        case .failed(let text, let withIcon):
+        case .failed(let text, .none):
+            textView(text)
+        case .failed(let text, .leading):
             HStack(spacing: 6) {
-                if withIcon {
-                    Assets.failedCloud.image
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundStyle(Colors.Icon.inactive)
-                        .frame(width: 12, height: 12)
-                }
+                cloudIcon
 
                 textView(text)
+            }
+        case .failed(let text, .trailing):
+            HStack(spacing: 6) {
+                textView(text)
+
+                cloudIcon
             }
         case .loaded(let text):
             textView(text)
         }
+    }
+
+    private var cloudIcon: some View {
+        Assets.failedCloud.image
+            .resizable()
+            .renderingMode(.template)
+            .foregroundStyle(Colors.Icon.inactive)
+            .frame(width: 12, height: 12)
     }
 
     private func textView(_ text: Text) -> some View {
@@ -57,13 +67,18 @@ extension LoadableTokenBalanceView {
 
     enum State: Hashable {
         case loading(cached: Text? = nil)
-        case failed(cached: Text, withIcon: Bool = false)
+        case failed(cached: Text, icon: Icon? = nil)
         case loaded(text: Text)
+
+        enum Icon: Hashable {
+            case leading
+            case trailing
+        }
 
         // Convient
 
         static let empty: State = .loaded(text: .string(BalanceFormatter.defaultEmptyBalanceString))
-        static func loaded(_ text: String) -> State { .loaded(text: .string(text)) }
+        static func loaded(text: String) -> State { .loaded(text: .string(text)) }
     }
 
     struct Style {
@@ -137,7 +152,7 @@ extension LoadableTokenBalanceView {
 
         VStack(alignment: .trailing, spacing: 2) {
             LoadableTokenBalanceView(
-                state: .failed(cached: .string("1 312 422,23 $"), withIcon: true),
+                state: .failed(cached: .string("1 312 422,23 $"), icon: .leading),
                 style: .init(font: Fonts.Regular.subheadline, textColor: Colors.Text.primary1),
                 loader: .init(size: .init(width: 40, height: 12))
             )
