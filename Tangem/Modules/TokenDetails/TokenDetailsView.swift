@@ -140,7 +140,7 @@ private extension TokenDetailsView {
 #Preview {
     let userWalletModel = FakeUserWalletModel.wallet3Cards
     let walletModel = userWalletModel.walletModelsManager.walletModels.first ?? .mockETH
-    let exchangeUtility = ExchangeCryptoUtility( 
+    let exchangeUtility = ExchangeCryptoUtility(
         blockchain: walletModel.blockchainNetwork.blockchain,
         address: walletModel.defaultAddress,
         amountType: walletModel.tokenItem.amountType

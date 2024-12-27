@@ -93,23 +93,22 @@ private extension CommonTokenBalancesRepository {
 
         var key: String {
             [
-                walletModel.defaultAddress,
                 walletModel.tokenItem.name,
-                walletModel.tokenItem.contractAddress ?? "1",
+                walletModel.tokenItem.contractAddress ?? "coin",
+                walletModel.defaultAddress,
                 type.rawValue,
-            ].joined(separator: "-")
+            ].joined(separator: "_")
         }
 
         var description: String {
-            "\(type) / \(walletModel.tokenItem.name) / \(walletModel.defaultAddress.prefix(4))...\(walletModel.defaultAddress.suffix(4))"
+            let address = "\(walletModel.defaultAddress.prefix(4))...\(walletModel.defaultAddress.suffix(4))"
+            return "\(walletModel.tokenItem.name) / \(address) / \(type)"
         }
 
         init(walletModel: WalletModel, type: CachedBalanceType) {
             self.walletModel = walletModel
             self.type = type
         }
-
-        func hash(into hasher: inout Hasher) {}
     }
 
     struct StoredBalance: Hashable, Codable, CustomStringConvertible {

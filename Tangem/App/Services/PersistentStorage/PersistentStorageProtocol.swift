@@ -14,16 +14,6 @@ protocol PersistentStorageProtocol {
     func readAllWallets<T: Decodable>() -> [String: T]
 }
 
-extension PersistentStorageProtocol {
-    func value<T: Decodable>(for key: PersistentStorageKey) -> T? {
-        try? value(for: key)
-    }
-
-    func store<T: Encodable>(value: T, for key: PersistentStorageKey) {
-        try? store(value: value, for: key)
-    }
-}
-
 private struct PersistentStorageProtocolKey: InjectionKey {
     static var currentValue: PersistentStorageProtocol = PersistentStorage()
 }

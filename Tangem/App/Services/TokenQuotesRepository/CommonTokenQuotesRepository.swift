@@ -25,7 +25,8 @@ class CommonTokenQuotesRepository {
     init() {
         bind()
 
-        _quotes.send((try? storage.value(for: .tokenQuotes)) ?? [:])
+        // TODO: https://tangem.atlassian.net/browse/IOS-8666
+        // _quotes.send((try? storage.value(for: .tokenQuotes)) ?? [:])
     }
 }
 
@@ -97,7 +98,9 @@ extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
             }
 
             _quotes.send(current)
-            try? storage.store(value: current, for: .tokenQuotes)
+
+            // TODO: https://tangem.atlassian.net/browse/IOS-8666
+            // try? storage.store(value: current, for: .tokenQuotes)
         }
     }
 }

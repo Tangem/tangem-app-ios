@@ -63,7 +63,7 @@ extension FiatBalanceProvider {
             return .empty(reason)
 
         // There is no rate but main balance is still loading
-        // Then show loading to avoid behaviour when fiat is in empty before crypto
+        // Then show loading to avoid showing empty fiat when crypto is loading
         case (.success(.none), .loading):
             return .loading(.none)
 
@@ -75,21 +75,21 @@ extension FiatBalanceProvider {
         case (_, .failure(.none)):
             return .failure(.none)
 
-        // There is rate is is loading and we can't convert it
+        // There is rate is loading and we can't convert it
         case (.loading, _), (_, .loading(.none)):
             return .loading(.none)
 
-        // Has some rate but only cached value
+        // Has some rate and cached value
         case (.success(.some(let rate)), .loading(.some(let cached))):
             let fiat = cached.balance * rate
-            return .failure(.init(balance: fiat, date: cached.date))
+            return .loading(.init(balance: fiat, date: cached.date))
 
-        // Has some rate but only cached value
+        // Has some rate and cached value
         case (.success(.some(let rate)), .failure(.some(let cached))):
             let fiat = cached.balance * rate
             return .failure(.init(balance: fiat, date: cached.date))
 
-        // Has some rate and some value
+        // Has some rate and cached value
         case (.success(.some(let rate)), .loaded(let value)):
             let fiat = value * rate
             return .loaded(fiat)

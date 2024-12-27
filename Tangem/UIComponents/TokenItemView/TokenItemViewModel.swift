@@ -113,7 +113,12 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
 
         infoProvider.isStakedPublisher
             .receive(on: DispatchQueue.main)
-            .assign(to: \.isStaked, on: self, ownership: .weak)
+            .sink(receiveValue: { [weak self] isStaked in
+                guard let self else { return }
+                self.isStaked = isStaked
+                // balances may be updated on changing staking state
+                setupState(infoProvider.tokenItemState)
+            })
             .store(in: &bag)
     }
 
