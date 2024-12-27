@@ -13,6 +13,10 @@ struct SensitiveText: View {
     @ObservedObject private var sensitiveTextVisibilityViewModel: SensitiveTextVisibilityViewModel = .shared
     private let textType: TextType
 
+    init(_ textType: TextType) {
+        self.textType = textType
+    }
+
     init(_ text: String) {
         textType = .string(text)
     }
