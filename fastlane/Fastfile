@@ -149,6 +149,8 @@ lane :build_Alpha do |options|
   increment_version_number(version_number: options[:version])
   increment_firebase_build_number(app_id: options[:firebase_app_id], build: options[:build])
 
+  UI.important("build_Alpha_analyze_archive: #{options[:analyze_archive]}") # TODO: Remove
+
   build(
     export_method: "ad-hoc",
     scheme: ALPHA_SCHEME,
@@ -156,7 +158,7 @@ lane :build_Alpha do |options|
     build: options[:build],
     filename: options[:filename],
     path: options[:path],
-    analyze_archive: true
+    analyze_archive: options[:analyze_archive]
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -413,7 +415,16 @@ end
 private_lane :build do |options|
   clean_artifacts
 
-  if options[:analyze_archive] == true
+  if options[:analyze_archive].nil?
+    should_analyze_archive = false
+  else
+    # Boolean inputs from GH actions are such a mess
+    should_analyze_archive = (options[:analyze_archive] == true) || (options[:analyze_archive].to_s.downcase == "true")
+  end
+
+  UI.important("should_analyze_archive: #{should_analyze_archive}, #{options[:analyze_archive]}") # TODO: Remove
+
+  if should_analyze_archive
     build_and_analyze(
       export_method: options[:export_method],
       scheme: options[:scheme],
@@ -453,9 +464,11 @@ private_lane :build_and_analyze do |options|
     export_method: options[:export_method],
     xcarchive_path: xcarchive_path
   )
-      
+
+  UI.important("begin analyzing archive")
   sh("#{analyze_archive_util_path} '#{xcarchive_path}'")
-  
+  UI.important("end analyzing archive")
+
   create_ipa(
     path: options[:path],
     filename: options[:filename],
