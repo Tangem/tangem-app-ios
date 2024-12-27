@@ -54,6 +54,7 @@ class ServicesManager {
         pushNotificationsInteractor.initialize()
         SendFeatureProvider.shared.loadFeaturesAvailability()
         stakingPendingHashesSender?.sendHashesIfNeeded()
+        MailZipFileManager.shared.cleanZipData()
     }
 
     private func configureFirebase() {
