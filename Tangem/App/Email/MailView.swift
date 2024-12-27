@@ -8,14 +8,13 @@
 
 import SwiftUI
 import MessageUI
-import ZIPFoundation
 
 struct MailView: UIViewControllerRepresentable {
     let viewModel: MailViewModel
 
     @Environment(\.presentationMode) private var presentation
 
-    class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
+    final class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
         @Binding var presentation: PresentationMode
 
         let emailType: EmailType
@@ -75,7 +74,7 @@ struct MailView: UIViewControllerRepresentable {
                 return
             }
             do {
-                try attachZipData(at: originalURL, to: vc)
+                try MailZipFileManager.shared.attachZipData(at: originalURL, to: vc)
             } catch {
                 attachPlainTextData(at: originalURL, to: vc)
             }
@@ -93,16 +92,6 @@ struct MailView: UIViewControllerRepresentable {
         if let data = try? Data(contentsOf: url) {
             viewController.addAttachmentData(data, mimeType: "text/plain", fileName: url.lastPathComponent)
         }
-    }
-
-    private func attachZipData(at url: URL, to viewController: MFMailComposeViewController) throws {
-        let fileManager = FileManager.default
-        let archiveName = url.appendingPathExtension(for: .zip).lastPathComponent
-        let destinationURL = fileManager.temporaryDirectory.appendingPathComponent(archiveName, conformingTo: .zip)
-        try? fileManager.removeItem(at: destinationURL)
-        try fileManager.zipItem(at: url, to: destinationURL, shouldKeepParent: false, compressionMethod: .deflate)
-        let data = try Data(contentsOf: destinationURL)
-        viewController.addAttachmentData(data, mimeType: "application/zip", fileName: archiveName)
     }
 }
 
