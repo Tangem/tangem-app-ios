@@ -2,8 +2,8 @@ name: Release - Build and Deploy
 
 on:
   push:
-   branches:
-    - 'releases/**'
+    branches:
+      - 'releases/**'
   workflow_dispatch:
     inputs:
       build_description:

@@ -2,8 +2,8 @@ name: Beta - Build and Deploy
 
 on:
   push:
-   branches:
-    - 'develop'
+    branches:
+      - 'develop'
   workflow_dispatch:
     inputs:
       build_description:
