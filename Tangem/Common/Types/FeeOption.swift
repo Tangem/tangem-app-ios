@@ -49,7 +49,7 @@ enum FeeOption: String, Hashable, Equatable {
         case .fast:
             return .transactionFeeMax
         case .custom:
-            return .transactionFeeCustom
+            return .custom
         }
     }
 }

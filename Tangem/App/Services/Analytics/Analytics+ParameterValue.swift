@@ -59,7 +59,7 @@ extension Analytics {
         case transactionFeeMin = "Min"
         case transactionFeeNormal = "Normal"
         case transactionFeeMax = "Max"
-        case transactionFeeCustom = "Custom"
+        case custom = "Custom"
 
         case signInTypeBiometrics = "Biometric"
 
@@ -183,6 +183,16 @@ extension Analytics {
         case stakeActionRevote = "Revote"
         case stakeActionRebond = "Rebond"
         case stakeActionMigrate = "Migrate"
+
+        // MARK: - Markets
+
+        case marketsErrorCodeIsNotHTTPError = "Is not http error"
+
+        case marketsErrorTypeHTTP = "Http"
+        case marketsErrorTypeTimeout = "Timeout"
+        case marketsErrorTypeNetwork = "Network"
+
+        case unknown = "Unknown"
 
         // MARK: - Onramp
 

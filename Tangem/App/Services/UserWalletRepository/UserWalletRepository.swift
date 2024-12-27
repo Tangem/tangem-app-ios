@@ -90,24 +90,3 @@ enum UserWalletRepositoryUnlockMethod {
         }
     }
 }
-
-enum UserWalletRepositoryError: String, Error, LocalizedError, BindableError {
-    case duplicateWalletAdded
-    case biometricsChanged
-    case cardWithWrongUserWalletIdScanned
-
-    var errorDescription: String? {
-        rawValue
-    }
-
-    var alertBinder: AlertBinder {
-        switch self {
-        case .duplicateWalletAdded:
-            return .init(title: "", message: Localization.userWalletListErrorWalletAlreadySaved)
-        case .biometricsChanged:
-            return .init(title: Localization.commonAttention, message: Localization.keyInvalidatedWarningDescription)
-        case .cardWithWrongUserWalletIdScanned:
-            return .init(title: Localization.commonWarning, message: Localization.errorWrongWalletTapped)
-        }
-    }
-}

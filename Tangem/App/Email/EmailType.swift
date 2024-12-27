@@ -15,6 +15,7 @@ enum EmailType {
     case failedToPushTx
     case appFeedback(subject: String)
     case activatedCard
+    case attestationFailed
 
     var emailSubject: String {
         switch self {
@@ -25,6 +26,7 @@ enum EmailType {
             return subject
         case .failedToPushTx: return Localization.feedbackSubjectTxPushFailed
         case .activatedCard: return Localization.feedbackSubjectPreActivatedWallet
+        case .attestationFailed: return "Card attestation failed"
         }
     }
 
@@ -33,7 +35,7 @@ enum EmailType {
         case .negativeRateAppFeedback: return Localization.feedbackPrefaceRateNegative
         case .failedToScanCard: return Localization.feedbackPrefaceScanFailed
         case .failedToSendTx: return Localization.feedbackPrefaceTxFailed
-        case .appFeedback, .activatedCard: return Localization.feedbackPrefaceSupport
+        case .appFeedback, .activatedCard, .attestationFailed: return Localization.feedbackPrefaceSupport
         case .failedToPushTx: return Localization.feedbackPrefaceTxFailed
         }
     }

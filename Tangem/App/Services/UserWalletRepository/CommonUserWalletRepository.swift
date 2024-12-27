@@ -117,17 +117,17 @@ class CommonUserWalletRepository: UserWalletRepository {
                 }
 
                 AppLog.shared.error(error)
-                failedCardScanTracker.recordFailure()
                 sendEvent(.scan(isScanning: false))
 
-                if failedCardScanTracker.shouldDisplayAlert {
-                    return Just(UserWalletRepositoryResult.troubleshooting)
-                }
-
                 switch error.toTangemSdkError() {
-                case .unknownError, .cardVerificationFailed:
+                case .cardVerificationFailed:
                     return Just(UserWalletRepositoryResult.error(error))
                 default:
+                    failedCardScanTracker.recordFailure()
+                    if failedCardScanTracker.shouldDisplayAlert {
+                        return Just(UserWalletRepositoryResult.troubleshooting)
+                    }
+
                     return Just(nil)
                 }
             }

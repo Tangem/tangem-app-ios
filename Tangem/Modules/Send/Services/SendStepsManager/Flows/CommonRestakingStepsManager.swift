@@ -83,11 +83,7 @@ extension CommonRestakingStepsManager: SendStepsManager {
     }
 
     var initialState: SendStepsManagerViewState {
-        if actionType == .restake {
-            .init(step: validatorsStep, action: .next, backButtonVisible: false)
-        } else {
-            .init(step: summaryStep, action: .action, backButtonVisible: false)
-        }
+        SendStepsManagerViewState(step: validatorsStep, action: .next, backButtonVisible: false)
     }
 
     var shouldShowDismissAlert: Bool {
