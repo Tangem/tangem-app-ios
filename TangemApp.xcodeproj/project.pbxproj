@@ -2632,6 +2632,8 @@
 		EF5A5AD628D86094002544AC /* CardImageProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5A5AD328D86094002544AC /* CardImageProviding.swift */; };
 		EF5A5AD728D86094002544AC /* CardArtwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5A5AD428D86094002544AC /* CardArtwork.swift */; };
 		EF5CEAA42D1EF6910013D422 /* PulseEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFAD57312D1EF12300A6B1C0 /* PulseEffect.swift */; };
+		EF5CEAA92D1EF6CC0013D422 /* TokenBalancesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5CEAA72D1EF6CC0013D422 /* TokenBalancesRepository.swift */; };
+		EF5CEAAA2D1EF6CC0013D422 /* CommonTokenBalancesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5CEAA62D1EF6CC0013D422 /* CommonTokenBalancesRepository.swift */; };
 		EF5D83D92B0B7A2B00516B5F /* ExpressSuccessSentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5D83D42B0B7A2B00516B5F /* ExpressSuccessSentView.swift */; };
 		EF5D83DA2B0B7A2B00516B5F /* ExpressSuccessSentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5D83D52B0B7A2B00516B5F /* ExpressSuccessSentViewModel.swift */; };
 		EF5D83DB2B0B7A2B00516B5F /* ExpressSuccessSentRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5D83D62B0B7A2B00516B5F /* ExpressSuccessSentRoutable.swift */; };
@@ -2649,9 +2651,6 @@
 		EF61837F2B4F04F10064B7CD /* SwappingSuccessCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF61837D2B4F04F10064B7CD /* SwappingSuccessCoordinator.swift */; };
 		EF6183802B4F04F10064B7CD /* SwappingSuccessCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF61837E2B4F04F10064B7CD /* SwappingSuccessCoordinatorView.swift */; };
 		EF6221B3292B5FCD00D1D4A0 /* DecimalNumberFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6221B2292B5FCD00D1D4A0 /* DecimalNumberFormatterTests.swift */; };
-		EF6548E42D1D803A00F770CB /* TokenBalancesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6548E22D1D803A00F770CB /* TokenBalancesRepository.swift */; };
-		EF6548E62D1D82E300F770CB /* BalanceWithButtonsViewModelBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6548E52D1D82E300F770CB /* BalanceWithButtonsViewModelBalanceProvider.swift */; };
-		EF6548E82D1D890D00F770CB /* CommonTokenBalancesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6548E72D1D890D00F770CB /* CommonTokenBalancesRepository.swift */; };
 		EF6548EA2D1D8B4C00F770CB /* TokenBalancesRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6548E92D1D8B4C00F770CB /* TokenBalancesRepositoryMock.swift */; };
 		EF6600532B6D187600B65449 /* PendingTransactionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6600522B6D187600B65449 /* PendingTransactionsListView.swift */; };
 		EF661E2E28BF41D6005769E5 /* Intents.strings in Resources */ = {isa = PBXBuildFile; fileRef = EF661E2728BF41D6005769E5 /* Intents.strings */; };
@@ -5821,6 +5820,8 @@
 		EF5A5AD228D86094002544AC /* CardImageProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardImageProvider.swift; sourceTree = "<group>"; };
 		EF5A5AD328D86094002544AC /* CardImageProviding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardImageProviding.swift; sourceTree = "<group>"; };
 		EF5A5AD428D86094002544AC /* CardArtwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardArtwork.swift; sourceTree = "<group>"; };
+		EF5CEAA62D1EF6CC0013D422 /* CommonTokenBalancesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTokenBalancesRepository.swift; sourceTree = "<group>"; };
+		EF5CEAA72D1EF6CC0013D422 /* TokenBalancesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBalancesRepository.swift; sourceTree = "<group>"; };
 		EF5D83D42B0B7A2B00516B5F /* ExpressSuccessSentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressSuccessSentView.swift; sourceTree = "<group>"; };
 		EF5D83D52B0B7A2B00516B5F /* ExpressSuccessSentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressSuccessSentViewModel.swift; sourceTree = "<group>"; };
 		EF5D83D62B0B7A2B00516B5F /* ExpressSuccessSentRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressSuccessSentRoutable.swift; sourceTree = "<group>"; };
@@ -5838,8 +5839,6 @@
 		EF61837D2B4F04F10064B7CD /* SwappingSuccessCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwappingSuccessCoordinator.swift; sourceTree = "<group>"; };
 		EF61837E2B4F04F10064B7CD /* SwappingSuccessCoordinatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwappingSuccessCoordinatorView.swift; sourceTree = "<group>"; };
 		EF6221B2292B5FCD00D1D4A0 /* DecimalNumberFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalNumberFormatterTests.swift; sourceTree = "<group>"; };
-		EF6548E22D1D803A00F770CB /* TokenBalancesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBalancesRepository.swift; sourceTree = "<group>"; };
-		EF6548E52D1D82E300F770CB /* BalanceWithButtonsViewModelBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceWithButtonsViewModelBalanceProvider.swift; sourceTree = "<group>"; };
 		EF6548E72D1D890D00F770CB /* CommonTokenBalancesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTokenBalancesRepository.swift; sourceTree = "<group>"; };
 		EF6548E92D1D8B4C00F770CB /* TokenBalancesRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBalancesRepositoryMock.swift; sourceTree = "<group>"; };
 		EF6600522B6D187600B65449 /* PendingTransactionsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PendingTransactionsListView.swift; sourceTree = "<group>"; };
@@ -7009,6 +7008,7 @@
 				B62D43792CBC7EC700C2460E /* BlockchainSdkExample */,
 				5D3F77C324BF56D800E8695B /* Products */,
 				2E5061A84512B23CCB5F2E17 /* Frameworks */,
+				EF5CEAA52D1EF6BA0013D422 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -12798,6 +12798,7 @@
 		DC0A57DA2822A4DC0031BECC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EF5CEAA82D1EF6CC0013D422 /* TokenBalancesRepository */,
 				EF42D7842D1D65D90065AFD1 /* BalanceProvider */,
 				DA76BF502CEF966300199317 /* PendingTransactionsManager */,
 				EF2561102CC6A8E000D3C16A /* Onramp */,
@@ -14565,6 +14566,23 @@
 			path = CardImageProvider;
 			sourceTree = "<group>";
 		};
+		EF5CEAA52D1EF6BA0013D422 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				EF6548E72D1D890D00F770CB /* CommonTokenBalancesRepository.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		EF5CEAA82D1EF6CC0013D422 /* TokenBalancesRepository */ = {
+			isa = PBXGroup;
+			children = (
+				EF5CEAA62D1EF6CC0013D422 /* CommonTokenBalancesRepository.swift */,
+				EF5CEAA72D1EF6CC0013D422 /* TokenBalancesRepository.swift */,
+			);
+			path = TokenBalancesRepository;
+			sourceTree = "<group>";
+		};
 		EF5D83D12B0B79F900516B5F /* ExpressSuccessSent */ = {
 			isa = PBXGroup;
 			children = (
@@ -14603,15 +14621,6 @@
 				EFA90E452C88B56E00F34BE0 /* StakingDetailsStakeViewDataBuilder.swift */,
 			);
 			path = StakingDetailsStakeView;
-			sourceTree = "<group>";
-		};
-		EF6548E32D1D803A00F770CB /* TokenBalancesRepository */ = {
-			isa = PBXGroup;
-			children = (
-				EF6548E22D1D803A00F770CB /* TokenBalancesRepository.swift */,
-				EF6548E72D1D890D00F770CB /* CommonTokenBalancesRepository.swift */,
-			);
-			path = TokenBalancesRepository;
 			sourceTree = "<group>";
 		};
 		EF6600512B6D187600B65449 /* PendingTransactionsListView */ = {
@@ -15238,17 +15247,6 @@
 				DA6C7527292613D00070EEFD /* UserWalletIdFactory.swift */,
 			);
 			path = Factories;
-			sourceTree = "<group>";
-		};
-		EF9263852D1D6D5500D421BF /* Implementation */ = {
-			isa = PBXGroup;
-			children = (
-				EF9263812D1D6D5500D421BF /* AvailableBalanceProvider.swift */,
-				EF9263842D1D6D5500D421BF /* StakingBalanceProvider.swift */,
-				EF9263822D1D6D5500D421BF /* CombineBalanceProvider.swift */,
-				EF9263832D1D6D5500D421BF /* FiatBalanceProvider.swift */,
-			);
-			path = Implementation;
 			sourceTree = "<group>";
 		};
 		EF9448D82ADFD19D00F4AFAC /* InformationHiddenBalances */ = {
@@ -18059,6 +18057,8 @@
 				2DF1D92A2C2C519C00B1CEE7 /* MarketsChartModel.swift in Sources */,
 				EFC84B0B2C37FAB500546882 /* SendDestinationStepBuilder.swift in Sources */,
 				B612AFD42B2884B80058A13A /* RateAppRequest.swift in Sources */,
+				EF5CEAA92D1EF6CC0013D422 /* TokenBalancesRepository.swift in Sources */,
+				EF5CEAAA2D1EF6CC0013D422 /* CommonTokenBalancesRepository.swift in Sources */,
 				B66BDAE92C7438310047FD67 /* GrabberViewFactory.swift in Sources */,
 				DC1D4C452C38616500B2A422 /* CommonExpressAnalyticsLogger.swift in Sources */,
 				B08B8CEB26D6276000D4BB7B /* PreviewData.swift in Sources */,
@@ -18564,7 +18564,6 @@
 				2DBE29C42B3C4A8100109D5E /* View+DetentBottomSheet.swift in Sources */,
 				B0A37B702C2D9A9F005397FA /* MarketsTokenDetailsModel.swift in Sources */,
 				EFC84ADC2C37081C00546882 /* EthereumNetworkProvider+.swift in Sources */,
-				EF6548E82D1D890D00F770CB /* CommonTokenBalancesRepository.swift in Sources */,
 				0AC9EFF52CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift in Sources */,
 				EF1E17682BF672AC000364AE /* DefaultTextFieldRowView.swift in Sources */,
 				EF41937A2C2DE0CB006A30A5 /* SendAmount.swift in Sources */,
