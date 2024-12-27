@@ -51,13 +51,13 @@ extension StakingBalanceProvider {
     func storeBalance(balance: Decimal) {
         tokenBalancesRepository.store(
             balance: .init(balance: balance, date: .now),
-            for: walletModel.defaultAddress,
+            for: walletModel,
             type: .staked
         )
     }
 
     func cachedBalance() -> TokenBalanceType.Cached? {
-        tokenBalancesRepository.balance(address: walletModel.defaultAddress, type: .staked).map {
+        tokenBalancesRepository.balance(wallet: walletModel, type: .staked).map {
             .init(balance: $0.balance, date: $0.date)
         }
     }
@@ -71,6 +71,7 @@ extension StakingBalanceProvider {
         case .loadingError:
             return .failure(cachedBalance())
         case .availableToStake:
+            storeBalance(balance: .zero)
             return .loaded(.zero)
         case .staked(let balances):
             let balance = balances.balances.blocked().sum()

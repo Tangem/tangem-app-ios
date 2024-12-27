@@ -51,13 +51,13 @@ private extension AvailableBalanceProvider {
     func storeBalance(balance: Decimal) {
         tokenBalancesRepository.store(
             balance: .init(balance: balance, date: .now),
-            for: walletModel.defaultAddress,
+            for: walletModel,
             type: .available
         )
     }
 
     func cachedBalance() -> TokenBalanceType.Cached? {
-        tokenBalancesRepository.balance(address: walletModel.defaultAddress, type: .available).map {
+        tokenBalancesRepository.balance(wallet: walletModel, type: .available).map {
             .init(balance: $0.balance, date: $0.date)
         }
     }
@@ -70,8 +70,10 @@ private extension AvailableBalanceProvider {
         }
 
         switch state {
-        case .created, .noDerivation:
+        case .created:
             return .empty(.noData)
+        case .noDerivation:
+            return .empty(.noDerivation)
         case .loading:
             return .loading(cachedBalance())
         case .loaded(let balance):

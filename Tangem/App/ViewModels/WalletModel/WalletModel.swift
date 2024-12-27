@@ -218,7 +218,7 @@ class WalletModel {
     private var bag = Set<AnyCancellable>()
     private var updatePublisher: PassthroughSubject<State, Never>?
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
-    private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
+
     private var _state: CurrentValueSubject<State, Never> = .init(.created)
     private var _rate: CurrentValueSubject<LoadingResult<Decimal?, Never>, Never> = .init(.loading)
     private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
@@ -249,6 +249,7 @@ class WalletModel {
         self.tokenBalancesRepository = tokenBalancesRepository
 
         bind()
+        fillQuote()
         performHealthCheckIfNeeded(shouldPerform: shouldPerformHealthCheck)
     }
 
@@ -272,6 +273,15 @@ class WalletModel {
                 self?._rate.send(.success(rate))
             }
             .store(in: &bag)
+    }
+
+    private func fillQuote() {
+        guard let quote = quotesRepository.quote(for: tokenItem) else {
+            return
+        }
+
+        AppLog.shared.debug("\(self) has cached quote \(quote.price)")
+//        _rate.send(.success(quote.price))
     }
 
     private func performHealthCheckIfNeeded(shouldPerform: Bool) {
@@ -317,6 +327,7 @@ class WalletModel {
             .updatePublisher()
             .combineLatest(loadQuotes(), updateStakingManagerState()) { state, _, _ in state }
             .receive(on: updateQueue)
+            .delay(for: 10, scheduler: updateQueue)
             .sink { [weak self] newState in
                 guard let self else { return }
 

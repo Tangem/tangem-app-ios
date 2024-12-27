@@ -27,16 +27,16 @@ class CommonTokenBalancesRepository {
 // MARK: - TokenBalancesRepository
 
 extension CommonTokenBalancesRepository: TokenBalancesRepository {
-    func balance(address: String, type: CachedBalanceType) -> CachedBalance? {
-        let key = StoredBalanceKey(address: address, type: type).key
-        return balances.value[key].map { mapToCachedBalance(balance: $0) }
+    func balance(wallet: WalletModel, type: CachedBalanceType) -> CachedBalance? {
+        let key = StoredBalanceKey(walletModel: wallet, type: type)
+        return balances.value[key.key].map { mapToCachedBalance(balance: $0) }
     }
 
-    func store(balance: CachedBalance, for address: String, type: CachedBalanceType) {
-        let key = StoredBalanceKey(address: address, type: type).key
+    func store(balance: CachedBalance, for wallet: WalletModel, type: CachedBalanceType) {
+        let key = StoredBalanceKey(walletModel: wallet, type: type)
         let storedBalance = mapToStoredBalance(balance: balance)
         log("Store balance: \(storedBalance) for: \(key)")
-        balances.value[key] = storedBalance
+        balances.value[key.key] = storedBalance
         save()
     }
 }
@@ -46,7 +46,7 @@ extension CommonTokenBalancesRepository: TokenBalancesRepository {
 extension CommonTokenBalancesRepository: CustomStringConvertible {
     var description: String {
         TangemFoundation.objectDescription(self, userInfo: [
-            "cachedBalancesCount": balances.value.count,
+            "balancesCount": balances.value.count,
             "userWalletId": "\(userWalletId.prefix(4))...\(userWalletId.suffix(4))",
         ])
     }
@@ -91,17 +91,29 @@ private extension CommonTokenBalancesRepository {
 }
 
 private extension CommonTokenBalancesRepository {
-    struct StoredBalanceKey: Hashable, Codable, CustomStringConvertible {
-        let address: String
-        let type: CachedBalanceType
+    struct StoredBalanceKey: CustomStringConvertible {
+        private let walletModel: WalletModel
+        private let type: CachedBalanceType
 
         var key: String {
-            "\(type)_\(address)"
+            [
+                walletModel.defaultAddress,
+                walletModel.tokenItem.name,
+                walletModel.tokenItem.contractAddress ?? "1",
+                type.rawValue,
+            ].joined(separator: "-")
         }
 
         var description: String {
-            "\(type) / \(address.prefix(4))...\(address.suffix(4))"
+            "\(type) / \(walletModel.tokenItem.name) / \(walletModel.defaultAddress.prefix(4))...\(walletModel.defaultAddress.suffix(4))"
         }
+
+        init(walletModel: WalletModel, type: CachedBalanceType) {
+            self.walletModel = walletModel
+            self.type = type
+        }
+
+        func hash(into hasher: inout Hasher) {}
     }
 
     struct StoredBalance: Hashable, Codable, CustomStringConvertible {

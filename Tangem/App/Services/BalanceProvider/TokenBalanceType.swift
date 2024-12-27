@@ -68,6 +68,7 @@ extension TokenBalanceType: CustomStringConvertible {
 
 extension TokenBalanceType {
     enum EmptyReason: Hashable {
+        case noDerivation
         case noData
         case custom
     }

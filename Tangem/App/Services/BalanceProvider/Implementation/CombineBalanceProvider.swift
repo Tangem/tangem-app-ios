@@ -61,8 +61,8 @@ private extension CombineBalanceProvider {
     func mapToAvailableTokenBalance(available: TokenBalanceType, staking: TokenBalanceType) -> TokenBalanceType {
         switch (available, staking) {
         // There is no available balance -> no balance
-        case (.empty, _):
-            return .empty(.noData)
+        case (.empty(let reason), _):
+            return .empty(reason)
 
         // Both is loading and both have a cache -> loading with cache
         case (.loading(.some(let available)), .loading(.some(let staking))):

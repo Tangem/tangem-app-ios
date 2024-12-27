@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct TokenQuote: Hashable {
+struct TokenQuote: Hashable, Codable {
     let currencyId: String
     let price: Decimal
     let priceChange24h: Decimal?
