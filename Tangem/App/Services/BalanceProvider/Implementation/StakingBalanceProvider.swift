@@ -11,13 +11,14 @@ import Combine
 import TangemStaking
 
 struct StakingBalanceProvider {
+    @Injected(\.tokenBalancesRepository)
+    private var tokenBalancesRepository: TokenBalancesRepository
+
     private let walletModel: WalletModel
-    private let tokenBalancesRepository: TokenBalancesRepository
     private let balanceFormatter = BalanceFormatter()
 
-    init(walletModel: WalletModel, tokenBalancesRepository: TokenBalancesRepository) {
+    init(walletModel: WalletModel) {
         self.walletModel = walletModel
-        self.tokenBalancesRepository = tokenBalancesRepository
     }
 }
 

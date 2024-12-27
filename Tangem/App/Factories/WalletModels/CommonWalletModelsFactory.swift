@@ -92,9 +92,6 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
         let isMainCoinCustom = !isDerivationDefault(blockchain: currentBlockchain, derivationPath: currentDerivation)
         let blockchainNetwork = BlockchainNetwork(currentBlockchain, derivationPath: currentDerivation)
         let sendAvailabilityProvider = TransactionSendAvailabilityProvider(isSendingSupportedByCard: config.hasFeature(.send))
-        let tokenBalancesRepository = CommonTokenBalancesRepository(
-            userWalletId: config.userWalletIdSeed.map { UserWalletId(with: $0).stringValue } ?? ""
-        )
 
         if types.contains(.coin) {
             let tokenItem: TokenItem = .blockchain(blockchainNetwork)
@@ -114,8 +111,7 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                 amountType: .coin,
                 shouldPerformHealthCheck: shouldPerformHealthCheck,
                 isCustom: isMainCoinCustom,
-                sendAvailabilityProvider: sendAvailabilityProvider,
-                tokenBalancesRepository: tokenBalancesRepository
+                sendAvailabilityProvider: sendAvailabilityProvider
             )
             models.append(mainCoinModel)
         }
@@ -141,8 +137,7 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                     amountType: amountType,
                     shouldPerformHealthCheck: shouldPerformHealthCheck,
                     isCustom: isTokenCustom,
-                    sendAvailabilityProvider: sendAvailabilityProvider,
-                    tokenBalancesRepository: tokenBalancesRepository
+                    sendAvailabilityProvider: sendAvailabilityProvider
                 )
                 models.append(tokenModel)
             }

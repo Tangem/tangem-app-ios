@@ -13,13 +13,10 @@ import TangemFoundation
 class CommonTokenBalancesRepository {
     @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
 
-    private let userWalletId: String
     private let balances: CurrentValueSubject<[String: StoredBalance], Never> = .init([:])
     private let lock = Lock(isRecursive: false)
 
-    init(userWalletId: String) {
-        self.userWalletId = userWalletId
-
+    init() {
         loadBalances()
     }
 }
@@ -47,7 +44,6 @@ extension CommonTokenBalancesRepository: CustomStringConvertible {
     var description: String {
         TangemFoundation.objectDescription(self, userInfo: [
             "balancesCount": balances.value.count,
-            "userWalletId": "\(userWalletId.prefix(4))...\(userWalletId.suffix(4))",
         ])
     }
 }

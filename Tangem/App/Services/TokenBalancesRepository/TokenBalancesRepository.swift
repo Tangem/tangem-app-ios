@@ -23,3 +23,14 @@ enum CachedBalanceType: String, Hashable, Codable {
     case available
     case staked
 }
+
+private struct TokenBalancesRepositoryKey: InjectionKey {
+    static var currentValue: TokenBalancesRepository = CommonTokenBalancesRepository()
+}
+
+extension InjectedValues {
+    var tokenBalancesRepository: TokenBalancesRepository {
+        get { Self[TokenBalancesRepositoryKey.self] }
+        set { Self[TokenBalancesRepositoryKey.self] = newValue }
+    }
+}
