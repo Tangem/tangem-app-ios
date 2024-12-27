@@ -1,6 +1,9 @@
 name: Alpha - Build and Deploy
 
 on:
+  push:
+    branches:
+      - 'bugfix/IOS-8860_fix_send_animation_issues' # TODO: Test only, remove
   workflow_dispatch:
     inputs:
       build_description:
@@ -75,6 +78,7 @@ jobs:
       path: 'fastlane/builds/'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
       xcode_version_override: '${{ inputs.xcode_version_override }}'
+      arm_runners_only: true
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'

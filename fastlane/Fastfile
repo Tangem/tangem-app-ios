@@ -156,7 +156,7 @@ lane :build_Alpha do |options|
     build: options[:build],
     filename: options[:filename],
     path: options[:path],
-    analyze_archive: options[:analyze_archive]
+    analyze_archive: true
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
