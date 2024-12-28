@@ -70,7 +70,7 @@ jobs:
   build:
     name: Tangem Alpha
     needs: prepare
-    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8885_private_app_config
+    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8885_private_app_config  # TODO: Switch to main
     with:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
