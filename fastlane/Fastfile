@@ -454,7 +454,7 @@ private_lane :build_and_analyze do |options|
     xcarchive_path: xcarchive_path
   )
 
-  sh("#{analyze_archive_util_path} '#{xcarchive_path}'")
+  sh("#{analyze_archive_util_path} '#{xcarchive_path}' 'dummy code sign identity'") # TODO: Remove dummy id
 
   create_ipa(
     path: options[:path],
