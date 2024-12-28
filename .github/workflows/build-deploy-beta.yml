@@ -107,7 +107,7 @@ jobs:
   build:
     name: Tangem Beta
     needs: prepare
-    uses: tangem/actions/.github/workflows/build.yml@main
+    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8885_private_app_config  # TODO: Switch to main
     with:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
@@ -115,6 +115,7 @@ jobs:
       path: 'fastlane/builds/'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
       xcode_version_override: '${{ inputs.xcode_version_override }}'
+      arm_runners_only: true  # TODO: Test only, remove
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
