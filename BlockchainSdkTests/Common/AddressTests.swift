@@ -1343,4 +1343,38 @@ class AddressesTests: XCTestCase {
 
         XCTAssertTrue(secp256k1AddressService.validate(secp256k1Address))
     }
+
+    // MARK: - Fact0rn
+
+    func testFact0rnAddressGeneration() throws {
+        let walletPublicKey = Data(hexString: "03B6D7E1FB0977A5881A3B1F64F9778B4F56CB2B9EFD6E0D03E60051EAFEBF5831")
+        let expectedAddress = "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey"
+
+        let addressService = Fact0rnAddressService()
+        let address = try addressService.makeAddress(from: walletPublicKey)
+
+        XCTAssertEqual(address.value, expectedAddress)
+    }
+
+    func testFact0rnAddressValidation() throws {
+        let addressService = Fact0rnAddressService()
+
+        let validAddresses = [
+            "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey​",
+        ]
+
+        for validAddress in validAddresses {
+            XCTAssertTrue(addressService.validate(validAddress))
+        }
+
+        let unValidAddresses = [
+            "",
+            "1q3n6x7kgsup6zlmpmndppx6ymtk6hxh4lnttt3y",
+            "fact",
+        ]
+
+        for unValidAddress in unValidAddresses {
+            XCTAssertFalse(addressService.validate(unValidAddress))
+        }
+    }
 }

@@ -6,10 +6,30 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-// TODO: [Fact0rn] Implement WalletManager
-// https://tangem.atlassian.net/browse/IOS-8757
+import Foundation
+import TangemSdk
+import BitcoinCore
+
 struct Fact0rnWalletAssembly: WalletManagerAssembly {
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
-        fatalError("Not implemented")
+        try BitcoinWalletManager(wallet: input.wallet).then {
+            let compressedKey = try Secp256k1Key(with: input.wallet.publicKey.blockchainKey).compress()
+
+            let bitcoinManager = BitcoinManager(
+                networkParams: Fact0rnMainNetworkParams(),
+                walletPublicKey: input.wallet.publicKey.blockchainKey,
+                compressedWalletPublicKey: compressedKey,
+                bip: .bip44
+            )
+
+            $0.txBuilder = BitcoinTransactionBuilder(
+                bitcoinManager: bitcoinManager,
+                addresses: input.wallet.addresses
+            )
+
+            let providers: [AnyBitcoinNetworkProvider] = []
+
+            $0.networkService = BitcoinNetworkService(providers: providers)
+        }
     }
 }
