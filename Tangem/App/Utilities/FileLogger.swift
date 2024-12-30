@@ -75,7 +75,7 @@ class FileLogger: TangemSdkLogger {
     }
 
     private func upgradeLogFileVersionIfNeeded(using fileManager: FileManager) {
-        let targetLogFileVersion = 2
+        let targetLogFileVersion = 3
 
         guard
             fileManager.fileExists(atPath: logFileURL.relativePath),

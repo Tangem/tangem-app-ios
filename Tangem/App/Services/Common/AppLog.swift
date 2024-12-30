@@ -27,7 +27,7 @@ class AppLog {
         }
 
         return .custom(
-            logLevel: Log.Level.allCases,
+            logLevel: [.warning, .error, .command, .debug, .nfc, .session],
             loggers: loggers
         )
     }
