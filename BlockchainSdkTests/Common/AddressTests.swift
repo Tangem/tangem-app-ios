@@ -1377,4 +1377,12 @@ class AddressesTests: XCTestCase {
             XCTAssertFalse(addressService.validate(unValidAddress))
         }
     }
+
+    func testMakeScriptHashFromAddress() throws {
+        let expectedAddress = "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey"
+        let expectedScriptHash = "808171256649754B402099695833B95E4507019B3E494A7DBC6F62058F09050E"
+
+        let scriptHash = try ElectrumAddressUtils().prepareScriptHash(address: expectedAddress)
+        XCTAssertEqual(scriptHash, expectedScriptHash)
+    }
 }

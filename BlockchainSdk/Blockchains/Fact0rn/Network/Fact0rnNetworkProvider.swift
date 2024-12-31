@@ -10,46 +10,48 @@ import Foundation
 import Combine
 
 final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
-    
     // MARK: - Properties
-    
+
     var supportsTransactionPush: Bool { false }
     var host: String { provider.host }
-    
+
     // MARK: - Private Properties
-    
+
     private let provider: ElectrumWebSocketProvider
-    
+    private let addressUtils = Fact0rnAddressUtils()
+
     // MARK: - Init
-    
+
     init(provider: ElectrumWebSocketProvider, decimalValue: Decimal) {
         self.provider = provider
     }
-    
+
     // MARK: - BitcoinNetworkProvider Implementation
-    
+
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, any Error> {
-        #warning("Need to implement outputScript")
-        let scriptHash = address
-        let addressInfoPublisher = getAddressInfo(identifier: .scriptHash(scriptHash))
+        guard let scriptHash = try? addressUtils.prepareScriptHash(address: address) else {
+            return .anyFail(error: ProviderError.failedScriptHashForAddress)
+        }
         
+        let addressInfoPublisher = getAddressInfo(identifier: .scriptHash(scriptHash))
+
         return addressInfoPublisher
             .withWeakCaptureOf(self)
             .tryMap { service, accountInfo in
-                service.mapBitcoinResponse(from: accountInfo, outputScript: "")
+                service.mapBitcoinResponse(from: accountInfo, outputScript: scriptHash)
             }
             .eraseToAnyPublisher()
     }
-    
+
     func getFee() -> AnyPublisher<BitcoinFee, any Error> {
-        let minimalEstimateFee = estimateFee(confirmations: Constants.minimalFeeBlockAmount)
-        let normalEstimateFee = estimateFee(confirmations: Constants.normalFeeBlockAmount)
-        let priorityEstimateFee = estimateFee(confirmations: Constants.priorityFeeBlockAmount)
-        
+        let minimalEstimateFeePublisher = estimateFee(confirmations: Constants.minimalFeeBlockAmount)
+        let normalEstimateFeePublisher = estimateFee(confirmations: Constants.normalFeeBlockAmount)
+        let priorityEstimateFeePublisher = estimateFee(confirmations: Constants.priorityFeeBlockAmount)
+
         return Publishers.Zip3(
-            minimalEstimateFee,
-            normalEstimateFee,
-            priorityEstimateFee
+            minimalEstimateFeePublisher,
+            normalEstimateFeePublisher,
+            priorityEstimateFeePublisher
         )
         .map { minimal, normal, priority in
             BitcoinFee(
@@ -60,22 +62,32 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func send(transaction: String) -> AnyPublisher<String, any Error> {
-        return .anyFail(error: WalletError.empty)
+        Future.async {
+            try await self.provider.send(transactionHex: transaction)
+        }
+        .eraseToAnyPublisher()
     }
-    
+
     func push(transaction: String) -> AnyPublisher<String, any Error> {
-        return .anyFail(error: WalletError.empty)
+        Future.async {
+            try await self.provider.send(transactionHex: transaction)
+        }
+        .eraseToAnyPublisher()
     }
-    
+
     func getSignatureCount(address: String) -> AnyPublisher<Int, any Error> {
-        return .anyFail(error: WalletError.empty)
+        Future.async {
+            let txHistory = try await self.provider.getTxHistory(identifier: .scriptHash(address))
+            return txHistory.count
+        }
+        .eraseToAnyPublisher()
     }
-    
+
     // MARK: - Private Implementation
-    
-    func getAddressInfo(identifier: ElectrumWebSocketProvider.Identifier) -> AnyPublisher<ElectrumAddressInfo, Error> {
+
+    private func getAddressInfo(identifier: ElectrumWebSocketProvider.Identifier) -> AnyPublisher<ElectrumAddressInfo, Error> {
         Future.async {
             async let balance = self.provider.getBalance(identifier: identifier)
             async let unspents = self.provider.getUnspents(identifier: identifier)
@@ -95,31 +107,31 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         .eraseToAnyPublisher()
     }
 
-    func estimateFee(confirmations count: Int = 10) -> AnyPublisher<Decimal, Error> {
+    private func estimateFee(confirmations count: Int = 10) -> AnyPublisher<Decimal, Error> {
         Future.async {
             try await self.provider.estimateFee(block: count)
         }
         .eraseToAnyPublisher()
     }
 
-    func send(transactionHex: String) -> AnyPublisher<String, Error> {
+    private func send(transactionHex: String) -> AnyPublisher<String, Error> {
         Future.async {
             try await self.provider.send(transactionHex: transactionHex)
         }
         .eraseToAnyPublisher()
     }
-    
-    func getTransactionInfo(hash: String) -> AnyPublisher<ElectrumDTO.Response.Transaction, Error> {
+
+    private func getTransactionInfo(hash: String) -> AnyPublisher<ElectrumDTO.Response.Transaction, Error> {
         Future.async {
             try await self.provider.getTransaction(hash: hash)
         }
         .eraseToAnyPublisher()
     }
-    
+
     private func mapBitcoinResponse(from accountInfo: ElectrumAddressInfo, outputScript: String) -> BitcoinResponse {
         let hasUnconfirmed = accountInfo.balance != .zero
         let unspentOutputs = mapUnspent(outputs: accountInfo.outputs, outputScript: outputScript)
-        
+
         return BitcoinResponse(
             balance: accountInfo.balance,
             hasUnconfirmed: hasUnconfirmed,
@@ -127,7 +139,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             unspentOutputs: unspentOutputs
         )
     }
-    
+
     private func mapUnspent(outputs: [ElectrumUTXO], outputScript: String) -> [BitcoinUnspentOutput] {
         outputs.map {
             BitcoinUnspentOutput(
@@ -138,7 +150,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             )
         }
     }
-    
+
     private func createPendingTransactions(
         unspents: [ElectrumUTXO],
         address: String
@@ -148,6 +160,10 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
 }
 
 extension Fact0rnNetworkProvider {
+    enum ProviderError: LocalizedError {
+        case failedScriptHashForAddress
+    }
+    
     enum Constants {
         static let minimalFeeBlockAmount = 8
         static let normalFeeBlockAmount = 4

@@ -18,11 +18,19 @@ struct Fact0rnAddressService {
     init() {
         let networkParams = Fact0rnMainNetworkParams()
         let scriptConverter = ScriptConverter()
-        
+
         addressConverter = SegWitBech32AddressConverter(
             prefix: networkParams.bech32PrefixPattern,
             scriptConverter: scriptConverter
         )
+    }
+}
+
+// MARK: - BitcoinScriptAddressProvider
+
+extension Fact0rnAddressService: BitcoinScriptAddressProvider {
+    func makeScriptAddress(from scriptHash: Data) throws -> String {
+        return try addressConverter.convert(scriptHash: scriptHash).stringValue
     }
 }
 

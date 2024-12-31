@@ -49,7 +49,7 @@ class ElectrumWebSocketProvider: HostProvider {
             return try await send(method: Method.Blockchain.ScriptHash.getHistory, parameter: [scriptHash])
         }
     }
-    
+
     func getTransaction(hash: String) async throws -> ElectrumDTO.Response.Transaction {
         return try await send(method: Method.Blockchain.Transaction.get, parameter: [hash])
     }
