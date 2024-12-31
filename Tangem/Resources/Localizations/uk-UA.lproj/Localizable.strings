@@ -1042,6 +1042,10 @@
 "warning_rate_app_title" = "Подобається Tangem?";
 "warning_receive_blocked_hedera_token_association_required_message" = "Вам необхідно провести асоціацію токена, щоб мати можливість приймати його";
 "warning_rent_fee_title" = "Необхідна плата за оренду мережі";
+"warning_seedphrase_issue_answer_no" = "Дякуємо! Все добре! Подальших дій не потрібно.";
+"warning_seedphrase_issue_answer_yes" = "Ви будете перенаправлені на офіційний сайт Tangem. Будь ласка, прочитайте та виконайте вказані там інструкції.";
+"warning_seedphrase_issue_message" = "Ви коли-небудь зверталися до служби підтримки Tangem безпосередньо з цього додатку?";
+"warning_seedphrase_issue_title" = "Обов’язкове оновлення безпеки";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ є активом у мережі %2$@. Щоб здійснити транзакцію %3$@, ви повинні внести певну суму %4$@ (%5$@), щоб покрити комісію мережі.";
 "warning_send_blocked_funds_for_fee_title" = "Недостатньо %1$@ для покриття комісії мережі";
 "warning_solana_rent_fee_message" = "Мережа Solana стягує орендну плату у розмірі %1$@ кожні 2 дні. Акаунти, які не можуть дозволити собі орендну плату, видаляються з мережі. Поповніть свій рахунок на суму понад %2$@, щоб не платити орендну плату.";

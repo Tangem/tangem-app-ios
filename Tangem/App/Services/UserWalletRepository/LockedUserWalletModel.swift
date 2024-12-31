@@ -23,6 +23,8 @@ class LockedUserWalletModel: UserWalletModel {
 
     var hasBackupCards: Bool { userWallet.cardInfo().card.backupStatus?.isActive ?? false }
 
+    var hasImportedWallets: Bool { false }
+
     var emailConfig: EmailConfig? { nil }
 
     var userWalletId: UserWalletId { .init(value: userWallet.userWalletId) }

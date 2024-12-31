@@ -44,6 +44,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     case empty
     case support
     case openCurrency
+    case seedSupportYes
+    case seedSupportNo
 
     var id: Int { hashValue }
 
@@ -89,6 +91,10 @@ enum NotificationButtonActionType: Identifiable, Hashable {
             return Localization.detailsRowTitleContactToSupport
         case .openCurrency:
             return Localization.commonGoToToken
+        case .seedSupportYes:
+            return Localization.commonYes
+        case .seedSupportNo:
+            return Localization.commonNo
         }
     }
 
@@ -115,7 +121,9 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .openAppStoreReview,
              .empty,
              .support,
-             .openCurrency:
+             .openCurrency,
+             .seedSupportYes,
+             .seedSupportNo:
             return nil
         }
     }
@@ -125,7 +133,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
         case .generateAddresses,
              .openLink,
              .openAppStoreReview,
-             .empty:
+             .empty,
+             .seedSupportYes:
             return .primary
         case .backupCard,
              .buyCrypto,
@@ -142,7 +151,8 @@ enum NotificationButtonActionType: Identifiable, Hashable {
              .stake,
              .openFeedbackMail,
              .openCurrency,
-             .swap:
+             .swap,
+             .seedSupportNo:
             return .secondary
         }
     }
