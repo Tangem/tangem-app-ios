@@ -171,6 +171,7 @@
 		2DFC27932C78E833009B247E /* TokenItemInfoProviderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC278F2C78E833009B247E /* TokenItemInfoProviderMapper.swift */; };
 		2DFC27942C78E833009B247E /* TokenItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27902C78E833009B247E /* TokenItemType.swift */; };
 		2DFC27962C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */; };
+		2DFFD7632D23F28E00A3A168 /* Fact0rnNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DFFD7622D23F28E00A3A168 /* Fact0rnNetworkProvider.swift */; };
 		5D00FCD1261738C5004626DE /* WalletConnectEthTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D00FCD0261738C5004626DE /* WalletConnectEthTransaction.swift */; };
 		5D06E040250A5D54004218D0 /* NSRegualrExpression+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D06E03F250A5D54004218D0 /* NSRegualrExpression+.swift */; };
 		5D09383225E7A9820049B8F0 /* Wallet+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D09383125E7A9820049B8F0 /* Wallet+.swift */; };
@@ -3352,6 +3353,8 @@
 		2DFC278F2C78E833009B247E /* TokenItemInfoProviderMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemInfoProviderMapper.swift; sourceTree = "<group>"; };
 		2DFC27902C78E833009B247E /* TokenItemType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenItemType.swift; sourceTree = "<group>"; };
 		2DFC27952C78E881009B247E /* MarketsPortfolioTokenItemFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsPortfolioTokenItemFactory.swift; sourceTree = "<group>"; };
+		2DFFD7622D23F28E00A3A168 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
+		2DFFD7682D24147A00A3A168 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D00FCD0261738C5004626DE /* WalletConnectEthTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectEthTransaction.swift; sourceTree = "<group>"; };
 		5D011A262530E76000758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D06E03F250A5D54004218D0 /* NSRegualrExpression+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSRegualrExpression+.swift"; sourceTree = "<group>"; };
@@ -6847,6 +6850,14 @@
 				2DFC27902C78E833009B247E /* TokenItemType.swift */,
 			);
 			path = TokenItemInfo;
+			sourceTree = "<group>";
+		};
+		2DFFD7642D23F59400A3A168 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				2DFFD7622D23F28E00A3A168 /* Fact0rnNetworkProvider.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		2E5061A84512B23CCB5F2E17 /* Frameworks */ = {
@@ -11730,7 +11741,8 @@
 		B62D43792CBC7EC700C2460E /* BlockchainSdkExample */ = {
 			isa = PBXGroup;
 			children = (
-				B655F5902CBC8E03002391AF /* tangem-app-config */,
+				B62D43962CBC7FCD00C2460E /* BlockchainSdkExample.entitlements */,
+				2DFFD7682D24147A00A3A168 /* Info.plist */,
 				B62D43952CBC7FCD00C2460E /* APIListUtils.swift */,
 				B62D437A2CBC7EC700C2460E /* BlockchainSdkExampleApp.swift */,
 				B62D43922CBC7FCD00C2460E /* BlockchainSdkExampleView.swift */,
@@ -11738,9 +11750,9 @@
 				B62D43942CBC7FCD00C2460E /* InMemoryBlockchainDataStorage.swift */,
 				B62D43A92CBC7FCE00C2460E /* SimpleAccountCreator.swift */,
 				B6F271032CC2C10A00A2A5B1 /* SimpleTransactionSigner.swift */,
-				B62D43962CBC7FCD00C2460E /* BlockchainSdkExample.entitlements */,
 				B62D437E2CBC7ECA00C2460E /* Assets.xcassets */,
 				B62D43802CBC7ECA00C2460E /* Preview Content */,
+				B655F5902CBC8E03002391AF /* tangem-app-config */,
 			);
 			path = BlockchainSdkExample;
 			sourceTree = "<group>";
@@ -12587,6 +12599,7 @@
 		DABCDA1A2D08F67000AB2C69 /* Fact0rn */ = {
 			isa = PBXGroup;
 			children = (
+				2DFFD7642D23F59400A3A168 /* Network */,
 				DABCDA1D2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift */,
 				DABCDA1F2D08FA6B00AB2C69 /* Fact0rnAddressService.swift */,
 				DABCDA1B2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift */,
@@ -19054,6 +19067,7 @@
 				2D665C2E2CDCA3FC00C9BA85 /* DeployExecutionResults.swift in Sources */,
 				2D665C2F2CDCA3FC00C9BA85 /* CLTypeSerializeHelper.swift in Sources */,
 				2D665C302CDCA3FC00C9BA85 /* URef.swift in Sources */,
+				2DFFD7632D23F28E00A3A168 /* Fact0rnNetworkProvider.swift in Sources */,
 				2D665C312CDCA3FC00C9BA85 /* CLValueWrapperToJsonString.swift in Sources */,
 				2D665C322CDCA3FC00C9BA85 /* CLValue.swift in Sources */,
 				B62D428A2CBC79DB00C2460E /* TronTransactionHistoryProvider.swift in Sources */,

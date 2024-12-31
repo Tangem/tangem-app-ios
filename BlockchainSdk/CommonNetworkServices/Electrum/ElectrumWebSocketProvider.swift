@@ -49,6 +49,10 @@ class ElectrumWebSocketProvider: HostProvider {
             return try await send(method: Method.Blockchain.ScriptHash.getHistory, parameter: [scriptHash])
         }
     }
+    
+    func getTransaction(hash: String) async throws -> ElectrumDTO.Response.Transaction {
+        return try await send(method: Method.Blockchain.Transaction.get, parameter: [hash])
+    }
 
     func getUnspents(identifier: Identifier) async throws -> [ElectrumDTO.Response.ListUnspent] {
         switch identifier {
@@ -127,6 +131,7 @@ private extension ElectrumWebSocketProvider {
 
 private extension ElectrumWebSocketProvider.Method.Blockchain {
     enum Transaction: String {
+        case get = "blockchain.transaction.get"
         case broadcast = "blockchain.transaction.broadcast"
     }
 }
