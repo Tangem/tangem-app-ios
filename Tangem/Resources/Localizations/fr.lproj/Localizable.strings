@@ -55,8 +55,8 @@
 "balance_hidden_do_not_show_button" = "Ne plus afficher";
 "balance_hidden_got_it_button" = "Compris";
 "balance_hidden_title" = "Les soldes sont masqués";
-"beta_mode_warning_message" = "According to the blockchain developers, Kaspa tokens are currently in beta. Stay tuned for updates!";
-"beta_mode_warning_title" = "Beta Mode";
+"beta_mode_warning_message" = "Selon les développeurs de la blockchain, les jetons Kaspa sont actuellement en version bêta. Restez à l'écoute des mises à jour !";
+"beta_mode_warning_title" = "Mode bêta";
 "biometry_touch_id_reason" = "Touch ID est utilisé pour enregistrer vos cartes dans l'application";
 "button_start_backup_process" = "Démarrer le processus de sauvegarde";
 "buy_token_description" = "Utilisez une carte bancaire ou d'autres moyens de paiement";
@@ -1042,6 +1042,8 @@
 "warning_rate_app_title" = "Vous appréciez Tangem ?";
 "warning_receive_blocked_hedera_token_association_required_message" = "Vous devez associer votre jeton avant de recevoir des jetons";
 "warning_rent_fee_title" = "Frais de location de réseau requis";
+"warning_seedphrase_issue_message" = "Avez-vous déjà contacté notre équipe d'assistance via l'application ?";
+"warning_seedphrase_issue_title" = "Nous avons trouvé un problème dans le système de support de Tangem";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ s'agit d'un actif du réseau %2$@. Pour effectuer une transaction %3$@, vous devez déposer une certaine quantité de %4$@ (%5$@) pour couvrir les frais de réseau.";
 "warning_send_blocked_funds_for_fee_title" = "%1$@ insuffisant pour couvrir les frais de réseau";
 "warning_solana_rent_fee_message" = "Le réseau Solana facture un loyer de %1$@ tous les 2 jours. Les comptes qui ne peuvent pas se permettre le loyer sont purgés du réseau. Déposez sur votre compte plus de %2$@ pour l'utiliser gratuitement.";

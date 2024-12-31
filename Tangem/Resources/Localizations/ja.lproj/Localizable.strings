@@ -55,8 +55,8 @@
 "balance_hidden_do_not_show_button" = "今後表示しない";
 "balance_hidden_got_it_button" = "わかりました";
 "balance_hidden_title" = "残高は非表示";
-"beta_mode_warning_message" = "According to the blockchain developers, Kaspa tokens are currently in beta. Stay tuned for updates!";
-"beta_mode_warning_title" = "Beta Mode";
+"beta_mode_warning_message" = "ブロックチェーン開発者によると、Kaspaトークンは現在ベータ版です。アップデートをお楽しみに！";
+"beta_mode_warning_title" = "ベータモード";
 "biometry_touch_id_reason" = "タッチIDは、アプリにカードまたはリングを保存するために使用されます";
 "button_start_backup_process" = "バックアップ処理を開始する";
 "buy_token_description" = "銀行カードまたはその他の支払い方法を使用する";
@@ -1042,6 +1042,8 @@
 "warning_rate_app_title" = "Tangemを楽しんでいますか?";
 "warning_receive_blocked_hedera_token_association_required_message" = "トークンを受け取る前に、トークンを関連付ける必要があります。";
 "warning_rent_fee_title" = "ネットワーク使用料が必要です";
+"warning_seedphrase_issue_message" = "Have you ever contacted our support team through the app?";
+"warning_seedphrase_issue_title" = "We found an issue in Tangem's support system";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ は %2$@ ネットワーク内のアセットです。%3$@ 取引を行うには、ネットワーク手数料のために %4$@ (%5$@) を入金する必要があります。";
 "warning_send_blocked_funds_for_fee_title" = "ネットワーク料金をカバーするための%1$@が足りません";
 "warning_solana_rent_fee_message" = "Solana ネットワークは 2 日ごとに%1$@のレンタル料を請求します。レンタル料を支払えないアカウントはネットワークから削除されます。アカウントに%2$@以上入金すると、無料で使用できます。";

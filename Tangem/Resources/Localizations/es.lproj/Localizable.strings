@@ -1042,6 +1042,8 @@
 "warning_rate_app_title" = "¿Disfrutando de Tangem?";
 "warning_receive_blocked_hedera_token_association_required_message" = "Deba asociar su token antes de recibir tokens";
 "warning_rent_fee_title" = "Se requiere tarifa de alquiler de red";
+"warning_seedphrase_issue_message" = "¿Alguna vez te has puesto en contacto con nuestro equipo de soporte a través de la aplicación?";
+"warning_seedphrase_issue_title" = "Hemos encontrado un problema en el sistema de soporte de Tangem";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ un activo en la red %2$@. Para realizar una transacción %3$@, deposite %4$@ (%5$@) para cubrir la tarifa de red.";
 "warning_send_blocked_funds_for_fee_title" = "%1$@ insuficiente para cubrir la tarifa de red";
 "warning_solana_rent_fee_message" = "La red Solana cobra un alquiler de %1$@ cada %2$@ días. Las cuentas que no pueden pagar el alquiler son eliminadas de la red. Deposite en su cuenta más de 2 para usarla de forma gratuita.";
