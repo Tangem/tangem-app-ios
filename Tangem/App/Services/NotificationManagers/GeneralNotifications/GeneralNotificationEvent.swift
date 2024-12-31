@@ -123,7 +123,8 @@ extension GeneralNotificationEvent: NotificationEvent {
         case .rateApp,
              .missingDerivation,
              .missingBackup,
-             .seedSupport:
+             .seedSupport,
+             .backupErrors:
             return .primary
         default:
             return .secondary
