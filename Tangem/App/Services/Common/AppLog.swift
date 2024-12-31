@@ -20,14 +20,14 @@ class AppLog {
     private init() {}
 
     var sdkLogConfig: Log.Config {
-        var loggers: [TangemSdkLogger] = [fileLogger]
+        var loggers: [TangemSdkLogger] = [ /* fileLogger */ ]
 
         if AppEnvironment.current.isDebug {
             loggers.append(ConsoleLogger())
         }
 
         return .custom(
-            logLevel: [.warning, .error, .command, .debug, .nfc, .session],
+            logLevel: [.warning, .error, .command, .debug, .nfc, .session, .network],
             loggers: loggers
         )
     }

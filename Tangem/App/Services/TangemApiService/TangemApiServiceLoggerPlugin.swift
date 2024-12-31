@@ -208,7 +208,7 @@ private extension TangemApiTarget {
         switch type {
         case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart:
             return false
-        case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward:
+        case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward, .seedNotifyGetStatus, .seedNotifySetStatus, .walletInitialized:
             return true
 
         // Markets requests

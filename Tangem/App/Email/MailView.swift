@@ -66,19 +66,21 @@ struct MailView: UIViewControllerRepresentable {
         messageBody.append("\n\n")
         vc.setMessageBody(messageBody, isHTML: false)
 
-        let logFiles = viewModel.logsComposer.getLogFiles()
+        /*
+         let logFiles = viewModel.logsComposer.getLogFiles()
 
-        logFiles.forEach { originalURL in
-            guard originalURL.lastPathComponent != LogFilesNames.infoLogs else {
-                attachPlainTextData(at: originalURL, to: vc)
-                return
-            }
-            do {
-                try MailZipFileManager.shared.attachZipData(at: originalURL, to: vc)
-            } catch {
-                attachPlainTextData(at: originalURL, to: vc)
-            }
-        }
+         logFiles.forEach { originalURL in
+             guard originalURL.lastPathComponent != LogFilesNames.infoLogs else {
+                 attachPlainTextData(at: originalURL, to: vc)
+                 return
+             }
+             do {
+                 try MailZipFileManager.shared.attachZipData(at: originalURL, to: vc)
+             } catch {
+                 attachPlainTextData(at: originalURL, to: vc)
+             }
+         }
+          */
 
         return vc
     }

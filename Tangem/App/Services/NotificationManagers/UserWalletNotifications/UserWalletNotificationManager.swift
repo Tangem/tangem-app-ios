@@ -9,6 +9,8 @@
 import Foundation
 import Combine
 import BlockchainSdk
+import TangemFoundation
+import Moya
 
 protocol NotificationTapDelegate: AnyObject {
     func didTapNotification(with id: NotificationViewId, action: NotificationButtonActionType)
@@ -18,6 +20,7 @@ protocol NotificationTapDelegate: AnyObject {
 /// Don't forget to setup manager with delegate for proper notification handling
 final class UserWalletNotificationManager {
     @Injected(\.deprecationService) private var deprecationService: DeprecationServicing
+    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
 
     private let analyticsService: NotificationsAnalyticsService = .init()
     private let userWalletModel: UserWalletModel
@@ -113,6 +116,8 @@ final class UserWalletNotificationManager {
         showAppRateNotificationIfNeeded()
 
         validateHashesCount()
+
+        showSupportSeedNotificationIfNeeded()
     }
 
     private func hideNotification(with id: NotificationViewId) {
@@ -278,6 +283,85 @@ final class UserWalletNotificationManager {
 
     private func recordDeprecationNotificationDismissal() {
         deprecationService.didDismissSystemDeprecationWarning()
+    }
+
+    private func showSupportSeedNotificationIfNeeded() {
+        let userWalletId = userWalletModel.userWalletId.stringValue
+
+        guard userWalletModel.hasImportedWallets else {
+            return
+        }
+
+        // demo cards
+        if case .disabled = userWalletModel.config.getFeatureAvailability(.backup) {
+            return
+        }
+
+        TangemFoundation.runTask(in: self) { manager in
+            do {
+                let status = try await manager.tangemApiService.getSeedNotifyStatus(userWalletId: userWalletId).status
+
+                switch status {
+                case .confirmed, .declined, .notNeeded:
+                    break
+                case .notified:
+                    manager.showSupportSeedNotification()
+                }
+            } catch {
+                if case .statusCode(let response) = error as? MoyaError,
+                   response.statusCode == 404 {
+                    manager.showSupportSeedNotification()
+                    try? await manager.tangemApiService.setSeedNotifyStatus(userWalletId: userWalletId, status: .notified)
+                }
+            }
+        }
+    }
+
+    private func showSupportSeedNotification() {
+        let userWalletId = userWalletModel.userWalletId.stringValue
+
+        let buttonActionYes: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
+            guard let self else { return }
+
+            Analytics.log(.mainNoticeSeedSupportButtonYes)
+            delegate?.didTapNotification(with: id, action: action)
+            hideNotification(with: id)
+
+            TangemFoundation.runTask(in: self) { manager in
+                try? await manager.tangemApiService.setSeedNotifyStatus(userWalletId: userWalletId, status: .confirmed)
+            }
+        }
+
+        let buttonActionNo: NotificationView.NotificationButtonTapAction = { [weak self] id, action in
+            guard let self else { return }
+
+            Analytics.log(.mainNoticeSeedSupportButtonNo)
+            delegate?.didTapNotification(with: id, action: action)
+            hideNotification(with: id)
+
+            TangemFoundation.runTask(in: self) { manager in
+                try? await manager.tangemApiService.setSeedNotifyStatus(userWalletId: userWalletId, status: .declined)
+            }
+        }
+
+        let input = NotificationViewInput(
+            style: .withButtons([
+                NotificationView.NotificationButton(
+                    action: buttonActionNo,
+                    actionType: .seedSupportNo,
+                    isWithLoader: false
+                ),
+                NotificationView.NotificationButton(
+                    action: buttonActionYes,
+                    actionType: .seedSupportYes,
+                    isWithLoader: false
+                ),
+            ]),
+            severity: .critical,
+            settings: .init(event: GeneralNotificationEvent.seedSupport, dismissAction: nil)
+        )
+
+        addInputIfNeeded(input)
     }
 }
 

@@ -742,7 +742,9 @@ extension ExpressViewModel: NotificationTapDelegate {
              .openAppStoreReview,
              .swap,
              .support,
-             .openCurrency:
+             .openCurrency,
+             .seedSupportNo,
+             .seedSupportYes:
             return
         }
     }

@@ -411,6 +411,8 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
             rateAppController.openAppStoreReview()
         case .support:
             openSupport()
+        case .seedSupportYes:
+            openURL(TangemBlogUrlBuilder().url(post: .seedNotify))
         default:
             break
         }
