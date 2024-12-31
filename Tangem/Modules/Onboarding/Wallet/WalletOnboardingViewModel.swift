@@ -621,6 +621,13 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             case .success(let cardInfo):
                 initializeUserWallet(from: cardInfo)
 
+                if let userWalletModel, userWalletModel.hasImportedWallets {
+                    let userWalletId = userWalletModel.userWalletId.stringValue
+                    TangemFoundation.runTask(in: self) { model in
+                        try? await model.tangemApiService.setWalletInitialized(userWalletId: userWalletId)
+                    }
+                }
+
                 if let primaryCard = cardInfo.primaryCard {
                     backupService.setPrimaryCard(primaryCard)
                 }
@@ -776,13 +783,6 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                                     event: .backupFinished,
                                     params: [.cardsCount: String((updatedCard.backupStatus?.backupCardsCount ?? 0) + 1)]
                                 )
-
-                                if let userWalletModel, userWalletModel.hasImportedWallets {
-                                    let userWalletId = userWalletModel.userWalletId.stringValue
-                                    TangemFoundation.runTask(in: self) { model in
-                                        try? await model.tangemApiService.setWalletInitialized(userWalletId: userWalletId)
-                                    }
-                                }
                             }
 
                             promise(.success(()))
