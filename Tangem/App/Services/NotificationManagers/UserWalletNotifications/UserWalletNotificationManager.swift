@@ -325,7 +325,6 @@ final class UserWalletNotificationManager {
 
             Analytics.log(.mainNoticeSeedSupportButtonYes)
             delegate?.didTapNotification(with: id, action: action)
-            hideNotification(with: id)
 
             TangemFoundation.runTask(in: self) { manager in
                 try? await manager.tangemApiService.setSeedNotifyStatus(userWalletId: userWalletId, status: .confirmed)
@@ -337,7 +336,6 @@ final class UserWalletNotificationManager {
 
             Analytics.log(.mainNoticeSeedSupportButtonNo)
             delegate?.didTapNotification(with: id, action: action)
-            hideNotification(with: id)
 
             TangemFoundation.runTask(in: self) { manager in
                 try? await manager.tangemApiService.setSeedNotifyStatus(userWalletId: userWalletId, status: .declined)

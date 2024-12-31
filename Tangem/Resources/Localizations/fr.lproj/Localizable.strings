@@ -1042,8 +1042,10 @@
 "warning_rate_app_title" = "Vous appréciez Tangem ?";
 "warning_receive_blocked_hedera_token_association_required_message" = "Vous devez associer votre jeton avant de recevoir des jetons";
 "warning_rent_fee_title" = "Frais de location de réseau requis";
-"warning_seedphrase_issue_message" = "Avez-vous déjà contacté notre équipe d'assistance via l'application ?";
-"warning_seedphrase_issue_title" = "Nous avons trouvé un problème dans le système de support de Tangem";
+"warning_seedphrase_issue_answer_no" = "Merci ! Tout est en ordre ! Aucune autre action n'est requise.";
+"warning_seedphrase_issue_answer_yes" = "Vous allez être redirigé vers le site officiel de Tangem. Veuillez lire et suivre les instructions qui y sont indiquées.";
+"warning_seedphrase_issue_message" = "Avez-vous déjà contacté l'équipe de support Tangem directement depuis cette application ?";
+"warning_seedphrase_issue_title" = "Mise à jour de sécurité obligatoire";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ s'agit d'un actif du réseau %2$@. Pour effectuer une transaction %3$@, vous devez déposer une certaine quantité de %4$@ (%5$@) pour couvrir les frais de réseau.";
 "warning_send_blocked_funds_for_fee_title" = "%1$@ insuffisant pour couvrir les frais de réseau";
 "warning_solana_rent_fee_message" = "Le réseau Solana facture un loyer de %1$@ tous les 2 jours. Les comptes qui ne peuvent pas se permettre le loyer sont purgés du réseau. Déposez sur votre compte plus de %2$@ pour l'utiliser gratuitement.";

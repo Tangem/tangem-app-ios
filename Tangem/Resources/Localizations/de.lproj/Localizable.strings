@@ -1042,8 +1042,10 @@
 "warning_rate_app_title" = "Gefällt dir Tangem?";
 "warning_receive_blocked_hedera_token_association_required_message" = "Du musst deinen Token zuordnen, bevor du Token erhalten kannst";
 "warning_rent_fee_title" = "Netzmietgebühr erforderlich";
-"warning_seedphrase_issue_message" = "Haben Sie schon einmal unser Support-Team über die App kontaktiert?";
-"warning_seedphrase_issue_title" = "Wir haben ein Problem im Support-System von Tangem festgestellt";
+"warning_seedphrase_issue_answer_no" = "Vielen Dank! Alles erledigt! Keine weiteren Maßnahmen erforderlich.";
+"warning_seedphrase_issue_answer_yes" = "Sie werden jetzt auf die offizielle Tangem-Website weitergeleitet. Bitte lesen und befolgen Sie dort die Anweisungen.";
+"warning_seedphrase_issue_message" = "Haben Sie jemals das Support-Team von Tangem direkt über diese Anwendung kontaktiert?";
+"warning_seedphrase_issue_title" = "Verpflichtendes Sicherheitsupdate";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ ist ein Vermögenswert im %2$@ Netzwerk. Um eine %3$@ Transaktion durchzuführen, musst du etwas %4$@ (%5$@) einzahlen, um die Netzwerkgebühr zu decken.";
 "warning_send_blocked_funds_for_fee_title" = "Unzureichende %1$@ zur Deckung der Netzgebühr";
 "warning_solana_rent_fee_message" = "Das Solana-Netzwerk erhebt alle 2 Tage eine Miete von %1$@. Konten, die sich die Miete nicht leisten können, werden aus dem Netzwerk gelöscht. Hinterlege deinem Konto mit mehr als %2$@, um es kostenlos zu nutzen.";
