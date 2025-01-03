@@ -170,6 +170,7 @@ extension CommonStakingStepsManager: SendSummaryStepsRoutable {
     }
 
     func summaryStepRequestEditAmount() {
+        return
         guard case .summary = currentStep().type else {
             assertionFailure("This code should only be called from summary")
             return

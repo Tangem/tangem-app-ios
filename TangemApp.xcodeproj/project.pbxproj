@@ -14,6 +14,7 @@
 		0A2A04DB2C91B167007EAE64 /* TronSendTransactionSummaryDescriptionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A04DA2C91B167007EAE64 /* TronSendTransactionSummaryDescriptionBuilder.swift */; };
 		0A3BF9692C6CDAD900163492 /* AdditionalAddresses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */; };
 		0A3BF96B2C6CE96B00163492 /* StakingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3BF96A2C6CE96B00163492 /* StakingAction.swift */; };
+		0A66678F2D1C0749008BE9D4 /* CardanoStakeKitTransactionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A66678E2D1C0749008BE9D4 /* CardanoStakeKitTransactionHelper.swift */; };
 		0A713CEC2CAA6DA30042FC27 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		0A713CEE2CAA73BF0042FC27 /* RestakingFlowBaseBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A713CED2CAA73BF0042FC27 /* RestakingFlowBaseBuilder.swift */; };
 		0A713CF02CAA76530042FC27 /* CommonRestakingStepsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A713CEF2CAA76530042FC27 /* CommonRestakingStepsManager.swift */; };
@@ -3196,6 +3197,7 @@
 		0A2A04DA2C91B167007EAE64 /* TronSendTransactionSummaryDescriptionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TronSendTransactionSummaryDescriptionBuilder.swift; sourceTree = "<group>"; };
 		0A3BF9682C6CDAD900163492 /* AdditionalAddresses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalAddresses.swift; sourceTree = "<group>"; };
 		0A3BF96A2C6CE96B00163492 /* StakingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAction.swift; sourceTree = "<group>"; };
+		0A66678E2D1C0749008BE9D4 /* CardanoStakeKitTransactionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardanoStakeKitTransactionHelper.swift; sourceTree = "<group>"; };
 		0A713CED2CAA73BF0042FC27 /* RestakingFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestakingFlowBaseBuilder.swift; sourceTree = "<group>"; };
 		0A713CEF2CAA76530042FC27 /* CommonRestakingStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonRestakingStepsManager.swift; sourceTree = "<group>"; };
 		0A7FF63C2C888D380072C2E8 /* StakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAnalyticsLogger.swift; sourceTree = "<group>"; };
@@ -9781,6 +9783,7 @@
 				B62D3C772CBC79D900C2460E /* CardanoFeeParameters.swift */,
 				B62D3C782CBC79D900C2460E /* CardanoNetworkService.swift */,
 				B62D3C792CBC79D900C2460E /* CardanoResponseMapper.swift */,
+				0A66678E2D1C0749008BE9D4 /* CardanoStakeKitTransactionHelper.swift */,
 				B62D3C7A2CBC79D900C2460E /* CardanoTokenContractAddressService.swift */,
 				B62D3C7B2CBC79D900C2460E /* CardanoTransactionBuilder.swift */,
 				B62D3C7C2CBC79D900C2460E /* CardanoUtil.swift */,
@@ -19406,6 +19409,7 @@
 				B62D419E2CBC79DA00C2460E /* SuiNetworkProvider.swift in Sources */,
 				B62D42282CBC79DB00C2460E /* BlockBookNode.swift in Sources */,
 				B62D41692CBC79DA00C2460E /* PolkadotWalletManager.swift in Sources */,
+				0A66678F2D1C0749008BE9D4 /* CardanoStakeKitTransactionHelper.swift in Sources */,
 				B62D414A2CBC79DA00C2460E /* NEARWalletAssembly.swift in Sources */,
 				B62D409A2CBC79DA00C2460E /* EthereumResponse.swift in Sources */,
 				B62D418B2CBC79DA00C2460E /* SolanaExternalLinkProvider.swift in Sources */,

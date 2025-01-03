@@ -236,3 +236,27 @@ extension CardanoWalletManager: CardanoTransferRestrictable {
         }
     }
 }
+
+// MARK: - StakeKitTransactionSender, StakeKitTransactionSenderProvider
+
+extension CardanoWalletManager: StakeKitTransactionSender, StakeKitTransactionSenderProvider {
+    typealias RawTransaction = Data
+
+    func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data {
+        try CardanoStakeKitTransactionHelper(
+            transactionBuilder: transactionBuilder
+        ).prepareForSign(transaction.unsignedData) // .hash
+    }
+
+    func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction {
+        let rawData = try CardanoStakeKitTransactionHelper(
+            transactionBuilder: transactionBuilder
+        ).prepareForSign(transaction.unsignedData) // .rawData
+//        let unmarshalled = unmarshal(signature.signature, hash: signature.hash, publicKey: wallet.publicKey)
+        return Data() // try transactionBuilder.buildForSend(transaction: rawData, signature: rawData)
+    }
+
+    func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String {
+        try await networkService.send(transaction: rawTransaction).async()
+    }
+}

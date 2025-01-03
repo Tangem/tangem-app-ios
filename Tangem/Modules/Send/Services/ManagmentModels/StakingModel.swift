@@ -188,13 +188,21 @@ private extension StakingModel {
     }
 
     private func makeState(amount: Decimal, fee: Decimal) -> State {
-        let includeFee = feeIncludedCalculator.shouldIncludeFee(makeFee(value: fee), into: makeAmount(value: amount))
-        let newAmount = includeFee ? amount - fee : amount
-        _isFeeIncluded.send(includeFee)
+        let newAmount: Decimal
+        let includeFee: Bool
+        if tokenItem.blockchain.isStakeAmountEditable {
+            newAmount = amount
+            includeFee = false
 
-        if let validateError = validate(amount: newAmount, fee: fee) {
-            return validateError
+            if let validateError = validate(amount: newAmount, fee: fee) {
+                return validateError
+            }
+        } else {
+            includeFee = feeIncludedCalculator.shouldIncludeFee(makeFee(value: fee), into: makeAmount(value: amount))
+            newAmount = includeFee ? amount - fee : amount
         }
+
+        _isFeeIncluded.send(includeFee)
 
         let balances = stakingManager.balances ?? []
         let hasPreviousStakeOnDifferentValidator = balances.contains { balance in

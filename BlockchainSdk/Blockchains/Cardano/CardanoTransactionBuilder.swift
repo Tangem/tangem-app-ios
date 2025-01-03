@@ -11,6 +11,7 @@ import WalletCore
 import BigInt
 import TangemSdk
 import TangemFoundation
+import SwiftCBOR
 
 // You can decode your CBOR transaction here: https://cbor.me
 class CardanoTransactionBuilder {
@@ -38,6 +39,18 @@ extension CardanoTransactionBuilder {
             Log.debug("CardanoPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
             throw WalletError.failedToBuildTx
         }
+
+        let cb1 = try? CBOR.decode(txInputData.bytes)
+
+        let cb2 = try? CBOR.decode(preImageHashes.bytes)
+
+        let cb3 = try? CBOR.decode(preSigningOutput.data.bytes)
+
+        print(preSigningOutput.data.hexString)
+
+        let cb4 = try? CBOR.decode(preSigningOutput.dataHash.bytes)
+
+        print(preSigningOutput.data.hexString)
 
         return preSigningOutput.dataHash
     }
