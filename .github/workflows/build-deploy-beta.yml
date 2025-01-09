@@ -166,7 +166,8 @@ jobs:
 
   error_notification:
     name: Error Notification
-    if: failure()
+    #if: failure() # TODO: Test only, enable
+    if: false
     uses: tangem/actions/.github/workflows/notification.yml@main
     needs:
       - prepare

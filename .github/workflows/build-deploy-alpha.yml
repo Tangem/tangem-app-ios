@@ -23,7 +23,8 @@ on:
         description: >
           Whether the analyze should be analyzed during the build process (default: false)
         type: boolean
-        default: false
+        default: true # TODO: Test only, change back to false
+        # default: false
 
 concurrency:
   group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
