@@ -10,7 +10,7 @@ import Foundation
 import BigInt
 
 struct TONUtils {
-    /// Converts given amount to a uint128 with little-endian byte order.
+    /// Converts given amount to a uint128 with big-endian byte order.
     func jettonAmountPayload(from decimalAmount: Decimal) throws -> Data {
         guard let bigUIntValue = BigUInt(decimal: decimalAmount) else {
             throw WalletError.failedToBuildTx
