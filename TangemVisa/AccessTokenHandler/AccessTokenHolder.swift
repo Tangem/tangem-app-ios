@@ -10,6 +10,7 @@ import Foundation
 
 actor AccessTokenHolder {
     private var jwtTokens: DecodedAuthorizationJWTTokens?
+    private var authTokens: VisaAuthorizationTokens?
 
     var tokens: DecodedAuthorizationJWTTokens? {
         get async {
@@ -17,11 +18,26 @@ actor AccessTokenHolder {
         }
     }
 
+    var authorizationTokens: VisaAuthorizationTokens? {
+        get async {
+            authTokens
+        }
+    }
+
+    init(authorizationTokens: VisaAuthorizationTokens? = nil) {
+        if let authorizationTokens,
+           let decodedTokens = try? AuthorizationTokensUtility().decodeAuthTokens(authorizationTokens) {
+            jwtTokens = decodedTokens
+        }
+        authTokens = authorizationTokens
+    }
+
     func setTokens(_ tokens: DecodedAuthorizationJWTTokens) async {
         jwtTokens = tokens
     }
 
     func setTokens(authorizationTokens: VisaAuthorizationTokens) async throws {
-        try await setTokens(AuthorizationTokensDecoderUtility().decodeAuthTokens(authorizationTokens))
+        authTokens = authorizationTokens
+        try await setTokens(AuthorizationTokensUtility().decodeAuthTokens(authorizationTokens))
     }
 }

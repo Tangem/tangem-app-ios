@@ -11,8 +11,11 @@ import Combine
 import CombineExt
 import TangemSdk
 import BlockchainSdk
+import TangemFoundation
 
 class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, OnboardingCoordinator>, ObservableObject {
+    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
+
     private let seedPhraseManager = SeedPhraseManager()
 
     @Published var thirdCardSettings: AnimatedViewSettings = .zero
@@ -617,6 +620,13 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             switch result {
             case .success(let cardInfo):
                 initializeUserWallet(from: cardInfo)
+
+                if let userWalletModel, userWalletModel.hasImportedWallets {
+                    let userWalletId = userWalletModel.userWalletId.stringValue
+                    TangemFoundation.runTask(in: self) { model in
+                        try? await model.tangemApiService.setWalletInitialized(userWalletId: userWalletId)
+                    }
+                }
 
                 if let primaryCard = cardInfo.primaryCard {
                     backupService.setPrimaryCard(primaryCard)

@@ -195,20 +195,63 @@ private extension CommonStakingManager {
 
         processingActions.forEach { action in
             switch action.type {
-            case .stake, .vote, .voteLocked:
+            case .voteLocked, .vote:
+                if let lockedBalanceIndex = balanceIndexByType(balances: balances, action: action, type: .locked) {
+                    balances.remove(at: lockedBalanceIndex)
+                }
+                fallthrough
+            case .stake:
                 balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: .active))
             case .withdraw:
-                modifyBalancesByStatus(balances: &balances, action: action, type: .unstaked)
+                modifyBalancesByStatus(
+                    balances: &balances,
+                    action: action,
+                    type: .unstaked,
+                    reduceBalanceByActionAmount: false,
+                    makeInProgress: true
+                )
             case .unlockLocked:
-                modifyBalancesByStatus(balances: &balances, action: action, type: .locked)
+                modifyBalancesByStatus(
+                    balances: &balances,
+                    action: action,
+                    type: .locked,
+                    reduceBalanceByActionAmount: false,
+                    makeInProgress: true
+                )
+            case .unstake where isFullAmountUnstaking(for: balances, action: action):
+                // make existing staking in progress
+                modifyBalancesByStatus(
+                    balances: &balances,
+                    action: action,
+                    type: .active,
+                    reduceBalanceByActionAmount: false,
+                    makeInProgress: true
+                )
             case .unstake:
-                modifyBalancesByStatus(balances: &balances, action: action, type: .active)
+                // for partial unstake reduce amount of existing staking and append new in progress block
+                modifyBalancesByStatus(
+                    balances: &balances,
+                    action: action,
+                    type: .active,
+                    reduceBalanceByActionAmount: true,
+                    makeInProgress: false
+                )
+                balances.append(mapToStakingBalance(action: action, yield: yield, balanceType: .active))
             default:
                 break // do nothing
             }
         }
 
         return balances
+    }
+
+    private func isFullAmountUnstaking(for balances: [StakingBalance], action: PendingAction) -> Bool {
+        guard let index = balanceIndexByType(balances: balances, action: action, type: .active) else {
+            logger.debug("Couldn't find corresponding staked balance for unstake action")
+            return false
+        }
+        let balance = balances[index]
+        return balance.amount == action.amount
     }
 
     private func balanceIndexByType(
@@ -227,14 +270,15 @@ private extension CommonStakingManager {
     private func modifyBalancesByStatus(
         balances: inout [StakingBalance],
         action: PendingAction,
-        type: StakingBalanceType
+        type: StakingBalanceType,
+        reduceBalanceByActionAmount: Bool,
+        makeInProgress inProgress: Bool
     ) {
         guard let index = balanceIndexByType(balances: balances, action: action, type: type) else { return }
 
         let balance = balances[index]
 
-        // reduce amount of existing balance to avoid an attemp to unstake already unstaked
-        let amount = action.type == .unstake ? balance.amount - action.amount : balance.amount
+        let amount = reduceBalanceByActionAmount ? balance.amount - action.amount : balance.amount
 
         let updatedBalance = StakingBalance(
             item: balance.item,
@@ -242,7 +286,7 @@ private extension CommonStakingManager {
             accountAddress: balance.accountAddress,
             balanceType: balance.balanceType,
             validatorType: balance.validatorType,
-            inProgress: true,
+            inProgress: inProgress,
             actions: balance.actions
         )
 

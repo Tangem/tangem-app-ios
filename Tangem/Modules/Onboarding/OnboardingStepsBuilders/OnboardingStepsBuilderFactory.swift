@@ -77,14 +77,3 @@ extension UserWalletConfig where Self: NoteCardOnboardingStepsBuilderFactory {
 // MARK: - Visa cards
 
 protocol VisaCardOnboardingStepsBuilderFactory: OnboardingStepsBuilderFactory, CardContainer {}
-
-extension UserWalletConfig where Self: VisaCardOnboardingStepsBuilderFactory {
-    func makeOnboardingStepsBuilder(
-        backupService: BackupService,
-        isPushNotificationsAvailable: Bool
-    ) -> OnboardingStepsBuilder {
-        return VisaOnboardingStepsBuilder(
-            isPushNotificationsAvailable: isPushNotificationsAvailable
-        )
-    }
-}

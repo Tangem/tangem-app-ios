@@ -3,7 +3,7 @@ require 'base64'
 default_platform(:ios)
 
 BUILD_PATH = "./fastlane/builds/"
-ANALYZE_ARCHIVE_UTIL_PATH = "./private-app-config/analyze_archive.sh"
+ANALYZE_ARCHIVE_UTIL_PATH = "../private-app-config/analyze_archive.sh"
 PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
@@ -425,6 +425,7 @@ private_lane :build do |options|
   else
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     build_app(
+      project: PROJECT_NAME,
       xcargs: "-allowProvisioningUpdates",
       output_directory: options[:path],
       output_name: options[:filename],
@@ -466,6 +467,7 @@ end
 
 private_lane :archive_app do |options|
   build_app(
+    project: PROJECT_NAME,
     xcargs: "-allowProvisioningUpdates",
     output_directory: options[:path],
     output_name: options[:filename],
@@ -481,6 +483,7 @@ end
 
 private_lane :create_ipa do |options|
   build_app(
+    project: PROJECT_NAME,
     xcargs: "-allowProvisioningUpdates",
     output_directory: options[:path],
     output_name: options[:filename],

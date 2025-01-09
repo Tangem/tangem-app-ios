@@ -9,28 +9,70 @@
 import Foundation
 import UIKit
 import SwiftUI
+import TangemSdk
 
 protocol BindableError {
-    var alertBinder: AlertBinder { get }
-    var alertController: UIAlertController { get }
+    var binder: AlertBinder { get }
 }
 
-extension BindableError where Self: Error {
-    var alertBinder: AlertBinder {
-        return AlertBinder(alert: alert)
+// MARK: - TangemSdkError + BindableError
+
+extension TangemSdkError: BindableError {
+    var binder: AlertBinder {
+        switch self {
+        case .cardVerificationFailed:
+            Analytics.log(.onboardingOfflineAttestationFailed)
+
+            return AlertBinder(alert: Alert(
+                title: Text(Localization.securityAlertTitle),
+                message: Text(TangemSdkError.cardVerificationFailed.localizedDescription),
+                primaryButton: Alert.Button.default(Text(Localization.alertButtonRequestSupport), action: {
+                    openSupport()
+                }),
+                secondaryButton: Alert.Button.cancel(Text(Localization.commonCancel))
+            )
+            )
+        default:
+            return AlertBinder(alert: Alert(
+                title: Text(Localization.commonError),
+                message: Text(localizedDescription),
+                dismissButton: Alert.Button.default(Text(Localization.commonOk))
+            ))
+        }
     }
 
-    var alertController: UIAlertController {
-        let vc = UIAlertController(title: Localization.commonError, message: localizedDescription, preferredStyle: .alert)
-        vc.addAction(UIAlertAction(title: Localization.commonOk, style: .destructive, handler: nil))
-        return vc
-    }
-
-    var alert: Alert {
-        return Alert(
-            title: Text(Localization.commonError),
-            message: Text(localizedDescription),
-            dismissButton: Alert.Button.default(Text(Localization.commonOk))
+    private func openSupport() {
+        let logsComposer = LogsComposer(infoProvider: BaseDataCollector())
+        let mailViewModel = MailViewModel(
+            logsComposer: logsComposer,
+            recipient: EmailConfig.default.recipient,
+            emailType: .attestationFailed
         )
+        let mailView = MailView(viewModel: mailViewModel)
+        let controller = UIHostingController(rootView: mailView)
+        AppPresenter.shared.show(controller)
+    }
+}
+
+// MARK: UserWalletRepositoryError + BindableError
+
+enum UserWalletRepositoryError: String, Error, LocalizedError, BindableError {
+    case duplicateWalletAdded
+    case biometricsChanged
+    case cardWithWrongUserWalletIdScanned
+
+    var errorDescription: String? {
+        rawValue
+    }
+
+    var binder: AlertBinder {
+        switch self {
+        case .duplicateWalletAdded:
+            return .init(title: "", message: Localization.userWalletListErrorWalletAlreadySaved)
+        case .biometricsChanged:
+            return .init(title: Localization.commonAttention, message: Localization.keyInvalidatedWarningDescription)
+        case .cardWithWrongUserWalletIdScanned:
+            return .init(title: Localization.commonWarning, message: Localization.errorWrongWalletTapped)
+        }
     }
 }

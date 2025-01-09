@@ -11,32 +11,48 @@ import TangemVisa
 
 struct VisaOnboardingViewModelBuilder {
     func makeOnboardingViewModel(onboardingInput: OnboardingInput, coordinator: VisaOnboardingRoutable) -> VisaOnboardingViewModel {
-        let visaCardInput: VisaCardActivationInput
+        var initialActivationStatus: VisaCardActivationStatus?
         switch onboardingInput.cardInput {
         case .cardId:
-            fatalError("Invalid card input for Visa onboarding")
+            logInvalidInput("CardId provided in onboarding input. Can't resume backup with visa card")
         case .cardInfo(let cardInfo):
             switch cardInfo.walletData {
-            case .visa(let activationInput, _):
-                visaCardInput = activationInput
+            case .visa(let activationStatus):
+                initialActivationStatus = activationStatus
             default:
-                fatalError("Invalid card input for Visa onboarding")
+                logInvalidInput("Wrong Wallet Data provided in onboarding input. \(cardInfo.walletData) provided instead of Visa wallet data")
             }
         case .userWalletModel(let userWalletModel):
-            // TODO: IOS-8588
-            fatalError("Invalid onboarding input for Visa")
+            guard let config = userWalletModel.config as? VisaConfig else {
+                logInvalidInput("Wrong Config provided in onboarding input. \(userWalletModel.config) provided instead of Visa config")
+                break
+            }
+
+            initialActivationStatus = config.activationStatus
         }
+
+        let visaActivationManager: VisaActivationManager
+        if let initialActivationStatus {
+            visaActivationManager = VisaActivationManagerFactory().make(
+                initialActivationStatus: initialActivationStatus,
+                tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
+                urlSessionConfiguration: .defaultConfiguration,
+                logger: AppLog.shared
+            )
+        } else {
+            visaActivationManager = ActivatedVisaCardDummyManager()
+        }
+
         let model = VisaOnboardingViewModel(
             input: onboardingInput,
-            visaActivationManager: VisaActivationManagerFactory().make(
-                cardInput: visaCardInput,
-                tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
-                urlSessionConfiguration: .default,
-                logger: AppLog.shared
-            ),
+            visaActivationManager: visaActivationManager,
             coordinator: coordinator
         )
 
         return model
+    }
+
+    private func logInvalidInput(_ message: String) {
+        AppLog.shared.debug("[Visa] VisaOnboardingViewModelBuilder - Invalid card input was received while creating onboarding view model. Message: \(message)")
     }
 }

@@ -31,6 +31,10 @@ public struct VisaUtilities {
         "tether"
     }
 
+    public var visaCardDerivationPath: DerivationPath? {
+        visaBlockchain.derivationPath(for: .v3)
+    }
+
     public var mockToken: Token {
         .init(
             name: "Tether",

@@ -192,6 +192,8 @@ extension Analytics {
 
         case onboardingSeedScreenCapture = "[Onboarding / Seed Phrase] Screen Capture"
 
+        case onboardingOfflineAttestationFailed = "[Onboarding] Offline Attestation Failed"
+
         // MARK: Express
 
         case tokenSwapStatus = "[Token] Swap Status"
@@ -232,8 +234,14 @@ extension Analytics {
         case tokenNoticeNetworkUnreachable = "[Token] Notice - Network Unreachable"
         case tokenNoticeNotEnoughFee = "[Token] Notice - Not Enough Fee"
         case tokenNoticeActionInactive = "[Token] Notice - Action Inactive"
+        case tokenNoticeRevealTransaction = "[Token] Notice - Reveal Transaction"
+        case tokenButtonRevealCancel = "[Token] Button - Reveal Cancel"
+        case tokenButtonRevealTryAgain = "[Token] Button - Reveal Try Again"
         case walletPromoButtonClicked = "[Main Screen] Note Promo Button"
         case walletPromoAppear = "[Main Screen] Notice - Note Promo"
+        case mainNoticeSeedSupport = "[Main Screen] Notice - Seed Phrase Support"
+        case mainNoticeSeedSupportButtonYes = "[Main Screen] Button - Support Yes"
+        case mainNoticeSeedSupportButtonNo = "[Main Screen] Button - Support No"
 
         // MARK: - BlockchainSdk exceptions
 
@@ -360,6 +368,7 @@ extension Analytics {
         case onrampErrorMinAmount = "[Onramp] Error - Min Amount"
         case onrampErrorMaxAmount = "[Onramp] Error - Max Amount"
         case onrampErrors = "[Onramp] Errors"
+        case onrampAppErrors = "[Onramp] App Errors"
         case onrampBuyingInProgressScreenOpened = "[Onramp] Buying In Progress Screen Opened"
         case onrampNoticeKYC = "[Onramp] Notice - KYC"
         case onrampOnrampStatusOpened = "[Onramp] Onramp Status Opened"

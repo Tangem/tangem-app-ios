@@ -77,10 +77,6 @@ final class SingleTokenNotificationManager {
             events.append(.existentialDepositWarning(message: existentialWarning))
         }
 
-        if case .binance = walletModel.tokenItem.blockchain {
-            events.append(.bnbBeaconChainRetirement)
-        }
-
         let amounts = walletModel.wallet.amounts
         if case .koinos = walletModel.tokenItem.blockchain,
            let currentMana = amounts[.feeResource(.mana)]?.value,
@@ -101,6 +97,11 @@ final class SingleTokenNotificationManager {
            walletModel.tokenItem.isToken,
            walletModel.tokenItem.networkId != Blockchain.polygon(testnet: false).networkId {
             events.append(.maticMigration)
+        }
+
+        /// We need display alert for user with Kaspa token is beta feature
+        if walletModel.blockchainNetwork.blockchain == .kaspa(testnet: false), walletModel.tokenItem.isToken {
+            events.append(.kaspaTokensBeta)
         }
 
         if let sendingRestrictions = walletModel.sendingRestrictions {
@@ -161,13 +162,20 @@ final class SingleTokenNotificationManager {
 
     private func setupNetworkUnreachable() {
         let factory = NotificationsFactory()
-        notificationInputsSubject
-            .send([
-                factory.buildNotificationInput(
-                    for: TokenNotificationEvent.networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
-                    dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
-                ),
+
+        if case .binance = walletModel.tokenItem.blockchain {
+            notificationInputsSubject.send([
+                factory.buildNotificationInput(for: TokenNotificationEvent.bnbBeaconChainRetirement),
             ])
+        } else {
+            notificationInputsSubject
+                .send([
+                    factory.buildNotificationInput(
+                        for: TokenNotificationEvent.networkUnreachable(currencySymbol: walletModel.blockchainNetwork.blockchain.currencySymbol),
+                        dismissAction: weakify(self, forFunction: SingleTokenNotificationManager.dismissNotification(with:))
+                    ),
+                ])
+        }
     }
 
     private func setupNoAccountNotification(with message: String) {
@@ -266,7 +274,8 @@ final class SingleTokenNotificationManager {
             return .incompleteKaspaTokenTransaction(
                 revealTransaction: .init(
                     formattedValue: configurationData.formattedValue,
-                    currencySymbol: configurationData.currencySymbol
+                    currencySymbol: configurationData.currencySymbol,
+                    blockchainName: blockchain.displayName
                 ) { [weak walletModel] in
                     walletModel?.assetRequirementsManager?.discardRequirements(for: asset)
                 }
@@ -325,6 +334,8 @@ extension SingleTokenNotificationManager: NotificationManager {
         if let event = notification.settings.event as? TokenNotificationEvent {
             switch event {
             case .hasUnfulfilledRequirements(.incompleteKaspaTokenTransaction(let revealTransaction)):
+                Analytics.log(event: .tokenButtonRevealCancel, params: event.analyticsParams)
+
                 interactionDelegate?.confirmDiscardingUnfulfilledAssetRequirements(
                     with: .incompleteKaspaTokenTransaction(revealTransaction: revealTransaction),
                     confirmationAction: { [weak self] in

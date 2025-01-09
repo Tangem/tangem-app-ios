@@ -71,11 +71,12 @@ private extension VisaCustomerWalletApproveTask {
         let derivationTask = DeriveWalletPublicKeyTask(walletPublicKey: wallet.publicKey, derivationPath: derivationPath)
         derivationTask.run(in: session) { result in
             switch result {
-            case .success:
-                self.signApproveData(
-                    targetWalletPublicKey: wallet.publicKey,
+            case .success(let extendedPublicKey):
+                self.processDerivedKey(
+                    wallet: wallet,
                     derivationPath: derivationPath,
-                    in: session,
+                    extendedPublicKey: extendedPublicKey,
+                    session: session,
                     completion: completion
                 )
             case .failure(let error):
@@ -84,10 +85,34 @@ private extension VisaCustomerWalletApproveTask {
         }
     }
 
+    func processDerivedKey(
+        wallet: Card.Wallet,
+        derivationPath: DerivationPath,
+        extendedPublicKey: ExtendedPublicKey,
+        session: CardSession,
+        completion: @escaping TaskResult
+    ) {
+        do {
+            try pubKeySearchUtility.validateExtendedPublicKey(
+                targetAddress: targetAddress,
+                extendedPublicKey: extendedPublicKey,
+                derivationPath: derivationPath
+            )
+
+            signApproveData(
+                targetWalletPublicKey: wallet.publicKey,
+                derivationPath: derivationPath,
+                in: session,
+                completion: completion
+            )
+        } catch {
+            completion(.failure(.underlying(error: error)))
+        }
+    }
+
     func proceedApproveWithLegacyCard(card: Card, in session: CardSession, completion: @escaping TaskResult) {
         do {
-            let searchUtility = VisaWalletPublicKeyUtility(isTestnet: false)
-            let publicKey = try searchUtility.findKeyWithoutDerivation(targetAddress: targetAddress, on: card)
+            let publicKey = try pubKeySearchUtility.findKeyWithoutDerivation(targetAddress: targetAddress, on: card)
             signApproveData(targetWalletPublicKey: publicKey, derivationPath: nil, in: session, completion: completion)
         } catch {
             completion(.failure(.underlying(error: error)))

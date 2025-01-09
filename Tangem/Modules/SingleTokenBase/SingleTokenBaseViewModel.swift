@@ -20,12 +20,13 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
     @Published var isReloadingTransactionHistory: Bool = false
     @Published var actionButtons: [FixedSizeButtonWithIconInfo] = []
     @Published var tokenNotificationInputs: [NotificationViewInput] = []
+    @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
     @Published private(set) var pendingTransactionViews: [TransactionViewModel] = []
     @Published private(set) var miniChartData: LoadingValue<[Double]?> = .loading
 
     let exchangeUtility: ExchangeCryptoUtility
     let notificationManager: NotificationManager
-
+    private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
     let userWalletModel: UserWalletModel
     let walletModel: WalletModel
 
@@ -77,12 +78,14 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         walletModel: WalletModel,
         exchangeUtility: ExchangeCryptoUtility,
         notificationManager: NotificationManager,
+        pendingExpressTransactionsManager: PendingExpressTransactionsManager,
         tokenRouter: SingleTokenRoutable
     ) {
         self.userWalletModel = userWalletModel
         self.walletModel = walletModel
         self.exchangeUtility = exchangeUtility
         self.notificationManager = notificationManager
+        self.pendingExpressTransactionsManager = pendingExpressTransactionsManager
         self.tokenRouter = tokenRouter
 
         prepareSelf()
@@ -180,9 +183,10 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
         switch action {
         case .buyCrypto:
             openBuyCrypto()
-        case .addHederaTokenAssociation,
-             .retryKaspaTokenTransaction:
-            fulfillAssetRequirements()
+        case .addHederaTokenAssociation:
+            fulfillAssetRequirements(with: .buttonAddTokenTrustline)
+        case .retryKaspaTokenTransaction:
+            fulfillAssetRequirements(with: .tokenButtonRevealTryAgain)
         case .stake:
             openStaking()
         case .empty:
@@ -201,12 +205,12 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
             }
     }
 
-    private func fulfillAssetRequirements() {
+    private func fulfillAssetRequirements(with analyticsEvent: Analytics.Event) {
         func sendAnalytics(isSuccessful: Bool) {
             let status: Analytics.ParameterValue = isSuccessful ? .sent : .error
 
             Analytics.log(
-                event: .buttonAddTokenTrustline,
+                event: analyticsEvent,
                 params: [
                     .token: walletModel.tokenItem.currencySymbol,
                     .blockchain: blockchain.displayName,
@@ -307,6 +311,29 @@ extension SingleTokenBaseViewModel {
             .sink { viewModel, _ in
                 viewModel.updateActionButtons()
             }
+            .store(in: &bag)
+
+        pendingExpressTransactionsManager
+            .pendingTransactionsPublisher
+            .map {
+                $0.filter { transaction in
+                    // Don't show onramp's transaction with this statuses for SingleWallet and TokenDetails
+                    switch transaction.type {
+                    case .onramp:
+                        return ![.created, .canceled, .paused].contains(transaction.transactionStatus)
+                    case .swap:
+                        return true
+                    }
+                }
+            }
+            .map { [weak self] transactions in
+                PendingExpressTransactionsConverter()
+                    .convertToTokenDetailsPendingTxInfo(transactions) { [weak self] id in
+                        self?.didTapPendingExpressTransaction(id: id)
+                    }
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.pendingExpressTransactions, on: self, ownership: .weak)
             .store(in: &bag)
     }
 
@@ -674,6 +701,20 @@ extension SingleTokenBaseViewModel {
         }
 
         openReceive()
+    }
+
+    private func didTapPendingExpressTransaction(id: String) {
+        let transactions = pendingExpressTransactionsManager.pendingTransactions
+
+        guard let transaction = transactions.first(where: { $0.expressTransactionId == id }) else {
+            return
+        }
+
+        tokenRouter.openPendingExpressTransactionDetails(
+            pendingTransaction: transaction,
+            tokenItem: walletModel.tokenItem,
+            pendingTransactionsManager: pendingExpressTransactionsManager
+        )
     }
 }
 

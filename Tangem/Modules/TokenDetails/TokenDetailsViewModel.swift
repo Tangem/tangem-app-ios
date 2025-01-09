@@ -12,12 +12,10 @@ import TangemSdk
 import BlockchainSdk
 import TangemExpress
 import TangemStaking
+import TangemFoundation
 
 final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
-    @Injected(\.expressPendingTransactionsRepository) private var expressPendingTxRepository: ExpressPendingTransactionRepository
-
     @Published var actionSheet: ActionSheetBinder?
-    @Published var pendingExpressTransactions: [PendingExpressTransactionView.Info] = []
     @Published var bannerNotificationInputs: [NotificationViewInput] = []
 
     private(set) var balanceWithButtonsModel: BalanceWithButtonsViewModel!
@@ -25,7 +23,6 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     @Published private(set) var activeStakingViewData: ActiveStakingViewData?
 
     private weak var coordinator: TokenDetailsRoutable?
-    private let pendingExpressTransactionsManager: PendingExpressTransactionsManager
     private let bannerNotificationManager: NotificationManager?
     private let xpubGenerator: XPUBGenerator?
 
@@ -63,7 +60,6 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
         tokenRouter: SingleTokenRoutable
     ) {
         self.coordinator = coordinator
-        self.pendingExpressTransactionsManager = pendingExpressTransactionsManager
         self.bannerNotificationManager = bannerNotificationManager
         self.xpubGenerator = xpubGenerator
         super.init(
@@ -71,6 +67,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
             walletModel: walletModel,
             exchangeUtility: exchangeUtility,
             notificationManager: notificationManager,
+            pendingExpressTransactionsManager: pendingExpressTransactionsManager,
             tokenRouter: tokenRouter
         )
         notificationManager.setupManager(with: self)
@@ -116,7 +113,9 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
              .openFeedbackMail,
              .openAppStoreReview,
              .support,
-             .openCurrency:
+             .openCurrency,
+             .seedSupportNo,
+             .seedSupportYes:
             super.didTapNotification(with: id, action: action)
         }
     }
@@ -167,7 +166,7 @@ extension TokenDetailsViewModel {
     func generateXPUBButtonAction() {
         guard let xpubGenerator else { return }
 
-        runTask { [weak self] in
+        TangemFoundation.runTask { [weak self] in
             do {
                 let xpub = try await xpubGenerator.generateXPUB()
                 let viewController = await UIActivityViewController(activityItems: [xpub], applicationActivities: nil)
@@ -243,20 +242,6 @@ private extension TokenDetailsViewModel {
         }
         .store(in: &bag)
 
-        pendingExpressTransactionsManager.pendingTransactionsPublisher
-            .withWeakCaptureOf(self)
-            .map { viewModel, pendingTxs in
-                let factory = PendingExpressTransactionsConverter()
-
-                return factory.convertToTokenDetailsPendingTxInfo(
-                    pendingTxs,
-                    tapAction: weakify(viewModel, forFunction: TokenDetailsViewModel.didTapPendingExpressTransaction(with:))
-                )
-            }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.pendingExpressTransactions, on: self, ownership: .weak)
-            .store(in: &bag)
-
         bannerNotificationManager?.notificationPublisher
             .receive(on: DispatchQueue.main)
             .removeDuplicates()
@@ -314,20 +299,6 @@ private extension TokenDetailsViewModel {
                 rewards: rewards
             )
         }
-    }
-
-    private func didTapPendingExpressTransaction(with id: String) {
-        guard
-            let pendingTransaction = pendingExpressTransactionsManager.pendingTransactions.first(where: { $0.expressTransactionId == id })
-        else {
-            return
-        }
-
-        coordinator?.openPendingExpressTransactionDetails(
-            for: pendingTransaction,
-            tokenItem: walletModel.tokenItem,
-            pendingTransactionsManager: pendingExpressTransactionsManager
-        )
     }
 }
 

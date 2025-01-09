@@ -20,28 +20,36 @@ public class ProviderItem {
         self.providers = providers
     }
 
-    public func hasShowableProviders() -> Bool {
-        providers.filter { $0.isShowable }.isNotEmpty
+    public func hasSelectableProviders() -> Bool {
+        providers.filter { $0.isShowable && $0.isSelectable }.isNotEmpty
     }
 
-    public func showableProvider() -> OnrampProvider? {
-        providers.first(where: { $0.isShowable })
+    /// Provider which can be showed and selected
+    public func maxPriorityProvider() -> OnrampProvider? {
+        providers.first(where: { $0.isShowable && $0.isSelectable })
     }
 
+    /// Provider which can be selected by user
     public func selectableProvider() -> OnrampProvider? {
         providers.first(where: { $0.isSelectable })
     }
 
     @discardableResult
     public func sort() -> [OnrampProvider] {
-        providers.sort(by: { sort(lhs: $0, rhs: $1) })
+        let sorter = ProviderItemSorter()
+        providers.sort(by: { sorter.sort(lhs: $0, rhs: $1) })
         // Return sorted providers
         return providers
     }
 
-    /// Providers will be sorted
-    @discardableResult
-    public func updateAttractiveTypes() -> OnrampProvider? {
+    /// Providers will be sorted and their `attractiveType` will be updated
+    public func updateAttractiveTypes() {
+        // Only if we have more than one providers with quote
+        guard providers.filter(\.isSuccessfullyLoaded).count > 1 else {
+            providers.forEach { $0.update(attractiveType: .none) }
+            return
+        }
+
         var bestQuote: Decimal?
 
         sort().indexed().forEach { index, provider in
@@ -53,35 +61,10 @@ public class ProviderItem {
             case (_, .loaded(let quote)) where bestQuote != nil:
                 let percent = quote.expectedAmount / bestQuote! - 1
                 provider.update(attractiveType: .loss(percent: percent))
+
             case (_, _):
                 provider.update(attractiveType: .none)
             }
-        }
-
-        return nil
-    }
-
-    private func sort(lhs: OnrampProvider, rhs: OnrampProvider) -> Bool {
-        switch (lhs.state, rhs.state) {
-        case (.loaded(let lhsQuote), .loaded(let rhsQuote)):
-            return lhsQuote.expectedAmount > rhsQuote.expectedAmount
-        // All cases which is not `loaded` have to be ordered after
-        case (_, .loaded):
-            return false
-        // All cases which is `loaded` have to be ordered before `rhs`
-        // Exclude case where `rhs == .loaded`. This case processed above
-        case (.loaded, _):
-            return true
-        case (.restriction(let lhsRestriction), .restriction(let rhsRestriction)):
-            let lhsDiff = (lhs.amount ?? 0) - (lhsRestriction.amount ?? 0)
-            let rhsDiff = (rhs.amount ?? 0) - (rhsRestriction.amount ?? 0)
-            return abs(lhsDiff) > abs(rhsDiff)
-        case (.restriction, _):
-            return true
-        case (_, .restriction):
-            return false
-        default:
-            return false
         }
     }
 }
@@ -108,5 +91,37 @@ public extension ProvidersList {
 
     func select(for paymentMethod: OnrampPaymentMethod) -> ProviderItem? {
         first(where: { $0.paymentMethod == paymentMethod })
+    }
+
+    func sorted() -> Self {
+        forEach { $0.sort() }
+
+        return sorted { lhs, rhs in
+            // If paymentMethod has same priority (e.g. SEPA and Revolut Pay)
+            guard lhs.paymentMethod.type.priority == rhs.paymentMethod.type.priority else {
+                return lhs.paymentMethod.type.priority > rhs.paymentMethod.type.priority
+            }
+
+            switch (lhs.providers.first, rhs.providers.first) {
+            case (.some(let lhsProvider), .some(let rhsProvider)):
+                return ProviderItemSorter().sort(lhs: lhsProvider, rhs: rhsProvider)
+            case (.none, _), (_, .none):
+                return false
+            }
+        }
+    }
+
+    func updateSupportedPaymentMethods() {
+        flatMap { $0.providers }.forEach { provider in
+            guard case .notSupported(.paymentMethod) = provider.state else {
+                return
+            }
+
+            let supportedMethods = flatMap { $0.providers }
+                .filter { $0.provider == provider.provider && $0.isSuccessfullyLoaded }
+                .map(\.paymentMethod)
+
+            provider.update(supportedMethods: supportedMethods)
+        }
     }
 }

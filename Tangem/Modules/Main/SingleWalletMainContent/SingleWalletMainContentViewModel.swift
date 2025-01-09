@@ -35,6 +35,7 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
         walletModel: WalletModel,
         exchangeUtility: ExchangeCryptoUtility,
         userWalletNotificationManager: NotificationManager,
+        pendingExpressTransactionsManager: PendingExpressTransactionsManager,
         tokenNotificationManager: NotificationManager,
         rateAppController: RateAppInteractionController,
         tokenRouter: SingleTokenRoutable,
@@ -56,6 +57,7 @@ final class SingleWalletMainContentViewModel: SingleTokenBaseViewModel, Observab
             walletModel: walletModel,
             exchangeUtility: exchangeUtility,
             notificationManager: tokenNotificationManager,
+            pendingExpressTransactionsManager: pendingExpressTransactionsManager,
             tokenRouter: tokenRouter
         )
 

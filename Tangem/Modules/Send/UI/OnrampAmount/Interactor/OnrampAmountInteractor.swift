@@ -76,10 +76,10 @@ extension CommonOnrampAmountInteractor: OnrampAmountInteractor {
                 }
 
                 switch (provider, provider?.value?.state) {
-                case (_, .restriction(.tooSmallAmount(let minAmount))):
-                    return .failure(.tooSmallAmount(minAmount))
-                case (_, .restriction(.tooBigAmount(let maxAmount))):
-                    return .failure(.tooSmallAmount(maxAmount))
+                case (_, .restriction(.tooSmallAmount(_, let formatted))):
+                    return .failure(.tooSmallAmount(formatted))
+                case (_, .restriction(.tooBigAmount(_, let formatted))):
+                    return .failure(.tooBigAmount(formatted))
                 case (.none, _), (_, .idle):
                     return .success(0) // placeholder
                 case (.loading, _), (_, .loading):

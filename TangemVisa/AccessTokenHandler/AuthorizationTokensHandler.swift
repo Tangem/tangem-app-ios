@@ -19,6 +19,7 @@ protocol AuthorizationTokenHandler {
     var accessToken: JWT? { get async }
     var containsAccessToken: Bool { get async }
     var authorizationHeader: String { get async throws }
+    var authorizationTokens: VisaAuthorizationTokens? { get async }
     func setupTokens(_ tokens: VisaAuthorizationTokens) async throws
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
 }
@@ -30,31 +31,21 @@ class CommonVisaAccessTokenHandler {
     private let scheduler: AsyncTaskScheduler = .init()
     private let logger: InternalLogger
 
-    private let accessTokenHolder: AccessTokenHolder = .init()
+    private let accessTokenHolder: AccessTokenHolder
     private var refresherTask: AnyCancellable?
 
     private let minSecondsBeforeExpiration: TimeInterval = 60.0
 
     init(
+        accessTokenHolder: AccessTokenHolder,
         tokenRefreshService: AccessTokenRefreshService,
         logger: InternalLogger,
         refreshTokenSaver: VisaRefreshTokenSaver?
     ) {
+        self.accessTokenHolder = accessTokenHolder
         self.tokenRefreshService = tokenRefreshService
         self.refreshTokenSaver = refreshTokenSaver
         self.logger = logger
-    }
-
-    init(
-        authorizationTokens: VisaAuthorizationTokens,
-        tokenRefreshService: AccessTokenRefreshService,
-        logger: InternalLogger,
-        refreshTokenSaver: VisaRefreshTokenSaver?
-    ) async throws {
-        self.tokenRefreshService = tokenRefreshService
-        self.refreshTokenSaver = refreshTokenSaver
-        self.logger = logger
-        try await accessTokenHolder.setTokens(authorizationTokens: authorizationTokens)
 
         setupRefresherTask()
     }
@@ -68,6 +59,10 @@ class CommonVisaAccessTokenHandler {
         refresherTask?.cancel()
         refresherTask = Task { [weak self] in
             do {
+                guard await self?.accessTokenHolder.authorizationTokens != nil else {
+                    return
+                }
+
                 try await self?.setupAccessTokenRefresher()
             } catch {
                 if error is CancellationError {
@@ -149,7 +144,7 @@ class CommonVisaAccessTokenHandler {
         }
 
         let visaTokens = try await tokenRefreshService.refreshAccessToken(refreshToken: refreshJWTToken.string)
-        let newJWTTokens = try AuthorizationTokensDecoderUtility().decodeAuthTokens(visaTokens)
+        let newJWTTokens = try AuthorizationTokensUtility().decodeAuthTokens(visaTokens)
 
         if newJWTTokens.accessToken.expired {
             throw VisaAccessTokenHandlerError.failedToUpdateAccessToken
@@ -175,7 +170,13 @@ extension CommonVisaAccessTokenHandler: AuthorizationTokenHandler {
                 throw VisaAccessTokenHandlerError.missingAccessToken
             }
 
-            return "Bearer \(jwtTokens.accessToken.string)"
+            return AuthorizationTokensUtility().getAuthorizationHeader(from: jwtTokens)
+        }
+    }
+
+    var authorizationTokens: VisaAuthorizationTokens? {
+        get async {
+            await accessTokenHolder.authorizationTokens
         }
     }
 

@@ -20,6 +20,10 @@ public enum VisaActivationError: LocalizedError {
     case missingRootOTP
     case taskMissingDelegate
     case missingOTPRepository
+    case alreadyActivated
+    case accessCodeAlreadySet
+    case blockedForActivation
+    case invalidActivationState
     case underlyingError(Error)
 
     public var errorDescription: String? {
@@ -35,6 +39,10 @@ public enum VisaActivationError: LocalizedError {
         case .missingRootOTP: return "Failed to find root OTP"
         case .taskMissingDelegate: return "Activation task wasn't setup properly"
         case .missingOTPRepository: return "Failed to find OTP repository"
+        case .alreadyActivated: return "Card already activated"
+        case .accessCodeAlreadySet: return "Access code already set, wrong task used for activation"
+        case .blockedForActivation: return "This card cannot be activated. Please contact support for more information."
+        case .invalidActivationState: return "Invalid activation state. Please close activation proccess and scan card again"
         case .underlyingError(let error):
             return "Underlying Visa Activation Error: \(error.localizedDescription)"
         }

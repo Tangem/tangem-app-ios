@@ -27,6 +27,7 @@ struct OnboardingPinView: View {
 
             OnboardingPinStackView(
                 maxDigits: viewModel.pinCodeLength,
+                isDisabled: viewModel.isLoading,
                 pinText: $viewModel.pinCode
             )
 
@@ -34,6 +35,7 @@ struct OnboardingPinView: View {
 
             MainButton(
                 title: "Submit",
+                isLoading: viewModel.isLoading,
                 isDisabled: !viewModel.isPinCodeValid,
                 action: viewModel.submitPinCodeAction
             )
@@ -44,7 +46,5 @@ struct OnboardingPinView: View {
 }
 
 #Preview {
-    OnboardingPinView(viewModel: .init(pinCodeSaver: { pinCode in
-        print("Saved pin code: \(pinCode)")
-    }))
+    OnboardingPinView(viewModel: .init(delegate: nil))
 }
