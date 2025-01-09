@@ -49,6 +49,25 @@ extension SensitiveText {
     }
 }
 
+// MARK: - SensitiveText.TextType + Hashable
+
+extension SensitiveText.TextType: Hashable {
+    static func == (lhs: SensitiveText.TextType, rhs: SensitiveText.TextType) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .string(let string):
+            hasher.combine(string)
+        case .attributed(let attributedString):
+            hasher.combine(attributedString)
+        case .builder(let builder, let sensitive):
+            hasher.combine(builder(sensitive))
+        }
+    }
+}
+
 extension SensitiveText {
     enum Constants {
         static let maskedBalanceString: String = "\u{2217}\u{2217}\u{2217}"

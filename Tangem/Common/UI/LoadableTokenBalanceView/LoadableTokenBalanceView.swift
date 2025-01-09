@@ -55,12 +55,15 @@ struct LoadableTokenBalanceView: View {
 extension LoadableTokenBalanceView {
     typealias Text = SensitiveText.TextType
 
-    enum State {
+    enum State: Hashable {
         case loading(cached: Text? = nil)
         case failed(cached: Text, withIcon: Bool = false)
         case loaded(text: Text)
 
-        static let empty = State.loaded(text: .string(BalanceFormatter.defaultEmptyBalanceString))
+        // Convient
+
+        static let empty: State = .loaded(text: .string(BalanceFormatter.defaultEmptyBalanceString))
+        static func loaded(_ text: String) -> State { .loaded(text: .string(text)) }
     }
 
     struct Style {
