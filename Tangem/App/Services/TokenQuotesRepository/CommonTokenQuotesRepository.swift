@@ -14,6 +14,7 @@ import TangemFoundation
 class CommonTokenQuotesRepository {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
 
     private var _quotes: CurrentValueSubject<Quotes, Never> = .init([:])
     private var _prices: CurrentValueSubject<[PriceItem: Decimal], Never> = .init([:])
@@ -23,6 +24,9 @@ class CommonTokenQuotesRepository {
 
     init() {
         bind()
+
+        let cachedQuotes: Quotes? = try? storage.value(for: .tokenQuotes)
+        _quotes.send(cachedQuotes ?? [:])
     }
 }
 
@@ -94,6 +98,7 @@ extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
             }
 
             _quotes.send(current)
+            try? storage.store(value: current, for: .tokenQuotes)
         }
     }
 }

@@ -36,6 +36,15 @@ extension TokenBalanceType {
         }
     }
 
+    var cached: TokenBalanceType.Cached? {
+        switch self {
+        case .empty: nil
+        case .loading(let cached): cached
+        case .failure(let cached): cached
+        case .loaded(let value): nil
+        }
+    }
+
     var isLoading: Bool {
         switch self {
         case .loading: true

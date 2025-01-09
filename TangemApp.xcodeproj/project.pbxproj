@@ -2619,6 +2619,8 @@
 		EF4BEFDF28AD3EE500C5D1BE /* ContentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4BEFDE28AD3EE500C5D1BE /* ContentState.swift */; };
 		EF4BEFE128AD423C00C5D1BE /* TangemAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4BEFE028AD423C00C5D1BE /* TangemAPIError.swift */; };
 		EF50A5B1288976140081C5BB /* View+ConditionalModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF50A5B0288976140081C5BB /* View+ConditionalModifiers.swift */; };
+		EF5256512D301E5D00ADCA7E /* TokenBalancesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF52564F2D301E5D00ADCA7E /* TokenBalancesRepository.swift */; };
+		EF5256522D301E5D00ADCA7E /* CommonTokenBalancesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF52564E2D301E5D00ADCA7E /* CommonTokenBalancesRepository.swift */; };
 		EF536B822CAFD2CA00FDC3E7 /* StakingConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF536B812CAFD2C500FDC3E7 /* StakingConstants.swift */; };
 		EF56B3D12A03AFDB002CCE27 /* DefaultMenuRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF56B3CF2A03AFDA002CCE27 /* DefaultMenuRowViewModel.swift */; };
 		EF56B3D22A03AFDB002CCE27 /* DefaultMenuRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF56B3D02A03AFDA002CCE27 /* DefaultMenuRowView.swift */; };
@@ -5809,6 +5811,8 @@
 		EF4BEFDE28AD3EE500C5D1BE /* ContentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentState.swift; sourceTree = "<group>"; };
 		EF4BEFE028AD423C00C5D1BE /* TangemAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemAPIError.swift; sourceTree = "<group>"; };
 		EF50A5B0288976140081C5BB /* View+ConditionalModifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+ConditionalModifiers.swift"; sourceTree = "<group>"; };
+		EF52564E2D301E5D00ADCA7E /* CommonTokenBalancesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTokenBalancesRepository.swift; sourceTree = "<group>"; };
+		EF52564F2D301E5D00ADCA7E /* TokenBalancesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBalancesRepository.swift; sourceTree = "<group>"; };
 		EF536B812CAFD2C500FDC3E7 /* StakingConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingConstants.swift; sourceTree = "<group>"; };
 		EF56B3CF2A03AFDA002CCE27 /* DefaultMenuRowViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultMenuRowViewModel.swift; sourceTree = "<group>"; };
 		EF56B3D02A03AFDA002CCE27 /* DefaultMenuRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultMenuRowView.swift; sourceTree = "<group>"; };
@@ -12807,6 +12811,7 @@
 		DC0A57DA2822A4DC0031BECC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EF5256502D301E5D00ADCA7E /* TokenBalancesRepository */,
 				EF42D7842D1D65D90065AFD1 /* BalanceProvider */,
 				DA76BF502CEF966300199317 /* PendingTransactionsManager */,
 				EF2561102CC6A8E000D3C16A /* Onramp */,
@@ -14510,6 +14515,15 @@
 				B0F318F52A738ACC009F131E /* LockedUserTokenListManager.swift */,
 			);
 			path = UserTokenListManager;
+			sourceTree = "<group>";
+		};
+		EF5256502D301E5D00ADCA7E /* TokenBalancesRepository */ = {
+			isa = PBXGroup;
+			children = (
+				EF52564E2D301E5D00ADCA7E /* CommonTokenBalancesRepository.swift */,
+				EF52564F2D301E5D00ADCA7E /* TokenBalancesRepository.swift */,
+			);
+			path = TokenBalancesRepository;
 			sourceTree = "<group>";
 		};
 		EF56B3CE2A03AFDA002CCE27 /* DefaultMenuRowView */ = {
@@ -18188,6 +18202,8 @@
 				EF2801102CDE84CB002AEB9A /* OnrampRedirectingBuilder.swift in Sources */,
 				EF1E97FD2B03F93300D4B511 /* CommonExpressDestinationService.swift in Sources */,
 				5DA3A2F1251CB6CA009A8E08 /* SecurityModeView.swift in Sources */,
+				EF5256512D301E5D00ADCA7E /* TokenBalancesRepository.swift in Sources */,
+				EF5256522D301E5D00ADCA7E /* CommonTokenBalancesRepository.swift in Sources */,
 				DC7C45692CF8B36F00747589 /* ActionButtonsSwapNoficationManager.swift in Sources */,
 				B6AA13782A2A37B100B53937 /* CardInfoPageTransactionDefaultCellPreviewView.swift in Sources */,
 				DC0A57EA2822AD6D0031BECC /* PersistentStorageKey.swift in Sources */,
