@@ -59,6 +59,8 @@ extension LoadableTokenBalanceView {
         case loading(cached: Text? = nil)
         case failed(cached: Text, withIcon: Bool = false)
         case loaded(text: Text)
+
+        static let empty = State.loaded(text: .string(BalanceFormatter.defaultEmptyBalanceString))
     }
 
     struct Style {
