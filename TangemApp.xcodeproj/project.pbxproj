@@ -1938,6 +1938,7 @@
 		B6EE59432C8B2FE2003A0696 /* CALayerSnapshotOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6EE59422C8B2FE2003A0696 /* CALayerSnapshotOptions.swift */; };
 		B6F1AE042CD166D900F99DC9 /* SwiftUITouchPassthroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F1AE032CD166D900F99DC9 /* SwiftUITouchPassthroughView.swift */; };
 		B6F271042CC2C10A00A2A5B1 /* SimpleTransactionSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F271032CC2C10A00A2A5B1 /* SimpleTransactionSigner.swift */; };
+		B6F592C32D1F0015001C0F3B /* MailZipFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F592C22D1F0015001C0F3B /* MailZipFileManager.swift */; };
 		B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = B6F6252F2C85E1A600DEF098 /* DGCharts */; };
 		B6FB04E52B1FEEF6000BB59E /* RootHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04E42B1FEEF6000BB59E /* RootHostingController.swift */; };
 		B6FB04E72B1FEF13000BB59E /* StatusBarStyleConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FB04E62B1FEF13000BB59E /* StatusBarStyleConfigurator.swift */; };
@@ -2377,6 +2378,7 @@
 		DCA21D942BA1C77A000A3C1A /* ValidationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */; };
 		DCA54D8F2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */; };
 		DCAB5800295EE820005D0F4A /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB57FF295EE820005D0F4A /* AppLog.swift */; };
+		DCB385182D240AE100105DD4 /* SeedNotifyDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB385172D240ADB00105DD4 /* SeedNotifyDTO.swift */; };
 		DCB616E52CB39AE100BE4481 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E42CB39AE100BE4481 /* WalletConnect */; };
 		DCB616E72CB3A63800BE4481 /* ReownWalletKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E62CB3A63800BE4481 /* ReownWalletKit */; };
 		DCBAF6992A4AEEDD0029480A /* AnyWalletManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */; };
@@ -5094,6 +5096,7 @@
 		B6EE59422C8B2FE2003A0696 /* CALayerSnapshotOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALayerSnapshotOptions.swift; sourceTree = "<group>"; };
 		B6F1AE032CD166D900F99DC9 /* SwiftUITouchPassthroughView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUITouchPassthroughView.swift; sourceTree = "<group>"; };
 		B6F271032CC2C10A00A2A5B1 /* SimpleTransactionSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleTransactionSigner.swift; sourceTree = "<group>"; };
+		B6F592C22D1F0015001C0F3B /* MailZipFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailZipFileManager.swift; sourceTree = "<group>"; };
 		B6FB04E42B1FEEF6000BB59E /* RootHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootHostingController.swift; sourceTree = "<group>"; };
 		B6FB04E62B1FEF13000BB59E /* StatusBarStyleConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarStyleConfigurator.swift; sourceTree = "<group>"; };
 		B6FB04E82B1FEF4E000BB59E /* StatusBarStyleConfiguratorWeakifyAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarStyleConfiguratorWeakifyAdapter.swift; sourceTree = "<group>"; };
@@ -5535,6 +5538,7 @@
 		DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationMode.swift; sourceTree = "<group>"; };
 		DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceChangeFormatterTests.swift; sourceTree = "<group>"; };
 		DCAB57FF295EE820005D0F4A /* AppLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLog.swift; sourceTree = "<group>"; };
+		DCB385172D240ADB00105DD4 /* SeedNotifyDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedNotifyDTO.swift; sourceTree = "<group>"; };
 		DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyWalletManagerFactory.swift; sourceTree = "<group>"; };
 		DCBAF69A2A4AEF3C0029480A /* HDWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDWalletManagerFactory.swift; sourceTree = "<group>"; };
 		DCBAF69C2A4AF0500029480A /* SimpleWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleWalletManagerFactory.swift; sourceTree = "<group>"; };
@@ -7718,6 +7722,7 @@
 			children = (
 				B0F62C4725DE4ABE005C8BA0 /* EmailType.swift */,
 				B0F62C4F25DE4EC9005C8BA0 /* MailView.swift */,
+				B6F592C22D1F0015001C0F3B /* MailZipFileManager.swift */,
 				B020FFB325DE7F9300EF422C /* DataCollectors.swift */,
 				DC66BBE82859A8CC00CDF765 /* MailViewModel.swift */,
 				DCD9CBA229F7F4D800440C93 /* LogsComposer.swift */,
@@ -15893,6 +15898,7 @@
 		EFCC66DF28AA6FB200EC7757 /* Types */ = {
 			isa = PBXGroup;
 			children = (
+				DCB385172D240ADB00105DD4 /* SeedNotifyDTO.swift */,
 				EF4BEFE028AD423C00C5D1BE /* TangemAPIError.swift */,
 				B65C518B2B7FB1FA006E3C34 /* TangemBaseAPIError.swift */,
 				B65C518D2B7FB208006E3C34 /* TangemInputAPIError.swift */,
@@ -16839,6 +16845,7 @@
 				B0C4F77B26F0A05C0086D815 /* BlankCard.swift in Sources */,
 				DA19D8C62B39AE3C001C91C4 /* QRCodeParser.swift in Sources */,
 				B06ADFD829B9CEEC00E92E5E /* OnboardingSeedPhraseGenerateView.swift in Sources */,
+				DCB385182D240AE100105DD4 /* SeedNotifyDTO.swift in Sources */,
 				EFC84B102C37FAB500546882 /* SendDependenciesBuilder.swift in Sources */,
 				B06ADFDB29BAFA4600E92E5E /* SeedPhraseManager.swift in Sources */,
 				EF1E17302BF64224000364AE /* SettingsUserWalletRowViewModel.swift in Sources */,
@@ -17185,6 +17192,7 @@
 				EF4BEF7F28AB872E00C5D1BE /* UserTokenList.swift in Sources */,
 				DC0A5806282501530031BECC /* KeysManager.swift in Sources */,
 				EF5E5A852B7100D700D19BBB /* ExpressPromotion.swift in Sources */,
+				B6F592C32D1F0015001C0F3B /* MailZipFileManager.swift in Sources */,
 				B0BDFD222A8BAB3600479F53 /* UnlockUserWalletBottomSheetView.swift in Sources */,
 				DC66BBE32858E7A600CDF765 /* WelcomeRoutable.swift in Sources */,
 				EFFE2CEC28B8E1B000B9F279 /* CommonDerivationManager.swift in Sources */,
@@ -25814,7 +25822,7 @@
 			repositoryURL = "https://github.com/Tangem/tangem-sdk-ios.git";
 			requirement = {
 				kind = revision;
-				revision = 1e78d5768e887d8ec514d98cabfde9bfdc068146;
+				revision = 44865b179b5e90f6577913f62c2af0c067778035;
 			};
 		};
 		B68E1F882CBC44910043E598 /* XCRemoteSwiftPackageReference "hedera-sdk-swift" */ = {
