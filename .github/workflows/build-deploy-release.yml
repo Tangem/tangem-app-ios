@@ -102,7 +102,11 @@ jobs:
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
       xcode_version_override: '${{ inputs.xcode_version_override }}'
       arm_runners_only: true
-      analyze_archive: '${{ inputs.analyze_archive }}'
+      # GA boolean inputs are just awful https://stackoverflow.com/questions/76292948
+      # - The reusable workflow requires all input params to be of type string, so we use this ugly ternary operator here
+      # - When a workflow is triggered by push, there is no input, therefore the condition
+      #  `github.event_name == 'push'` provides the default value (`true`) in this case
+      analyze_archive: ${{ (github.event_name == 'push' || inputs.analyze_archive == true) && 'true' || 'false' }}
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
