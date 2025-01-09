@@ -20,6 +20,11 @@ on:
           Optional base branch for constructing Jira issues diff. Leave blank (default value) to use 
           the most recent release branch ('releases/*') created from the current branch or its ancestor
         type: string
+      analyze_archive:
+        description: >
+          Whether the analyze should be analyzed during the build process (default: false)
+        type: boolean
+        default: false
 
 concurrency:
   group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
@@ -116,6 +121,7 @@ jobs:
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
       xcode_version_override: '${{ inputs.xcode_version_override }}'
       arm_runners_only: true  # TODO: Test only, remove
+      analyze_archive: '${{ inputs.analyze_archive }}'
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
