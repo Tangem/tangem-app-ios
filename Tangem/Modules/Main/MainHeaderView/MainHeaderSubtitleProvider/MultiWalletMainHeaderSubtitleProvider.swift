@@ -12,6 +12,7 @@ import Combine
 protocol MultiWalletMainHeaderSubtitleDataSource: AnyObject {
     var cardsCount: Int { get }
     var updatePublisher: AnyPublisher<Void, Never> { get }
+    var hasImportedWallets: Bool { get }
 }
 
 class MultiWalletMainHeaderSubtitleProvider: MainHeaderSubtitleProvider {

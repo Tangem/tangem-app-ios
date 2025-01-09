@@ -73,6 +73,12 @@ protocol TangemApiService: AnyObject, Initializable {
     @discardableResult
     func resetAwardForCurrentWallet(cardId: String) async throws -> PromotionAwardResetResult
 
+    // MARK: - Seed Notify
+
+    func getSeedNotifyStatus(userWalletId: String) async throws -> SeedNotifyDTO
+    func setSeedNotifyStatus(userWalletId: String, status: SeedNotifyStatus) async throws
+    func setWalletInitialized(userWalletId: String) async throws
+
     // MARK: - Configs
 
     func loadFeatures() async throws -> [String: Bool]

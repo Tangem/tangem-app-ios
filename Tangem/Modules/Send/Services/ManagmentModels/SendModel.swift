@@ -370,7 +370,9 @@ extension SendModel: NotificationTapDelegate {
              .openAppStoreReview,
              .empty,
              .support,
-             .openCurrency:
+             .openCurrency,
+             .seedSupportYes,
+             .seedSupportNo:
             assertionFailure("Notification tap not handled")
         }
     }
