@@ -48,14 +48,15 @@ extension AvailableBalanceProvider: TokenBalanceProvider {
 private extension AvailableBalanceProvider {
     func mapToAvailableTokenBalance(state: WalletModel.State) -> TokenBalanceType {
         // The `binance` always has zero balance
-        // TODO: Check it
         if case .binance = walletModel.tokenItem.blockchain {
             return .loaded(0)
         }
 
         switch state {
-        case .created, .noDerivation:
+        case .created:
             return .empty(.noData)
+        case .noDerivation:
+            return .empty(.noDerivation)
         case .loading:
             return .loading(nil)
         case .loaded(let balance):
