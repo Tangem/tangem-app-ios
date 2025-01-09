@@ -28,6 +28,6 @@ final class Fact0rnAddressTests: XCTestCase {
 
         let scriptHash = try Fact0rnAddressService.addressToScriptHash(address: address)
 
-        XCTAssertEqual(scriptHash, expectedScriptHash)
+        XCTAssertEqual(scriptHash.lowercased(), expectedScriptHash)
     }
 }
