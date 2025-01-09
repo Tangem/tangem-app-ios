@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "failed_cloud.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

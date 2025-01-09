@@ -13,6 +13,10 @@ struct SensitiveText: View {
     @ObservedObject private var sensitiveTextVisibilityViewModel: SensitiveTextVisibilityViewModel = .shared
     private let textType: TextType
 
+    init(_ textType: TextType) {
+        self.textType = textType
+    }
+
     init(_ text: String) {
         textType = .string(text)
     }
@@ -42,6 +46,25 @@ extension SensitiveText {
         case string(String)
         case attributed(AttributedString)
         case builder(builder: (String) -> String, sensitive: String)
+    }
+}
+
+// MARK: - SensitiveText.TextType + Hashable
+
+extension SensitiveText.TextType: Hashable {
+    static func == (lhs: SensitiveText.TextType, rhs: SensitiveText.TextType) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .string(let string):
+            hasher.combine(string)
+        case .attributed(let attributedString):
+            hasher.combine(attributedString)
+        case .builder(let builder, let sensitive):
+            hasher.combine(builder(sensitive))
+        }
     }
 }
 
