@@ -113,7 +113,9 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
              .openFeedbackMail,
              .openAppStoreReview,
              .support,
-             .openCurrency:
+             .openCurrency,
+             .seedSupportNo,
+             .seedSupportYes:
             super.didTapNotification(with: id, action: action)
         }
     }
