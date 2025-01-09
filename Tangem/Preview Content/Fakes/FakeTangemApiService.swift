@@ -126,6 +126,18 @@ class FakeTangemApiService: TangemApiService {
     func loadTokenExchangesListDetails(requestModel: MarketsDTO.ExchangesList.Request) async throws -> MarketsDTO.ExchangesList.Response {
         throw "Not implemented"
     }
+
+    func getSeedNotifyStatus(userWalletId: String) async throws -> SeedNotifyDTO {
+        throw "Not implemented"
+    }
+
+    func setSeedNotifyStatus(userWalletId: String, status: SeedNotifyStatus) async throws {
+        throw "Not implemented"
+    }
+
+    func setWalletInitialized(userWalletId: String) async throws {
+        throw "Not implemented"
+    }
 }
 
 private struct FakeCoinListProvider {
