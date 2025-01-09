@@ -11,6 +11,9 @@ import Combine
 
 /// Just simple available to use (e.g. send) balance
 struct AvailableBalanceProvider {
+    @Injected(\.tokenBalancesRepository)
+    private var tokenBalancesRepository: TokenBalancesRepository
+
     private let walletModel: WalletModel
     private let balanceFormatter = BalanceFormatter()
 
@@ -46,6 +49,20 @@ extension AvailableBalanceProvider: TokenBalanceProvider {
 // MARK: - Private
 
 private extension AvailableBalanceProvider {
+    func storeBalance(balance: Decimal) {
+        tokenBalancesRepository.store(
+            balance: .init(balance: balance, date: .now),
+            for: walletModel,
+            type: .available
+        )
+    }
+
+    func cachedBalance() -> TokenBalanceType.Cached? {
+        tokenBalancesRepository.balance(wallet: walletModel, type: .available).map {
+            .init(balance: $0.balance, date: $0.date)
+        }
+    }
+
     func mapToAvailableTokenBalance(state: WalletModel.State) -> TokenBalanceType {
         // The `binance` always has zero balance
         if case .binance = walletModel.tokenItem.blockchain {
@@ -58,13 +75,14 @@ private extension AvailableBalanceProvider {
         case .noDerivation:
             return .empty(.noDerivation)
         case .loading:
-            return .loading(nil)
+            return .loading(cachedBalance())
         case .loaded(let balance):
+            storeBalance(balance: balance)
             return .loaded(balance)
         case .noAccount:
             return .noAccount
         case .failed:
-            return .failure(nil)
+            return .failure(cachedBalance())
         }
     }
 

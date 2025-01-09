@@ -37,8 +37,8 @@ extension CombineBalanceProvider: TokenBalanceProvider {
 
     var balanceTypePublisher: AnyPublisher<TokenBalanceType, Never> {
         Publishers.CombineLatest(
-            availableBalanceProvider.balanceTypePublisher,
-            stakingBalanceProvider.balanceTypePublisher
+            availableBalanceProvider.balanceTypePublisher.removeDuplicates(),
+            stakingBalanceProvider.balanceTypePublisher.removeDuplicates()
         )
         .map { self.mapToAvailableTokenBalance(available: $0, staking: $1) }
         .eraseToAnyPublisher()

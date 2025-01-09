@@ -30,7 +30,6 @@ extension FiatBalanceProvider: TokenBalanceProvider {
 
     var balanceTypePublisher: AnyPublisher<TokenBalanceType, Never> {
         Publishers.CombineLatest(
-            // Listen if rate was loaded after main balance
             walletModel.ratePublisher.removeDuplicates(),
             cryptoBalanceProvider.balanceTypePublisher.removeDuplicates()
         )
