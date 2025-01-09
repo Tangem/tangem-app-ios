@@ -111,4 +111,13 @@ class TONTests: XCTestCase {
 
         XCTAssertEqual(buildForSend, "te6cckECBAEAAQQAAUWIACQXBHIe9/91TLuQMfVfoOBYnBM5DSBKhUJ3RErLZGB8DAEBnGqtB661fpmlKL9e5WSexM7/NPMB4cZQLiWRmFW0dmfK4zsNBOfl2AgrmYRC6h3EHUJ3rOjQJiEYdoLd0nAGfQgpqaMXZ1Hf+AAAAAUAAwIBaEIANP5HaiTOKRc0bjfTpk6Cls8zLb601NvObs9Ep9gHxDQgF9eEAAAAAAAAAAAAAAAAAAEDAKgPin6lAAAAAAAAAAAwGGoIAOd7MnktDeVZ63qT+99i5rEdK30WItRtuGR/v6KkmBZrAASC4I5D3v/uqZdyBj6r9BwLE4JnIaQJUKhO6IlZbIwPggKtrAfE")
     }
+
+    func testJettonAmountDecimalDataConverter() throws {
+        let amount = Amount(with: .ton(curve: .ed25519, testnet: false), value: 1000000000)
+        let amountPayload = try TONUtils().jettonAmountPayload(from: amount.value) // 10000000000
+
+        let expectedHexStringValue = "3B9ACA00"
+
+        XCTAssertEqual(amountPayload.hexString, expectedHexStringValue)
+    }
 }

@@ -181,8 +181,11 @@ final class TONTransactionBuilder {
         token: Token,
         params: TONTransactionParams?
     ) throws -> TheOpenNetworkJettonTransfer {
-        TheOpenNetworkJettonTransfer.with {
-            $0.jettonAmount = (amount.value * token.decimalValue).uint64Value
+        let decimalAmountValue = amount.value * token.decimalValue
+        let jettonAmountPayload = try TONUtils().jettonAmountPayload(from: decimalAmountValue)
+
+        return TheOpenNetworkJettonTransfer.with {
+            $0.jettonAmount = jettonAmountPayload
             $0.toOwner = destination
             $0.responseAddress = wallet.address
             $0.forwardAmount = 1 // needs some amount to send "jetton transfer notification", use minimum
