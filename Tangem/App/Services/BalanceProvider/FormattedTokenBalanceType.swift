@@ -51,9 +51,9 @@ extension FormattedTokenBalanceType {
 extension FormattedTokenBalanceType: CustomStringConvertible {
     var description: String {
         switch self {
-        case .loading(let cached): "Loading cached balance - \(String(describing: cached))"
-        case .failure(let cached): "Failure cached balance - \(String(describing: cached))"
-        case .loaded(let balance): "Loaded balance - \(balance)"
+        case .loading(let cached): "Loading cached balance: \(String(describing: cached))"
+        case .failure(let cached): "Failure cached balance: \(String(describing: cached))"
+        case .loaded(let balance): "Loaded balance: \(balance)"
         }
     }
 }

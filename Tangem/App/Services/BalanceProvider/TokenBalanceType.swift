@@ -57,9 +57,9 @@ extension TokenBalanceType: CustomStringConvertible {
     var description: String {
         switch self {
         case .empty(let reason): "Empty \(reason)"
-        case .loading(let cached): "Loading cached - \(String(describing: cached))"
-        case .failure(let cached): "Failure cached - \(String(describing: cached))"
-        case .loaded(let balance): "Loaded - \(balance)"
+        case .loading(let cached): "Loading cached: \(String(describing: cached))"
+        case .failure(let cached): "Failure cached: \(String(describing: cached))"
+        case .loaded(let balance): "Loaded: \(balance)"
         }
     }
 }
@@ -68,6 +68,7 @@ extension TokenBalanceType: CustomStringConvertible {
 
 extension TokenBalanceType {
     enum EmptyReason: Hashable {
+        case noDerivation
         case noData
         case custom
     }
