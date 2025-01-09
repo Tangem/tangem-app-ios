@@ -23,11 +23,17 @@ struct BalanceWithButtonsView: View {
                     balancePicker
                 }
 
-                BalanceTitleView(balance: viewModel.fiatBalance, isLoading: viewModel.isLoadingFiatBalance)
+                LoadableTokenBalanceView(
+                    state: viewModel.fiatBalance,
+                    style: .init(font: Fonts.Regular.title1, textColor: Colors.Text.primary1),
+                    loader: .init(size: .init(width: 102, height: 24), cornerRadius: 6)
+                )
 
-                SensitiveText(viewModel.cryptoBalance)
-                    .skeletonable(isShown: viewModel.isLoadingBalance, size: .init(width: 70, height: 12))
-                    .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
+                LoadableTokenBalanceView(
+                    state: viewModel.cryptoBalance,
+                    style: .init(font: Fonts.Regular.footnote, textColor: Colors.Text.tertiary),
+                    loader: .init(size: .init(width: 70, height: 12))
+                )
             }
 
             ScrollableButtonsView(itemsHorizontalOffset: 14, buttonsInfo: viewModel.buttons)
