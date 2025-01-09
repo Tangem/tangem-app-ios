@@ -1347,6 +1347,18 @@ class AddressesTests: XCTestCase {
     // MARK: - Fact0rn
 
     func testFact0rnAddressGeneration() throws {
+        let addressService = Fact0rnAddressService()
+        let compressedKeyAddress = try addressService.makeAddress(from: secpCompressedKey)
+        let decompressedKeyAddress = try addressService.makeAddress(from: secpDecompressedKey)
+
+        XCTAssertEqual(compressedKeyAddress.value, "fact1qc2zwqqucrqvvtyxfn78ajm8w2sgyjf5ev0myww")
+        XCTAssertEqual(decompressedKeyAddress.value, "fact1qc2zwqqucrqvvtyxfn78ajm8w2sgyjf5ev0myww")
+        XCTAssertEqual(compressedKeyAddress.value, decompressedKeyAddress.value)
+
+        XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
+    }
+
+    func testFact0rnAddressAnyGeneration() throws {
         let walletPublicKey = Data(hexString: "03B6D7E1FB0977A5881A3B1F64F9778B4F56CB2B9EFD6E0D03E60051EAFEBF5831")
         let expectedAddress = "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey"
 
@@ -1360,7 +1372,10 @@ class AddressesTests: XCTestCase {
         let addressService = Fact0rnAddressService()
 
         let validAddresses = [
-            "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey​",
+            "fact1qsev9cuanvdqwuh3gnkjaqdtjkeqcw5smex9dyx",
+            "fact1qpr0t2aaus7wkerkhpqw4kh6z65pf33zcawx9t0",
+            "fact1qsufztqay97de6073cxjd256mu6n9ruylydpzxf",
+            "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey",
         ]
 
         for validAddress in validAddresses {
@@ -1382,7 +1397,7 @@ class AddressesTests: XCTestCase {
         let expectedAddress = "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey"
         let expectedScriptHash = "808171256649754B402099695833B95E4507019B3E494A7DBC6F62058F09050E"
 
-        let scriptHash = try ElectrumAddressUtils().prepareScriptHash(address: expectedAddress)
+        let scriptHash = try Fact0rnAddressService.addressToScriptHash(address: expectedAddress)
         XCTAssertEqual(scriptHash, expectedScriptHash)
     }
 }

@@ -6,32 +6,11 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import Foundation
-import BitcoinCore
 import TangemSdk
+import BitcoinCore
 
-// TODO: [Fact0rn] Implement AddressService
-// https://tangem.atlassian.net/browse/IOS-8756
 struct Fact0rnAddressService {
-    let addressConverter: SegWitBech32AddressConverter
-
-    init() {
-        let networkParams = Fact0rnMainNetworkParams()
-        let scriptConverter = ScriptConverter()
-
-        addressConverter = SegWitBech32AddressConverter(
-            prefix: networkParams.bech32PrefixPattern,
-            scriptConverter: scriptConverter
-        )
-    }
-}
-
-// MARK: - BitcoinScriptAddressProvider
-
-extension Fact0rnAddressService: BitcoinScriptAddressProvider {
-    func makeScriptAddress(from scriptHash: Data) throws -> String {
-        return try addressConverter.convert(scriptHash: scriptHash).stringValue
-    }
+    private let bitcoinAddressService = BitcoinAddressService(networkParams: Fact0rnMainNetworkParams())
 }
 
 // MARK: - AddressProvider
@@ -39,6 +18,7 @@ extension Fact0rnAddressService: BitcoinScriptAddressProvider {
 extension Fact0rnAddressService: AddressProvider {
     func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let compressedKey = try Secp256k1Key(with: publicKey.blockchainKey).compress()
+
         let bitcoinCorePublicKey = PublicKey(
             withAccount: 0,
             index: 0,
@@ -46,8 +26,7 @@ extension Fact0rnAddressService: AddressProvider {
             hdPublicKeyData: compressedKey
         )
 
-        let address = try addressConverter.convert(publicKey: bitcoinCorePublicKey, type: .p2wpkh).stringValue
-        return PlainAddress(value: address, publicKey: publicKey, type: addressType)
+        return try bitcoinAddressService.makeAddress(for: publicKey, with: addressType)
     }
 }
 
@@ -55,7 +34,21 @@ extension Fact0rnAddressService: AddressProvider {
 
 extension Fact0rnAddressService: AddressValidator {
     func validate(_ address: String) -> Bool {
-        let segwitAddress = try? addressConverter.convert(address: address)
-        return segwitAddress != nil
+        bitcoinAddressService.validate(address)
+    }
+}
+
+extension Fact0rnAddressService {
+    static func addressToScript(address: String) throws -> Script {
+        let converter = SegWitBech32AddressConverter(prefix: Fact0rnMainNetworkParams().bech32PrefixPattern, scriptConverter: ScriptConverter())
+        let seg = try converter.convert(address: address)
+
+        return try ScriptBuilder.createOutputScript(for: seg)
+    }
+
+    static func addressToScriptHash(address: String) throws -> String {
+        let p2pkhScript = try addressToScript(address: address)
+        let sha256Hash = p2pkhScript.scriptData.getSha256()
+        return Data(sha256Hash.reversed()).hexString
     }
 }

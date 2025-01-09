@@ -18,7 +18,6 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     // MARK: - Private Properties
 
     private let provider: ElectrumWebSocketProvider
-    private let addressUtils = Fact0rnAddressUtils()
 
     // MARK: - Init
 
@@ -29,10 +28,10 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     // MARK: - BitcoinNetworkProvider Implementation
 
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, any Error> {
-        guard let scriptHash = try? addressUtils.prepareScriptHash(address: address) else {
+        guard let scriptHash = try? Fact0rnAddressService.addressToScriptHash(address: address) else {
             return .anyFail(error: ProviderError.failedScriptHashForAddress)
         }
-        
+
         let addressInfoPublisher = getAddressInfo(identifier: .scriptHash(scriptHash))
 
         return addressInfoPublisher
@@ -163,7 +162,7 @@ extension Fact0rnNetworkProvider {
     enum ProviderError: LocalizedError {
         case failedScriptHashForAddress
     }
-    
+
     enum Constants {
         static let minimalFeeBlockAmount = 8
         static let normalFeeBlockAmount = 4

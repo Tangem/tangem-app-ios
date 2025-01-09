@@ -2,36 +2,48 @@
 //  Fact0rnMainNetworkParams.swift
 //  BlockchainSdk
 //
-//  Created by Alexander Skibin on 25.12.2024.
+//  Created by Aleksei Muraveinik on 11.12.24.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
 import BitcoinCore
 
-/// You can find this constants in the class `CMainParams` from
-/// https://gitlab.com/cloreai-public/blockchain
-///
-/// https://github.com/RavenProject/Ravencoin/blob/master/src/chainparams.cpp
-class Fact0rnMainNetworkParams: INetwork {
-    let pubKeyHash: UInt8 = 0x00
-    let privateKey: UInt8 = 0x80
-    let scriptHash: UInt8 = 0x05
+// Data is taken from:
+// https://github.com/FACT0RN/FACT0RN/blob/main/src/chainparams.cpp#L81
+final class Fact0rnMainNetworkParams: INetwork {
+    // base58Prefixes[PUBKEY_ADDRESS] = {0}
+    let pubKeyHash: UInt8 = 0
+
+    // base58Prefixes[SECRET_KEY] = {128}
+    let privateKey: UInt8 = 128
+
+    // base58Prefixes[SCRIPT_ADDRESS] = {5}
+    let scriptHash: UInt8 = 5
+
+    // bech32_hrp
     let bech32PrefixPattern: String = "fact"
-    let xPubKey: UInt32 = 0x0488b21e
-    let xPrivKey: UInt32 = 0x0488ade4
-    let magic: UInt32 = 0xf9beb4d9
-    let port: UInt32 = 8333
-    let coinType: UInt32 = 0
-    let sigHash: SigHashType = .bitcoinAll
 
-    let dnsSeeds = [
-        "seed.bitcoin.sipa.be", // Pieter Wuille
-        "dnsseed.bluematt.me", // Matt Corallo
-        "dnsseed.bitcoin.dashjr.org", // Luke Dashjr
-        "seed.bitcoinstats.com", // Chris Decker
-        "seed.bitnodes.io", // Addy Yeow
-        "seed.bitcoin.jonasschnelli.ch", // Jonas Schnelli
-    ]
+    // base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E}
+    let xPubKey: UInt32 = 0x0488B21E
 
-    let dustRelayTxFee = 3000 //  https://github.com/bitcoin/bitcoin/blob/master/src/policy/policy.h#L52
+    // base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4}
+    let xPrivKey: UInt32 = 0x0488ADE4
+
+    // pchMessageStart = {0xca, 0xfe, 0xca, 0xfe}
+    let magic: UInt32 = 0xCAFECACA
+
+    // nDefaultPort
+    let port: UInt32 = 30030
+
+    // DNS seeds are not specified in C++ code
+    let dnsSeeds: [String] = []
+
+    // https://github.com/FACT0RN/FACT0RN/blob/d02b33f3d5ce8a4be57fdb8c8b0bc3cb51760116/src/policy/policy.h#L54
+    let dustRelayTxFee: Int = 3000
+
+    // Genesis block creation parameter 2375LL
+    let coinType: UInt32 = 2375
+
+    // Assuming the standard "ALL" for SigHash type
+    let sigHash: BitcoinCore.SigHashType = .bitcoinAll
 }
