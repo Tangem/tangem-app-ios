@@ -14275,9 +14275,9 @@
 			isa = PBXGroup;
 			children = (
 				EF42D77B2D1D65D90065AFD1 /* AvailableBalanceProvider.swift */,
+				EF42D77E2D1D65D90065AFD1 /* StakingBalanceProvider.swift */,
 				EF42D77C2D1D65D90065AFD1 /* CombineBalanceProvider.swift */,
 				EF42D77D2D1D65D90065AFD1 /* FiatBalanceProvider.swift */,
-				EF42D77E2D1D65D90065AFD1 /* StakingBalanceProvider.swift */,
 			);
 			path = Implementation;
 			sourceTree = "<group>";

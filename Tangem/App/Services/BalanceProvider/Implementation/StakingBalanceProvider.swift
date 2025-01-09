@@ -57,7 +57,8 @@ extension StakingBalanceProvider {
         case .availableToStake:
             return .loaded(.zero)
         case .staked(let balances):
-            return .loaded(balances.balances.blocked().sum())
+            let balance = balances.balances.blocked().sum()
+            return .loaded(balance)
         }
     }
 

@@ -42,14 +42,12 @@ class WalletModel {
         _state.eraseToAnyPublisher()
     }
 
-    var rate: LoadingResult<Decimal?, Never> {
+    var rate: LoadingResult<Rate?, Never> {
         _rate.value
     }
 
-    var ratePublisher: AnyPublisher<LoadingResult<Decimal?, Never>, Never> {
-        _rate
-            .delay(for: .seconds(10), scheduler: DispatchQueue.global())
-            .eraseToAnyPublisher()
+    var ratePublisher: AnyPublisher<LoadingResult<Rate?, Never>, Never> {
+        _rate.eraseToAnyPublisher()
     }
 
     /// Listen tx history changes
@@ -219,7 +217,7 @@ class WalletModel {
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
     private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
     private var _state: CurrentValueSubject<State, Never> = .init(.created)
-    private var _rate: CurrentValueSubject<LoadingResult<Decimal?, Never>, Never> = .init(.loading)
+    private var _rate: CurrentValueSubject<LoadingResult<Rate?, Never>, Never> = .init(.loading)
     private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
 
     let converter = BalanceConverter()
@@ -266,7 +264,7 @@ class WalletModel {
             }
             .removeDuplicates()
             .sink { [weak self] rate in
-                self?._rate.send(.success(rate))
+                self?._rate.send(.success(rate.map { .actual($0) }))
             }
             .store(in: &bag)
     }
