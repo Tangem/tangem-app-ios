@@ -20,7 +20,7 @@ extension Fact0rnAddressService: AddressProvider {
         let compressedKey = try Secp256k1Key(with: publicKey.blockchainKey).compress()
         let compressedPublicKey = Wallet.PublicKey(seedKey: compressedKey, derivationType: .none)
 
-        return try bitcoinAddressService.makeAddress(for: compressedPublicKey, with: addressType)
+        return try bitcoinAddressService.makeAddress(for: compressedPublicKey, with: .default)
     }
 }
 

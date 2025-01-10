@@ -19,7 +19,7 @@ struct Fact0rnWalletAssembly: WalletManagerAssembly {
                 networkParams: Fact0rnMainNetworkParams(),
                 walletPublicKey: input.wallet.publicKey.blockchainKey,
                 compressedWalletPublicKey: compressedKey,
-                bip: .bip44
+                bip: .bip84
             )
 
             $0.txBuilder = BitcoinTransactionBuilder(

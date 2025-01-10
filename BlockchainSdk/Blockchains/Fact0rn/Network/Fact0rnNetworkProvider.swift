@@ -238,15 +238,16 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         let vin = transaction.vin
         let vout = transaction.vout
 
-        if let _ = vin.first(where: { $0.addresses?.contains(address) ?? false }),
-           let txDestination = vout.first(where: { !($0.scriptPubKey.addresses.contains(address)) }) {
-            destination = txDestination.scriptPubKey.addresses.first ?? .unknown
+        if let _ = vin.first(where: { $0.address?.contains(address) ?? false }),
+           let txDestination = vout.first(where: { $0.scriptPubKey.address != address }) {
+            destination = txDestination.scriptPubKey.address
             source = address
             value = txDestination.value
-        } else if let txDestination = vout.first(where: { $0.scriptPubKey.addresses.contains(address) }), let txSource = vin.first(where: { !($0.addresses?.contains(address) ?? false) }) {
+        } else if let txDestination = vout.first(where: { $0.scriptPubKey.address == address }),
+                  let txSource = vin.first(where: { $0.address != address }) {
             isIncoming = true
             destination = address
-            source = txSource.addresses?.first ?? .unknown
+            source = txSource.address ?? .unknown
             value = txDestination.value
         }
         
@@ -258,7 +259,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             value: (value ?? 0) / decimalValue,
             source: source,
             fee: fee / decimalValue,
-            date: Date(timeIntervalSince1970: TimeInterval(transaction.blocktime)),
+            date: Date(timeIntervalSince1970: TimeInterval(transaction.blocktime ?? UInt64(Date().timeIntervalSince1970))),
             isIncoming: isIncoming,
             transactionParams: nil
         )

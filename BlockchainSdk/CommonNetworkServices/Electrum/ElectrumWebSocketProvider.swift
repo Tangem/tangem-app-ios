@@ -51,7 +51,7 @@ class ElectrumWebSocketProvider: HostProvider {
     }
 
     func getTransaction(hash: String) async throws -> ElectrumDTO.Response.Transaction {
-        return try await send(method: Method.Blockchain.Transaction.get, parameter: [hash])
+        try await send(method: Method.Blockchain.Transaction.get, parameter: [AnyEncodable(hash), AnyEncodable(true)])
     }
 
     func getUnspents(identifier: Identifier) async throws -> [ElectrumDTO.Response.ListUnspent] {
