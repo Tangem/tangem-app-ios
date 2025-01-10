@@ -19,141 +19,283 @@ struct CardanoStakeKitTransactionHelper {
         self.transactionBuilder = transactionBuilder
     }
 
-    func prepareForSign(_ unsignedData: String) throws -> Data {
-        let data = Data(hex: unsignedData.addHexPrefix())
-        let bytes = data.bytes
-//        let cbor = try CBORDecoder().decode(CBORTransaction.self, from: data)
+    func prepareForSign(_ transaction: StakeKitTransaction) throws -> Data {
+        let unsignedData = "84a400d9010281825820221166557c714cd6ce313e2a324cdf2a11d1fcbbb4f564a6a9bbacce5346ff530001818258390185dbe8e4c53b4493a2d07a216f8bbb12e0cdd807f173391b85a5cb0dde9c736189354cae81462894c18fb788202c8febef613e4e8ba323391a0eb6ac9a021a0002a38904d901028183028200581cde9c736189354cae81462894c18fb788202c8febef613e4e8ba32339581c6804118fe78be9bf9213b9e829803952be87814d28b305fa52bf11d9a0f5f6"
 
-        let data2 = Data(hex: unsignedData)
-        let cbo3 = try CBOR.decode(data2.bytes)
+        let data = Data(hex: transaction.unsignedData)
+        guard let cbor = try CBOR.decode(data.bytes) else {
+            throw WalletError.failedToBuildTx
+        }
 
-        let bytes2 = unsignedData.data(using: .utf8)!.bytes
-        let cbo2 = try CBOR.decode(bytes2)
+        guard let body = CardanoTransactionBody(cbor: cbor) else {
+            throw WalletError.failedToBuildTx
+        }
+
+        let transaction = CardanoTransaction(body: body, witnessSet: nil, isValid: true, auxiliaryData: nil)
+
+        let input = try transactionBuilder.buildStakingTransactionSigningInput(transaction: transaction)
+
         return Data()
-
-//        let rawData = try Protocol_Transaction.raw(serializedData: Data(hex: unsignedData))
-//        let hash = try rawData.serializedData().sha256()
-//        return .init(rawData: rawData, hash: hash)
     }
 }
 
 // MARK: - Main struct
 
-struct CBORTransaction: Codable {
-    let inputs: [String]
+struct CardanoTransaction {
+    let body: CardanoTransactionBody
+    let witnessSet: Data?
+    let isValid: Bool
+    let auxiliaryData: Data?
+}
+
+struct CardanoTransactionBody {
+    struct Input {
+        let transactionID: String
+        let index: UInt64
+
+        init?(cbor: CBOR) {
+            guard case .array(let inputInfo) = cbor, inputInfo.count == 2 else {
+                return nil
+            }
+
+            guard case .byteString(let bytes) = inputInfo[0],
+                  bytes.count == 32 else {
+                return nil
+            }
+
+            guard case .unsignedInt(let uInt64) = inputInfo[1] else {
+                return nil
+            }
+
+            transactionID = Data(bytes).hexString
+            index = uInt64
+        }
+    }
+
+    struct Output {
+        let address: String
+        let amount: UInt64
+
+        init?(cbor: CBOR) {
+            guard case .array(let outputInfo) = cbor,
+                  outputInfo.count == 2 else {
+                return nil
+            }
+
+            guard case .byteString(let bytes) = outputInfo[0] else { return nil }
+
+            guard case .unsignedInt(let uInt64) = outputInfo[1] else { return nil }
+
+            address = Data(bytes).hex
+            amount = uInt64
+        }
+    }
+
+    struct Credential {
+        let keyHash: Data
+    }
+
+    struct StakeDelegation {
+        let credential: Credential
+        let poolKeyHash: Data
+
+        init?(cbor: CBOR) {
+            guard case .array(let certInfo) = cbor,
+                  certInfo.count == 3 /* cert_index, stake_credential, pool_keyhash */ else {
+                return nil
+            }
+
+            guard case .array(let credentials) = certInfo[1],
+                  credentials.count == 2 else { // credential type, byte array
+                return nil
+            }
+
+            guard case .unsignedInt(let credentialType) = credentials[0],
+                  credentialType == 0 else { // 0 - key hash, 1 - script hash
+                return nil
+            }
+
+            guard case .byteString(let keyHashArray) = credentials[1],
+                  keyHashArray.count == 28 else { // 28 bytes ed key
+                return nil
+            }
+
+            guard case .byteString(let poolKeyHashArray) = certInfo[2] else {
+                return nil
+            }
+
+            credential = Credential(keyHash: Data(keyHashArray))
+            poolKeyHash = Data(poolKeyHashArray)
+        }
+    }
+
+    enum Certificate {
+        case stakeRegistrationLegacy
+        case stakeDeregistrationLegacy
+        case stakeDelegation(StakeDelegation)
+        case poolRegistration
+        case poolRetirement
+        case genesisKeyDelegation
+        case moveInstantaneousRewardsCert
+        case stakeRegistrationConway
+        case stakeDeregistrationConway
+        case voteDelegation
+        case stakeAndVoteDelegation
+        case stakeRegistrationAndDelegation
+        case voteRegistrationAndDelegation
+        case stakeVoteRegistrationAndDelegation
+        case committeeHotAuth
+        case committeeColdResign
+        case dRepRegistration
+        case dRepDeregistration
+        case dRepUpdate
+
+        enum Index: UInt64, RawRepresentable {
+            case stakeRegistrationLegacy = 0
+            case stakeDeregistrationLegacy
+            case stakeDelegation
+            case poolRegistration
+            case poolRetirement
+            case genesisKeyDelegation
+            case moveInstantaneousRewardsCert
+            case stakeRegistrationConway
+            case stakeDeregistrationConway
+            case voteDelegation
+            case stakeAndVoteDelegation
+            case stakeRegistrationAndDelegation
+            case voteRegistrationAndDelegation
+            case stakeVoteRegistrationAndDelegation
+            case committeeHotAuth
+            case committeeColdResign
+            case dRepRegistration
+            case dRepDeregistration
+            case dRepUpdate
+        }
+    }
+
+    let inputs: [Input]
     let outputs: [Output]
-    let fee: String
+    let fee: Decimal
     let auxiliaryScripts: String?
     let certificates: [Certificate]
-    let collateralInputs: [String]
+    let collateralInputs: [String]?
     let currentTreasuryValue: String?
-    let era: String
-    let governanceActions: [String]
+    let era: String?
+    let governanceActions: [String]?
     let metadata: String?
     let mint: String?
-    let redeemers: [String]
-    let referenceInputs: [String]
+    let redeemers: [String]?
+    let referenceInputs: [String]?
     let requiredSigners: String?
     let returnCollateral: String?
     let totalCollateral: String?
-    let treasuryDonation: Int
     let updateProposal: String?
-    let validityRange: ValidityRange
-    let voters: [String: String]
+    let voters: [String: String]?
     let withdrawals: String?
-    let witnesses: [String]
+    let witnesses: [String]?
 }
 
-// MARK: - Certificate
+private extension CardanoTransactionBody {
+    init?(cbor: CBOR) {
+        guard case .array(let byteString) = cbor else {
+            return nil
+        }
 
-struct Certificate: Codable {
-    let stakeAddressDelegation: StakeAddressDelegation
+        guard case .map(let map) = byteString.first else {
+            return nil
+        }
 
-    enum CodingKeys: String, CodingKey {
-        case stakeAddressDelegation = "Stake address delegation"
+        var inputs: [Input]?
+        var outputs: [Output]?
+        var fee: Decimal?
+        var certificates: [Certificate]?
+
+        for (key, element) in map {
+            guard case .unsignedInt(let uInt) = key else {
+                continue
+            }
+
+            switch uInt {
+            case 0: inputs = Self.parseInputs(element)
+            case 1: outputs = Self.parseOutputs(element)
+            case 2: fee = Self.parseFee(element)
+            case 4: certificates = Self.parseCerts(element)
+            default: continue
+            }
+        }
+
+        guard let inputs, let outputs, let fee, let certificates else { return nil }
+
+        self.init(
+            inputs: inputs,
+            outputs: outputs,
+            fee: fee,
+            auxiliaryScripts: nil,
+            certificates: certificates,
+            collateralInputs: nil,
+            currentTreasuryValue: nil,
+            era: nil,
+            governanceActions: nil,
+            metadata: nil,
+            mint: nil,
+            redeemers: nil,
+            referenceInputs: nil,
+            requiredSigners: nil,
+            returnCollateral: nil,
+            totalCollateral: nil,
+            updateProposal: nil,
+            voters: nil,
+            withdrawals: nil,
+            witnesses: nil
+        )
     }
-}
 
-// MARK: - StakeAddressDelegation
+    private static func parseInputs(_ cbor: CBOR) -> [CardanoTransactionBody.Input]? {
+        guard case .tagged(let tag, let cbor) = cbor, tag.rawValue == 258, case .array(let inputs) = cbor else {
+            return nil
+        }
 
-struct StakeAddressDelegation: Codable {
-    let delegatee: Delegatee
-    let stakeCredential: StakeCredential
-
-    enum CodingKeys: String, CodingKey {
-        case delegatee
-        case stakeCredential = "stake credential"
+        return inputs.compactMap { inputCBOR in
+            CardanoTransactionBody.Input(cbor: inputCBOR)
+        }
     }
-}
 
-// MARK: - Delegatee
+    private static func parseOutputs(_ cbor: CBOR) -> [CardanoTransactionBody.Output]? {
+        guard case .array(let outputs) = cbor else {
+            return nil
+        }
 
-struct Delegatee: Codable {
-    let delegateeType: String
-    let keyHash: String
-
-    enum CodingKeys: String, CodingKey {
-        case delegateeType = "delegatee type"
-        case keyHash = "key hash"
+        return outputs.compactMap { outputCBOR in
+            CardanoTransactionBody.Output(cbor: outputCBOR)
+        }
     }
-}
 
-// MARK: - StakeCredential
-
-struct StakeCredential: Codable {
-    let keyHash: String
-
-    enum CodingKeys: String, CodingKey {
-        case keyHash
+    private static func parseFee(_ cbor: CBOR) -> Decimal? {
+        if case .unsignedInt(let uInt64) = cbor {
+            return Decimal(uInt64)
+        }
+        return nil
     }
-}
 
-// MARK: - Output
+    private static func parseCerts(_ cbor: CBOR) -> [CardanoTransactionBody.Certificate]? {
+        guard case .tagged(let tag, let cbor) = cbor, tag.rawValue == 258, case .array(let certs) = cbor else {
+            return nil
+        }
 
-struct Output: Codable {
-    let address: String
-    let addressEra: String
-    let amount: CBORAmount
-    let network: String
-    let paymentCredentialKeyHash: String
-    let referenceScript: String?
-    let stakeReference: StakeReference
+        return certs.compactMap { certCBOR -> CardanoTransactionBody.Certificate? in
+            guard case .array(let certInfo) = certCBOR,
+                  certInfo.count == 3 /* cert_index, stake_credential, pool_keyhash */ else {
+                return nil
+            }
 
-    enum CodingKeys: String, CodingKey {
-        case address
-        case addressEra = "address era"
-        case amount
-        case network
-        case paymentCredentialKeyHash = "payment credential key hash"
-        case referenceScript
-        case stakeReference = "stake reference"
-    }
-}
+            guard case .unsignedInt(let index) = certInfo[0] else { return nil }
 
-// MARK: - Amount
-
-struct CBORAmount: Codable {
-    let lovelace: Int
-}
-
-// MARK: - StakeReference
-
-struct StakeReference: Codable {
-    let stakeCredentialKeyHash: String
-
-    enum CodingKeys: String, CodingKey {
-        case stakeCredentialKeyHash = "stake credential key hash"
-    }
-}
-
-// MARK: - ValidityRange
-
-struct ValidityRange: Codable {
-    let lowerBound: String?
-    let upperBound: String?
-
-    enum CodingKeys: String, CodingKey {
-        case lowerBound = "lower bound"
-        case upperBound = "upper bound"
+            switch index {
+            case CardanoTransactionBody.Certificate.Index.stakeDelegation.rawValue:
+                return CardanoTransactionBody.StakeDelegation(cbor: certCBOR).flatMap { .stakeDelegation($0) }
+            default:
+                return nil // not implemented
+            }
+        }
     }
 }

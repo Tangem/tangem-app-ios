@@ -40,19 +40,69 @@ extension CardanoTransactionBuilder {
             throw WalletError.failedToBuildTx
         }
 
-        let cb1 = try? CBOR.decode(txInputData.bytes)
-
-        let cb2 = try? CBOR.decode(preImageHashes.bytes)
-
-        let cb3 = try? CBOR.decode(preSigningOutput.data.bytes)
-
-        print(preSigningOutput.data.hexString)
-
-        let cb4 = try? CBOR.decode(preSigningOutput.dataHash.bytes)
-
-        print(preSigningOutput.data.hexString)
-
         return preSigningOutput.dataHash
+    }
+
+    func buildStakingTransactionSigningInput(transaction: CardanoTransaction) throws -> CardanoSigningInput {
+        if outputs.isEmpty {
+            throw CardanoError.noUnspents
+        }
+
+        let inputs = outputs.map { output -> CardanoTxInput in
+            CardanoTxInput.with {
+                $0.outPoint.txHash = Data(hexString: output.transactionHash)
+                $0.outPoint.outputIndex = output.outputIndex
+                $0.address = output.address
+                $0.amount = output.amount
+            }
+        }
+
+//        let inputs = transaction.body.inputs.map { input -> CardanoTxInput in
+//            CardanoTxInput.with {
+//                $0.outPoint.txHash = Data(hexString: input.transactionID)
+//                $0.outPoint.outputIndex = input.index
+//            }
+//        }
+
+        let outputs = transaction.body.outputs.map { output -> CardanoTxOutput in
+            CardanoTxOutput.with {
+                $0.amount = output.amount
+                $0.address = output.address
+            }
+        }
+
+        var input = CardanoSigningInput.with {
+            $0.utxos = inputs
+            $0.extraOutputs = outputs
+            $0.transferMessage.useMaxAmount = true
+
+            for certificate in transaction.body.certificates {
+                switch certificate {
+                case .stakeDelegation(let stakeDelegation):
+                    $0.delegate = TW_Cardano_Proto_Delegate()
+                    $0.delegate.depositAmount = 0
+                    $0.delegate.stakingAddress = stakeDelegation.credential.keyHash.hex
+                    $0.delegate.poolID = stakeDelegation.poolKeyHash
+                default: continue
+                }
+            }
+
+            // Transaction validity time. Currently we are using absolute values.
+            // At 16 April 2023 was 90007700 slot number.
+            // We need to rework this logic to use relative validity time.
+            // TODO: https://tangem.atlassian.net/browse/IOS-3471
+            // This can be constructed using absolute ttl slot from `/metadata` endpoint.
+            $0.ttl = 190000000
+        }
+
+        input.plan = AnySigner.plan(input: input, coin: coinType)
+
+        if input.plan.error != .ok {
+            Log.debug("CardanoSigningInput has a error: \(input.plan.error)")
+            throw CardanoTransactionBuilderError.walletCoreError
+        }
+
+        return input
     }
 
     func buildForSend(transaction: Transaction, signature: SignatureInfo) throws -> Data {

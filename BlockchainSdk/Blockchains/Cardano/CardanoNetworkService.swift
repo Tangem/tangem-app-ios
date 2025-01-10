@@ -47,7 +47,7 @@ class CardanoNetworkService: MultiNetworkProvider, CardanoNetworkProvider {
     }
 
     func getInfo(addresses: [String], tokens: [Token]) -> AnyPublisher<CardanoAddressResponse, Error> {
-        providerPublisher { $0.getInfo(addresses: ["addr1qxzah68yc5a5fyaz6pazzmuthvfwpnwcqlchxwgmskjukrw7n3ekrzf4fjhgz33gjnqcldugyqkgl6l0vylyazaryvush3qw95"], tokens: tokens) }
+        providerPublisher { $0.getInfo(addresses: addresses /* ["addr1qxzah68yc5a5fyaz6pazzmuthvfwpnwcqlchxwgmskjukrw7n3ekrzf4fjhgz33gjnqcldugyqkgl6l0vylyazaryvush3qw95"] */, tokens: tokens) }
     }
 
     func send(transaction: Data) -> AnyPublisher<String, Error> {
