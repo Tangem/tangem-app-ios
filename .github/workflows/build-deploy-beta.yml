@@ -108,7 +108,7 @@ jobs:
   build:
     name: Tangem Beta
     needs: prepare
-    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8860_improve_beta_changelogs # TODO: Switch to mainmain
+    uses: tangem/actions/.github/workflows/build.yml@main
     with:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
@@ -122,7 +122,7 @@ jobs:
 
   deploy:
     name: Google Distribution
-    uses: tangem/actions/.github/workflows/deploy-firebase.yml@feature/IOS-8860_improve_beta_changelogs # TODO: Switch to mainmain
+    uses: tangem/actions/.github/workflows/deploy-firebase.yml@main
     needs:
       - prepare
       - build
@@ -140,7 +140,7 @@ jobs:
 
   notification:
     name: Deploy Notification
-    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8860_improve_beta_changelogs # TODO: Switch to mainmain
+    uses: tangem/actions/.github/workflows/notification.yml@main
     needs:
       - prepare
       - build
@@ -161,7 +161,7 @@ jobs:
   error_notification:
     name: Error Notification
     if: failure()
-    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8860_improve_beta_changelogs # TODO: Switch to mainmain
+    uses: tangem/actions/.github/workflows/notification.yml@main
     needs:
       - prepare
       - build
