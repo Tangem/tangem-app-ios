@@ -59,11 +59,9 @@ extension WalletConnectV2HandlersService: WalletConnectV2HandlersServicing {
             event: handler.event,
             message: try await handler.messageForUser(from: dApp),
             approveAction: {
-                AppLog.shared.debug("[WC 2.0] User approved sign request: \(request)")
                 return try await handler.handle()
             },
             rejectAction: {
-                AppLog.shared.debug("[WC 2.0] User rejected sign request: \(request)")
                 return Self.userRejectedResult
             }
         ))
