@@ -60,7 +60,7 @@ extension LoadableTokenBalanceView {
         case failed(cached: Text, withIcon: Bool = false)
         case loaded(text: Text)
 
-        // Convient
+        // Convenient
 
         static let empty: State = .loaded(text: .string(BalanceFormatter.defaultEmptyBalanceString))
         static func loaded(text: String) -> State { .loaded(text: .string(text)) }
