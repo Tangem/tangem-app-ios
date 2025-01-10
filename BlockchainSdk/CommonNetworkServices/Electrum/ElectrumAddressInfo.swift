@@ -18,6 +18,9 @@ struct ElectrumUTXO {
     let hash: String
     let value: Decimal
     let height: Decimal
+    
+    var isConfirmed: Bool { height != 0 }
+    var isNonConfirmed: Bool { height == 0 }
 }
 
 struct ElectrumScriptUTXO {

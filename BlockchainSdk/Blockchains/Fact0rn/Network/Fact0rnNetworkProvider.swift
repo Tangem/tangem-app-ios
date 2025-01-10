@@ -18,26 +18,42 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     // MARK: - Private Properties
 
     private let provider: ElectrumWebSocketProvider
+    private let decimalValue: Decimal
 
     // MARK: - Init
 
     init(provider: ElectrumWebSocketProvider, decimalValue: Decimal) {
         self.provider = provider
+        self.decimalValue = decimalValue
     }
 
     // MARK: - BitcoinNetworkProvider Implementation
 
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, any Error> {
-        guard let scriptHash = try? Fact0rnAddressService.addressToScriptHash(address: address) else {
-            return .anyFail(error: ProviderError.failedScriptHashForAddress)
+        let defferedScriptHash = Deferred {
+            return Future { promise in
+                let result = Result { try Fact0rnAddressService.addressToScriptHash(address: address) }
+                promise(result)
+            }
         }
-
-        let addressInfoPublisher = getAddressInfo(identifier: .scriptHash(scriptHash))
-
-        return addressInfoPublisher
+        
+        return defferedScriptHash
             .withWeakCaptureOf(self)
-            .tryMap { service, accountInfo in
-                service.mapBitcoinResponse(from: accountInfo, outputScript: scriptHash)
+            .flatMap { provider, scriptHash in
+                provider.getAddressInfo(identifier: .scriptHash(scriptHash))
+            }
+            .withWeakCaptureOf(self)
+            .flatMap { provider, accountInfo in
+                let pendingTransactionsPublisher = provider.getPendingTransactions(address: address, with: accountInfo.outputs)
+                return pendingTransactionsPublisher
+                    .map { pendingTranactions in
+                        Fact0rnAccountModel(addressInfo: accountInfo, pendingTransactions: pendingTranactions)
+                    }
+            }
+            .withWeakCaptureOf(self)
+            .tryMap { provider, account in
+                let outputScriptData = try Fact0rnAddressService.addressToScript(address: address).scriptData
+                return try provider.mapBitcoinResponse(account: account, outputScript: outputScriptData.hexString)
             }
             .eraseToAnyPublisher()
     }
@@ -63,21 +79,33 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     }
 
     func send(transaction: String) -> AnyPublisher<String, any Error> {
-        Future.async {
-            try await self.provider.send(transactionHex: transaction)
+        Future.async { [weak self] in
+            guard let self else {
+                throw BlockchainSdkError.noAPIInfo
+            }
+            
+            return try await self.provider.send(transactionHex: transaction)
         }
         .eraseToAnyPublisher()
     }
 
     func push(transaction: String) -> AnyPublisher<String, any Error> {
-        Future.async {
-            try await self.provider.send(transactionHex: transaction)
+        Future.async { [weak self] in
+            guard let self else {
+                throw BlockchainSdkError.noAPIInfo
+            }
+            
+            return try await self.provider.send(transactionHex: transaction)
         }
         .eraseToAnyPublisher()
     }
 
     func getSignatureCount(address: String) -> AnyPublisher<Int, any Error> {
-        Future.async {
+        Future.async { [weak self] in
+            guard let self else {
+                throw BlockchainSdkError.noAPIInfo
+            }
+            
             let txHistory = try await self.provider.getTxHistory(identifier: .scriptHash(address))
             return txHistory.count
         }
@@ -87,12 +115,16 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     // MARK: - Private Implementation
 
     private func getAddressInfo(identifier: ElectrumWebSocketProvider.Identifier) -> AnyPublisher<ElectrumAddressInfo, Error> {
-        Future.async {
+        Future.async { [weak self] in
+            guard let self else {
+                throw BlockchainSdkError.noAPIInfo
+            }
+            
             async let balance = self.provider.getBalance(identifier: identifier)
             async let unspents = self.provider.getUnspents(identifier: identifier)
 
             return try await ElectrumAddressInfo(
-                balance: Decimal(balance.confirmed),
+                balance: Decimal(balance.confirmed) / decimalValue,
                 outputs: unspents.map { unspent in
                     ElectrumUTXO(
                         position: unspent.txPos,
@@ -105,10 +137,46 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
+    
+    private func getPendingTransactions(
+        address: String,
+        with unspents: [ElectrumUTXO]
+    ) -> AnyPublisher<[PendingTransaction], Error> {
+        Future.async { [weak self] in
+            guard let self else {
+                throw BlockchainSdkError.noAPIInfo
+            }
+            
+            let unconfirmedUnspents = unspents.filter(\.isNonConfirmed)
+            
+            let result: [PendingTransaction] = try await withThrowingTaskGroup(of: PendingTransaction.self) { group in
+                var pendingTransactions: [PendingTransaction] = []
+                
+                for unspent in unconfirmedUnspents {
+                    group.addTask {
+                        try await self.createPendingTransaction(unspent: unspent, address: address)
+                    }
+                }
+                
+                for try await value in group {
+                    pendingTransactions.append(value)
+                }
+                
+                return pendingTransactions
+            }
+            
+            return result
+        }
+        .eraseToAnyPublisher()
+    }
 
     private func estimateFee(confirmations count: Int = 10) -> AnyPublisher<Decimal, Error> {
-        Future.async {
-            try await self.provider.estimateFee(block: count)
+        Future.async { [weak self] in
+            guard let self else {
+                throw BlockchainSdkError.noAPIInfo
+            }
+            
+            return try await self.provider.estimateFee(block: count)
         }
         .eraseToAnyPublisher()
     }
@@ -126,15 +194,17 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
+    
+    // MARK: - Helpers
 
-    private func mapBitcoinResponse(from accountInfo: ElectrumAddressInfo, outputScript: String) -> BitcoinResponse {
-        let hasUnconfirmed = accountInfo.balance != .zero
-        let unspentOutputs = mapUnspent(outputs: accountInfo.outputs, outputScript: outputScript)
+    private func mapBitcoinResponse(account: Fact0rnAccountModel, outputScript: String) throws -> BitcoinResponse {
+        let hasUnconfirmed = account.addressInfo.balance != .zero
+        let unspentOutputs = mapUnspent(outputs: account.addressInfo.outputs, outputScript: outputScript)
 
         return BitcoinResponse(
-            balance: accountInfo.balance,
+            balance: account.addressInfo.balance,
             hasUnconfirmed: hasUnconfirmed,
-            pendingTxRefs: [],
+            pendingTxRefs: account.pendingTransactions,
             unspentOutputs: unspentOutputs
         )
     }
@@ -149,12 +219,49 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             )
         }
     }
+    
+    private func createPendingTransaction(unspent: ElectrumUTXO, address: String) async throws -> PendingTransaction {
+        let transaction = try await provider.getTransaction(hash: unspent.hash)
+        return toPendingTx(transaction: transaction, address: address, decimalValue: decimalValue)
+    }
+    
+    private func toPendingTx(
+        transaction: ElectrumDTO.Response.Transaction,
+        address: String,
+        decimalValue: Decimal
+    ) -> PendingTransaction {
+        var source: String = .unknown
+        var destination: String = .unknown
+        var value: Decimal?
+        var isIncoming = false
+        
+        let vin = transaction.vin
+        let vout = transaction.vout
 
-    private func createPendingTransactions(
-        unspents: [ElectrumUTXO],
-        address: String
-    ) -> AnyPublisher<[PendingTransaction], Error> {
-        return .anyFail(error: WalletError.empty)
+        if let _ = vin.first(where: { $0.addresses?.contains(address) ?? false }),
+           let txDestination = vout.first(where: { !($0.scriptPubKey.addresses.contains(address)) }) {
+            destination = txDestination.scriptPubKey.addresses.first ?? .unknown
+            source = address
+            value = txDestination.value
+        } else if let txDestination = vout.first(where: { $0.scriptPubKey.addresses.contains(address) }), let txSource = vin.first(where: { !($0.addresses?.contains(address) ?? false) }) {
+            isIncoming = true
+            destination = address
+            source = txSource.addresses?.first ?? .unknown
+            value = txDestination.value
+        }
+        
+        let fee = transaction.fee ?? .zero
+
+        return PendingTransaction(
+            hash: transaction.hash,
+            destination: destination,
+            value: (value ?? 0) / decimalValue,
+            source: source,
+            fee: fee / decimalValue,
+            date: Date(timeIntervalSince1970: TimeInterval(transaction.blocktime)),
+            isIncoming: isIncoming,
+            transactionParams: nil
+        )
     }
 }
 

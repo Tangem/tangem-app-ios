@@ -117,6 +117,7 @@
 		2DA8AB122A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */; };
 		2DAB6B6F2CE28E8500B4A10C /* MinimumAmountRestrictable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */; };
 		2DB2005C2D3068A300E499A3 /* Fact0rnNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */; };
+		2DB2005E2D31332A00E499A3 /* Fact0rnAccountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */; };
 		2DB3614B2C14FBAB00BB1D38 /* SegmentedPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */; };
 		2DB3614D2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */; };
 		2DB3614F2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */; };
@@ -3304,6 +3305,7 @@
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumAmountRestrictable.swift; sourceTree = "<group>"; };
 		2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
+		2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnAccountModel.swift; sourceTree = "<group>"; };
 		2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerView.swift; sourceTree = "<group>"; };
 		2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedPickerView+EnviromentValues.swift"; sourceTree = "<group>"; };
 		2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerViewContentStyle.swift; sourceTree = "<group>"; };
@@ -6675,6 +6677,7 @@
 			isa = PBXGroup;
 			children = (
 				2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */,
+				2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -18860,6 +18863,7 @@
 				B62D42BC2CBC79DB00C2460E /* Wallet.swift in Sources */,
 				B62D40892CBC79DA00C2460E /* ABIEncoder.swift in Sources */,
 				B62D41952CBC79DA00C2460E /* StellarExternalLinkProvider.swift in Sources */,
+				2DB2005E2D31332A00E499A3 /* Fact0rnAccountModel.swift in Sources */,
 				B62D40AA2CBC79DA00C2460E /* DisChainExternalLinkProvider.swift in Sources */,
 				B62D42082CBC79DB00C2460E /* XRPHistoricalTransaction.swift in Sources */,
 				B62D3FDC2CBC79DA00C2460E /* OP_NUMEQUAL.swift in Sources */,
