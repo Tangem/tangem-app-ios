@@ -101,29 +101,29 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     var icon: MainButton.Icon? {
         switch self {
         case .generateAddresses,
-                .retryKaspaTokenTransaction:
+             .retryKaspaTokenTransaction:
             return .trailing(Assets.tangemIcon)
         case .swap:
             return .leading(Assets.exchangeMini)
         case .backupCard,
-                .buyCrypto,
-                .openFeeCurrency,
-                .refresh,
-                .refreshFee,
-                .goToProvider,
-                .reduceAmountBy,
-                .reduceAmountTo,
-                .leaveAmount,
-                .addHederaTokenAssociation,
-                .openLink,
-                .stake,
-                .openFeedbackMail,
-                .openAppStoreReview,
-                .empty,
-                .support,
-                .openCurrency,
-                .seedSupportYes,
-                .seedSupportNo:
+             .buyCrypto,
+             .openFeeCurrency,
+             .refresh,
+             .refreshFee,
+             .goToProvider,
+             .reduceAmountBy,
+             .reduceAmountTo,
+             .leaveAmount,
+             .addHederaTokenAssociation,
+             .openLink,
+             .stake,
+             .openFeedbackMail,
+             .openAppStoreReview,
+             .empty,
+             .support,
+             .openCurrency,
+             .seedSupportYes,
+             .seedSupportNo:
             return nil
         }
     }
@@ -131,28 +131,28 @@ enum NotificationButtonActionType: Identifiable, Hashable {
     var style: MainButton.Style {
         switch self {
         case .generateAddresses,
-                .openLink,
-                .openAppStoreReview,
-                .empty:
+             .openLink,
+             .openAppStoreReview,
+             .empty:
             return .primary
         case .backupCard,
-                .buyCrypto,
-                .openFeeCurrency,
-                .refresh,
-                .refreshFee,
-                .goToProvider,
-                .reduceAmountBy,
-                .reduceAmountTo,
-                .addHederaTokenAssociation,
-                .retryKaspaTokenTransaction,
-                .leaveAmount,
-                .support,
-                .stake,
-                .openFeedbackMail,
-                .openCurrency,
-                .swap,
-                .seedSupportNo,
-                .seedSupportYes:
+             .buyCrypto,
+             .openFeeCurrency,
+             .refresh,
+             .refreshFee,
+             .goToProvider,
+             .reduceAmountBy,
+             .reduceAmountTo,
+             .addHederaTokenAssociation,
+             .retryKaspaTokenTransaction,
+             .leaveAmount,
+             .support,
+             .stake,
+             .openFeedbackMail,
+             .openCurrency,
+             .swap,
+             .seedSupportNo,
+             .seedSupportYes:
             return .secondary
         }
     }
