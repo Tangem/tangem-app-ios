@@ -25,7 +25,7 @@ on:
         type: string
       analyze_archive:
         description: >
-          Whether the analyze should be analyzed during the build process (default: true)
+          Whether the archive should be analyzed during the build process (default: true)
         type: boolean
         default: true
 
