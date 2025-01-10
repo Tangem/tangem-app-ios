@@ -13,8 +13,8 @@ import SwiftUI
 class MarketsPortfolioTokenItemViewModel: ObservableObject, Identifiable {
     // MARK: - Public Properties
 
-    @Published var balanceCrypto: LoadableTextView.State = .loading
-    @Published var balanceFiat: LoadableTextView.State = .loading
+    @Published var balanceCrypto: LoadableTokenBalanceView.State = .loading()
+    @Published var balanceFiat: LoadableTokenBalanceView.State = .loading()
     @Published var contextActions: [TokenActionType] = []
 
     @Published var hasPendingTransactions: Bool = false

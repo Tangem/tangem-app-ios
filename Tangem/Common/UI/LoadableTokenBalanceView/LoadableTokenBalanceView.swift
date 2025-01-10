@@ -63,7 +63,7 @@ extension LoadableTokenBalanceView {
         // Convient
 
         static let empty: State = .loaded(text: .string(BalanceFormatter.defaultEmptyBalanceString))
-        static func loaded(_ text: String) -> State { .loaded(text: .string(text)) }
+        static func loaded(text: String) -> State { .loaded(text: .string(text)) }
     }
 
     struct Style {
