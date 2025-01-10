@@ -18,15 +18,9 @@ struct Fact0rnAddressService {
 extension Fact0rnAddressService: AddressProvider {
     func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
         let compressedKey = try Secp256k1Key(with: publicKey.blockchainKey).compress()
+        let compressedPublicKey = Wallet.PublicKey(seedKey: compressedKey, derivationType: .none)
 
-        let bitcoinCorePublicKey = PublicKey(
-            withAccount: 0,
-            index: 0,
-            external: true,
-            hdPublicKeyData: compressedKey
-        )
-
-        return try bitcoinAddressService.makeAddress(for: publicKey, with: addressType)
+        return try bitcoinAddressService.makeAddress(for: compressedPublicKey, with: addressType)
     }
 }
 
