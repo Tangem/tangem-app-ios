@@ -35,11 +35,11 @@ class WalletModel {
         _state.eraseToAnyPublisher()
     }
 
-    var rate: LoadingResult<Rate?, Never> {
+    var rate: WalletModel.Rate {
         _rate.value
     }
 
-    var ratePublisher: AnyPublisher<LoadingResult<Rate?, Never>, Never> {
+    var ratePublisher: AnyPublisher<WalletModel.Rate, Never> {
         _rate.eraseToAnyPublisher()
     }
 
@@ -210,7 +210,7 @@ class WalletModel {
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
     private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
     private var _state: CurrentValueSubject<State, Never> = .init(.created)
-    private var _rate: CurrentValueSubject<LoadingResult<Rate?, Never>, Never> = .init(.loading)
+    private var _rate: CurrentValueSubject<Rate, Never> = .init(.loading(.none))
     private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
 
     let converter = BalanceConverter()
@@ -256,12 +256,12 @@ class WalletModel {
                 currencyId.flatMap { quotes[$0]?.price }
             }
             .removeDuplicates()
-            .sink { [weak self] rate in
-                self?._rate.send(.success(rate.map { .actual($0) }))
+            .sink { [weak self] price in
+                self?.updateQuote(price: price)
             }
             .store(in: &bag)
 
-        let filteredRate = _rate.filter { $0 != .loading }.removeDuplicates()
+        let filteredRate = _rate.filter { !$0.isLoading }.removeDuplicates()
 
         if let stakingManager {
             _state
@@ -278,6 +278,25 @@ class WalletModel {
                 .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
                 .store(in: &bag)
         }
+    }
+
+    private func updateQuote(price: Decimal?) {
+        guard let price else {
+            // Set to failure if price not found
+            _rate.send(.failure(rate.cached))
+            return
+        }
+
+        _rate.send(.loaded(price))
+    }
+
+    private func fillQuote() {
+        guard let quote = quotesRepository.quote(for: tokenItem) else {
+            return
+        }
+
+        AppLog.shared.debug("\(self) has cached quote \(quote.price)")
+        _rate.send(.loading(.init(balance: quote.price, date: quote.date)))
     }
 
     private func performHealthCheckIfNeeded(shouldPerform: Bool) {
@@ -383,7 +402,7 @@ class WalletModel {
 
     private func loadQuotes() -> AnyPublisher<Void, Never> {
         guard let currencyId = tokenItem.currencyId else {
-            _rate.send(.success(nil))
+            _rate.send(.empty(.custom))
             return .just(output: ())
         }
 
@@ -391,11 +410,7 @@ class WalletModel {
             .loadQuotes(currencyIds: [currencyId])
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { walletModel, dict in
-                guard dict[currencyId] == nil else {
-                    return
-                }
-
-                walletModel._rate.send(.success(nil))
+                walletModel.updateQuote(price: dict[currencyId])
             })
             .mapToVoid()
             .eraseToAnyPublisher()
