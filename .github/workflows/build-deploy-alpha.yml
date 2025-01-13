@@ -1,9 +1,6 @@
 name: Alpha - Build and Deploy
 
 on:
-  push:
-    branches:
-      - 'feature/IOS-8885_private_app_config' # TODO: Test only, remove
   workflow_dispatch:
     inputs:
       build_description:
@@ -85,8 +82,7 @@ jobs:
       xcode_version_override: '${{ inputs.xcode_version_override }}'
       # GA boolean inputs are just awful https://stackoverflow.com/questions/76292948
       # The reusable workflow requires all input params to be of type string, so we use this ugly ternary operator here
-      analyze_archive: ${{ (github.event_name == 'push' || inputs.analyze_archive == true) && 'true' || 'false' }}  # TODO: Test only, remove
-      #analyze_archive: ${{ inputs.analyze_archive == true && 'true' || 'false' }}
+      analyze_archive: ${{ inputs.analyze_archive == true && 'true' || 'false' }}
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
@@ -131,8 +127,7 @@ jobs:
 
   error_notification:
     name: Error Notification
-    #if: failure() # TODO: Test only, enable
-    if: false
+    if: failure()
     uses: tangem/actions/.github/workflows/notification.yml@main
     needs:
       - prepare

@@ -168,8 +168,7 @@ jobs:
 
   error_notification:
     name: Error Notification
-    #if: failure() # TODO: Test only, enable
-    if: false
+    if: failure()
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8885_private_app_config  # TODO: Switch to main
     needs:
       - prepare
