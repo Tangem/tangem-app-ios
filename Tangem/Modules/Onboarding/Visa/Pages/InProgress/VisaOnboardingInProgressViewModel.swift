@@ -13,7 +13,7 @@ import TangemFoundation
 protocol VisaOnboardingInProgressDelegate: VisaOnboardingAlertPresenter {
     func canProceedOnboarding() async throws -> Bool
     @MainActor
-    func proceedFromInProgress() async
+    func proceedFromCurrentRemoteState() async
 }
 
 class VisaOnboardingInProgressViewModel: ObservableObject {
@@ -40,7 +40,7 @@ class VisaOnboardingInProgressViewModel: ObservableObject {
         runTask(in: self, isDetached: false) { viewModel in
             do {
                 if try await viewModel.delegate?.canProceedOnboarding() ?? false {
-                    await viewModel.delegate?.proceedFromInProgress()
+                    await viewModel.delegate?.proceedFromCurrentRemoteState()
                 }
             } catch {
                 if !error.isCancellationError {

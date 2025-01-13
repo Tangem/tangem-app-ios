@@ -57,6 +57,7 @@ class VisaOnboardingViewModel: ObservableObject {
     lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(accessCodeValidator: visaActivationManager, delegate: self)
     lazy var walletSelectorViewModel = VisaOnboardingApproveWalletSelectorViewModel(delegate: self)
     var tangemWalletApproveViewModel: VisaOnboardingTangemWalletDeployApproveViewModel?
+    var walletConnectViewModel: VisaOnboardingWalletConnectViewModel?
     lazy var inProgressViewModel: VisaOnboardingInProgressViewModel? = VisaOnboardingViewModelsBuilder().buildInProgressModel(
         activationRemoteState: visaActivationManager.activationRemoteState,
         delegate: self
@@ -116,7 +117,7 @@ class VisaOnboardingViewModel: ObservableObject {
             }
 
             goToStep(.welcome)
-        case .approveUsingTangemWallet:
+        case .approveUsingTangemWallet, .approveUsingWalletConnect:
             goToStep(.selectWalletForApprove)
         case .success:
             break
@@ -168,7 +169,7 @@ private extension VisaOnboardingViewModel {
             }
         case .accessCode:
             goToStep(.selectWalletForApprove)
-        case .selectWalletForApprove, .approveUsingTangemWallet, .saveUserWallet, .pushNotifications:
+        case .selectWalletForApprove, .approveUsingTangemWallet, .approveUsingWalletConnect, .saveUserWallet, .pushNotifications:
             break
         case .inProgress:
             /// Should be decided in `proceedFromInProgress`
@@ -208,7 +209,7 @@ extension VisaOnboardingViewModel: VisaOnboardingInProgressDelegate {
     }
 
     @MainActor
-    func proceedFromInProgress() async {
+    func proceedFromCurrentRemoteState() async {
         switch visaActivationManager.activationRemoteState {
         case .activated:
             goToStep(.saveUserWallet)
@@ -347,8 +348,8 @@ private extension VisaOnboardingViewModel {
 
 extension VisaOnboardingViewModel: VisaOnboardingApproveWalletSelectorDelegate {
     func useExternalWallet() {
-        // TODO: IOS-8574
-        alert = "TODO: IOS-8574".alertBinder
+        walletConnectViewModel = .init(delegate: self)
+        goToStep(.approveUsingWalletConnect)
     }
 
     func useTangemWallet() {
@@ -381,10 +382,12 @@ extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDataProvider
     }
 }
 
+// MARK: - PinSelectionDelegate
+
 extension VisaOnboardingViewModel: OnboardingPinSelectionDelegate {
     func useSelectedPin(pinCode: String) async throws {
         try await visaActivationManager.setPINCode(pinCode)
-        await proceedFromInProgress()
+        await proceedFromCurrentRemoteState()
     }
 }
 
