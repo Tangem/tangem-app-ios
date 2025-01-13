@@ -96,7 +96,7 @@ class UserWalletRepositoryUtil {
 
             for userWallet in userWallets {
                 guard let encryptionKey = UserWalletEncryptionKeyFactory().encryptionKey(for: userWallet) else {
-                    AppLog.shared.debug("User wallet \(userWallet.userWalletId) failed to generate encryption key")
+                    AppLog.shared.debug("User wallet failed to generate encryption key")
                     continue
                 }
 

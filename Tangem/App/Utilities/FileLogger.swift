@@ -20,8 +20,13 @@ class FileLogger: TangemSdkLogger {
         return formatter
     }()
 
+    @AppStorageCompat(StorageKeys.fileLogVersion)
+    private var fileLogVersion = 1
+
     init() {
         let fileManager = FileManager.default
+
+        upgradeLogFileVersionIfNeeded(using: fileManager)
 
         if !fileManager.fileExists(atPath: logFileURL.relativePath) {
             fileManager.createFile(atPath: logFileURL.relativePath, contents: nil)
@@ -68,6 +73,24 @@ class FileLogger: TangemSdkLogger {
             AppLog.shared.debug("Failed to delete log file. Error: \(error)")
         }
     }
+
+    private func upgradeLogFileVersionIfNeeded(using fileManager: FileManager) {
+        let targetLogFileVersion = 3
+
+        guard
+            fileManager.fileExists(atPath: logFileURL.relativePath),
+            fileLogVersion < targetLogFileVersion
+        else {
+            return
+        }
+
+        do {
+            try fileManager.removeItem(at: logFileURL)
+            fileLogVersion = targetLogFileVersion
+        } catch {
+            AppLog.shared.debug("Failed to upgrade log file version. Error: \(error)")
+        }
+    }
 }
 
 extension FileLogger: LogFileProvider {
@@ -81,5 +104,13 @@ extension FileLogger: LogFileProvider {
 
     func prepareLogFile() -> URL {
         return logFileURL
+    }
+}
+
+// MARK: - Constants
+
+private extension FileLogger {
+    enum StorageKeys: String, RawRepresentable {
+        case fileLogVersion = "file_logger_file_log_version"
     }
 }

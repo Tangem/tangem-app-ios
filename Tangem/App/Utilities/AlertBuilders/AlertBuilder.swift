@@ -63,6 +63,14 @@ enum AlertBuilder {
         ))
     }
 
+    static func makeSeedNotifyAlert(message: String, okAction: @escaping (() -> Void) = {}) -> AlertBinder {
+        .init(alert: Alert(
+            title: Text(Localization.commonWarning),
+            message: Text(message),
+            dismissButton: .default(Text(Localization.warningButtonOk), action: okAction)
+        ))
+    }
+
     static func makeDemoAlert(_ message: String, okAction: @escaping (() -> Void) = {}) -> AlertBinder {
         .init(alert: Alert(
             title: Text(warningTitle),

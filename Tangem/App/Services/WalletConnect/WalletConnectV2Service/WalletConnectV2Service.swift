@@ -431,7 +431,7 @@ final class WalletConnectV2Service {
             )
         }
 
-        let logSuffix = " for request: \(request)"
+        let logSuffix = " for request: \(request.id)"
         let utils = WalletConnectV2Utils()
 
         guard let targetBlockchain = utils.createBlockchain(for: request.chainId) else {

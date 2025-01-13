@@ -337,4 +337,58 @@ https://developer.apple.com/documentation/foundation/jsondecoder/3766916-allowsj
             */
         ]
     },
+    {
+        "blockchain": "sei",
+        "positive": [
+            "sei142j9u5eaduzd7faumygud6ruhdwme98qagm0sj",
+            "sei123mjxmap5j26x7ve8qes7gpm6uwah5lvxdpfs9",
+            "sei1v4mx6hmrda5kucnpwdjsqqqqqqqqqqpqs3kax2",
+        ],
+        "negative": [
+            "kei142j9u5eaduzd7faumygud6ruhdwme98qagm0sj",
+            "sei",
+            "sei1234",
+            ""
+        ]
+    },
+    {
+        "blockchain": "filecoin",
+        "positive": [
+            "f15ihq5ibzwki2b4ep2f46avlkrqzhpqgtga7pdrq",
+            "f12fiakbhe2gwd5cnmrenekasyn6v5tnaxaqizq6a",
+            "f1wbxhu3ypkuo6eyp6hjx6davuelxaxrvwb2kuwva",
+            "f17uoq6tp427uzv7fztkbsnn64iwotfrristwpryy"
+        ],
+        "negative": [
+            "f0-1",
+            "f018446744073709551616",
+            "f4f77777777vnmsana",
+            "t15ihq5ibzwki2b4ep2f46avlkrqzhpqgtga7pdrq"
+        ]
+    },
+    {
+        "blockchain": "sui",
+        "positive": [
+            "0x2347dcfa4c0d4bd1a45e9cadbd1adea820c4ee2937d65ef5cedf661f43bea8c6",
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "0xa7f81d798f047dbfcf5aa54d22e32f528b4ed0131eb157f65f2e04b79541d26a",
+            "0xffd4f043057226453aeba59732d41c6093516f54823ebc3a16d17f8a77d2f0ad"
+        ],
+        "negative": [
+            "0x",
+            "0xa7bfcf5aa54d22e32f528b4ed0131eb157f65f2e04b79541d26a"
+        ]
+    },
+    {
+        "blockchain": "dash",
+        "positive": [
+            "XtRN6njDCKp3C2VkeyhN1duSRXMkHPGLgH",
+            "Xs92pJsKUXRpbwzxDjBjApiwMK6JysNntG",
+            "XwrhJMJKUpP21KShxqv6YcaTQZfiZXdREQ"
+        ],
+        "negative": [
+            "XuRzigQHyJfvw35e281h5HPBqJ8",
+            ""
+        ]
+    }
 ]

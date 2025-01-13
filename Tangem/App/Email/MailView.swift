@@ -8,14 +8,13 @@
 
 import SwiftUI
 import MessageUI
-import ZIPFoundation
 
 struct MailView: UIViewControllerRepresentable {
     let viewModel: MailViewModel
 
     @Environment(\.presentationMode) private var presentation
 
-    class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
+    final class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
         @Binding var presentation: PresentationMode
 
         let emailType: EmailType
@@ -65,21 +64,31 @@ struct MailView: UIViewControllerRepresentable {
         vc.setSubject(viewModel.emailType.emailSubject)
         var messageBody = "\n" + viewModel.emailType.emailPreface
         messageBody.append("\n\n")
+
+        let logData = viewModel.logsComposer.getLogsData()
+
+        if let log = logData[LogFilesNames.infoLogs],
+           let messageLog = String(data: log, encoding: .utf8) {
+            messageBody.append(messageLog)
+        }
+
         vc.setMessageBody(messageBody, isHTML: false)
 
-        let logFiles = viewModel.logsComposer.getLogFiles()
+        /*
+         let logFiles = viewModel.logsComposer.getLogFiles()
 
-        logFiles.forEach { originalURL in
-            guard originalURL.lastPathComponent != LogFilesNames.infoLogs else {
-                attachPlainTextData(at: originalURL, to: vc)
-                return
-            }
-            do {
-                try attachZipData(at: originalURL, to: vc)
-            } catch {
-                attachPlainTextData(at: originalURL, to: vc)
-            }
-        }
+         logFiles.forEach { originalURL in
+             guard originalURL.lastPathComponent != LogFilesNames.infoLogs else {
+                 attachPlainTextData(at: originalURL, to: vc)
+                 return
+             }
+             do {
+                 try MailZipFileManager.shared.attachZipData(at: originalURL, to: vc)
+             } catch {
+                 attachPlainTextData(at: originalURL, to: vc)
+             }
+         }
+          */
 
         return vc
     }
@@ -93,16 +102,6 @@ struct MailView: UIViewControllerRepresentable {
         if let data = try? Data(contentsOf: url) {
             viewController.addAttachmentData(data, mimeType: "text/plain", fileName: url.lastPathComponent)
         }
-    }
-
-    private func attachZipData(at url: URL, to viewController: MFMailComposeViewController) throws {
-        let fileManager = FileManager.default
-        let archiveName = url.appendingPathExtension(for: .zip).lastPathComponent
-        let destinationURL = fileManager.temporaryDirectory.appendingPathComponent(archiveName, conformingTo: .zip)
-        try? fileManager.removeItem(at: destinationURL)
-        try fileManager.zipItem(at: url, to: destinationURL, shouldKeepParent: false, compressionMethod: .deflate)
-        let data = try Data(contentsOf: destinationURL)
-        viewController.addAttachmentData(data, mimeType: "application/zip", fileName: archiveName)
     }
 }
 
