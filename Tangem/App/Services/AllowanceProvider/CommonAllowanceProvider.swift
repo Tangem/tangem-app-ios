@@ -53,7 +53,7 @@ extension CommonAllowanceProvider: AllowanceProvider {
 // MARK: - ExpressAllowanceProvider
 
 extension CommonAllowanceProvider: ExpressAllowanceProvider {
-    func allowanceState(request: ExpressManagerSwappingPairRequest, spender: String, policy: ExpressApprovePolicy) async throws -> AllowanceState {
+    func allowanceState(request: ExpressManagerSwappingPairRequest, spender: String) async throws -> AllowanceState {
         let contractAddress = request.pair.source.expressCurrency.contractAddress
         if contractAddress == ExpressConstants.coinContractAddress {
             return .enoughAllowance
@@ -61,7 +61,7 @@ extension CommonAllowanceProvider: ExpressAllowanceProvider {
 
         assert(contractAddress != ExpressConstants.coinContractAddress)
 
-        return try await allowanceState(amount: request.amount, spender: spender, approvePolicy: policy)
+        return try await allowanceState(amount: request.amount, spender: spender, approvePolicy: request.approvePolicy)
     }
 }
 

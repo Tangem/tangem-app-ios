@@ -1019,6 +1019,7 @@
 "warning_kaspa_unfinished_token_transaction_discard_message" = "Êtes-vous sûr(e) de vouloir annuler la transaction ? Vous ne pourrez plus réessayer.";
 "warning_kaspa_unfinished_token_transaction_message" = "Votre transaction d'un montant de %1$@ %2$@ n'a pas été finalisée. Vous pouvez réessayer plus tard pour la finaliser.";
 "warning_kaspa_unfinished_token_transaction_title" = "Vous avez une transaction inachevée";
+"warning_last_balance_updated_time" = "Last update was %@";
 "warning_long_transaction_message" = "L'iPhone 7/7+ ne peut pas signer de transactions sur ce réseau. Pour effectuer cette opération, veuillez utiliser un autre téléphone.";
 "warning_long_transaction_title" = "Signature de transaction indisponible";
 "warning_low_signatures_message" = "Il ne reste que %@ signatures sur cette carte. Vous devez retirer tous vos fonds.";
@@ -1051,6 +1052,7 @@
 "warning_solana_rent_fee_message" = "Le réseau Solana facture un loyer de %1$@ tous les 2 jours. Les comptes qui ne peuvent pas se permettre le loyer sont purgés du réseau. Déposez sur votre compte plus de %2$@ pour l'utiliser gratuitement.";
 "warning_some_networks_unreachable_message" = "Certains réseaux sont actuellement inaccessibles. Veuillez réessayer plus tard.";
 "warning_some_networks_unreachable_title" = "Certains réseaux sont inaccessibles";
+"warning_some_token_balances_not_updated" = "Some token balances could not updated";
 "warning_system_deprecation_title" = "Mise à jour du système requise";
 "warning_system_deprecation_with_date_message" = "Le support pour votre version du système d'exploitation prendra fin le %@. Pour recevoir les futures mises à jour de l'application, vous devez la mettre à jour vers la dernière version.";
 "warning_system_update_message" = "Tangem recommande d'installer la dernière mise à jour iOS pour un fonctionnement stable et sûr";

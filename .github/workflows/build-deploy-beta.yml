@@ -73,6 +73,7 @@ jobs:
       - name: Jira Get Issues Summary
         uses: tangem/jira-action@master
         id: jira-issues-summary
+        continue-on-error: true
         with:
           action: 'getIssuesSummary'
           issues: '${{ steps.git-diff.outputs.issues }}'
