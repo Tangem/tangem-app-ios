@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import BlockchainSdk
+import TangemFoundation
 import struct TangemExpress.ExpressAPIError
 
 class ExpressNotificationManager {
@@ -37,7 +38,7 @@ class ExpressNotificationManager {
         switch state {
         case .idle:
             notificationInputsSubject.value = []
-        case .loading(.refreshRates):
+        case .loading(.refreshRates), .loading(.fee):
             break
         case .loading(.full):
             notificationInputsSubject.value = notificationInputsSubject.value.filter {
@@ -48,7 +49,7 @@ class ExpressNotificationManager {
                 return !event.removingOnFullLoadingState
             }
         case .restriction(let restrictions, _):
-            runTask(in: self) { manager in
+            TangemFoundation.runTask(in: self) { manager in
                 await manager.setupNotification(for: restrictions)
             }
 

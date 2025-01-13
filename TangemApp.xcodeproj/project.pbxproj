@@ -2061,6 +2061,8 @@
 		DA81CF2F2B060A5D008877F1 /* SendSuggestedDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA81CF2D2B060A5C008877F1 /* SendSuggestedDestinationView.swift */; };
 		DA81CF302B060A5D008877F1 /* SendSuggestedDestinationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA81CF2E2B060A5D008877F1 /* SendSuggestedDestinationViewModel.swift */; };
 		DA89AC0A2CE6B18100AFB755 /* PendingExpressTxTokenInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA89AC092CE6B18000AFB755 /* PendingExpressTxTokenInfoView.swift */; };
+		DA8A38C62D09046400ADD81D /* Fact0rnMainNetworkParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8A38C52D09046400ADD81D /* Fact0rnMainNetworkParams.swift */; };
+		DA8A38C92D09053600ADD81D /* Fact0rnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8A38C82D09053600ADD81D /* Fact0rnTests.swift */; };
 		DA8C33952BF38CB2002AE4F9 /* UserWalletFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8C33942BF38CB2002AE4F9 /* UserWalletFinder.swift */; };
 		DA8C67282B0B44EF00E1C9B8 /* SendDestinationAddressSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8C67242B0B44EF00E1C9B8 /* SendDestinationAddressSummaryView.swift */; };
 		DA8C67292B0B44EF00E1C9B8 /* SendDestinationSummaryViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8C67252B0B44EF00E1C9B8 /* SendDestinationSummaryViewType.swift */; };
@@ -2749,6 +2751,8 @@
 		EF977CBA2C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF977CB52C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift */; };
 		EF977CBF2C788965006BB27C /* PendingActionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF977CBE2C788965006BB27C /* PendingActionMapper.swift */; };
 		EF9C52B3287C77A10015D540 /* CardSettingsRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B9CF2286C6C7A004C33A9 /* CardSettingsRoutable.swift */; };
+		EF9CE9FD2D19B9800011BF4C /* ExpressFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9CE9FC2D19B9800011BF4C /* ExpressFee.swift */; };
+		EF9CE9FF2D19B9930011BF4C /* ExpressAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9CE9FE2D19B9930011BF4C /* ExpressAmount.swift */; };
 		EF9E29972B4F0C8C00418559 /* TangemExpress.docc in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29962B4F0C8C00418559 /* TangemExpress.docc */; };
 		EF9E299D2B4F0C9100418559 /* TangemExpress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF9E29932B4F0C8800418559 /* TangemExpress.framework */; };
 		EF9E29A42B4F0C9800418559 /* TangemExpressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29A32B4F0C9800418559 /* TangemExpressTests.swift */; };
@@ -5220,6 +5224,8 @@
 		DA81CF2D2B060A5C008877F1 /* SendSuggestedDestinationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendSuggestedDestinationView.swift; sourceTree = "<group>"; };
 		DA81CF2E2B060A5D008877F1 /* SendSuggestedDestinationViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendSuggestedDestinationViewModel.swift; sourceTree = "<group>"; };
 		DA89AC092CE6B18000AFB755 /* PendingExpressTxTokenInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingExpressTxTokenInfoView.swift; sourceTree = "<group>"; };
+		DA8A38C52D09046400ADD81D /* Fact0rnMainNetworkParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnMainNetworkParams.swift; sourceTree = "<group>"; };
+		DA8A38C82D09053600ADD81D /* Fact0rnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnTests.swift; sourceTree = "<group>"; };
 		DA8C33942BF38CB2002AE4F9 /* UserWalletFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletFinder.swift; sourceTree = "<group>"; };
 		DA8C67242B0B44EF00E1C9B8 /* SendDestinationAddressSummaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendDestinationAddressSummaryView.swift; sourceTree = "<group>"; };
 		DA8C67252B0B44EF00E1C9B8 /* SendDestinationSummaryViewType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendDestinationSummaryViewType.swift; sourceTree = "<group>"; };
@@ -5929,6 +5935,8 @@
 		EF977CB42C774B8E006BB27C /* MultipleRewardsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleRewardsCoordinator.swift; sourceTree = "<group>"; };
 		EF977CB52C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleRewardsCoordinatorView.swift; sourceTree = "<group>"; };
 		EF977CBE2C788965006BB27C /* PendingActionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingActionMapper.swift; sourceTree = "<group>"; };
+		EF9CE9FC2D19B9800011BF4C /* ExpressFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressFee.swift; sourceTree = "<group>"; };
+		EF9CE9FE2D19B9930011BF4C /* ExpressAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressAmount.swift; sourceTree = "<group>"; };
 		EF9E29932B4F0C8800418559 /* TangemExpress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TangemExpress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF9E29952B4F0C8C00418559 /* TangemExpress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TangemExpress.h; sourceTree = "<group>"; };
 		EF9E29962B4F0C8C00418559 /* TangemExpress.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = TangemExpress.docc; sourceTree = "<group>"; };
@@ -12031,6 +12039,7 @@
 				B62D43132CBC79E300C2460E /* Cosmos */,
 				B62D43112CBC79E200C2460E /* Ethereum */,
 				B62D43282CBC79E300C2460E /* Extensions */,
+				DA8A38C72D09052600ADD81D /* Fact0rn */,
 				B62D43362CBC79E400C2460E /* Filecoin */,
 				B62D43312CBC79E400C2460E /* Hedera */,
 				B62D42E02CBC79E000C2460E /* ICP */,
@@ -12520,6 +12529,14 @@
 			path = SendNotifications;
 			sourceTree = "<group>";
 		};
+		DA8A38C72D09052600ADD81D /* Fact0rn */ = {
+			isa = PBXGroup;
+			children = (
+				DA8A38C82D09053600ADD81D /* Fact0rnTests.swift */,
+			);
+			path = Fact0rn;
+			sourceTree = "<group>";
+		};
 		DA8BBF952A0248E300B085DC /* SensitiveText */ = {
 			isa = PBXGroup;
 			children = (
@@ -12593,6 +12610,7 @@
 				DABCDA1D2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift */,
 				DABCDA1F2D08FA6B00AB2C69 /* Fact0rnAddressService.swift */,
 				DABCDA1B2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift */,
+				DA8A38C52D09046400ADD81D /* Fact0rnMainNetworkParams.swift */,
 			);
 			path = Fact0rn;
 			sourceTree = "<group>";
@@ -14381,6 +14399,8 @@
 		EF49C05E2CAD85690062AF06 /* Swap */ = {
 			isa = PBXGroup;
 			children = (
+				EF9CE9FE2D19B9930011BF4C /* ExpressAmount.swift */,
+				EF9CE9FC2D19B9800011BF4C /* ExpressFee.swift */,
 				EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */,
 				EF9E29DD2B4F0CCE00418559 /* ExpressTransactionType.swift */,
 				EF9E29DE2B4F0CCE00418559 /* ExpressPair.swift */,
@@ -19025,6 +19045,7 @@
 				B62D41942CBC79DA00C2460E /* StellarAddressService.swift in Sources */,
 				B62D42212CBC79DB00C2460E /* XRPTransactionBuilder.swift in Sources */,
 				B62D42B32CBC79DB00C2460E /* PendingTransactionRecordMapper.swift in Sources */,
+				DA8A38C62D09046400ADD81D /* Fact0rnMainNetworkParams.swift in Sources */,
 				B62D41AF2CBC79DA00C2460E /* TezosFee.swift in Sources */,
 				B62D424F2CBC79DB00C2460E /* NetworkProvider.swift in Sources */,
 				B62D3F972CBC79DA00C2460E /* AlgorandTransactionInfo.swift in Sources */,
@@ -19584,6 +19605,7 @@
 				B62D43582CBC79E400C2460E /* EthereumTests.swift in Sources */,
 				B62D434C2CBC79E400C2460E /* PublicKeyDerivationAddressTests.swift in Sources */,
 				B62D435A2CBC79E400C2460E /* NEARTests.swift in Sources */,
+				DA8A38C92D09053600ADD81D /* Fact0rnTests.swift in Sources */,
 				B62D434F2CBC79E400C2460E /* SUITest.swift in Sources */,
 				B62D43472CBC79E400C2460E /* TestVectorsUtility.swift in Sources */,
 				B62D433D2CBC79E400C2460E /* TronTests.swift in Sources */,
@@ -19641,6 +19663,7 @@
 				EF9E2A172B4F0CD100418559 /* ExpressAuthorizationPlugin.swift in Sources */,
 				EF9E2A222B4F0CD100418559 /* ExpressTransactionData.swift in Sources */,
 				EF13996C2CBCFD1700AC9E2B /* OnrampQuote.swift in Sources */,
+				EF9CE9FD2D19B9800011BF4C /* ExpressFee.swift in Sources */,
 				EF9E2A132B4F0CD100418559 /* CommonLogger.swift in Sources */,
 				EF9E2A2F2B4F0CD100418559 /* AllowanceProvider.swift in Sources */,
 				EF49C0632CAD85A00062AF06 /* OnrampCountry.swift in Sources */,
@@ -19687,6 +19710,7 @@
 				EF9E2A212B4F0CD100418559 /* ExpressApprovePolicy.swift in Sources */,
 				EF9E2A362B4F0CD100418559 /* DEXExpressProviderManager.swift in Sources */,
 				EF9E29972B4F0C8C00418559 /* TangemExpress.docc in Sources */,
+				EF9CE9FF2D19B9930011BF4C /* ExpressAmount.swift in Sources */,
 				EF8BE6B32CCA8800001FBA2B /* OnrampDataRepository.swift in Sources */,
 				EF9E2A272B4F0CD100418559 /* ExpressProviderType.swift in Sources */,
 			);

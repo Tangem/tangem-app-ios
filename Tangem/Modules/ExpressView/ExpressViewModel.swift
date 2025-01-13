@@ -106,7 +106,7 @@ final class ExpressViewModel: ObservableObject {
     }
 
     func userDidTapPriceChangeInfoButton(isBigLoss: Bool) {
-        runTask(in: self) { [weak self] viewModel in
+        TangemFoundation.runTask(in: self) { [weak self] viewModel in
             guard
                 let selectedProvider = await viewModel.interactor.getSelectedProvider()?.provider,
                 let tokenItemSymbol = viewModel.interactor.getDestination()?.tokenItem.currencySymbol
@@ -221,16 +221,16 @@ private extension ExpressViewModel {
     }
 
     func openApproveView() {
-        guard case .permissionRequired = interactor.getState() else {
+        guard case .permissionRequired(let permissionRequired, _) = interactor.getState() else {
             return
         }
 
-        runTask(in: self) { viewModel in
+        TangemFoundation.runTask(in: self) { viewModel in
             guard let selectedProvider = await viewModel.interactor.getSelectedProvider()?.provider else {
                 return
             }
 
-            let selectedPolicy = await viewModel.interactor.getApprovePolicy()
+            let selectedPolicy = permissionRequired.policy
             await runOnMain {
                 viewModel.coordinator?.presentApproveView(provider: selectedProvider, selectedPolicy: selectedPolicy)
             }
@@ -499,7 +499,7 @@ private extension ExpressViewModel {
                 providerState = .loading
             }
         default:
-            runTask(in: self) { viewModel in
+            TangemFoundation.runTask(in: self) { viewModel in
                 let providerRowViewModel = await viewModel.mapToProviderRowViewModel()
                 await runOnMain {
                     if let providerRowViewModel {
@@ -516,13 +516,15 @@ private extension ExpressViewModel {
         switch state {
         case .restriction(.notEnoughAmountForTxValue(let estimatedFee), _):
             // Signle estimated fee just for UI
-            updateExpressFeeRowViewModel(fee: estimatedFee, action: nil)
+            updateExpressFeeRowViewModel(fees: .loading)
         case .restriction(.notEnoughAmountForFee(let state), _):
-            updateExpressFeeRowViewModel(fees: state.fees)
+            updateExpressFeeRowViewModel(fees: .success(state.fees))
         case .previewCEX(let state, _):
-            updateExpressFeeRowViewModel(fees: state.fees)
+            updateExpressFeeRowViewModel(fees: .success(state.fees))
         case .readyToSwap(let state, _):
-            updateExpressFeeRowViewModel(fees: state.fees)
+            updateExpressFeeRowViewModel(fees: .success(state.fees))
+        case .loading(.fee):
+            updateExpressFeeRowViewModel(fee: .loading, action: nil)
         case .idle, .restriction, .loading(.full), .permissionRequired:
             // We have decided that will not give a choose for .permissionRequired state also
             expressFeeRowViewModel = nil
@@ -531,31 +533,42 @@ private extension ExpressViewModel {
         }
     }
 
-    func updateExpressFeeRowViewModel(fees: [FeeOption: Fee]) {
-        guard let fee = fees[interactor.getFeeOption()]?.amount.value else {
-            expressFeeRowViewModel = nil
-            return
-        }
+    func updateExpressFeeRowViewModel(fees: LoadingResult<ExpressInteractor.Fees, Never>) {
+        switch fees {
+        case .loading:
+            updateExpressFeeRowViewModel(fee: .loading, action: nil)
+        case .success(let fees):
+            guard let fee = try? fees.selectedFee().amount.value else {
+                expressFeeRowViewModel = nil
+                return
+            }
 
-        var action: (() -> Void)?
-        // If fee is one option then don't open selector
-        if fees.count > 1 {
-            action = weakify(self, forFunction: ExpressViewModel.openFeeSelectorView)
-        }
+            var action: (() -> Void)?
+            // If fee is one option then don't open selector
+            if !fees.isFixed {
+                action = weakify(self, forFunction: ExpressViewModel.openFeeSelectorView)
+            }
 
-        updateExpressFeeRowViewModel(fee: fee, action: action)
+            let tokenItem = interactor.getSender().feeTokenItem
+            let formattedFee = feeFormatter.format(fee: fee, tokenItem: tokenItem)
+            updateExpressFeeRowViewModel(fee: .loaded(text: formattedFee), action: action)
+        }
     }
 
-    func updateExpressFeeRowViewModel(fee: Decimal, action: (() -> Void)?) {
-        let tokenItem = interactor.getSender().feeTokenItem
-        let formattedFee = feeFormatter.format(fee: fee, tokenItem: tokenItem)
-        expressFeeRowViewModel = ExpressFeeRowData(title: Localization.commonNetworkFeeTitle, subtitle: formattedFee, action: action)
+    func updateExpressFeeRowViewModel(fee: LoadableTextView.State, action: (() -> Void)?) {
+        expressFeeRowViewModel = ExpressFeeRowData(
+            title: Localization.commonNetworkFeeTitle,
+            subtitle: fee,
+            action: action
+        )
     }
 
     func updateMainButton(state: ExpressInteractor.State) {
         switch state {
         case .idle, .loading(type: .full):
             mainButtonState = .swap
+            mainButtonIsEnabled = false
+        case .loading(type: .fee):
             mainButtonIsEnabled = false
         case .loading(type: .refreshRates):
             // Do nothing
@@ -591,7 +604,7 @@ private extension ExpressViewModel {
 
     func updateLegalText(state: ExpressInteractor.State) {
         switch state {
-        case .loading(.refreshRates):
+        case .loading(.refreshRates), .loading(.fee):
             break
         case .idle, .loading(.full):
             legalText = nil
@@ -663,7 +676,7 @@ private extension ExpressViewModel {
 
         stopTimer()
         mainButtonIsLoading = true
-        runTask(in: self) { root in
+        TangemFoundation.runTask(in: self) { root in
             do {
                 let sentTransactionData = try await root.interactor.send()
 

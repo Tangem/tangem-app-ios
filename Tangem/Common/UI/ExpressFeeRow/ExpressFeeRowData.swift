@@ -12,10 +12,10 @@ struct ExpressFeeRowData: Identifiable {
     var id: Int { hashValue }
 
     let title: String
-    let subtitle: String
+    let subtitle: LoadableTextView.State
     let action: (() -> Void)?
 
-    init(title: String, subtitle: String, action: (() -> Void)? = nil) {
+    init(title: String, subtitle: LoadableTextView.State, action: (() -> Void)? = nil) {
         self.title = title
         self.subtitle = subtitle
         self.action = action

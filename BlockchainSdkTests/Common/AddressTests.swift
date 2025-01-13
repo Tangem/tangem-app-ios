@@ -1561,4 +1561,47 @@ class AddressesTests: XCTestCase {
         XCTAssertFalse(addressService.validate("0x"))
         XCTAssertFalse(addressService.validate("0xa7bfcf5aa54d22e32f528b4ed0131eb157f65f2e04b79541d26a"))
     }
+
+    func testFact0rnAddressAnyGeneration() throws {
+        let walletPublicKey = Data(hexString: "03B6D7E1FB0977A5881A3B1F64F9778B4F56CB2B9EFD6E0D03E60051EAFEBF5831")
+        let expectedAddress = "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey"
+
+        let addressService = Fact0rnAddressService()
+        let address = try addressService.makeAddress(from: walletPublicKey)
+
+        XCTAssertEqual(address.value, expectedAddress)
+    }
+
+    func testFact0rnAddressValidation() throws {
+        let addressService = Fact0rnAddressService()
+
+        let validAddresses = [
+            "fact1qsev9cuanvdqwuh3gnkjaqdtjkeqcw5smex9dyx",
+            "fact1qpr0t2aaus7wkerkhpqw4kh6z65pf33zcawx9t0",
+            "fact1qsufztqay97de6073cxjd256mu6n9ruylydpzxf",
+            "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey",
+        ]
+
+        for validAddress in validAddresses {
+            XCTAssertTrue(addressService.validate(validAddress))
+        }
+
+        let unValidAddresses = [
+            "",
+            "1q3n6x7kgsup6zlmpmndppx6ymtk6hxh4lnttt3y",
+            "fact",
+        ]
+
+        for unValidAddress in unValidAddresses {
+            XCTAssertFalse(addressService.validate(unValidAddress))
+        }
+    }
+
+    func testMakeScriptHashFromAddress() throws {
+        let expectedAddress = "fact1qg2qvzvrgukkp5gct2n8dvuxz99ddxwecmx9sey"
+        let expectedScriptHash = "808171256649754B402099695833B95E4507019B3E494A7DBC6F62058F09050E"
+
+        let scriptHash = try Fact0rnAddressService.addressToScriptHash(address: expectedAddress)
+        XCTAssertEqual(scriptHash, expectedScriptHash)
+    }
 }
