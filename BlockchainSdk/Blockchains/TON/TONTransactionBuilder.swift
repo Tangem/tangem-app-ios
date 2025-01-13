@@ -182,7 +182,11 @@ final class TONTransactionBuilder {
         params: TONTransactionParams?
     ) throws -> TheOpenNetworkJettonTransfer {
         let decimalAmountValue = amount.value * token.decimalValue
-        let jettonAmountPayload = try TONUtils().jettonAmountPayload(from: decimalAmountValue)
+
+        let jettonAmountPayload = try TONUtils().jettonAmountPayload(
+            from: decimalAmountValue,
+            decimalCount: token.decimalCount
+        )
 
         return TheOpenNetworkJettonTransfer.with {
             $0.jettonAmount = jettonAmountPayload
