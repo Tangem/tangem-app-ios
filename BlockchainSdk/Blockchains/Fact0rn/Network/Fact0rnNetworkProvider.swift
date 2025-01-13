@@ -19,12 +19,14 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
 
     private let provider: ElectrumWebSocketProvider
     private let decimalValue: Decimal
+    private let decimalCount: Int
 
     // MARK: - Init
 
-    init(provider: ElectrumWebSocketProvider, decimalValue: Decimal) {
+    init(provider: ElectrumWebSocketProvider, decimalValue: Decimal, decimalCount: Int) {
         self.provider = provider
         self.decimalValue = decimalValue
+        self.decimalCount = decimalCount
     }
 
     // MARK: - BitcoinNetworkProvider Implementation
@@ -68,11 +70,16 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             normalEstimateFeePublisher,
             priorityEstimateFeePublisher
         )
-        .map { minimal, normal, priority in
-            BitcoinFee(
-                minimalSatoshiPerByte: minimal,
-                normalSatoshiPerByte: normal,
-                prioritySatoshiPerByte: priority
+        .withWeakCaptureOf(self)
+        .map { provider, values in
+            let minimalSatoshiPerByte = provider.calculateFee(value: values.0, size: Constants.minimalFeeBlockAmount)
+            let normalSatoshiPerByte = provider.calculateFee(value: values.1, size: Constants.normalFeeBlockAmount)
+            let prioritySatoshiPerByte = provider.calculateFee(value: values.2, size: Constants.priorityFeeBlockAmount)
+            
+            return BitcoinFee(
+                minimalSatoshiPerByte: minimalSatoshiPerByte,
+                normalSatoshiPerByte: normalSatoshiPerByte,
+                prioritySatoshiPerByte: prioritySatoshiPerByte
             )
         }
         .eraseToAnyPublisher()
@@ -264,6 +271,13 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             transactionParams: nil
         )
     }
+    
+    func calculateFee(value: Decimal, size: Int) -> Decimal {
+        let perKbDecimalValue = (value * decimalValue).rounded(scale: decimalCount, roundingMode: .up)
+        let decimalFeeValue = Decimal(size) / Constants.perKbRate * perKbDecimalValue
+        let feeDecimalValue = (decimalFeeValue / decimalValue).rounded(scale: decimalCount, roundingMode: .up)
+        return feeDecimalValue
+    }
 }
 
 extension Fact0rnNetworkProvider {
@@ -277,6 +291,6 @@ extension Fact0rnNetworkProvider {
         static let priorityFeeBlockAmount = 1
 
         /// We use 1000, because Electrum node return fee for per 1000 bytes.
-        static let recommendedFeePer1000Bytes = 1000
+        static let perKbRate: Decimal = 1000
     }
 }

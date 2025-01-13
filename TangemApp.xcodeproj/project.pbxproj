@@ -116,8 +116,8 @@
 		2DA57BC32CD650E900C890DF /* CasperAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE62CD1414000581EA6 /* CasperAddressService.swift */; };
 		2DA8AB122A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */; };
 		2DAB6B6F2CE28E8500B4A10C /* MinimumAmountRestrictable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */; };
-		2DB2005C2D3068A300E499A3 /* Fact0rnNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */; };
-		2DB2005E2D31332A00E499A3 /* Fact0rnAccountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */; };
+		2DB200632D34F57700E499A3 /* Fact0rnNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB200612D34F57700E499A3 /* Fact0rnNetworkProvider.swift */; };
+		2DB200642D34F57700E499A3 /* Fact0rnAccountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB200602D34F57700E499A3 /* Fact0rnAccountModel.swift */; };
 		2DB3614B2C14FBAB00BB1D38 /* SegmentedPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */; };
 		2DB3614D2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */; };
 		2DB3614F2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */; };
@@ -3306,6 +3306,8 @@
 		2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumAmountRestrictable.swift; sourceTree = "<group>"; };
 		2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
 		2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnAccountModel.swift; sourceTree = "<group>"; };
+		2DB200602D34F57700E499A3 /* Fact0rnAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnAccountModel.swift; sourceTree = "<group>"; };
+		2DB200612D34F57700E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
 		2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerView.swift; sourceTree = "<group>"; };
 		2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedPickerView+EnviromentValues.swift"; sourceTree = "<group>"; };
 		2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerViewContentStyle.swift; sourceTree = "<group>"; };
@@ -6673,11 +6675,20 @@
 			path = Tooltip;
 			sourceTree = "<group>";
 		};
-		2DB2005A2D3068A300E499A3 /* Network */ = {
+		2DB2005F2D34F2D400E499A3 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */,
 				2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */,
+				2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		2DB200622D34F57700E499A3 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				2DB200602D34F57700E499A3 /* Fact0rnAccountModel.swift */,
+				2DB200612D34F57700E499A3 /* Fact0rnNetworkProvider.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -7002,6 +7013,7 @@
 				B62D43792CBC7EC700C2460E /* BlockchainSdkExample */,
 				5D3F77C324BF56D800E8695B /* Products */,
 				2E5061A84512B23CCB5F2E17 /* Frameworks */,
+				2DB2005F2D34F2D400E499A3 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -12620,7 +12632,7 @@
 				DABCDA1D2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift */,
 				DA8A38C52D09046400ADD81D /* Fact0rnMainNetworkParams.swift */,
 				DABCDA1B2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift */,
-				2DB2005A2D3068A300E499A3 /* Network */,
+				2DB200622D34F57700E499A3 /* Network */,
 			);
 			path = Fact0rn;
 			sourceTree = "<group>";
@@ -18863,7 +18875,6 @@
 				B62D42BC2CBC79DB00C2460E /* Wallet.swift in Sources */,
 				B62D40892CBC79DA00C2460E /* ABIEncoder.swift in Sources */,
 				B62D41952CBC79DA00C2460E /* StellarExternalLinkProvider.swift in Sources */,
-				2DB2005E2D31332A00E499A3 /* Fact0rnAccountModel.swift in Sources */,
 				B62D40AA2CBC79DA00C2460E /* DisChainExternalLinkProvider.swift in Sources */,
 				B62D42082CBC79DB00C2460E /* XRPHistoricalTransaction.swift in Sources */,
 				B62D3FDC2CBC79DA00C2460E /* OP_NUMEQUAL.swift in Sources */,
@@ -19024,7 +19035,6 @@
 				B62D40BF2CBC79DA00C2460E /* TelosExternalLinkProvider.swift in Sources */,
 				B62D40F52CBC79DA00C2460E /* HederaWalletAssembly.swift in Sources */,
 				B62D40C02CBC79DA00C2460E /* ZkSyncExternalLinkProvider.swift in Sources */,
-				2DB2005C2D3068A300E499A3 /* Fact0rnNetworkProvider.swift in Sources */,
 				B62D40942CBC79DA00C2460E /* EthereumAdditionalInfoProvider.swift in Sources */,
 				B62D429E2CBC79DB00C2460E /* Amount.swift in Sources */,
 				B62D3F992CBC79DA00C2460E /* AlgorandAccountStatus.swift in Sources */,
@@ -19401,6 +19411,8 @@
 				B62D42002CBC79DB00C2460E /* XDCAddressService.swift in Sources */,
 				B62D40912CBC79DA00C2460E /* EthereumAddressConverterError.swift in Sources */,
 				B62D41792CBC79DA00C2460E /* RavencoinRawTransaction.swift in Sources */,
+				2DB200632D34F57700E499A3 /* Fact0rnNetworkProvider.swift in Sources */,
+				2DB200642D34F57700E499A3 /* Fact0rnAccountModel.swift in Sources */,
 				B62D41CB2CBC79DB00C2460E /* market_contract.pb.swift in Sources */,
 				B62D3FB52CBC79DA00C2460E /* AptosNetworkService.swift in Sources */,
 				B62D40192CBC79DA00C2460E /* OP_NIP.swift in Sources */,
