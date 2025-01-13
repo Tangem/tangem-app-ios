@@ -111,9 +111,7 @@ struct EstimationFeeAddressFactory {
         case .clore:
             return "AJfAu7RJxiTowM9qVaTbVuS5JCPCpV3p7M"
         case .fact0rn:
-            // TODO: [Fact0rn] Add estimation fee address
-            // https://tangem.atlassian.net/browse/IOS-8759
-            return ""
+            return "fact1q69h3nzh7rl2uv09zp5pw26vw58wdcl2j4lyag0"
         }
     }
 }

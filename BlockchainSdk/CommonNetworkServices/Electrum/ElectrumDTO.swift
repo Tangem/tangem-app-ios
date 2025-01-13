@@ -11,7 +11,7 @@ import Foundation
 /*
  Electrum responses
  Supports specs:
- 
+
  - Original: https://bitcoincash.network/electrum/protocol-methods.html
  - Rostrum (Nexa): https://bitcoinunlimited.gitlab.io/rostrum/
  - Radiant: https://electrumx.readthedocs.io/en/latest/

@@ -38,7 +38,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
                 promise(result)
             }
         }
-        
+
         return defferedScriptHash
             .withWeakCaptureOf(self)
             .flatMap { provider, scriptHash in
@@ -75,7 +75,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             let minimalSatoshiPerByte = provider.calculateFee(value: values.0, size: Constants.minimalFeeBlockAmount)
             let normalSatoshiPerByte = provider.calculateFee(value: values.1, size: Constants.normalFeeBlockAmount)
             let prioritySatoshiPerByte = provider.calculateFee(value: values.2, size: Constants.priorityFeeBlockAmount)
-            
+
             return BitcoinFee(
                 minimalSatoshiPerByte: minimalSatoshiPerByte,
                 normalSatoshiPerByte: normalSatoshiPerByte,
@@ -90,8 +90,8 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             guard let self else {
                 throw BlockchainSdkError.noAPIInfo
             }
-            
-            return try await self.provider.send(transactionHex: transaction)
+
+            return try await provider.send(transactionHex: transaction)
         }
         .eraseToAnyPublisher()
     }
@@ -101,8 +101,8 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             guard let self else {
                 throw BlockchainSdkError.noAPIInfo
             }
-            
-            return try await self.provider.send(transactionHex: transaction)
+
+            return try await provider.send(transactionHex: transaction)
         }
         .eraseToAnyPublisher()
     }
@@ -112,8 +112,8 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             guard let self else {
                 throw BlockchainSdkError.noAPIInfo
             }
-            
-            let txHistory = try await self.provider.getTxHistory(identifier: .scriptHash(address))
+
+            let txHistory = try await provider.getTxHistory(identifier: .scriptHash(address))
             return txHistory.count
         }
         .eraseToAnyPublisher()
@@ -126,9 +126,9 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             guard let self else {
                 throw BlockchainSdkError.noAPIInfo
             }
-            
-            async let balance = self.provider.getBalance(identifier: identifier)
-            async let unspents = self.provider.getUnspents(identifier: identifier)
+
+            async let balance = provider.getBalance(identifier: identifier)
+            async let unspents = provider.getUnspents(identifier: identifier)
 
             return try await ElectrumAddressInfo(
                 balance: Decimal(balance.confirmed) / decimalValue,
@@ -144,7 +144,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     private func getPendingTransactions(
         address: String,
         with unspents: [ElectrumUTXO]
@@ -153,25 +153,25 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             guard let self else {
                 throw BlockchainSdkError.noAPIInfo
             }
-            
+
             let unconfirmedUnspents = unspents.filter(\.isNonConfirmed)
-            
+
             let result: [PendingTransaction] = try await withThrowingTaskGroup(of: PendingTransaction.self) { group in
                 var pendingTransactions: [PendingTransaction] = []
-                
+
                 for unspent in unconfirmedUnspents {
                     group.addTask {
                         try await self.createPendingTransaction(unspent: unspent, address: address)
                     }
                 }
-                
+
                 for try await value in group {
                     pendingTransactions.append(value)
                 }
-                
+
                 return pendingTransactions
             }
-            
+
             return result
         }
         .eraseToAnyPublisher()
@@ -182,8 +182,8 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             guard let self else {
                 throw BlockchainSdkError.noAPIInfo
             }
-            
-            return try await self.provider.estimateFee(block: count)
+
+            return try await provider.estimateFee(block: count)
         }
         .eraseToAnyPublisher()
     }
@@ -201,7 +201,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     // MARK: - Helpers
 
     private func mapBitcoinResponse(account: Fact0rnAccountModel, outputScript: String) throws -> BitcoinResponse {
@@ -226,12 +226,12 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             )
         }
     }
-    
+
     private func createPendingTransaction(unspent: ElectrumUTXO, address: String) async throws -> PendingTransaction {
         let transaction = try await provider.getTransaction(hash: unspent.hash)
         return toPendingTx(transaction: transaction, address: address, decimalValue: decimalValue)
     }
-    
+
     private func toPendingTx(
         transaction: ElectrumDTO.Response.Transaction,
         address: String,
@@ -241,7 +241,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         var destination: String = .unknown
         var value: Decimal?
         var isIncoming = false
-        
+
         let vin = transaction.vin
         let vout = transaction.vout
 
@@ -257,7 +257,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             source = txSource.address ?? .unknown
             value = txDestination.value
         }
-        
+
         let fee = transaction.fee ?? .zero
 
         return PendingTransaction(
@@ -271,7 +271,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             transactionParams: nil
         )
     }
-    
+
     func calculateFee(value: Decimal, size: Int) -> Decimal {
         let perKbDecimalValue = (value * decimalValue).rounded(scale: decimalCount, roundingMode: .up)
         let decimalFeeValue = Decimal(size) / Constants.perKbRate * perKbDecimalValue
