@@ -30,7 +30,7 @@ extension MultiWalletNotificationEvent: NotificationEvent {
         case .someNetworksUnreachable:
             return Localization.warningSomeNetworksUnreachableMessage
         case .someTokenBalancesNotUpdated:
-            return "Some token balances could not updated"
+            return Localization.warningSomeTokenBalancesNotUpdated
         }
     }
 

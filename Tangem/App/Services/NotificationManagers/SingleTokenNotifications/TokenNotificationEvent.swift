@@ -81,7 +81,10 @@ extension TokenNotificationEvent: NotificationEvent {
         case .networkUnreachable:
             return Localization.warningNetworkUnreachableMessage
         case .networkNotUpdated(let date):
-            return "Last update was \(date.formatted(date: .abbreviated, time: .shortened))"
+            // Formatting will be update
+            // TODO: https://tangem.atlassian.net/browse/IOS-8666
+            let formatted = date.formatted(date: .abbreviated, time: .shortened)
+            return Localization.warningLastBalanceUpdatedTime(formatted)
         case .rentFee(let message):
             return message
         case .noAccount(let message):
@@ -147,7 +150,7 @@ extension TokenNotificationEvent: NotificationEvent {
     var icon: NotificationView.MessageIcon {
         switch self {
         case .networkNotUpdated:
-            return .init(iconType: .image(Assets.failedCloud.image))
+            return .init(iconType: .image(Assets.failedCloud.image), color: Colors.Icon.attention)
         case .networkUnreachable,
              .bnbBeaconChainRetirement,
              .maticMigration,
@@ -317,6 +320,8 @@ extension TokenNotificationEvent {
              .staking,
              .manaLevel,
              .maticMigration,
+             .kaspaTokensBeta,
+             .networkNotUpdated:
             return [:]
         }
     }
