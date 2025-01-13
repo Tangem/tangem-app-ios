@@ -934,7 +934,7 @@
 "voice_over_open_card_details" = "Open device details";
 "voice_over_open_new_wallet_connect_session" = "Scan QR code to open new WalletConnect session";
 "wallet_balance_missing_derivation" = "Scan card or ring";
-"wallet_been_activated_message" = "This wallet has already been activated earlier.\nIf it was done not by you please contact support.\nTangem never sells wallets along with the pre-generated access code.";
+"wallet_been_activated_message" = "This wallet has already been activated earlier.\nIf it was not done by you, please contact support.\nTangem never sells wallets along with pre-generated access codes.";
 "wallet_connect_alert_sign_message" = "Requesting to sign a message.\n\n%@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@, requesting to\nsign BNB transaction.\n\n%2$@";
 "wallet_connect_bnb_trade_order_message" = "Trade order for %1$@\nPrice: %2$@\nAmount to receive: %3$@\nAmount to pay: %4$@";
@@ -1019,6 +1019,7 @@
 "warning_kaspa_unfinished_token_transaction_discard_message" = "Are you sure you want to cancel the transaction? You will not be able to retry the transaction again";
 "warning_kaspa_unfinished_token_transaction_message" = "Your transaction with an amount of %1$@ %2$@ was not completed. You can try again to complete it.";
 "warning_kaspa_unfinished_token_transaction_title" = "You have unfinished transaction";
+"warning_last_balance_updated_time" = "Last update was %@";
 "warning_long_transaction_message" = "iPhone 7/7+ cannot sign transactions on this network. To complete this operation, please use a different phone.";
 "warning_long_transaction_title" = "Transaction signing unavailable";
 "warning_low_signatures_message" = "Only %@ signatures are left on this card. You must withdraw all of your funds.";
@@ -1044,13 +1045,14 @@
 "warning_rent_fee_title" = "Network rent fee required";
 "warning_seedphrase_issue_answer_no" = "Thank you! All set! No further actions required.";
 "warning_seedphrase_issue_answer_yes" = "You will now be redirected to the official Tangem website. Please read and follow instructions there.";
-"warning_seedphrase_issue_message" = "Have you ever contacted Tangem support team directly from this application?";
+"warning_seedphrase_issue_message" = "Have you ever contacted the Tangem support team directly through this application?";
 "warning_seedphrase_issue_title" = "Mandatory security update";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ is an asset in the %2$@ network. To make a %3$@ transaction, you must deposit some %4$@ (%5$@) to cover the network fee.";
 "warning_send_blocked_funds_for_fee_title" = "Insufficient %1$@ to cover network fee";
 "warning_solana_rent_fee_message" = "Solana network charges a rent of %1$@ every 2 days. Accounts that can't afford the rent are purged from the network. Deposit your account with more than %2$@ to use it for free.";
 "warning_some_networks_unreachable_message" = "Swipe down to refresh or try again later.";
 "warning_some_networks_unreachable_title" = "Some networks are unreachable";
+"warning_some_token_balances_not_updated" = "Some token balances could not updated";
 "warning_system_deprecation_title" = "System update required";
 "warning_system_deprecation_with_date_message" = "Support for your version of the operating system will end on %@. To receive future app updates you must update it to the latest version.";
 "warning_system_update_message" = "Tangem recommends installing the latest iOS update for stable and safe operation";

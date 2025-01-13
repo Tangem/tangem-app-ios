@@ -934,7 +934,7 @@
 "voice_over_open_card_details" = "Gerätedetails öffnen";
 "voice_over_open_new_wallet_connect_session" = "QR-Code scannen, um eine neue WalletConnect Sitzung zu öffnen";
 "wallet_balance_missing_derivation" = "Karte oder Ring scannen";
-"wallet_been_activated_message" = "Diese Wallet wurde bereits früher aktiviert.\nWenn es nicht von Dir durchgeführt wurde, wende Dich bitte an den Support.\nTangem verkauft niemals Wallets zusammen mit dem vorgenerierten Zugangscode.";
+"wallet_been_activated_message" = "Dieses Wallet wurde bereits früher aktiviert. \n Wenn dies nicht von Dir durchgeführt wurde, wende Dich bitte an den Support. \n Tangem verkauft niemals Wallets zusammen mit vorgenerierten Zugangscodes.";
 "wallet_connect_alert_sign_message" = "Aufforderung zum Signieren einer Nachricht. \n\n %@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@, mit der Bitte um\nBNB-Transaktion zu unterzeichnen.\n\n%2$@";
 "wallet_connect_bnb_trade_order_message" = "Handelsauftrag für %1$@\n Preis: %2$@\n Zu erhaltender Betrag: %3$@\n Zu zahlender Betrag: %4$@";
@@ -1019,6 +1019,7 @@
 "warning_kaspa_unfinished_token_transaction_discard_message" = "Bist Du sicher, dass Du die Transaktion stornieren willst? Du kannst die Transaktion nicht erneut starten.";
 "warning_kaspa_unfinished_token_transaction_message" = "Deine Transaktion mit einem Betrag von %1$@ %2$@ wurde nicht abgeschlossen. Du kannst versuchen, diese erneut abzuschließen.";
 "warning_kaspa_unfinished_token_transaction_title" = "Du hast eine nicht abgeschlossene Transaktion";
+"warning_last_balance_updated_time" = "Last update was %@";
 "warning_long_transaction_message" = "iPhone 7/7+ kann in diesem Netzwerk keine Transaktionen signieren. Um diesen Vorgang abzuschließen, verwende bitte ein anderes Telefon.";
 "warning_long_transaction_title" = "Transaktionssignierung nicht verfügbar";
 "warning_low_signatures_message" = "Auf dieser Karte oder Ring sind nur noch %@ Unterschriften übrig. Du musst dein gesamtes Guthaben abheben.";
@@ -1044,13 +1045,14 @@
 "warning_rent_fee_title" = "Netzmietgebühr erforderlich";
 "warning_seedphrase_issue_answer_no" = "Vielen Dank! Alles erledigt! Keine weiteren Maßnahmen erforderlich.";
 "warning_seedphrase_issue_answer_yes" = "Sie werden jetzt auf die offizielle Tangem-Website weitergeleitet. Bitte lesen und befolgen Sie dort die Anweisungen.";
-"warning_seedphrase_issue_message" = "Haben Sie jemals das Support-Team von Tangem direkt über diese Anwendung kontaktiert?";
+"warning_seedphrase_issue_message" = "Hast Du das Tangem-Supportteam schon einmal direkt über diese Anwendung kontaktiert?";
 "warning_seedphrase_issue_title" = "Verpflichtendes Sicherheitsupdate";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ ist ein Vermögenswert im %2$@ Netzwerk. Um eine %3$@ Transaktion durchzuführen, musst du etwas %4$@ (%5$@) einzahlen, um die Netzwerkgebühr zu decken.";
 "warning_send_blocked_funds_for_fee_title" = "Unzureichende %1$@ zur Deckung der Netzgebühr";
 "warning_solana_rent_fee_message" = "Das Solana-Netzwerk erhebt alle 2 Tage eine Miete von %1$@. Konten, die sich die Miete nicht leisten können, werden aus dem Netzwerk gelöscht. Hinterlege deinem Konto mit mehr als %2$@, um es kostenlos zu nutzen.";
 "warning_some_networks_unreachable_message" = "Wischen Sie nach unten, um zu aktualisieren, oder versuchen Sie es später erneut.";
 "warning_some_networks_unreachable_title" = "Einige Netzwerke sind nicht erreichbar";
+"warning_some_token_balances_not_updated" = "Some token balances could not updated";
 "warning_system_deprecation_title" = "Systemupdate erforderlich";
 "warning_system_deprecation_with_date_message" = "Der Support für deine Betriebssystemversion endet am %@ . Um zukünftige App-Updates zu erhalten, musst du auf die neueste Version aktualisieren.";
 "warning_system_update_message" = "Tangem empfiehlt die Installation des neuesten iOS-Updates für einen stabilen und sicheren Betrieb";
