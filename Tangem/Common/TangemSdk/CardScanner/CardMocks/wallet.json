@@ -13,7 +13,7 @@
         "bls12381_G2_AUG",
         "bls12381_G2_POP"
     ],
-    "cardPublicKey" : "026D5FACEA9BAB187A770AB31A9D7F330A7BFA25898A853E537200755A6770FB7D",
+    "cardPublicKey" : "0000",
     "settings" : {
         "maxWalletsCount" : 20,
         "isLinkedTerminalEnabled" : true,
@@ -42,7 +42,7 @@
     },
     "issuer" : {
         "name" : "TANGEM AG",
-        "publicKey" : "0356E7C3376329DFAE7388DF1695670386103C92486A87644FA9E512C9CF4E92FE"
+        "publicKey" : "0000"
     },
     "firmwareVersion" : {
         "minor" : 52,
@@ -51,12 +51,12 @@
         "stringValue" : "4.52r",
         "type" : "r"
     },
-    "batchId" : "AC07",
+    "batchId" : "AC00",
     "isPasscodeSet" : false,
     "manufacturer" : {
         "name" : "TANGEM",
         "manufactureDate" : "2022-06-02",
-        "signature" : "7FA19C0FEDBF642092B677DA50206C97E5496B109DF5A204D512D87652527DBF511111A1C99980C38C9D45B4EE2522DA4AEFC741CAF477CD3A43EA097D59A000"
+        "signature" : "0000"
     },
     "attestation" : {
         "cardKeyAttestation" : "verified",
