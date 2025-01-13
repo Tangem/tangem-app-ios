@@ -453,8 +453,7 @@ end
 
 private_lane :build_and_analyze do |options|
   code_sign_identity = options[:code_sign_identity]
-  # TODO: Test only, enable this back
-  #UI.user_error!("Invalid or missing code sign identity, can't process further with the build") if (code_sign_identity.nil? or code_sign_identity.empty?)
+  UI.user_error!("Invalid or missing code sign identity, can't process further with the build") if (code_sign_identity.nil? or code_sign_identity.empty?)
 
   xcarchive_path = File.expand_path("../" + options[:path] + options[:filename] + ".xcarchive")
   analyze_archive_util_path = File.expand_path("../" + ANALYZE_ARCHIVE_UTIL_PATH)
