@@ -529,15 +529,15 @@ extension WalletModel {
             return
         }
 
-        AppLog.shared.debug("\(self) has pending local transactions \(pendingTransactions.map { $0.hash }). Try to insert it to transaction history")
+        AppLog.shared.debug("\(self) has pending local transactions. Try to insert it to transaction history")
         let mapper = PendingTransactionRecordMapper(formatter: formatter)
 
         pendingTransactions.forEach { pending in
             if items.contains(where: { $0.hash == pending.hash }) {
-                AppLog.shared.debug("\(self) Transaction history already contains \(pending.hash)")
+                AppLog.shared.debug("\(self) Transaction history already contains hash")
             } else {
                 let record = mapper.mapToTransactionRecord(pending: pending)
-                AppLog.shared.debug("\(self) Inserted to transaction history \(record.hash)")
+                AppLog.shared.debug("\(self) Inserted to transaction history hash")
                 items.insert(record, at: 0)
             }
         }

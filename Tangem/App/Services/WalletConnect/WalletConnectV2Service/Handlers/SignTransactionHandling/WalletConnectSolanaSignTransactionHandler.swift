@@ -33,7 +33,7 @@ final class WalletConnectSolanaSignTransactionHandler {
             transaction = parameters.transaction
         } catch {
             let stringRepresentation = request.stringRepresentation
-            AppLog.shared.debug("[WC 2.0] Failed to create sign handler. Raised error: \(error), request data: \(stringRepresentation)")
+            AppLog.shared.debug("[WC 2.0] Failed to create sign handler. Raised error: \(error)")
             throw WalletConnectV2Error.dataInWrongFormat(stringRepresentation)
         }
 

@@ -2753,6 +2753,8 @@
 		EF977CBA2C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF977CB52C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift */; };
 		EF977CBF2C788965006BB27C /* PendingActionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF977CBE2C788965006BB27C /* PendingActionMapper.swift */; };
 		EF9C52B3287C77A10015D540 /* CardSettingsRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7B9CF2286C6C7A004C33A9 /* CardSettingsRoutable.swift */; };
+		EF9CE9FD2D19B9800011BF4C /* ExpressFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9CE9FC2D19B9800011BF4C /* ExpressFee.swift */; };
+		EF9CE9FF2D19B9930011BF4C /* ExpressAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9CE9FE2D19B9930011BF4C /* ExpressAmount.swift */; };
 		EF9E29972B4F0C8C00418559 /* TangemExpress.docc in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29962B4F0C8C00418559 /* TangemExpress.docc */; };
 		EF9E299D2B4F0C9100418559 /* TangemExpress.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF9E29932B4F0C8800418559 /* TangemExpress.framework */; };
 		EF9E29A42B4F0C9800418559 /* TangemExpressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29A32B4F0C9800418559 /* TangemExpressTests.swift */; };
@@ -5939,6 +5941,8 @@
 		EF977CB42C774B8E006BB27C /* MultipleRewardsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleRewardsCoordinator.swift; sourceTree = "<group>"; };
 		EF977CB52C774B8E006BB27C /* MultipleRewardsCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleRewardsCoordinatorView.swift; sourceTree = "<group>"; };
 		EF977CBE2C788965006BB27C /* PendingActionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingActionMapper.swift; sourceTree = "<group>"; };
+		EF9CE9FC2D19B9800011BF4C /* ExpressFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressFee.swift; sourceTree = "<group>"; };
+		EF9CE9FE2D19B9930011BF4C /* ExpressAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressAmount.swift; sourceTree = "<group>"; };
 		EF9E29932B4F0C8800418559 /* TangemExpress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TangemExpress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF9E29952B4F0C8C00418559 /* TangemExpress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TangemExpress.h; sourceTree = "<group>"; };
 		EF9E29962B4F0C8C00418559 /* TangemExpress.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = TangemExpress.docc; sourceTree = "<group>"; };
@@ -14421,6 +14425,8 @@
 		EF49C05E2CAD85690062AF06 /* Swap */ = {
 			isa = PBXGroup;
 			children = (
+				EF9CE9FE2D19B9930011BF4C /* ExpressAmount.swift */,
+				EF9CE9FC2D19B9800011BF4C /* ExpressFee.swift */,
 				EFDD6EDC2CBCF3EA00804205 /* ExpressProviderUpdateSource.swift */,
 				EF9E29DD2B4F0CCE00418559 /* ExpressTransactionType.swift */,
 				EF9E29DE2B4F0CCE00418559 /* ExpressPair.swift */,
@@ -19685,6 +19691,7 @@
 				EF9E2A172B4F0CD100418559 /* ExpressAuthorizationPlugin.swift in Sources */,
 				EF9E2A222B4F0CD100418559 /* ExpressTransactionData.swift in Sources */,
 				EF13996C2CBCFD1700AC9E2B /* OnrampQuote.swift in Sources */,
+				EF9CE9FD2D19B9800011BF4C /* ExpressFee.swift in Sources */,
 				EF9E2A132B4F0CD100418559 /* CommonLogger.swift in Sources */,
 				EF9E2A2F2B4F0CD100418559 /* AllowanceProvider.swift in Sources */,
 				EF49C0632CAD85A00062AF06 /* OnrampCountry.swift in Sources */,
@@ -19731,6 +19738,7 @@
 				EF9E2A212B4F0CD100418559 /* ExpressApprovePolicy.swift in Sources */,
 				EF9E2A362B4F0CD100418559 /* DEXExpressProviderManager.swift in Sources */,
 				EF9E29972B4F0C8C00418559 /* TangemExpress.docc in Sources */,
+				EF9CE9FF2D19B9930011BF4C /* ExpressAmount.swift in Sources */,
 				EF8BE6B32CCA8800001FBA2B /* OnrampDataRepository.swift in Sources */,
 				EF9E2A272B4F0CD100418559 /* ExpressProviderType.swift in Sources */,
 			);
