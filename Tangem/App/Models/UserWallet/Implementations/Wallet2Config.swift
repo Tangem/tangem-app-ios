@@ -251,7 +251,7 @@ extension Wallet2Config: UserWalletConfig {
         case "AF98":
             return cardsCount == 2 ? Assets.Cards.neiroDouble : Assets.Cards.neiroTriple
         // Winter 2
-        case "AF990011", "AF990012", "AF990013":
+        case "AF85", "AF86", "AF87", "AF990011", "AF990012", "AF990013":
             return cardsCount == 2 ? Assets.Cards.winter2Double : Assets.Cards.winter2Triple
         // USA
         case "AF91":
