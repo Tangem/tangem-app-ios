@@ -26,7 +26,7 @@ extension CommonExpressFeeProvider: ExpressFeeProvider {
         self.wallet = wallet
     }
 
-    func estimatedFee(amount: Decimal) async throws -> ExpressFee {
+    func estimatedFee(amount: Decimal) async throws -> ExpressFee.Variants {
         let amount = makeAmount(amount: amount, item: wallet.tokenItem)
         let fees = try await wallet.estimatedFee(amount: amount).async()
         return try mapToExpressFee(fees: fees)
@@ -46,7 +46,7 @@ extension CommonExpressFeeProvider: ExpressFeeProvider {
         return Fee(makeAmount(amount: amount, item: wallet.tokenItem))
     }
 
-    func getFee(amount: ExpressAmount, destination: String) async throws -> ExpressFee {
+    func getFee(amount: ExpressAmount, destination: String) async throws -> ExpressFee.Variants {
         switch amount {
         case .transfer(let amount):
             let amount = makeAmount(amount: amount, item: wallet.tokenItem)
@@ -81,7 +81,7 @@ private extension CommonExpressFeeProvider {
         Amount(with: item.blockchain, type: item.amountType, value: amount)
     }
 
-    func mapToExpressFee(fees: [Fee]) throws -> ExpressFee {
+    func mapToExpressFee(fees: [Fee]) throws -> ExpressFee.Variants {
         switch fees.count {
         case 1:
             return .single(fees[0])

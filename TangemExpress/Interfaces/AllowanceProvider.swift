@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol ExpressAllowanceProvider {
-    func allowanceState(request: ExpressManagerSwappingPairRequest, spender: String, policy: ExpressApprovePolicy) async throws -> AllowanceState
+    func allowanceState(request: ExpressManagerSwappingPairRequest, spender: String) async throws -> AllowanceState
 }
 
 public enum AllowanceState: Hashable {
