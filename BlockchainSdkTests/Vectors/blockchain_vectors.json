@@ -251,5 +251,22 @@
         "curve": "secp256k1",
         "shelley": false
     },
+    {
+        "key": "sei",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "filecoin",
+        "testnet": false,
+        "curve": "secp256k1",
+        "shelley": false
+    },
+    {
+        "key": "sui",
+        "testnet": false,
+        "curve": "ed25519_slip0010",
+        "shelley": false
+    }
 ]
-
