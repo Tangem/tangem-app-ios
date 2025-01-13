@@ -61,12 +61,10 @@ struct OrganizeTokensListItemView: View {
     private var defaultMiddleComponent: some View {
         tokenName
 
-        LoadableTextView(
+        LoadableTokenBalanceView(
             state: viewModel.balance,
-            font: Fonts.Regular.footnote,
-            textColor: Colors.Text.tertiary,
-            loaderSize: .init(width: 52, height: 12),
-            isSensitiveText: true
+            style: .init(font: Fonts.Regular.footnote, textColor: Colors.Text.tertiary),
+            loader: .init(size: .init(width: 52, height: 12))
         )
     }
 
