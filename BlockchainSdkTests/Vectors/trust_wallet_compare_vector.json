@@ -199,5 +199,17 @@ https://developer.apple.com/documentation/foundation/jsondecoder/3766916-allowsj
             "derivation": "m/44'/223'/0'/0/0",
             "walletPublicKey": "04a6817863f84f32775f63dcbc177e82edecde2e89371c9fc8450b7c63ff026e82cdf8e91b5c2f42480bb844df5e92ab1b0305ccf7156581727b208b156788b167"
         },
+        {
+            "blockchain": "sei",
+            "derivation": "m/44'/118'/0'/0/0"
+        },
+        {
+            "blockchain": "filecoin",
+            "derivation": "m/44'/461'/0'/0/0"
+        },
+        {
+            "blockchain": "sui",
+            "derivation": "m/44'/784'/0'/0'/0'"
+        }
     ]
 }
