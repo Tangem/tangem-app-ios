@@ -107,7 +107,8 @@ lane :release do |options|
     filename: PRODUCTION_SCHEME, 
     path: BUILD_PATH,
     analyze_archive: options[:analyze_archive],
-    code_sign_identity: options[:code_sign_identity]
+    code_sign_identity: options[:code_sign_identity],
+    code_sign_mode: "release"
   )
   upload_dsyms(app_id: app_id, filename: PRODUCTION_SCHEME)
 
@@ -160,7 +161,8 @@ lane :build_Alpha do |options|
     filename: options[:filename],
     path: options[:path],
     analyze_archive: options[:analyze_archive],
-    code_sign_identity: options[:code_sign_identity]
+    code_sign_identity: options[:code_sign_identity],
+    code_sign_mode: "debug"
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -190,7 +192,8 @@ lane :build_Beta do |options|
     filename: options[:filename],
     path: options[:path],
     analyze_archive: options[:analyze_archive],
-    code_sign_identity: options[:code_sign_identity]
+    code_sign_identity: options[:code_sign_identity],
+    code_sign_mode: "debug"
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -221,7 +224,8 @@ lane :build_RC do |options|
     filename: options[:filename],
     path: options[:path],
     analyze_archive: options[:analyze_archive],
-    code_sign_identity: options[:code_sign_identity]
+    code_sign_identity: options[:code_sign_identity],
+    code_sign_mode: "release"
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -429,7 +433,8 @@ private_lane :build do |options|
       build: options[:build],
       filename: options[:filename],
       path: options[:path],
-      code_sign_identity: options[:code_sign_identity]
+      code_sign_identity: options[:code_sign_identity],
+      code_sign_mode: options[:code_sign_mode]
     )
   else
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
@@ -455,6 +460,8 @@ private_lane :build_and_analyze do |options|
   code_sign_identity = options[:code_sign_identity]
   UI.user_error!("Invalid or missing code sign identity, can't process further with the build") if (code_sign_identity.nil? or code_sign_identity.empty?)
 
+  code_sign_mode = options[:code_sign_mode]
+
   xcarchive_path = File.expand_path("../" + options[:path] + options[:filename] + ".xcarchive")
   analyze_archive_util_path = File.expand_path("../" + ANALYZE_ARCHIVE_UTIL_PATH)
 
@@ -466,7 +473,7 @@ private_lane :build_and_analyze do |options|
     xcarchive_path: xcarchive_path
   )
 
-  sh("#{analyze_archive_util_path} '#{xcarchive_path}' '#{code_sign_identity}'")
+  sh("#{analyze_archive_util_path} '#{xcarchive_path}' '#{code_sign_identity}' '#{code_sign_mode}'")
 
   create_ipa(
     path: options[:path],
