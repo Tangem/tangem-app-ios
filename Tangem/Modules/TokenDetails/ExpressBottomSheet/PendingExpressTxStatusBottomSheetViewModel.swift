@@ -118,6 +118,11 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
         case .onramp(_, let currency, _):
             params[.currency] = currency
             Analytics.log(event: .onrampOnrampStatusOpened, params: params)
+
+            if pendingTransaction.transactionStatus == .verificationRequired {
+                Analytics.log(event: .onrampNoticeKYC, params: params)
+            }
+
         case .swap:
             Analytics.log(event: .tokenSwapStatusScreenOpened, params: params)
         }
