@@ -189,15 +189,23 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     }
 
     private func send(transactionHex: String) -> AnyPublisher<String, Error> {
-        Future.async {
-            try await self.provider.send(transactionHex: transactionHex)
+        Future.async { [weak self] in
+            guard let self else {
+                throw BlockchainSdkError.noAPIInfo
+            }
+
+            return try await provider.send(transactionHex: transactionHex)
         }
         .eraseToAnyPublisher()
     }
 
     private func getTransactionInfo(hash: String) -> AnyPublisher<ElectrumDTO.Response.Transaction, Error> {
-        Future.async {
-            try await self.provider.getTransaction(hash: hash)
+        Future.async { [weak self] in
+            guard let self else {
+                throw BlockchainSdkError.noAPIInfo
+            }
+
+            return try await provider.getTransaction(hash: hash)
         }
         .eraseToAnyPublisher()
     }
