@@ -190,7 +190,7 @@ final class TONTransactionBuilder {
             $0.forwardAmount = 1 // needs some amount to send "jetton transfer notification", use minimum
         }
     }
-    
+
     /// Converts given amount to a uint128 with big-endian byte order.
     private func jettonAmountPayload(from amount: Amount, tokenDecimalValue: Decimal) throws -> Data {
         let decimalAmountValue = amount.value * tokenDecimalValue
