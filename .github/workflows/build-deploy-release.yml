@@ -93,7 +93,7 @@ jobs:
   build:
     name: Tangem Release
     needs: prepare
-    uses: tangem/actions/.github/workflows/build.yml@main
+    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8885_private_app_config  # TODO: Switch to main
     with:
       stage: '${{ needs.prepare.outputs.stage }}'
       version: '${{ needs.prepare.outputs.version }}'
@@ -113,7 +113,7 @@ jobs:
 
   deploy:
     name: Tangem Release TestFlight
-    uses: tangem/actions/.github/workflows/deploy-testflight.yml@main
+    uses: tangem/actions/.github/workflows/deploy-testflight.yml@feature/IOS-8885_private_app_config  # TODO: Switch to main
     needs: 
       - prepare
       - build
@@ -131,7 +131,7 @@ jobs:
 
   notification:
     name: Deploy Notification
-    uses: tangem/actions/.github/workflows/notification.yml@main
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8885_private_app_config  # TODO: Switch to main
     needs:
       - prepare
       - build
@@ -150,7 +150,7 @@ jobs:
   error_notification:
     name: Error Notification
     if: failure()
-    uses: tangem/actions/.github/workflows/notification.yml@main
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8885_private_app_config  # TODO: Switch to main
     needs:
       - prepare
       - build
