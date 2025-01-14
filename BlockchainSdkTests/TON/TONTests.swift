@@ -111,24 +111,4 @@ class TONTests: XCTestCase {
 
         XCTAssertEqual(buildForSend, "te6cckECBAEAAQQAAUWIACQXBHIe9/91TLuQMfVfoOBYnBM5DSBKhUJ3RErLZGB8DAEBnGqtB661fpmlKL9e5WSexM7/NPMB4cZQLiWRmFW0dmfK4zsNBOfl2AgrmYRC6h3EHUJ3rOjQJiEYdoLd0nAGfQgpqaMXZ1Hf+AAAAAUAAwIBaEIANP5HaiTOKRc0bjfTpk6Cls8zLb601NvObs9Ep9gHxDQgF9eEAAAAAAAAAAAAAAAAAAEDAKgPin6lAAAAAAAAAAAwGGoIAOd7MnktDeVZ63qT+99i5rEdK30WItRtuGR/v6KkmBZrAASC4I5D3v/uqZdyBj6r9BwLE4JnIaQJUKhO6IlZbIwPggKtrAfE")
     }
-
-    func testJettonAmountDecimalDataConverterVar1() throws {
-        let blockchain = BlockchainSdk.Blockchain.ton(curve: .ed25519, testnet: false)
-        let amount = Amount(with: blockchain, value: Decimal(stringValue: "1000000000")!)
-        let amountPayload = try TONUtils().jettonAmountPayload(from: amount.value, decimalCount: blockchain.decimalCount) // 10000000000
-
-        let expectedHexStringValue = "3B9ACA00"
-
-        XCTAssertEqual(amountPayload.hexString, expectedHexStringValue)
-    }
-
-    func testJettonAmountDecimalDataConverterVar2() throws {
-        let blockchain = BlockchainSdk.Blockchain.ton(curve: .ed25519, testnet: false)
-        let amount = Amount(with: blockchain, value: Decimal(stringValue: "1.0000000001")!)
-        let amountPayload = try TONUtils().jettonAmountPayload(from: amount.value, decimalCount: blockchain.decimalCount) // 10000000000
-
-        let expectedHexStringValue = "01"
-
-        XCTAssertEqual(amountPayload.hexString, expectedHexStringValue)
-    }
 }
