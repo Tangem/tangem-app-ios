@@ -19,14 +19,12 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
 
     private let provider: ElectrumWebSocketProvider
     private let decimalValue: Decimal
-    private let decimalCount: Int
 
     // MARK: - Init
 
-    init(provider: ElectrumWebSocketProvider, decimalValue: Decimal, decimalCount: Int) {
+    init(provider: ElectrumWebSocketProvider, decimalValue: Decimal) {
         self.provider = provider
         self.decimalValue = decimalValue
-        self.decimalCount = decimalCount
     }
 
     // MARK: - BitcoinNetworkProvider Implementation
@@ -61,9 +59,9 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     }
 
     func getFee() -> AnyPublisher<BitcoinFee, any Error> {
-        let minimalEstimateFeePublisher = estimateFee(confirmations: Constants.minimalFeeBlockAmount)
-        let normalEstimateFeePublisher = estimateFee(confirmations: Constants.normalFeeBlockAmount)
-        let priorityEstimateFeePublisher = estimateFee(confirmations: Constants.priorityFeeBlockAmount)
+        let minimalEstimateFeePublisher = estimateFee(confirmation: Constants.minimalFeeBlockAmount)
+        let normalEstimateFeePublisher = estimateFee(confirmation: Constants.normalFeeBlockAmount)
+        let priorityEstimateFeePublisher = estimateFee(confirmation: Constants.priorityFeeBlockAmount)
 
         return Publishers.Zip3(
             minimalEstimateFeePublisher,
@@ -72,14 +70,10 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         )
         .withWeakCaptureOf(self)
         .map { provider, values in
-            let minimalSatoshiPerByte = provider.calculateFee(value: values.0, size: Constants.minimalFeeBlockAmount)
-            let normalSatoshiPerByte = provider.calculateFee(value: values.1, size: Constants.normalFeeBlockAmount)
-            let prioritySatoshiPerByte = provider.calculateFee(value: values.2, size: Constants.priorityFeeBlockAmount)
-
             return BitcoinFee(
-                minimalSatoshiPerByte: minimalSatoshiPerByte,
-                normalSatoshiPerByte: normalSatoshiPerByte,
-                prioritySatoshiPerByte: prioritySatoshiPerByte
+                minimalSatoshiPerByte: values.0,
+                normalSatoshiPerByte: values.1,
+                prioritySatoshiPerByte: values.2
             )
         }
         .eraseToAnyPublisher()
@@ -177,13 +171,13 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         .eraseToAnyPublisher()
     }
 
-    private func estimateFee(confirmations count: Int = 10) -> AnyPublisher<Decimal, Error> {
+    private func estimateFee(confirmation blocks: Int) -> AnyPublisher<Decimal, Error> {
         Future.async { [weak self] in
             guard let self else {
                 throw BlockchainSdkError.noAPIInfo
             }
 
-            return try await provider.estimateFee(block: count)
+            return try await provider.estimateFee(block: blocks)
         }
         .eraseToAnyPublisher()
     }
@@ -278,13 +272,6 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             isIncoming: isIncoming,
             transactionParams: nil
         )
-    }
-
-    func calculateFee(value: Decimal, size: Int) -> Decimal {
-        let perKbDecimalValue = (value * decimalValue).rounded(scale: decimalCount, roundingMode: .up)
-        let decimalFeeValue = Decimal(size) / Constants.perKbRate * perKbDecimalValue
-        let feeDecimalValue = (decimalFeeValue / decimalValue).rounded(scale: decimalCount, roundingMode: .up)
-        return feeDecimalValue
     }
 }
 

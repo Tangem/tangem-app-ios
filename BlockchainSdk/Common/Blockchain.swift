@@ -1200,7 +1200,6 @@ public extension Blockchain {
         case "doge": return .dogecoin
         case "bsc": return .bsc(testnet: isTestnet)
         case "clore-ai": return .clore
-        case "fact0rn": return .fact0rn
         // DO NOT ADD new blockchains here. This is legacy code and used only for Tangem Note and cards release before 4.12 firmware
         default: return nil
         }
