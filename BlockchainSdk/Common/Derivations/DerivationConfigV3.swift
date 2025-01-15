@@ -72,7 +72,8 @@ struct DerivationConfigV3: DerivationConfig {
              .core,
              .canxium,
              .chiliz,
-             .xodex:
+             .xodex,
+             .odysseyChain:
             return "m/44'/60'/0'/0/0"
         case .ethereumClassic:
             return "m/44'/61'/0'/0/0"

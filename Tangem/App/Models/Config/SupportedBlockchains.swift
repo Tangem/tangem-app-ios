@@ -147,6 +147,7 @@ struct SupportedBlockchains {
             .chiliz(testnet: false),
             .xodex,
             .clore,
+            .odysseyChain(testnet: false),
         ]
     }
 
@@ -203,6 +204,7 @@ struct SupportedBlockchains {
             .sui(curve: ed25519Curve(for: version), testnet: true),
             .energyWebEVM(testnet: true),
             .core(testnet: true),
+            .odysseyChain(testnet: true),
         ]
     }
 
