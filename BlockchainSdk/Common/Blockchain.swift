@@ -909,6 +909,7 @@ public extension Blockchain {
         case .chiliz: return false
         case .xodex: return false
         case .canxium: return true
+        case .odysseyChain: return false
         default:
             assertionFailure("Don't forget about evm here")
             return false
