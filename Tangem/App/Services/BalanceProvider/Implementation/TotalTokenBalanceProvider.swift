@@ -1,5 +1,5 @@
 //
-//  CombineBalanceProvider.swift
+//  TotalTokenBalanceProvider.swift
 //  TangemApp
 //
 //  Created by Sergey Balashov on 24.12.2024.
@@ -11,7 +11,7 @@ import TangemFoundation
 import TangemStaking
 
 /// Total crypto balance (available+staking)
-struct CombineBalanceProvider {
+struct TotalTokenBalanceProvider {
     private let walletModel: WalletModel
     private let availableBalanceProvider: TokenBalanceProvider
     private let stakingBalanceProvider: TokenBalanceProvider
@@ -27,7 +27,7 @@ struct CombineBalanceProvider {
 
 // MARK: - TokenBalanceProvider
 
-extension CombineBalanceProvider: TokenBalanceProvider {
+extension TotalTokenBalanceProvider: TokenBalanceProvider {
     var balanceType: TokenBalanceType {
         mapToTokenBalance(
             available: availableBalanceProvider.balanceType,
@@ -57,7 +57,7 @@ extension CombineBalanceProvider: TokenBalanceProvider {
 
 // MARK: - Private
 
-private extension CombineBalanceProvider {
+private extension TotalTokenBalanceProvider {
     func mapToTokenBalance(available: TokenBalanceType, staking: TokenBalanceType) -> TokenBalanceType {
         switch (available, staking) {
         // There is no available balance -> no balance

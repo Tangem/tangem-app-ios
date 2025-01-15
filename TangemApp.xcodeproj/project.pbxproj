@@ -2570,11 +2570,11 @@
 		EF40C1112CF5EA2D007EF710 /* ExpressProvidersList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF40C1102CF5EA2D007EF710 /* ExpressProvidersList.swift */; };
 		EF40C1122CF5EE1A007EF710 /* Sequence+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B674D6D82A96AC8800172491 /* Sequence+.swift */; };
 		EF41937A2C2DE0CB006A30A5 /* SendAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4193792C2DE0CB006A30A5 /* SendAmount.swift */; };
-		EF42D7852D1D65D90065AFD1 /* CombineBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D77C2D1D65D90065AFD1 /* CombineBalanceProvider.swift */; };
-		EF42D7862D1D65D90065AFD1 /* FiatBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D77D2D1D65D90065AFD1 /* FiatBalanceProvider.swift */; };
+		EF42D7852D1D65D90065AFD1 /* TotalTokenBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D77C2D1D65D90065AFD1 /* TotalTokenBalanceProvider.swift */; };
+		EF42D7862D1D65D90065AFD1 /* FiatTokenBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D77D2D1D65D90065AFD1 /* FiatTokenBalanceProvider.swift */; };
 		EF42D7872D1D65D90065AFD1 /* TokenBalanceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D7832D1D65D90065AFD1 /* TokenBalanceType.swift */; };
-		EF42D7882D1D65D90065AFD1 /* StakingBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D77E2D1D65D90065AFD1 /* StakingBalanceProvider.swift */; };
-		EF42D7892D1D65D90065AFD1 /* AvailableBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D77B2D1D65D90065AFD1 /* AvailableBalanceProvider.swift */; };
+		EF42D7882D1D65D90065AFD1 /* StakingTokenBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D77E2D1D65D90065AFD1 /* StakingTokenBalanceProvider.swift */; };
+		EF42D7892D1D65D90065AFD1 /* AvailableTokenBalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D77B2D1D65D90065AFD1 /* AvailableTokenBalanceProvider.swift */; };
 		EF42D78A2D1D65D90065AFD1 /* BalanceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D7802D1D65D90065AFD1 /* BalanceProvider.swift */; };
 		EF42D78B2D1D65D90065AFD1 /* FormattedTokenBalanceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D7812D1D65D90065AFD1 /* FormattedTokenBalanceType.swift */; };
 		EF42D78C2D1D65D90065AFD1 /* FormattedTokenBalanceTypeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF42D7822D1D65D90065AFD1 /* FormattedTokenBalanceTypeBuilder.swift */; };
@@ -5750,10 +5750,10 @@
 		EF407E6D2C04D81100366733 /* Period.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Period.swift; sourceTree = "<group>"; };
 		EF40C1102CF5EA2D007EF710 /* ExpressProvidersList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProvidersList.swift; sourceTree = "<group>"; };
 		EF4193792C2DE0CB006A30A5 /* SendAmount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendAmount.swift; sourceTree = "<group>"; };
-		EF42D77B2D1D65D90065AFD1 /* AvailableBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableBalanceProvider.swift; sourceTree = "<group>"; };
-		EF42D77C2D1D65D90065AFD1 /* CombineBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineBalanceProvider.swift; sourceTree = "<group>"; };
-		EF42D77D2D1D65D90065AFD1 /* FiatBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiatBalanceProvider.swift; sourceTree = "<group>"; };
-		EF42D77E2D1D65D90065AFD1 /* StakingBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingBalanceProvider.swift; sourceTree = "<group>"; };
+		EF42D77B2D1D65D90065AFD1 /* AvailableTokenBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableTokenBalanceProvider.swift; sourceTree = "<group>"; };
+		EF42D77C2D1D65D90065AFD1 /* TotalTokenBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalTokenBalanceProvider.swift; sourceTree = "<group>"; };
+		EF42D77D2D1D65D90065AFD1 /* FiatTokenBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiatTokenBalanceProvider.swift; sourceTree = "<group>"; };
+		EF42D77E2D1D65D90065AFD1 /* StakingTokenBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingTokenBalanceProvider.swift; sourceTree = "<group>"; };
 		EF42D7802D1D65D90065AFD1 /* BalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceProvider.swift; sourceTree = "<group>"; };
 		EF42D7812D1D65D90065AFD1 /* FormattedTokenBalanceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattedTokenBalanceType.swift; sourceTree = "<group>"; };
 		EF42D7822D1D65D90065AFD1 /* FormattedTokenBalanceTypeBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattedTokenBalanceTypeBuilder.swift; sourceTree = "<group>"; };
@@ -14297,10 +14297,10 @@
 		EF42D77F2D1D65D90065AFD1 /* Implementation */ = {
 			isa = PBXGroup;
 			children = (
-				EF42D77B2D1D65D90065AFD1 /* AvailableBalanceProvider.swift */,
-				EF42D77E2D1D65D90065AFD1 /* StakingBalanceProvider.swift */,
-				EF42D77C2D1D65D90065AFD1 /* CombineBalanceProvider.swift */,
-				EF42D77D2D1D65D90065AFD1 /* FiatBalanceProvider.swift */,
+				EF42D77B2D1D65D90065AFD1 /* AvailableTokenBalanceProvider.swift */,
+				EF42D77E2D1D65D90065AFD1 /* StakingTokenBalanceProvider.swift */,
+				EF42D77C2D1D65D90065AFD1 /* TotalTokenBalanceProvider.swift */,
+				EF42D77D2D1D65D90065AFD1 /* FiatTokenBalanceProvider.swift */,
 			);
 			path = Implementation;
 			sourceTree = "<group>";
@@ -14309,9 +14309,9 @@
 			isa = PBXGroup;
 			children = (
 				EF42D7802D1D65D90065AFD1 /* BalanceProvider.swift */,
+				EF42D7832D1D65D90065AFD1 /* TokenBalanceType.swift */,
 				EF42D7812D1D65D90065AFD1 /* FormattedTokenBalanceType.swift */,
 				EF42D7822D1D65D90065AFD1 /* FormattedTokenBalanceTypeBuilder.swift */,
-				EF42D7832D1D65D90065AFD1 /* TokenBalanceType.swift */,
 				EF42D77F2D1D65D90065AFD1 /* Implementation */,
 			);
 			path = BalanceProvider;
@@ -18518,11 +18518,11 @@
 				EF48E6C42B02273800FE0072 /* ExpressTokenItemViewModel.swift in Sources */,
 				DC3DCADB2A40AACF00F72554 /* DemoWalletModelsFactory.swift in Sources */,
 				B69E7FC82B220C3400B78D9A /* Dictionary+.swift in Sources */,
-				EF42D7852D1D65D90065AFD1 /* CombineBalanceProvider.swift in Sources */,
-				EF42D7862D1D65D90065AFD1 /* FiatBalanceProvider.swift in Sources */,
+				EF42D7852D1D65D90065AFD1 /* TotalTokenBalanceProvider.swift in Sources */,
+				EF42D7862D1D65D90065AFD1 /* FiatTokenBalanceProvider.swift in Sources */,
 				EF42D7872D1D65D90065AFD1 /* TokenBalanceType.swift in Sources */,
-				EF42D7882D1D65D90065AFD1 /* StakingBalanceProvider.swift in Sources */,
-				EF42D7892D1D65D90065AFD1 /* AvailableBalanceProvider.swift in Sources */,
+				EF42D7882D1D65D90065AFD1 /* StakingTokenBalanceProvider.swift in Sources */,
+				EF42D7892D1D65D90065AFD1 /* AvailableTokenBalanceProvider.swift in Sources */,
 				EF42D78A2D1D65D90065AFD1 /* BalanceProvider.swift in Sources */,
 				EF42D78B2D1D65D90065AFD1 /* FormattedTokenBalanceType.swift in Sources */,
 				EF42D78C2D1D65D90065AFD1 /* FormattedTokenBalanceTypeBuilder.swift in Sources */,

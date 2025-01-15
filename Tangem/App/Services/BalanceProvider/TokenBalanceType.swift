@@ -25,14 +25,21 @@ enum TokenBalanceType: Hashable {
 // MARK: - TokenBalanceType+
 
 extension TokenBalanceType {
-    static let noAccount = TokenBalanceType.loaded(0)
-
     var value: Decimal? {
         switch self {
         case .empty: nil
         case .loading(let cached): cached?.balance
         case .failure(let cached): cached?.balance
         case .loaded(let value): value
+        }
+    }
+
+    var cached: TokenBalanceType.Cached? {
+        switch self {
+        case .empty: nil
+        case .loading(let cached): cached
+        case .failure(let cached): cached
+        case .loaded(let value): nil
         }
     }
 
@@ -68,9 +75,14 @@ extension TokenBalanceType: CustomStringConvertible {
 
 extension TokenBalanceType {
     enum EmptyReason: Hashable {
-        case noDerivation
+        /// The data is not loaded yet
         case noData
+        /// No derivation so no balance
+        case noDerivation
+        /// Custom token so no rate
         case custom
+        /// No account (XRP) so no balance
+        case noAccount(message: String)
     }
 
     struct Cached: Hashable {

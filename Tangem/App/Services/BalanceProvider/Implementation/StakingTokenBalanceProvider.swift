@@ -1,5 +1,5 @@
 //
-//  StakingBalanceProvider.swift
+//  StakingTokenBalanceProvider.swift
 //  TangemApp
 //
 //  Created by Sergey Balashov on 25.12.2024.
@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import TangemStaking
 
-struct StakingBalanceProvider {
+struct StakingTokenBalanceProvider {
     private let walletModel: WalletModel
     private let balanceFormatter = BalanceFormatter()
 
@@ -21,7 +21,7 @@ struct StakingBalanceProvider {
 
 // MARK: - TokenBalanceProvider
 
-extension StakingBalanceProvider: TokenBalanceProvider {
+extension StakingTokenBalanceProvider: TokenBalanceProvider {
     var balanceType: TokenBalanceType {
         mapToTokenBalance(state: walletModel.stakingManagerState)
     }
@@ -45,7 +45,7 @@ extension StakingBalanceProvider: TokenBalanceProvider {
 
 // MARK: - Private
 
-extension StakingBalanceProvider {
+extension StakingTokenBalanceProvider {
     func mapToTokenBalance(state: StakingManagerState) -> TokenBalanceType {
         switch state {
         case .loading:

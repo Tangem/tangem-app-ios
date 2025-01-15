@@ -1,5 +1,5 @@
 //
-//  AvailableBalanceProvider.swift
+//  AvailableTokenBalanceProvider.swift
 //  TangemApp
 //
 //  Created by Sergey Balashov on 24.12.2024.
@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 /// Just simple available to use (e.g. send) balance
-struct AvailableBalanceProvider {
+struct AvailableTokenBalanceProvider {
     private let walletModel: WalletModel
     private let balanceFormatter = BalanceFormatter()
 
@@ -21,7 +21,7 @@ struct AvailableBalanceProvider {
 
 // MARK: - TokenBalanceProvider
 
-extension AvailableBalanceProvider: TokenBalanceProvider {
+extension AvailableTokenBalanceProvider: TokenBalanceProvider {
     var balanceType: TokenBalanceType {
         mapToTokenBalance(state: walletModel.state)
     }
@@ -45,7 +45,7 @@ extension AvailableBalanceProvider: TokenBalanceProvider {
 
 // MARK: - Private
 
-private extension AvailableBalanceProvider {
+private extension AvailableTokenBalanceProvider {
     func mapToTokenBalance(state: WalletModel.State) -> TokenBalanceType {
         // The `binance` always has zero balance
         if case .binance = walletModel.tokenItem.blockchain {
@@ -61,8 +61,8 @@ private extension AvailableBalanceProvider {
             return .loading(nil)
         case .loaded(let balance):
             return .loaded(balance)
-        case .noAccount:
-            return .noAccount
+        case .noAccount(let message, _):
+            return .empty(.noAccount(message: message))
         case .failed:
             return .failure(nil)
         }

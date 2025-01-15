@@ -1,5 +1,5 @@
 //
-//  FiatBalanceProvider.swift
+//  FiatTokenBalanceProvider.swift
 //  TangemApp
 //
 //  Created by Sergey Balashov on 24.12.2024.
@@ -10,7 +10,7 @@ import Combine
 import TangemFoundation
 import TangemStaking
 
-struct FiatBalanceProvider {
+struct FiatTokenBalanceProvider {
     private let walletModel: WalletModel
     private let cryptoBalanceProvider: TokenBalanceProvider
     private let balanceFormatter = BalanceFormatter()
@@ -23,7 +23,7 @@ struct FiatBalanceProvider {
 
 // MARK: - TokenBalanceProvider
 
-extension FiatBalanceProvider: TokenBalanceProvider {
+extension FiatTokenBalanceProvider: TokenBalanceProvider {
     var balanceType: TokenBalanceType {
         mapToTokenBalance(rate: walletModel.rate, balanceType: cryptoBalanceProvider.balanceType)
     }
@@ -51,7 +51,7 @@ extension FiatBalanceProvider: TokenBalanceProvider {
 
 // MARK: - Private
 
-extension FiatBalanceProvider {
+extension FiatTokenBalanceProvider {
     func mapToTokenBalance(rate: LoadingResult<WalletModel.Rate?, Never>, balanceType: TokenBalanceType) -> TokenBalanceType {
         switch (rate, balanceType) {
         // There is no rate because it's custom token
