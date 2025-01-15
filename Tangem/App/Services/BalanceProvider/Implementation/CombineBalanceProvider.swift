@@ -12,14 +12,14 @@ import TangemStaking
 
 /// Total crypto balance (available+staking)
 struct CombineBalanceProvider {
-    private let walletModel: WalletModel
+    private let tokenItem: TokenItem
     private let availableBalanceProvider: TokenBalanceProvider
     private let stakingBalanceProvider: TokenBalanceProvider
 
     private let balanceFormatter = BalanceFormatter()
 
-    init(walletModel: WalletModel, availableBalanceProvider: TokenBalanceProvider, stakingBalanceProvider: TokenBalanceProvider) {
-        self.walletModel = walletModel
+    init(tokenItem: TokenItem, availableBalanceProvider: TokenBalanceProvider, stakingBalanceProvider: TokenBalanceProvider) {
+        self.tokenItem = tokenItem
         self.availableBalanceProvider = availableBalanceProvider
         self.stakingBalanceProvider = stakingBalanceProvider
     }
@@ -130,7 +130,7 @@ private extension CombineBalanceProvider {
 
     func mapToFormattedTokenBalanceType(type: TokenBalanceType) -> FormattedTokenBalanceType {
         let builder = FormattedTokenBalanceTypeBuilder(format: { value in
-            balanceFormatter.formatCryptoBalance(value, currencyCode: walletModel.tokenItem.currencySymbol)
+            balanceFormatter.formatCryptoBalance(value, currencyCode: tokenItem.currencySymbol)
         })
 
         return builder.mapToFormattedTokenBalanceType(type: type)

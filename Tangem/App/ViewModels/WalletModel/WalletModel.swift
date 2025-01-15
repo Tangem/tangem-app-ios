@@ -200,6 +200,7 @@ class WalletModel {
     let isCustom: Bool
 
     private let sendAvailabilityProvider: TransactionSendAvailabilityProvider
+    private let tokenBalancesRepository: TokenBalancesRepository
     private let walletManager: WalletManager
     private let _stakingManager: StakingManager?
     private let _transactionHistoryService: TransactionHistoryService?
@@ -227,7 +228,8 @@ class WalletModel {
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
         isCustom: Bool,
-        sendAvailabilityProvider: TransactionSendAvailabilityProvider
+        sendAvailabilityProvider: TransactionSendAvailabilityProvider,
+        tokenBalancesRepository: TokenBalancesRepository
     ) {
         self.walletManager = walletManager
         _stakingManager = stakingManager
@@ -235,6 +237,7 @@ class WalletModel {
         self.amountType = amountType
         self.isCustom = isCustom
         self.sendAvailabilityProvider = sendAvailabilityProvider
+        self.tokenBalancesRepository = tokenBalancesRepository
 
         bind()
         performHealthCheckIfNeeded(shouldPerform: shouldPerformHealthCheck)

@@ -20,6 +20,12 @@ extension WalletModel {
     struct Id: Hashable, Identifiable, Equatable {
         var id: Int { hashValue }
 
+        var key: String {
+            let network = blockchainNetwork.blockchain.networkId
+            let contract = amountType.token?.contractAddress ?? "coin"
+            return "\(network)_\(contract)"
+        }
+
         let blockchainNetwork: BlockchainNetwork
         let amountType: Amount.AmountType
     }

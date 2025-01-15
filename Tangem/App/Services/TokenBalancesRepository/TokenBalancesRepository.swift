@@ -10,7 +10,6 @@ import Foundation
 
 protocol TokenBalancesRepository {
     func balance(wallet: WalletModel, type: CachedBalanceType) -> CachedBalance?
-
     func store(balance: CachedBalance, for wallet: WalletModel, type: CachedBalanceType)
 }
 
@@ -22,15 +21,4 @@ struct CachedBalance: Hashable, Codable {
 enum CachedBalanceType: String, Hashable, Codable {
     case available
     case staked
-}
-
-private struct TokenBalancesRepositoryKey: InjectionKey {
-    static var currentValue: TokenBalancesRepository = CommonTokenBalancesRepository()
-}
-
-extension InjectedValues {
-    var tokenBalancesRepository: TokenBalancesRepository {
-        get { Self[TokenBalancesRepositoryKey.self] }
-        set { Self[TokenBalancesRepositoryKey.self] = newValue }
-    }
 }
