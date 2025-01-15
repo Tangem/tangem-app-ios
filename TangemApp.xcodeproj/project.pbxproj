@@ -118,6 +118,7 @@
 		2DAB6B6F2CE28E8500B4A10C /* MinimumAmountRestrictable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */; };
 		2DB200632D34F57700E499A3 /* Fact0rnNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB200612D34F57700E499A3 /* Fact0rnNetworkProvider.swift */; };
 		2DB200642D34F57700E499A3 /* Fact0rnAccountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB200602D34F57700E499A3 /* Fact0rnAccountModel.swift */; };
+		2DB200662D380C9A00E499A3 /* Fact0rnWalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB200652D380C9A00E499A3 /* Fact0rnWalletManager.swift */; };
 		2DB3614B2C14FBAB00BB1D38 /* SegmentedPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */; };
 		2DB3614D2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */; };
 		2DB3614F2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */; };
@@ -3310,6 +3311,7 @@
 		2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnAccountModel.swift; sourceTree = "<group>"; };
 		2DB200602D34F57700E499A3 /* Fact0rnAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnAccountModel.swift; sourceTree = "<group>"; };
 		2DB200612D34F57700E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
+		2DB200652D380C9A00E499A3 /* Fact0rnWalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnWalletManager.swift; sourceTree = "<group>"; };
 		2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerView.swift; sourceTree = "<group>"; };
 		2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedPickerView+EnviromentValues.swift"; sourceTree = "<group>"; };
 		2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerViewContentStyle.swift; sourceTree = "<group>"; };
@@ -12636,6 +12638,7 @@
 				DABCDA1D2D08F72A00AB2C69 /* Fact0rnExternalLinkProvider.swift */,
 				DA8A38C52D09046400ADD81D /* Fact0rnMainNetworkParams.swift */,
 				DABCDA1B2D08F68C00AB2C69 /* Fact0rnWalletAssembly.swift */,
+				2DB200652D380C9A00E499A3 /* Fact0rnWalletManager.swift */,
 				2DB200622D34F57700E499A3 /* Network */,
 			);
 			path = Fact0rn;
@@ -19577,6 +19580,7 @@
 				B62D40E52CBC79DA00C2460E /* HederaNetworkResult.swift in Sources */,
 				B62D421B2CBC79DB00C2460E /* XRPAddressService.swift in Sources */,
 				B62D40712CBC79DA00C2460E /* CosmosTransactionParams.swift in Sources */,
+				2DB200662D380C9A00E499A3 /* Fact0rnWalletManager.swift in Sources */,
 				B62D425B2CBC79DB00C2460E /* NullValue.swift in Sources */,
 				B62D42B42CBC79DB00C2460E /* SignatureInfo.swift in Sources */,
 				B62D41582CBC79DA00C2460E /* SubscanAPITarget.swift in Sources */,

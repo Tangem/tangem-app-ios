@@ -12,7 +12,7 @@ import BitcoinCore
 
 struct Fact0rnWalletAssembly: WalletManagerAssembly {
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
-        try BitcoinWalletManager(wallet: input.wallet).then {
+        try Fact0rnWalletManager(wallet: input.wallet).then {
             let compressedKey = try Secp256k1Key(with: input.wallet.publicKey.blockchainKey).compress()
 
             let bitcoinManager = BitcoinManager(

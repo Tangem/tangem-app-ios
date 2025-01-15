@@ -70,6 +70,14 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         )
         .withWeakCaptureOf(self)
         .map { provider, values in
+            let minimalSatoshiPerByte = values.0 / Constants.perKbRate
+            let normalSatoshiPerByte = values.1 / Constants.perKbRate
+            let prioritySatoshiPerByte = values.2 / Constants.perKbRate
+            
+            return (minimalSatoshiPerByte, normalSatoshiPerByte, prioritySatoshiPerByte)
+        }
+        .withWeakCaptureOf(self)
+        .map { provider, values in
             return BitcoinFee(
                 minimalSatoshiPerByte: values.0,
                 normalSatoshiPerByte: values.1,
