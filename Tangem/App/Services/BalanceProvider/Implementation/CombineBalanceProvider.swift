@@ -29,7 +29,7 @@ struct CombineBalanceProvider {
 
 extension CombineBalanceProvider: TokenBalanceProvider {
     var balanceType: TokenBalanceType {
-        mapToAvailableTokenBalance(
+        mapToTokenBalance(
             available: availableBalanceProvider.balanceType,
             staking: stakingBalanceProvider.balanceType
         )
@@ -40,7 +40,7 @@ extension CombineBalanceProvider: TokenBalanceProvider {
             availableBalanceProvider.balanceTypePublisher,
             stakingBalanceProvider.balanceTypePublisher
         )
-        .map { self.mapToAvailableTokenBalance(available: $0, staking: $1) }
+        .map { self.mapToTokenBalance(available: $0, staking: $1) }
         .eraseToAnyPublisher()
     }
 
@@ -58,7 +58,7 @@ extension CombineBalanceProvider: TokenBalanceProvider {
 // MARK: - Private
 
 private extension CombineBalanceProvider {
-    func mapToAvailableTokenBalance(available: TokenBalanceType, staking: TokenBalanceType) -> TokenBalanceType {
+    func mapToTokenBalance(available: TokenBalanceType, staking: TokenBalanceType) -> TokenBalanceType {
         switch (available, staking) {
         // There is no available balance -> no balance
         case (.empty(let reason), _):
