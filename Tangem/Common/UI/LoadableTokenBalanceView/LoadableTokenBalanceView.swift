@@ -23,7 +23,7 @@ struct LoadableTokenBalanceView: View {
         switch state {
         case .loading(.some(let cached)):
             textView(cached)
-                .modifier(Shimmer())
+                .modifier(PulseEffect())
         case .loading(.none):
             RoundedRectangle(cornerRadius: loader.cornerRadius, style: .continuous)
                 .fill(Colors.Background.tertiary)
