@@ -30,113 +30,22 @@ extension CardanoTransactionBuilder {
 
     func buildForSign(transaction: Transaction) throws -> Data {
         let input = try buildCardanoSigningInput(transaction: transaction)
-        let txInputData = try input.serializedData()
-
-        let preImageHashes = TransactionCompiler.preImageHashes(coinType: coinType, txInputData: txInputData)
-        let preSigningOutput = try TxCompilerPreSigningOutput(serializedData: preImageHashes)
-
-        if preSigningOutput.error != .ok {
-            Log.debug("CardanoPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
-            throw WalletError.failedToBuildTx
-        }
-
-        return preSigningOutput.dataHash
-    }
-
-    func buildStakingTransactionSigningInput(transaction: CardanoTransaction) throws -> CardanoSigningInput {
-        if outputs.isEmpty {
-            throw CardanoError.noUnspents
-        }
-
-        let inputs = outputs.map { output -> CardanoTxInput in
-            CardanoTxInput.with {
-                $0.outPoint.txHash = Data(hexString: output.transactionHash)
-                $0.outPoint.outputIndex = output.outputIndex
-                $0.address = output.address
-                $0.amount = output.amount
-            }
-        }
-
-//        let inputs = transaction.body.inputs.map { input -> CardanoTxInput in
-//            CardanoTxInput.with {
-//                $0.outPoint.txHash = Data(hexString: input.transactionID)
-//                $0.outPoint.outputIndex = input.index
-//            }
-//        }
-
-        let outputs = transaction.body.outputs.map { output -> CardanoTxOutput in
-            CardanoTxOutput.with {
-                $0.amount = output.amount
-                $0.address = output.address
-            }
-        }
-
-        var input = CardanoSigningInput.with {
-            $0.utxos = inputs
-            $0.extraOutputs = outputs
-            $0.transferMessage.useMaxAmount = true
-
-            for certificate in transaction.body.certificates {
-                switch certificate {
-                case .stakeDelegation(let stakeDelegation):
-                    $0.delegate = TW_Cardano_Proto_Delegate()
-                    $0.delegate.depositAmount = 0
-                    $0.delegate.stakingAddress = stakeDelegation.credential.keyHash.hex
-                    $0.delegate.poolID = stakeDelegation.poolKeyHash
-                default: continue
-                }
-            }
-
-            // Transaction validity time. Currently we are using absolute values.
-            // At 16 April 2023 was 90007700 slot number.
-            // We need to rework this logic to use relative validity time.
-            // TODO: https://tangem.atlassian.net/browse/IOS-3471
-            // This can be constructed using absolute ttl slot from `/metadata` endpoint.
-            $0.ttl = 190000000
-        }
-
-        input.plan = AnySigner.plan(input: input, coin: coinType)
-
-        if input.plan.error != .ok {
-            Log.debug("CardanoSigningInput has a error: \(input.plan.error)")
-            throw CardanoTransactionBuilderError.walletCoreError
-        }
-
-        return input
+        return try preSignOutputHash(from: input)
     }
 
     func buildForSend(transaction: Transaction, signature: SignatureInfo) throws -> Data {
         let input = try buildCardanoSigningInput(transaction: transaction)
-        let txInputData = try input.serializedData()
+        return try buildSigningOutput(from: input, signature: signature)
+    }
 
-        let signatures = DataVector()
-        signatures.add(data: signature.signature)
+    func buildStakingForSign(transaction: CardanoTransaction) throws -> Data {
+        let input = try buildCardanoStakingSigningInput(transaction: transaction)
+        return try preSignOutputHash(from: input)
+    }
 
-        let publicKeys = DataVector()
-        // WalletCore used here `.ed25519Cardano` curve with 128 bytes publicKey.
-        // For more info see CardanoUtil
-        let publicKey = signature.publicKey.trailingZeroPadding(toLength: CardanoUtil.extendedPublicKeyCount)
-        publicKeys.add(data: publicKey)
-
-        let compileWithSignatures = TransactionCompiler.compileWithSignatures(
-            coinType: coinType,
-            txInputData: txInputData,
-            signatures: signatures,
-            publicKeys: publicKeys
-        )
-
-        let output = try CardanoSigningOutput(serializedData: compileWithSignatures)
-
-        if output.error != .ok {
-            Log.debug("CardanoSigningOutput has a error: \(output.errorMessage)")
-            throw WalletError.failedToBuildTx
-        }
-
-        if output.encoded.isEmpty {
-            throw WalletError.failedToBuildTx
-        }
-
-        return output.encoded
+    func buildStakingForSend(transaction: CardanoTransaction, signature: SignatureInfo) throws -> Data {
+        let input = try buildCardanoStakingSigningInput(transaction: transaction)
+        return try buildSigningOutput(from: input, signature: signature)
     }
 
     func getFee(amount: Amount, destination: String, source: String) throws -> FeeResult {
@@ -329,33 +238,50 @@ private extension CardanoTransactionBuilder {
         )
     }
 
-    func buildCardanoSigningInput(source: String, destination: String, option: BuildCardanoSigningInputOption, tokenAmount: TokenAmount?) throws -> CardanoSigningInput {
-        if outputs.isEmpty {
-            throw CardanoError.noUnspents
-        }
-
-        let utxos = outputs.map { output -> CardanoTxInput in
-            CardanoTxInput.with {
-                $0.outPoint.txHash = Data(hexString: output.transactionHash)
-                $0.outPoint.outputIndex = output.outputIndex
-                $0.address = output.address
-                $0.amount = output.amount
-
-                if !output.assets.isEmpty {
-                    $0.tokenAmount = output.assets.map { asset in
-                        CardanoTokenAmount.with {
-                            $0.policyID = asset.policyID
-                            $0.assetNameHex = asset.assetNameHex
-                            // Amount in hexadecimal e.g. 2dc6c0 = 3000000
-                            $0.amount = BigInt(asset.amount).serialize()
-                        }
-                    }
-                }
-            }
-        }
+    func buildCardanoStakingSigningInput(transaction: CardanoTransaction) throws -> CardanoSigningInput {
+        let address = "addr1q9z4qsz7zklgspq3a2f4nxrlpmj5km6xetehsr986h0s5sdqq2fng80j8u9vehl8yl9sx40qmne35ftejmkt4789j9ashdhr97"
+        let stakingAddress = Cardano.getStakingAddress(baseAddress: address)
 
         var input = try CardanoSigningInput.with {
-            $0.utxos = utxos
+            $0.utxos = try buildTxInput()
+            $0.transferMessage.toAddress = address
+            $0.transferMessage.changeAddress = address
+            $0.transferMessage.amount = 1000000
+            $0.transferMessage.useMaxAmount = true
+
+            for certificate in transaction.body.certificates {
+                switch certificate {
+                case .stakeDelegation(let stakeDelegation):
+                    $0.delegate.depositAmount = 0
+                    $0.delegate.stakingAddress = stakingAddress
+                    $0.delegate.poolID = stakeDelegation.poolKeyHash
+
+                    $0.registerStakingKey.stakingAddress = stakingAddress
+                    $0.registerStakingKey.depositAmount = 2000000
+                default: continue
+                }
+            }
+
+            // Transaction validity time. Currently we are using absolute values.
+            // At 16 April 2023 was 90007700 slot number.
+            // We need to rework this logic to use relative validity time.
+            // TODO: https://tangem.atlassian.net/browse/IOS-3471
+            // This can be constructed using absolute ttl slot from `/metadata` endpoint.
+            $0.ttl = 190000000
+        }
+
+        input.plan = AnySigner.plan(input: input, coin: coinType)
+
+        if input.plan.error != .ok {
+            Log.debug("CardanoSigningInput has a error: \(input.plan.error)")
+            throw CardanoTransactionBuilderError.walletCoreError
+        }
+        return input
+    }
+
+    func buildCardanoSigningInput(source: String, destination: String, option: BuildCardanoSigningInputOption, tokenAmount: TokenAmount?) throws -> CardanoSigningInput {
+        var input = try CardanoSigningInput.with {
+            $0.utxos = try buildTxInput()
 
             $0.transferMessage.toAddress = destination
             $0.transferMessage.changeAddress = source
@@ -396,6 +322,79 @@ private extension CardanoTransactionBuilder {
         }
 
         return input
+    }
+
+    private func preSignOutputHash(from input: CardanoSigningInput) throws -> Data {
+        let txInputData = try input.serializedData()
+
+        let preImageHashes = TransactionCompiler.preImageHashes(coinType: coinType, txInputData: txInputData)
+        let preSigningOutput = try TxCompilerPreSigningOutput(serializedData: preImageHashes)
+
+        if preSigningOutput.error != .ok {
+            Log.debug("CardanoPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
+            throw WalletError.failedToBuildTx
+        }
+
+        return preSigningOutput.dataHash
+    }
+
+    private func buildSigningOutput(from input: CardanoSigningInput, signature: SignatureInfo) throws -> Data {
+        let txInputData = try input.serializedData()
+
+        let signatures = DataVector()
+        signatures.add(data: signature.signature)
+
+        let publicKeys = DataVector()
+        // WalletCore used here `.ed25519Cardano` curve with 128 bytes publicKey.
+        // For more info see CardanoUtil
+        let publicKey = signature.publicKey.trailingZeroPadding(toLength: CardanoUtil.extendedPublicKeyCount)
+        publicKeys.add(data: publicKey)
+
+        let compileWithSignatures = TransactionCompiler.compileWithSignatures(
+            coinType: coinType,
+            txInputData: txInputData,
+            signatures: signatures,
+            publicKeys: publicKeys
+        )
+
+        let output = try CardanoSigningOutput(serializedData: compileWithSignatures)
+
+        if output.error != .ok {
+            Log.debug("CardanoSigningOutput has a error: \(output.errorMessage)")
+            throw WalletError.failedToBuildTx
+        }
+
+        if output.encoded.isEmpty {
+            throw WalletError.failedToBuildTx
+        }
+
+        return output.encoded
+    }
+
+    private func buildTxInput() throws -> [CardanoTxInput] {
+        if outputs.isEmpty {
+            throw CardanoError.noUnspents
+        }
+
+        return outputs.map { output -> CardanoTxInput in
+            CardanoTxInput.with {
+                $0.outPoint.txHash = Data(hexString: output.transactionHash)
+                $0.outPoint.outputIndex = output.outputIndex
+                $0.address = output.address
+                $0.amount = output.amount
+
+                if !output.assets.isEmpty {
+                    $0.tokenAmount = output.assets.map { asset in
+                        CardanoTokenAmount.with {
+                            $0.policyID = asset.policyID
+                            $0.assetNameHex = asset.assetNameHex
+                            // Amount in hexadecimal e.g. 2dc6c0 = 3000000
+                            $0.amount = BigInt(asset.amount).serialize()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

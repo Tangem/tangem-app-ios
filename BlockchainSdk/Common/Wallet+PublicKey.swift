@@ -30,6 +30,10 @@ public extension Wallet {
             derivationType?.hdKey.path
         }
 
+        public var signDerivationPath: DerivationPath? {
+            derivationType?.signHdKey.path
+        }
+
         public init(seedKey: Data, derivationType: DerivationType?) {
             self.seedKey = seedKey
             self.derivationType = derivationType
@@ -50,6 +54,15 @@ public extension Wallet.PublicKey {
                 return derivationKey
             case .double(let derivationKey, _):
                 return derivationKey
+            }
+        }
+
+        public var signHdKey: HDKey {
+            switch self {
+            case .plain(let derivationKey):
+                return derivationKey
+            case .double(_, let secondKey):
+                return secondKey
             }
         }
     }

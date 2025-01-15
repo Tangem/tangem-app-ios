@@ -190,13 +190,9 @@ private extension StakingModel {
     private func makeState(amount: Decimal, fee: Decimal) -> State {
         let newAmount: Decimal
         let includeFee: Bool
-        if tokenItem.blockchain.isStakeAmountEditable {
+        if !tokenItem.blockchain.isStakeAmountEditable {
             newAmount = amount
             includeFee = false
-
-            if let validateError = validate(amount: newAmount, fee: fee) {
-                return validateError
-            }
         } else {
             includeFee = feeIncludedCalculator.shouldIncludeFee(makeFee(value: fee), into: makeAmount(value: amount))
             newAmount = includeFee ? amount - fee : amount

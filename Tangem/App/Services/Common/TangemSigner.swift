@@ -35,7 +35,7 @@ struct TangemSigner: TransactionSigner {
                 hashes: hashes,
                 walletPublicKey: walletPublicKey.seedKey,
                 pairWalletPublicKey: twinKey?.getPairKey(for: walletPublicKey.seedKey),
-                derivationPath: walletPublicKey.derivationPath
+                derivationPath: walletPublicKey.signDerivationPath
             )
 
             sdk.startSession(with: signCommand, filter: filter, initialMessage: initialMessage) { signResult in

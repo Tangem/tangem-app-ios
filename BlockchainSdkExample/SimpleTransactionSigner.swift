@@ -40,7 +40,7 @@ extension CommonSigner: TransactionSigner {
                     hashes: hashes,
                     walletPublicKey: walletPublicKey.seedKey,
                     cardId: cardId,
-                    derivationPath: walletPublicKey.derivationPath,
+                    derivationPath: walletPublicKey.signDerivationPath,
                     initialMessage: initialMessage
                 ) { signResult in
                     switch signResult {

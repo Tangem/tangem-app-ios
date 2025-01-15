@@ -245,18 +245,17 @@ extension CardanoWalletManager: StakeKitTransactionSender, StakeKitTransactionSe
     func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data {
         try CardanoStakeKitTransactionHelper(
             transactionBuilder: transactionBuilder
-        ).prepareForSign(transaction) // .hash
+        ).prepareForSign(transaction)
     }
 
     func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction {
-        let rawData = try CardanoStakeKitTransactionHelper(
+        try CardanoStakeKitTransactionHelper(
             transactionBuilder: transactionBuilder
-        ).prepareForSign(transaction) // .rawData
-//        let unmarshalled = unmarshal(signature.signature, hash: signature.hash, publicKey: wallet.publicKey)
-        return Data() // try transactionBuilder.buildForSend(transaction: rawData, signature: rawData)
+        ).prepareForSend(transaction, signature: signature)
     }
 
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String {
-        try await networkService.send(transaction: rawTransaction).async()
+        let hex = rawTransaction.hexString
+        return try await networkService.send(transaction: rawTransaction).async()
     }
 }

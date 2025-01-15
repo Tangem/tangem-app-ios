@@ -20,9 +20,17 @@ struct CardanoStakeKitTransactionHelper {
     }
 
     func prepareForSign(_ transaction: StakeKitTransaction) throws -> Data {
-        let unsignedData = "84a400d9010281825820221166557c714cd6ce313e2a324cdf2a11d1fcbbb4f564a6a9bbacce5346ff530001818258390185dbe8e4c53b4493a2d07a216f8bbb12e0cdd807f173391b85a5cb0dde9c736189354cae81462894c18fb788202c8febef613e4e8ba323391a0eb6ac9a021a0002a38904d901028183028200581cde9c736189354cae81462894c18fb788202c8febef613e4e8ba32339581c6804118fe78be9bf9213b9e829803952be87814d28b305fa52bf11d9a0f5f6"
+        let transaction = try cardanoTransaction(from: transaction.unsignedData)
+        return try transactionBuilder.buildStakingForSign(transaction: transaction)
+    }
 
-        let data = Data(hex: transaction.unsignedData)
+    func prepareForSend(_ transaction: StakeKitTransaction, signature: SignatureInfo) throws -> Data {
+        let transaction = try cardanoTransaction(from: transaction.unsignedData)
+        return try transactionBuilder.buildStakingForSend(transaction: transaction, signature: signature)
+    }
+
+    private func cardanoTransaction(from unsignedData: String) throws -> CardanoTransaction {
+        let data = Data(hex: unsignedData)
         guard let cbor = try CBOR.decode(data.bytes) else {
             throw WalletError.failedToBuildTx
         }
@@ -31,11 +39,7 @@ struct CardanoStakeKitTransactionHelper {
             throw WalletError.failedToBuildTx
         }
 
-        let transaction = CardanoTransaction(body: body, witnessSet: nil, isValid: true, auxiliaryData: nil)
-
-        let input = try transactionBuilder.buildStakingTransactionSigningInput(transaction: transaction)
-
-        return Data()
+        return CardanoTransaction(body: body, witnessSet: nil, isValid: true, auxiliaryData: nil)
     }
 }
 
