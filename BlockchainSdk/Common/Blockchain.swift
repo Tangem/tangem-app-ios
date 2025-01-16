@@ -580,7 +580,7 @@ public indirect enum Blockchain: Equatable, Hashable {
         case .chiliz:
             return "Chiliz" + (isTestnet ? "Spicy Testnet " : "")
         case .odysseyChain:
-            return "Dione" + testnetSuffix
+            return "Odyssey Chain" + testnetSuffix
         default:
             var name = "\(self)".capitalizingFirstLetter()
             if let index = name.firstIndex(of: "(") {
@@ -909,7 +909,7 @@ public extension Blockchain {
         case .chiliz: return false
         case .xodex: return false
         case .canxium: return true
-        case .odysseyChain: return false
+        case .odysseyChain: return true
         default:
             assertionFailure("Don't forget about evm here")
             return false
