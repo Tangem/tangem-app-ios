@@ -35,6 +35,7 @@ struct SeedPhraseTextView: UIViewRepresentable {
         textView.returnKeyType = .next
         textView.textColor = inputProcessor.defaultTextColor
         textView.font = inputProcessor.defaultTextFont
+        textView.keyboardType = .asciiCapable // We currently only support the BIP39 English word list
         context.coordinator.setupTextView(textView)
 
         var toolbarItems = [UIBarButtonItem]()
