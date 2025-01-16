@@ -131,6 +131,7 @@ struct CustomTextField: UIViewRepresentable {
     var handleKeyboard: Bool = false
     var actionButton: String?
     var keyboard: UIKeyboardType = .default
+    var autocapitalizationType: UITextAutocapitalizationType?
     var clearButtonMode: UITextField.ViewMode = .never
     var textColor: UIColor = .tangemGrayDark4
     var font: UIFont = .systemFont(ofSize: 16.0)
@@ -158,6 +159,10 @@ struct CustomTextField: UIViewRepresentable {
         // Security hardening settings
         let configurator = UITextInputSecurityHardeningConfigurator(isSecured: isSecured)
         configurator.configure(textField)
+
+        if let autocapitalizationType {
+            textField.autocapitalizationType = autocapitalizationType
+        }
 
         var toolbarItems = [UIBarButtonItem]()
         if handleKeyboard {

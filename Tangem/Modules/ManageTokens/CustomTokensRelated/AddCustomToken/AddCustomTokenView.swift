@@ -90,6 +90,7 @@ struct AddCustomTokenView: View {
                 placeholder: "0x0000000000000000000000000000000000000000",
                 text: $viewModel.contractAddress,
                 keyboardType: .default,
+                autocapitalizationType: .none,
                 isEnabled: true,
                 isLoading: false,
                 error: viewModel.contractAddressError
@@ -107,6 +108,7 @@ struct AddCustomTokenView: View {
                 placeholder: Localization.customTokenNameInputPlaceholder,
                 text: $viewModel.name,
                 keyboardType: .default,
+                autocapitalizationType: .words,
                 isEnabled: true,
                 isLoading: viewModel.isLoading
             )
@@ -123,6 +125,7 @@ struct AddCustomTokenView: View {
                 placeholder: Localization.customTokenTokenSymbolInputPlaceholder,
                 text: $viewModel.symbol,
                 keyboardType: .default,
+                autocapitalizationType: .allCharacters,
                 isEnabled: true,
                 isLoading: viewModel.isLoading
             )
@@ -139,6 +142,7 @@ struct AddCustomTokenView: View {
                 placeholder: "0",
                 text: $viewModel.decimals,
                 keyboardType: .numberPad,
+                autocapitalizationType: .none,
                 isEnabled: true,
                 isLoading: viewModel.isLoading,
                 error: viewModel.decimalsError
@@ -188,6 +192,7 @@ private struct TextInputWithTitle: View {
     let placeholder: String
     let text: Binding<String>
     let keyboardType: UIKeyboardType
+    let autocapitalizationType: UITextAutocapitalizationType
     let isEnabled: Bool
     let isLoading: Bool
     var error: Error?
@@ -205,19 +210,9 @@ private struct TextInputWithTitle: View {
             }
 
             HStack(spacing: 0) {
-                CustomTextField(
-                    text: text,
-                    isResponder: .constant(nil),
-                    actionButtonTapped: .constant(false),
-                    handleKeyboard: true,
-                    keyboard: keyboardType,
-                    textColor: isEnabled ? UIColor.textPrimary1 : UIColor.textDisabled,
-                    font: UIFonts.Regular.subheadline,
-                    placeholder: placeholder,
-                    isEnabled: isEnabled
-                )
-                .opacity(isLoading ? 0 : 1)
-                .overlay(skeleton, alignment: .leading)
+                customTextField
+                    .opacity(isLoading ? 0 : 1)
+                    .overlay(skeleton, alignment: .leading)
 
                 Spacer(minLength: 0)
             }
@@ -225,6 +220,23 @@ private struct TextInputWithTitle: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .animation(.default, value: error == nil)
+    }
+
+    private var customTextField: some View {
+        var customTextField = CustomTextField(
+            text: text,
+            isResponder: .constant(nil),
+            actionButtonTapped: .constant(false),
+            handleKeyboard: true,
+            keyboard: keyboardType,
+            textColor: isEnabled ? UIColor.textPrimary1 : UIColor.textDisabled,
+            font: UIFonts.Regular.subheadline,
+            placeholder: placeholder,
+            isEnabled: isEnabled
+        )
+        customTextField.autocapitalizationType = autocapitalizationType
+
+        return customTextField
     }
 
     @ViewBuilder
