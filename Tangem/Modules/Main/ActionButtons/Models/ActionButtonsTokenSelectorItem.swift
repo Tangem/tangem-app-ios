@@ -8,14 +8,20 @@
 
 import BlockchainSdk
 
-struct ActionButtonsTokenSelectorItem: Identifiable, Equatable {
+struct ActionButtonsTokenSelectorItem: Identifiable {
     let id: Int
-    let tokenIconInfo: TokenIconInfo
-    let name: String
-    let symbol: String
-    let balance: String
-    let fiatBalance: String
     let isDisabled: Bool
-    let isLoading: Bool
+    let tokenIconInfo: TokenIconInfo
+    let infoProvider: any TokenItemInfoProvider
     let walletModel: WalletModel
+}
+
+extension ActionButtonsTokenSelectorItem: Equatable {
+    static func == (lhs: ActionButtonsTokenSelectorItem, rhs: ActionButtonsTokenSelectorItem) -> Bool {
+        lhs.id == rhs.id
+            && lhs.isDisabled == rhs.isDisabled
+            && lhs.tokenIconInfo == rhs.tokenIconInfo
+            && lhs.infoProvider === rhs.infoProvider
+            && lhs.walletModel === rhs.walletModel
+    }
 }

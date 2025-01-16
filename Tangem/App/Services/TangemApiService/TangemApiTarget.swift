@@ -67,6 +67,11 @@ struct TangemApiTarget: TargetType {
             return "/coins/\(requestModel.tokenId)/history"
         case .tokenExchangesList(let requestModel):
             return "/coins/\(requestModel.tokenId)/exchanges"
+
+        // MARK: - Action Buttons
+
+        case .hotCrypto:
+            return "/hot_crypto"
         }
     }
 
@@ -85,7 +90,8 @@ struct TangemApiTarget: TargetType {
              .coinsHistoryChartPreview,
              .tokenMarketsDetails,
              .historyChart,
-             .tokenExchangesList:
+             .tokenExchangesList,
+             .hotCrypto:
             return .get
         case .saveUserWalletTokens:
             return .put
@@ -174,6 +180,9 @@ struct TangemApiTarget: TargetType {
             )
         case .tokenExchangesList:
             return .requestPlain
+
+        case .hotCrypto(let requestModel):
+            return .requestParameters(parameters: ["currency": requestModel.currency], encoding: URLEncoding.queryString)
         }
     }
 
@@ -218,6 +227,10 @@ extension TangemApiTarget {
         case historyChart(_ requestModel: MarketsDTO.ChartsHistory.HistoryRequest)
         case tokenExchangesList(_ requestModel: MarketsDTO.ExchangesList.Request)
 
+        // MARK: - Action Buttons
+
+        case hotCrypto(_ requestModel: HotCryptoDTO.Request)
+
         // Configs
         case apiList
     }
@@ -246,7 +259,7 @@ extension TangemApiTarget: TargetTypeLogConvertible {
 
     var shouldLogResponseBody: Bool {
         switch type {
-        case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart, .tokenMarketsDetails, .tokenExchangesList:
+        case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart, .tokenMarketsDetails, .tokenExchangesList, .hotCrypto:
             return false
         case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward:
             return true

@@ -266,6 +266,12 @@ extension CommonTangemApiService: TangemApiService {
         return try await request(for: .tokenExchangesList(requestModel), decoder: decoder)
     }
 
+    // MARK: - Action Buttons
+
+    func fetchHotCrypto(requestModel: HotCryptoDTO.Request) async throws -> HotCryptoDTO.Response {
+        try await request(for: .hotCrypto(requestModel))
+    }
+
     // MARK: - Init
 
     func initialize() {

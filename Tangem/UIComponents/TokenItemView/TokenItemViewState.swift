@@ -39,3 +39,21 @@ enum TokenItemViewState {
         }
     }
 }
+
+extension TokenItemViewState: Equatable {
+    static func == (lhs: TokenItemViewState, rhs: TokenItemViewState) -> Bool {
+        switch (lhs, rhs) {
+        case (.notLoaded, .notLoaded),
+             (.noDerivation, .noDerivation),
+             (.loading, .loading),
+             (.loaded, .loaded):
+            return true
+        case (.noAccount(let lhsMessage), .noAccount(let rhsMessage)):
+            return lhsMessage == rhsMessage
+        case (.networkError(let lhsError), .networkError(let rhsError)):
+            return (lhsError as NSError) == (rhsError as NSError)
+        default:
+            return false
+        }
+    }
+}

@@ -30,22 +30,33 @@ struct ActionButtonsBuyView: View {
     @ViewBuilder
     private var content: some View {
         ScrollView {
-            TokenSelectorView(
-                viewModel: viewModel.tokenSelectorViewModel,
-                tokenCellContent: { token in
-                    ActionButtonsTokenSelectItemView(model: token) {
-                        viewModel.handleViewAction(.didTapToken(token))
+            LazyVStack(spacing: 14) {
+                TokenSelectorView(
+                    viewModel: viewModel.tokenSelectorViewModel,
+                    tokenCellContent: { token in
+                        ActionButtonsTokenSelectItemView(model: token) {
+                            viewModel.handleViewAction(.didTapToken(token))
+                        }
+                        .padding(.vertical, 16)
+                    },
+                    emptySearchContent: {
+                        Text(viewModel.tokenSelectorViewModel.strings.emptySearchMessage)
+                            .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                            .multilineTextAlignment(.center)
+                            .animation(.default, value: viewModel.tokenSelectorViewModel.searchText)
                     }
-                    .padding(.vertical, 16)
-                },
-                emptySearchContent: {
-                    Text(viewModel.tokenSelectorViewModel.strings.emptySearchMessage)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                        .multilineTextAlignment(.center)
-                        .animation(.default, value: viewModel.tokenSelectorViewModel.searchText)
-                }
-            )
-            .padding(.horizontal, 16)
+                )
+                .padding(.horizontal, 16)
+
+                HotCryptoView(
+                    items: viewModel.hotCryptoItems,
+                    action: {
+                        viewModel.handleViewAction(.didTapHotCrypto($0))
+                    }
+                )
+                .padding(.horizontal, 16)
+                .padding(.bottom, 14)
+            }
         }
         .background(Colors.Background.tertiary.ignoresSafeArea(.all))
         .scrollDismissesKeyboardCompat(.immediately)

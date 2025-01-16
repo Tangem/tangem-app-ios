@@ -9,16 +9,13 @@
 struct ActionButtonsTokenSelectorItemBuilder: TokenSelectorItemBuilder {
     func map(from walletModel: WalletModel, isDisabled: Bool) -> ActionButtonsTokenSelectorItem {
         let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
+        let infoProvider = DefaultTokenItemInfoProvider(walletModel: walletModel)
 
         return ActionButtonsTokenSelectorItem(
             id: walletModel.id,
-            tokenIconInfo: tokenIconInfo,
-            name: walletModel.tokenItem.name,
-            symbol: walletModel.tokenItem.currencySymbol,
-            balance: walletModel.balance,
-            fiatBalance: walletModel.fiatBalance,
             isDisabled: isDisabled,
-            isLoading: walletModel.state.isLoading,
+            tokenIconInfo: tokenIconInfo,
+            infoProvider: infoProvider,
             walletModel: walletModel
         )
     }

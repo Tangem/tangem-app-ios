@@ -6,6 +6,7 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
+import Combine
 import Foundation
 
 final class ActionButtonsBuyCoordinator: CoordinatorObject {
@@ -20,6 +21,7 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
 
     @Published private(set) var actionButtonsBuyViewModel: ActionButtonsBuyViewModel?
     @Published private(set) var sendCoordinator: SendCoordinator? = nil
+    @Published var addToPortfolioBottomSheetInfo: HotCryptoAddToPortfolioModel?
 
     // MARK: - Private property
 
@@ -27,18 +29,21 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
 
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let tokenSorter: TokenAvailabilitySorter
+    private let hotCryptoItemsSubject: CurrentValueSubject<[HotCryptoDataItem], Never>
     private let userWalletModel: UserWalletModel
 
     required init(
         expressTokensListAdapter: some ExpressTokensListAdapter,
         tokenSorter: some TokenAvailabilitySorter = CommonBuyTokenAvailabilitySorter(),
         dismissAction: @escaping Action<Void>,
+        hotCryptoItemsSubject: CurrentValueSubject<[HotCryptoDataItem], Never>,
         userWalletModel: some UserWalletModel,
         popToRootAction: @escaping Action<PopToRootOptions> = { _ in }
     ) {
         self.expressTokensListAdapter = expressTokensListAdapter
         self.tokenSorter = tokenSorter
         self.dismissAction = dismissAction
+        self.hotCryptoItemsSubject = hotCryptoItemsSubject
         self.userWalletModel = userWalletModel
         self.popToRootAction = popToRootAction
     }
@@ -47,6 +52,7 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
         actionButtonsBuyViewModel = ActionButtonsBuyViewModel(
             tokenSelectorViewModel: makeTokenSelectorViewModel(),
             coordinator: self,
+            hotCryptoItemsSubject: hotCryptoItemsSubject,
             userWalletModel: userWalletModel
         )
     }
@@ -76,6 +82,14 @@ extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
             self?.safariHandle = nil
             self?.dismiss()
         }
+    }
+
+    func openAddToPortfolio(_ infoModel: HotCryptoAddToPortfolioModel) {
+        addToPortfolioBottomSheetInfo = infoModel
+    }
+
+    func closeAddToPortfolio() {
+        addToPortfolioBottomSheetInfo = nil
     }
 }
 

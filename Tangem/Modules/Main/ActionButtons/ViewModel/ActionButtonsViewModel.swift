@@ -21,6 +21,9 @@ final class ActionButtonsViewModel: ObservableObject {
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
+    @Injected(\.tangemApiService)
+    private var tangemApiService: TangemApiService
+
     // MARK: Button ViewModels
 
     let buyActionButtonViewModel: BuyActionButtonViewModel
@@ -35,6 +38,8 @@ final class ActionButtonsViewModel: ObservableObject {
     private var lastExpressUpdatingState: ExpressAvailabilityUpdateState?
     private var lastSellInitializeState: ExchangeServiceState?
     private var lastBuyInitializeState: ExchangeServiceState?
+    private var hotCryptoItemsSubject = CurrentValueSubject<[HotCryptoDataItem], Never>([])
+    private var isHotTokensNotLoaded = true
 
     private let expressTokensListAdapter: ExpressTokensListAdapter
     private let userWalletModel: UserWalletModel
@@ -51,6 +56,7 @@ final class ActionButtonsViewModel: ObservableObject {
             model: .buy,
             coordinator: coordinator,
             lastButtonTapped: lastButtonTapped,
+            hotCryptoItemsSubject: hotCryptoItemsSubject,
             userWalletModel: userWalletModel
         )
 
@@ -69,11 +75,13 @@ final class ActionButtonsViewModel: ObservableObject {
         )
 
         bind()
+        fetchHotCrypto()
     }
 
     func refresh() {
         // do nothing if already iniitialized
         exchangeService.initialize()
+        fetchHotCrypto()
     }
 }
 
@@ -154,6 +162,21 @@ private extension ActionButtonsViewModel {
                 }
             }
             .store(in: &bag)
+    }
+
+    func fetchHotCrypto() {
+        Task {
+            guard
+                isHotTokensNotLoaded,
+                let fetchedHotCryptoItems = try? await tangemApiService.fetchHotCrypto(
+                    requestModel: .init(currency: AppSettings.shared.selectedCurrencyCode)
+                )
+            else {
+                return
+            }
+
+            hotCryptoItemsSubject.send(fetchedHotCryptoItems.tokens.map { .init(from: $0) })
+        }
     }
 
     func updateBuyButtonStateWithMercuryo(_ exchangeServiceState: ExchangeServiceState) {

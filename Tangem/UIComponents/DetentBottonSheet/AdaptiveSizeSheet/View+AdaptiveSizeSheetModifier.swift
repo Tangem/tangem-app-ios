@@ -10,6 +10,7 @@ import SwiftUI
 
 struct AdaptiveSizeSheetModifier: ViewModifier {
     @StateObject private var viewModel = AdaptiveSizeSheetViewModel()
+
     func body(content: Content) -> some View {
         VStack(spacing: 0) {
             handler
@@ -28,15 +29,16 @@ struct AdaptiveSizeSheetModifier: ViewModifier {
     }
 
     private func scrollableSheetContent(content: Content) -> some View {
-        ScrollView(viewModel.scrollViewAxis, showsIndicators: false) {
+        ScrollView(.vertical, showsIndicators: false) {
             content
                 .padding(.bottom, viewModel.defaultBottomPadding)
                 .presentationDetents(contentHeight: viewModel.contentHeight, cornerRadius: viewModel.cornerRadius)
+                .padding(.bottom, viewModel.scrollableContentBottomPadding)
                 .readGeometry(\.size.height) {
                     viewModel.contentHeight = $0
                 }
-                .padding(.bottom, viewModel.scrollableContentBottomPadding)
         }
+        .scrollDisabledBackport(viewModel.contentHeight <= viewModel.containerHeight)
         .readGeometry(\.size.height) {
             viewModel.containerHeight = $0
         }
@@ -67,6 +69,17 @@ private extension View {
             presentationConfiguration { controller in
                 controller.preferredCornerRadius = cornerRadius
             }
+        }
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func scrollDisabledBackport(_ isDisabled: Bool) -> some View {
+        if #available(iOS 16.0, *) {
+            scrollDisabled(isDisabled)
+        } else {
+            self
         }
     }
 }

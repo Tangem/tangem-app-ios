@@ -383,5 +383,7 @@ extension Analytics {
         case actionButtonsReceiveTokenClicked = "[Action Buttons] Receive Token Clicked"
         case actionButtonsRemoveButtonClicked = "[Action Buttons] Remove Button Clicked"
         case actionButtonsButtonClose = "[Action Buttons] Button - Close"
+        case actionButtonsHotTokenClicked = "[Main Screen] Hot Token Clicked"
+        case actionButtonsHotTokenError = "[Main Screen] Hot Token Error"
     }
 }

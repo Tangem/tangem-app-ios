@@ -51,7 +51,9 @@ struct ActionButtonsChooseTokenView: View {
             Button(
                 action: {
                     if let selectedToken {
-                        ActionButtonsAnalyticsService.removeButtonClicked(tokenSymbol: selectedToken.symbol)
+                        ActionButtonsAnalyticsService.removeButtonClicked(
+                            tokenSymbol: selectedToken.infoProvider.tokenItem.currencySymbol
+                        )
                     }
 
                     selectedToken = nil
@@ -96,6 +98,7 @@ struct ActionButtonsChooseTokenView: View {
                     selectedToken: .constant(
                         .init(
                             id: 0,
+                            isDisabled: false,
                             tokenIconInfo: .init(
                                 name: "",
                                 blockchainIconName: "",
@@ -103,12 +106,7 @@ struct ActionButtonsChooseTokenView: View {
                                 isCustom: false,
                                 customTokenColor: .black
                             ),
-                            name: "Ethereum",
-                            symbol: "ETH",
-                            balance: "1 ETH",
-                            fiatBalance: "88000$",
-                            isDisabled: false,
-                            isLoading: false,
+                            infoProvider: DefaultTokenItemInfoProvider(walletModel: .mockETH),
                             walletModel: .mockETH
                         )
                     )
