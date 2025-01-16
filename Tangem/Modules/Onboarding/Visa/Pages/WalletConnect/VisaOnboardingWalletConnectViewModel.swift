@@ -60,16 +60,17 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
     }
 
     private func proceedOnboardingIfPossible() {
-        Task {
+        runTask(in: self, isDetached: false) { viewModel in
             do {
-                if try await self.delegate?.canProceedOnboarding() ?? false {
-                    await self.proceedOnboarding()
+                if try await viewModel.delegate?.canProceedOnboarding() ?? false {
+                    await viewModel.proceedOnboarding()
                     return
                 }
             } catch {
-                log("Failed to check if onboarding can proceed: \(error)")
+                viewModel.log("Failed to check if onboarding can proceed: \(error)")
             }
-            setupStatusUpdateTask()
+
+            viewModel.setupStatusUpdateTask()
         }
     }
 
