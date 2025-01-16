@@ -134,7 +134,7 @@ struct TokenInteractionAvailabilityProvider {
              .xodex,
              .clore,
              .fact0rn,
-             .odysseyChain:
+             .odysseyChain,
              .bitrock:
             // Checking that we have at least one valid (non-empty) address
             //

@@ -144,7 +144,7 @@ public indirect enum Blockchain: Equatable, Hashable {
              .energyWebEVM(let testnet),
              .core(let testnet),
              .chiliz(let testnet),
-             .odysseyChain(let testnet):
+             .odysseyChain(let testnet),
              .bitrock(let testnet):
             return testnet
         case .litecoin,
@@ -318,7 +318,7 @@ public indirect enum Blockchain: Equatable, Hashable {
              .canxium,
              .chiliz,
              .xodex,
-             .odysseyChain:
+             .odysseyChain,
              .bitrock:
             return 18
         case .cardano,
@@ -1483,7 +1483,7 @@ extension Blockchain {
              .canxium,
              .chiliz,
              .xodex,
-             .odysseyChain:
+             .odysseyChain,
              .bitrock:
             return EthereumWalletAssembly()
         case .optimism,
