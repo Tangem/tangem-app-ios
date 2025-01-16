@@ -248,6 +248,9 @@ struct TestnetAPINodeInfoProvider {
         case .odysseyChain:
             return [
                 .init(url: URL(string: "https://testnode.dioneprotocol.com/ext/bc/D/rpc")!),
+        case .bitrock:
+            return [
+                .init(url: URL(string: "https://testnet.bit-rock.io")!),
             ]
         // TODO: Refactor in IOS-6639
         case .bitcoin, .litecoin, .disChain, .rsk, .bitcoinCash, .binance, .cardano,

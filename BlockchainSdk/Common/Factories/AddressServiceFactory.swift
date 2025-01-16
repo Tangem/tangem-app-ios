@@ -66,6 +66,7 @@ public struct AddressServiceFactory {
              .chiliz,
              .xodex,
              .odysseyChain:
+             .bitrock:
             return EthereumAddressService()
         case .rsk:
             return RskAddressService()
