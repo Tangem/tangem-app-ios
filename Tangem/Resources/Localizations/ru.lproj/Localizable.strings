@@ -926,7 +926,7 @@
 "user_push_notification_agreement_argument_two" = "Узнавайте первым о новых акциях";
 "user_push_notification_agreement_header" = "Хотите использовать Push-уведомления?";
 "user_wallet_list_add_button" = "Добавить новый кошелек";
-"user_wallet_list_delete_prompt" = "Вы уверены, что хотите удалить этот кошелек?";
+"user_wallet_list_delete_prompt" = "Вы уверены, что хотите забыть этот кошелек?";
 "user_wallet_list_error_wallet_already_saved" = "Этот кошелек уже был сохранен, вы можете добавить другой";
 "user_wallet_list_rename_popup_placeholder" = "Имя кошелька";
 "user_wallet_list_rename_popup_title" = "Переименование кошелька";
