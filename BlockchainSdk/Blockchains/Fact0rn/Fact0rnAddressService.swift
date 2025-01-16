@@ -10,7 +10,7 @@ import TangemSdk
 import BitcoinCore
 
 struct Fact0rnAddressService {
-    private let bitcoinAddressService = BitcoinAddressService(networkParams: Fact0rnMainNetworkParams())
+    private let bitcoinAddressService = BitcoinBech32AddressService(networkParams: Fact0rnMainNetworkParams())
 }
 
 // MARK: - AddressProvider

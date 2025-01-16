@@ -30,14 +30,8 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     // MARK: - BitcoinNetworkProvider Implementation
 
     func getInfo(address: String) -> AnyPublisher<BitcoinResponse, any Error> {
-        let defferedScriptHash = Deferred {
-            return Future { promise in
-                let result = Result { try Fact0rnAddressService.addressToScriptHash(address: address) }
-                promise(result)
-            }
-        }
-
-        return defferedScriptHash
+        return Result { try Fact0rnAddressService.addressToScriptHash(address: address) }
+            .publisher
             .withWeakCaptureOf(self)
             .flatMap { provider, scriptHash in
                 provider.getAddressInfo(identifier: .scriptHash(scriptHash))
@@ -47,13 +41,19 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
                 let pendingTransactionsPublisher = provider.getPendingTransactions(address: address, with: accountInfo.outputs)
                 return pendingTransactionsPublisher
                     .map { pendingTranactions in
-                        Fact0rnAccountModel(addressInfo: accountInfo, pendingTransactions: pendingTranactions)
+                        (accountInfo, pendingTranactions)
                     }
             }
             .withWeakCaptureOf(self)
-            .tryMap { provider, account in
+            .tryMap { provider, args in
+                let (accountInfo, pendingTransactions) = args
                 let outputScriptData = try Fact0rnAddressService.addressToScript(address: address).scriptData
-                return try provider.mapBitcoinResponse(account: account, outputScript: outputScriptData.hexString)
+
+                return try provider.mapBitcoinResponse(
+                    account: accountInfo,
+                    pendingTransactions: pendingTransactions,
+                    outputScript: outputScriptData.hexString
+                )
             }
             .eraseToAnyPublisher()
     }
@@ -73,7 +73,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
             let minimalSatoshiPerByte = values.0 / Constants.perKbRate
             let normalSatoshiPerByte = values.1 / Constants.perKbRate
             let prioritySatoshiPerByte = values.2 / Constants.perKbRate
-            
+
             return (minimalSatoshiPerByte, normalSatoshiPerByte, prioritySatoshiPerByte)
         }
         .withWeakCaptureOf(self)
@@ -88,34 +88,20 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     }
 
     func send(transaction: String) -> AnyPublisher<String, any Error> {
-        Future.async { [weak self] in
-            guard let self else {
-                throw BlockchainSdkError.noAPIInfo
-            }
-
-            return try await provider.send(transactionHex: transaction)
+        Future.async {
+            return try await self.provider.send(transactionHex: transaction)
         }
         .eraseToAnyPublisher()
     }
 
     func push(transaction: String) -> AnyPublisher<String, any Error> {
-        Future.async { [weak self] in
-            guard let self else {
-                throw BlockchainSdkError.noAPIInfo
-            }
-
-            return try await provider.send(transactionHex: transaction)
-        }
-        .eraseToAnyPublisher()
+        assertionFailure("This method marked as deprecated")
+        return .anyFail(error: BlockchainSdkError.noAPIInfo)
     }
 
     func getSignatureCount(address: String) -> AnyPublisher<Int, any Error> {
-        Future.async { [weak self] in
-            guard let self else {
-                throw BlockchainSdkError.noAPIInfo
-            }
-
-            let txHistory = try await provider.getTxHistory(identifier: .scriptHash(address))
+        Future.async {
+            let txHistory = try await self.provider.getTxHistory(identifier: .scriptHash(address))
             return txHistory.count
         }
         .eraseToAnyPublisher()
@@ -124,16 +110,12 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     // MARK: - Private Implementation
 
     private func getAddressInfo(identifier: ElectrumWebSocketProvider.Identifier) -> AnyPublisher<ElectrumAddressInfo, Error> {
-        Future.async { [weak self] in
-            guard let self else {
-                throw BlockchainSdkError.noAPIInfo
-            }
-
-            async let balance = provider.getBalance(identifier: identifier)
-            async let unspents = provider.getUnspents(identifier: identifier)
+        Future.async {
+            async let balance = self.provider.getBalance(identifier: identifier)
+            async let unspents = self.provider.getUnspents(identifier: identifier)
 
             return try await ElectrumAddressInfo(
-                balance: Decimal(balance.confirmed) / decimalValue,
+                balance: Decimal(balance.confirmed) / self.decimalValue,
                 outputs: unspents.map { unspent in
                     ElectrumUTXO(
                         position: unspent.txPos,
@@ -151,11 +133,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         address: String,
         with unspents: [ElectrumUTXO]
     ) -> AnyPublisher<[PendingTransaction], Error> {
-        Future.async { [weak self] in
-            guard let self else {
-                throw BlockchainSdkError.noAPIInfo
-            }
-
+        Future.async {
             let unconfirmedUnspents = unspents.filter(\.isNonConfirmed)
 
             let result: [PendingTransaction] = try await withThrowingTaskGroup(of: PendingTransaction.self) { group in
@@ -180,48 +158,36 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
     }
 
     private func estimateFee(confirmation blocks: Int) -> AnyPublisher<Decimal, Error> {
-        Future.async { [weak self] in
-            guard let self else {
-                throw BlockchainSdkError.noAPIInfo
-            }
-
-            return try await provider.estimateFee(block: blocks)
+        Future.async {
+            try await self.provider.estimateFee(block: blocks)
         }
         .eraseToAnyPublisher()
     }
 
     private func send(transactionHex: String) -> AnyPublisher<String, Error> {
-        Future.async { [weak self] in
-            guard let self else {
-                throw BlockchainSdkError.noAPIInfo
-            }
-
-            return try await provider.send(transactionHex: transactionHex)
+        Future.async {
+            try await self.provider.send(transactionHex: transactionHex)
         }
         .eraseToAnyPublisher()
     }
 
     private func getTransactionInfo(hash: String) -> AnyPublisher<ElectrumDTO.Response.Transaction, Error> {
-        Future.async { [weak self] in
-            guard let self else {
-                throw BlockchainSdkError.noAPIInfo
-            }
-
-            return try await provider.getTransaction(hash: hash)
+        Future.async {
+            try await self.provider.getTransaction(hash: hash)
         }
         .eraseToAnyPublisher()
     }
 
     // MARK: - Helpers
 
-    private func mapBitcoinResponse(account: Fact0rnAccountModel, outputScript: String) throws -> BitcoinResponse {
-        let hasUnconfirmed = account.addressInfo.balance != .zero
-        let unspentOutputs = mapUnspent(outputs: account.addressInfo.outputs, outputScript: outputScript)
+    private func mapBitcoinResponse(account: ElectrumAddressInfo, pendingTransactions: [PendingTransaction], outputScript: String) throws -> BitcoinResponse {
+        let hasUnconfirmed = account.balance != .zero
+        let unspentOutputs = mapUnspent(outputs: account.outputs, outputScript: outputScript)
 
         return BitcoinResponse(
-            balance: account.addressInfo.balance,
+            balance: account.balance,
             hasUnconfirmed: hasUnconfirmed,
-            pendingTxRefs: account.pendingTransactions,
+            pendingTxRefs: pendingTransactions,
             unspentOutputs: unspentOutputs
         )
     }
@@ -255,7 +221,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
         let vin = transaction.vin
         let vout = transaction.vout
 
-        if let _ = vin.first(where: { $0.address?.contains(address) ?? false }),
+        if vin.contains(where: { $0.address?.contains(address) ?? false }),
            let txDestination = vout.first(where: { $0.scriptPubKey.address != address }) {
             destination = txDestination.scriptPubKey.address
             source = address
