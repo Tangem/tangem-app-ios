@@ -107,6 +107,7 @@ struct OnboardingSeedPhraseImportView: View {
                 isResponder: $viewModel.isPassphraseInputResponder,
                 actionButtonTapped: .constant(true),
                 handleKeyboard: true,
+                keyboard: .asciiCapable,
                 clearButtonMode: .whileEditing,
                 placeholder: Localization.sendOptionalField
             )

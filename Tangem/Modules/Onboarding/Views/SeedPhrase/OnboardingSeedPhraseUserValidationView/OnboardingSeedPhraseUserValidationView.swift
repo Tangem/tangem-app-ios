@@ -105,6 +105,7 @@ private struct WordInputView: View {
                 actionButtonTapped: .constant(false),
                 clearsOnBeginEditing: false,
                 handleKeyboard: true,
+                keyboard: .asciiCapable,
                 clearButtonMode: .never,
                 textColor: UIColor(hasError ? Colors.Text.warning : Colors.Text.primary1),
                 font: UIFonts.Regular.body,
