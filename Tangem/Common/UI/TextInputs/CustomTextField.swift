@@ -143,10 +143,7 @@ struct CustomTextField: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<CustomTextField>) -> UITextField {
         let textField = CustomUITextField(frame: .zero)
         textField.onPaste = onPaste
-        textField.isSecureTextEntry = isSecured
         textField.clearsOnBeginEditing = clearsOnBeginEditing
-        textField.autocapitalizationType = .none
-        textField.autocorrectionType = .no
         textField.keyboardType = keyboard
         textField.font = font
         textField.textColor = textColor
@@ -156,6 +153,24 @@ struct CustomTextField: UIViewRepresentable {
         textField.setContentHuggingPriority(.defaultLow, for: .horizontal)
         textField.setContentHuggingPriority(.required, for: .vertical)
         textField.clearButtonMode = clearButtonMode
+
+        // Security hardening settings
+        textField.isSecureTextEntry = isSecured
+        textField.textContentType = .init(rawValue: "") // A dummy value since `.oneTimeCode` isn't appropriate here
+        textField.spellCheckingType = .no
+        textField.autocapitalizationType = .none
+        textField.autocorrectionType = .no
+        textField.smartInsertDeleteType = .no
+        textField.smartDashesType = .no
+        textField.smartQuotesType = .no
+        if #available(iOS 17.0, *) {
+            textField.inlinePredictionType = .no
+        }
+        if #available(iOS 18.0, *) {
+            textField.mathExpressionCompletionType = .no
+            textField.writingToolsBehavior = .none
+        }
+
         var toolbarItems = [UIBarButtonItem]()
         if handleKeyboard {
             toolbarItems = [
