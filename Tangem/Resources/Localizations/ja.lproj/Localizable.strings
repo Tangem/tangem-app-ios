@@ -926,7 +926,7 @@
 "user_push_notification_agreement_argument_two" = "新しいプロモーション情報をいち早く入手しましょう";
 "user_push_notification_agreement_header" = "プッシュ通知を使用しますか?";
 "user_wallet_list_add_button" = "新しいウォレットを追加";
-"user_wallet_list_delete_prompt" = "本当にこのウォレットを削除してもよろしいですか?";
+"user_wallet_list_delete_prompt" = "このウォレットを忘れてもよろしいですか？";
 "user_wallet_list_error_wallet_already_saved" = "このウォレットはすでに保存されています。別のウォレットを追加できます。";
 "user_wallet_list_rename_popup_placeholder" = "ウォレット名";
 "user_wallet_list_rename_popup_title" = "ウォレット名の変更";
@@ -1019,7 +1019,7 @@
 "warning_kaspa_unfinished_token_transaction_discard_message" = "取引をキャンセルしてもよろしいですか? 取引を再試行することはできません";
 "warning_kaspa_unfinished_token_transaction_message" = "%1$@ %2$@の取引が完了しませんでした。もう一度試して完了してください。";
 "warning_kaspa_unfinished_token_transaction_title" = "未完了の取引があります";
-"warning_last_balance_updated_time" = "Last update was %@";
+"warning_last_balance_updated_time" = "最終更新日は%@です";
 "warning_long_transaction_message" = "iPhone 7/7+ はこのネットワーク上で取引に署名できません。この操作を完了するには、別のデバイスを使用してください。";
 "warning_long_transaction_title" = "取引署名は利用できません";
 "warning_low_signatures_message" = "このカードには%@の署名のみが残っています。資金をすべて引き出す必要があります。";
@@ -1052,7 +1052,7 @@
 "warning_solana_rent_fee_message" = "Solana ネットワークは 2 日ごとに%1$@のレンタル料を請求します。レンタル料を支払えないアカウントはネットワークから削除されます。アカウントに%2$@以上入金すると、無料で使用できます。";
 "warning_some_networks_unreachable_message" = "下にスワイプして更新するか、後でもう一度お試しください。";
 "warning_some_networks_unreachable_title" = "一部のネットワークにアクセスできません";
-"warning_some_token_balances_not_updated" = "Some token balances could not updated";
+"warning_some_token_balances_not_updated" = "一部のトークン残高を更新できませんでした";
 "warning_system_deprecation_title" = "システムアップデートが必要です";
 "warning_system_deprecation_with_date_message" = "お使いのバージョンのオペレーティングシステムのサポートは%@に終了します。今後アプリのアップデートを受け取るには、最新バージョンにアップデートする必要があります。";
 "warning_system_update_message" = "Tangemは、安定・安全な操作のために最新のiOSアップデートをインストールすることを推奨しています。";
