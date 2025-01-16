@@ -39,6 +39,11 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
         // TODO: Replace with ShareLinks https://developer.apple.com/documentation/swiftui/sharelink for iOS 16+
         let av = UIActivityViewController(activityItems: [visaURL], applicationActivities: nil)
         AppPresenter.shared.show(av)
+        setupStatusUpdateTask()
+    }
+    
+    func cancelStatusUpdates() {
+        scheduler.cancel()
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
@@ -76,7 +81,7 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
 
     @MainActor
     private func proceedOnboarding() async {
-        scheduler.cancel()
+        cancelStatusUpdates()
         await delegate?.proceedFromCurrentRemoteState()
     }
 }

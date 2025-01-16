@@ -117,7 +117,10 @@ class VisaOnboardingViewModel: ObservableObject {
             }
 
             goToStep(.welcome)
-        case .approveUsingTangemWallet, .approveUsingWalletConnect:
+        case .approveUsingTangemWallet:
+            goToStep(.selectWalletForApprove)
+        case .approveUsingWalletConnect:
+            walletConnectViewModel?.cancelStatusUpdates()
             goToStep(.selectWalletForApprove)
         case .success:
             break
