@@ -107,9 +107,11 @@ struct OnboardingSeedPhraseImportView: View {
                 isResponder: $viewModel.isPassphraseInputResponder,
                 actionButtonTapped: .constant(true),
                 handleKeyboard: true,
+                keyboard: .asciiCapable,
                 clearButtonMode: .whileEditing,
                 placeholder: Localization.sendOptionalField
             )
+            .setAutocapitalizationType(.none)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
