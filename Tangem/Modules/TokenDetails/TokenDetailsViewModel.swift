@@ -277,7 +277,7 @@ private extension TokenDetailsViewModel {
         }
     }
 
-    func mapToStakedBalance(staked: StakingManagerState.Staked) -> WalletModel.BalanceFormatted {
+    func mapToStakedBalance(staked: StakingManagerState.Staked) -> BalanceFormatted {
         let stakedWithPendingBalance = staked.balances.stakes().sum()
         let stakedWithPendingBalanceFormatted = balanceFormatter.formatCryptoBalance(stakedWithPendingBalance, currencyCode: walletModel.tokenItem.currencySymbol)
 

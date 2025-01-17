@@ -283,7 +283,7 @@ extension SingleTokenBaseViewModel {
             })
             .removeDuplicates()
             .filter { !$0.isLoading }
-            .sink { _ in } receiveValue: { [weak self] newState in
+            .receiveValue { [weak self] newState in
                 AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
                 self?.updateActionButtons()
             }
