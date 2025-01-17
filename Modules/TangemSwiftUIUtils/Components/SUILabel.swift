@@ -10,14 +10,14 @@ import Foundation
 import UIKit
 import SwiftUI
 
-struct SUILabel: View {
-    var attributedString: NSAttributedString
+public struct SUILabel: View {
+    private var attributedString: NSAttributedString
 
-    init(_ attributedString: NSAttributedString) {
+    public init(_ attributedString: NSAttributedString) {
         self.attributedString = attributedString
     }
 
-    var body: some View {
+    public var body: some View {
         HorizontalGeometryReader { width in
             UILabelView(
                 attributedString: attributedString,
