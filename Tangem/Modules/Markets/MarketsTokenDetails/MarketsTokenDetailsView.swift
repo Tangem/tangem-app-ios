@@ -18,7 +18,7 @@ struct MarketsTokenDetailsView: View {
     @State private var headerHeight: CGFloat = .zero
     @State private var isListContentObscured = false
 
-    @StateObject private var scrollState = ScrollViewOffsetHandler.marketTokenDetails(
+    @StateObject private var scrollOffsetHandler = ScrollViewOffsetHandler.marketTokenDetails(
         initialState: MarketsNavigationBarTitle.State(priceOpacity: nil, titleOffset: 0),
         labelOffset: Constants.scrollViewContentTopInset + Constants.scrollViewVerticalPadding
     )
@@ -51,7 +51,7 @@ struct MarketsTokenDetailsView: View {
                 backgroundColor
                     .ignoresSafeArea(edges: .vertical)
             }
-            .onAppear(perform: scrollState.onViewAppear)
+            .onAppear(perform: scrollOffsetHandler.onViewAppear)
     }
 
     @ViewBuilder
@@ -102,7 +102,7 @@ struct MarketsTokenDetailsView: View {
             tokenName: viewModel.tokenName,
             price: viewModel.price,
             state: viewModel.overlayContentProgress > 0
-                ? scrollState.state
+                ? scrollOffsetHandler.state
                 : MarketsNavigationBarTitle.State(
                     priceOpacity: 1,
                     titleOffset: ScrollViewOffsetHandler.MarketsTokenDetailsConstants.maxTitleOffset
@@ -146,7 +146,7 @@ struct MarketsTokenDetailsView: View {
             }
             .padding(.top, Constants.scrollViewContentTopInset)
             .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
-                scrollState.contentOffsetSubject.send(contentOffset)
+                scrollOffsetHandler.contentOffsetSubject.send(contentOffset)
                 if viewModel.isMarketsSheetStyle {
                     isListContentObscured = contentOffset.y > Constants.scrollViewContentTopInset
                 }

@@ -40,8 +40,8 @@ final class ScrollViewOffsetHandler<T: Equatable>: ObservableObject {
                 )
             }
             .withWeakCaptureOf(self)
-            .map { scrollState, contentOffset in
-                scrollState.map(contentOffset)
+            .map { handler, contentOffset in
+                handler.map(contentOffset)
             }
             .removeDuplicates()
             .assign(to: \.state, on: self, ownership: .weak)
