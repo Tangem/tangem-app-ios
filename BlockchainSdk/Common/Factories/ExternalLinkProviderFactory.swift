@@ -173,6 +173,8 @@ public struct ExternalLinkProviderFactory {
             return CloreExternalLinkProvider()
         case .fact0rn:
             return Fact0rnExternalLinkProvider()
+        case .odysseyChain:
+            return OdysseyChainExternalLinkProvider(isTestnet: isTestnet)
         }
     }
 }

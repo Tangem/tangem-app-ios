@@ -128,7 +128,8 @@ extension CoinType {
              .chiliz,
              .xodex,
              .clore,
-             .fact0rn:
+             .fact0rn,
+             .odysseyChain:
             // Blockchains that are not in WalletCore yet
             return nil
         }
