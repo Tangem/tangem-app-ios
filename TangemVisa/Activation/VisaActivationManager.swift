@@ -326,7 +326,7 @@ private extension CommonVisaActivationManager {
     func signActivationOrder(activationInput: VisaCardActivationInput) async throws {
         let activationOrder = try await cardActivationOrderProvider.provideActivationOrderForSign()
 
-        let signTask = SignActivationOrderTask(orderToSign: activationOrder.dataToSign)
+        let signTask = SignActivationOrderTask(orderToSign: activationOrder)
         let signedActivationOrder: SignedActivationOrder = try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self else {
                 continuation.resume(throwing: "Deinitialized")

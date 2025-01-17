@@ -124,6 +124,15 @@ class VisaOnboardingViewModel: ObservableObject {
     }
 
     func openSupport() {
+        guard FeatureStorage.instance.isVisaAPIMocksEnabled else {
+            openSupportSheet()
+            return
+        }
+
+        VisaMocksManager.instance.showMocksMenu(presenter: self)
+    }
+
+    private func openSupportSheet() {
         Analytics.log(.requestSupport, params: [.source: .onboarding])
 
         UIApplication.shared.endEditing()
@@ -429,6 +438,16 @@ private extension VisaOnboardingViewModel {
     }
 }
 
+// MARK: Development menu
+
+// TODO: Remove along side with Feature toggle
+
+extension VisaOnboardingViewModel: VisaMockMenuPresenter {
+    func modalFromTop(_ vc: UIViewController) {
+        UIApplication.modalFromTop(vc)
+    }
+}
+
 #if DEBUG
 extension VisaOnboardingViewModel {
     static let coordinator = OnboardingCoordinator()
@@ -455,7 +474,7 @@ extension VisaOnboardingViewModel {
 
         return .init(
             input: cardInput,
-            visaActivationManager: VisaActivationManagerFactory().make(
+            visaActivationManager: VisaActivationManagerFactory(isMockedAPIEnabled: true).make(
                 initialActivationStatus: activationStatus,
                 tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
                 urlSessionConfiguration: .default,

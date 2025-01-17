@@ -25,7 +25,7 @@ protocol AuthorizationTokenHandler {
 }
 
 class CommonVisaAccessTokenHandler {
-    private let tokenRefreshService: AccessTokenRefreshService
+    private let tokenRefreshService: VisaAuthorizationTokenRefreshService
     private weak var refreshTokenSaver: VisaRefreshTokenSaver?
 
     private let scheduler: AsyncTaskScheduler = .init()
@@ -38,7 +38,7 @@ class CommonVisaAccessTokenHandler {
 
     init(
         accessTokenHolder: AccessTokenHolder,
-        tokenRefreshService: AccessTokenRefreshService,
+        tokenRefreshService: VisaAuthorizationTokenRefreshService,
         logger: InternalLogger,
         refreshTokenSaver: VisaRefreshTokenSaver?
     ) {
