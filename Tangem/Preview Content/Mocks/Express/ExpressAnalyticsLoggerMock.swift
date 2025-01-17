@@ -13,5 +13,5 @@ struct ExpressAnalyticsLoggerMock: ExpressAnalyticsLogger {
 
     func logAppError(_ error: any Error, provider: TangemExpress.ExpressProvider) {}
 
-    func logExpressAPIError(_ error: TangemExpress.ExpressAPIError, provider: TangemExpress.ExpressProvider) {}
+    func logExpressAPIError(_ error: ExpressAPIError, provider: ExpressProvider, paymentMethod: OnrampPaymentMethod) {}
 }
