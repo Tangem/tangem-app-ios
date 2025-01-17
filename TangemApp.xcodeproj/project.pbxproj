@@ -8279,7 +8279,6 @@
 				B6176A792A5B743A0062C399 /* CGRect+.swift */,
 				B6FCEE722C40E16100CA9252 /* CGAffineTransform+.swift */,
 				B6B1CCC92C460BB9006C1B44 /* UIPanGestureRecognizer+.swift */,
-				2D2ACE192B30FAA90004CBB6 /* PresentationConfigurationViewModifier.swift */,
 				EF033B172B8631C700A71600 /* UIResponder+.swift */,
 				B6FCEE702C40E14300CA9252 /* UIScrollView+.swift */,
 				B6FFADE92C5D67E900B43A56 /* DGCharts.ChartViewBase+.swift */,
@@ -8859,6 +8858,7 @@
 				B61980112AB98ACE00153886 /* HighlightableViewModifier.swift */,
 				B62EE31D2B28A0FE006BA412 /* AppStoreReviewModifier.swift */,
 				B6B1BC282C6CCE88003EDB47 /* IntrospectResponderChainViewModifier.swift */,
+				2D2ACE192B30FAA90004CBB6 /* PresentationConfigurationViewModifier.swift */,
 			);
 			path = Modifiers;
 			sourceTree = "<group>";
