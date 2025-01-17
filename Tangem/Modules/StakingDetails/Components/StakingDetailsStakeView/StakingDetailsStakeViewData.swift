@@ -17,7 +17,7 @@ struct StakingDetailsStakeViewData: Identifiable {
     let icon: IconType
     let inProgress: Bool
     let subtitleType: SubtitleType?
-    let balance: WalletModel.BalanceFormatted
+    let balance: BalanceFormatted
     let action: (() -> Void)?
 
     var subtitle: AttributedString? {

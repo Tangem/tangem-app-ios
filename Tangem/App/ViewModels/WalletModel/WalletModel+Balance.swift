@@ -90,8 +90,4 @@ extension WalletModel {
             }
         }
     }
-
-    struct BalanceFormatted: Hashable {
-        let crypto, fiat: String
-    }
 }
