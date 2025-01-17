@@ -55,6 +55,7 @@ Options:
 - changelog: string for description archive
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
+- code_sign_identity: Xcode code signing identity (string) used to analyze the archive. Optional, required only if `analyze_archive` is true
 
 
 ### check_bsdk_example_buildable
@@ -83,6 +84,7 @@ Options:
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
+- code_sign_identity: Xcode code signing identity (string) used to analyze the archive. Optional, required only if `analyze_archive` is true
 
 
 ### build_Beta
@@ -101,6 +103,7 @@ Options:
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
+- code_sign_identity: Xcode code signing identity (string) used to analyze the archive. Optional, required only if `analyze_archive` is true
 
 
 ### build_RC
@@ -120,6 +123,7 @@ Options:
 - firebase_app_id: Firebase app id for DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
+- code_sign_identity: Xcode code signing identity (string) used to analyze the archive. Optional, required only if `analyze_archive` is true
 
 
 ### get_release_version_number

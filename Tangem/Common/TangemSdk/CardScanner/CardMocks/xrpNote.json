@@ -6,7 +6,7 @@
         "ed25519",
         "secp256r1"
     ],
-    "cardPublicKey" : "035BB6B7BE4BAACFADE307D4CF0E4BCE049D210124F643BE005FAD9C2FA13CE6F4",
+    "cardPublicKey" : "0000",
     "settings" : {
         "maxWalletsCount" : 1,
         "isLinkedTerminalEnabled" : true,
@@ -31,7 +31,7 @@
     },
     "issuer" : {
         "name" : "TANGEM AG",
-        "publicKey" : "0356E7C3376329DFAE7388DF1695670386103C92486A87644FA9E512C9CF4E92FE"
+        "publicKey" : "0000"
     },
     "firmwareVersion" : {
         "minor" : 39,
@@ -40,12 +40,12 @@
         "stringValue" : "4.39r",
         "type" : "r"
     },
-    "batchId" : "AB06",
+    "batchId" : "AB00",
     "isPasscodeSet" : false,
     "manufacturer" : {
         "name" : "TANGEM",
         "manufactureDate" : "2021-10-01",
-        "signature" : "B350E49B7A2DA4986A1AFBD2BADBCC86C70375459DB2DF2380E129FF0031BDCB6C2C94C923D1CD33CC61F8D1E49BD446505D78190B91F3C581EFB5114D59DB8C"
+        "signature" : "0000"
     },
     "attestation" : {
         "cardKeyAttestation" : "verified",
@@ -53,7 +53,7 @@
         "firmwareAttestation" : "skipped",
         "cardUniquenessAttestation" : "skipped"
     },
-    "cardId" : "AB06000000023724",
+    "cardId" : "AB00000000000000",
     "wallets" : [
         {
             "totalSignedHashes" : 0,

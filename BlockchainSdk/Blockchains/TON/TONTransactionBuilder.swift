@@ -181,12 +181,27 @@ final class TONTransactionBuilder {
         token: Token,
         params: TONTransactionParams?
     ) throws -> TheOpenNetworkJettonTransfer {
-        TheOpenNetworkJettonTransfer.with {
-            $0.jettonAmount = BigUInt((amount.value * token.decimalValue).uint64Value).serialize()
+        let jettonAmountPayload = try jettonAmountPayload(from: amount, tokenDecimalValue: token.decimalValue)
+
+        return TheOpenNetworkJettonTransfer.with {
+            $0.jettonAmount = jettonAmountPayload
             $0.toOwner = destination
             $0.responseAddress = wallet.address
             $0.forwardAmount = 1 // needs some amount to send "jetton transfer notification", use minimum
         }
+    }
+
+    /// Converts given amount to a uint128 with big-endian byte order.
+    private func jettonAmountPayload(from amount: Amount, tokenDecimalValue: Decimal) throws -> Data {
+        let decimalAmountValue = amount.value * tokenDecimalValue
+
+        guard let bigUIntValue = BigUInt(decimal: decimalAmountValue) else {
+            throw WalletError.failedToBuildTx
+        }
+
+        let rawPayload = Data(bigUIntValue.serialize())
+
+        return rawPayload
     }
 }
 

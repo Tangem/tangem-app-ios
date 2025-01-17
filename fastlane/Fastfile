@@ -3,7 +3,7 @@ require 'base64'
 default_platform(:ios)
 
 BUILD_PATH = "./fastlane/builds/"
-ANALYZE_ARCHIVE_UTIL_PATH = "../private-app-config/analyze_archive.sh"
+ANALYZE_ARCHIVE_UTIL_PATH = "./private-app-config/analyze_archive.sh"
 PRODUCTION_SCHEME = "Tangem"
 BETA_SCHEME = "Tangem Beta"
 ALPHA_SCHEME = "Tangem Alpha"
@@ -91,6 +91,7 @@ Options:
 - changelog: string for description archive
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
+- code_sign_identity: Xcode code signing identity (string) used to analyze the archive. Optional, required only if `analyze_archive` is true
 """
 lane :release do |options|
   UI.deprecated("Deprecated, use `Create release` Github action instead")
@@ -105,7 +106,9 @@ lane :release do |options|
     version: options[:version], 
     filename: PRODUCTION_SCHEME, 
     path: BUILD_PATH,
-    analyze_archive: options[:analyze_archive]
+    analyze_archive: options[:analyze_archive],
+    code_sign_identity: options[:code_sign_identity],
+    code_sign_mode: "release"
   )
   upload_dsyms(app_id: app_id, filename: PRODUCTION_SCHEME)
 
@@ -144,6 +147,7 @@ Options:
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
+- code_sign_identity: Xcode code signing identity (string) used to analyze the archive. Optional, required only if `analyze_archive` is true
 """
 lane :build_Alpha do |options|
   increment_version_number(version_number: options[:version])
@@ -156,7 +160,9 @@ lane :build_Alpha do |options|
     build: options[:build],
     filename: options[:filename],
     path: options[:path],
-    analyze_archive: options[:analyze_archive]
+    analyze_archive: options[:analyze_archive],
+    code_sign_identity: options[:code_sign_identity],
+    code_sign_mode: "debug"
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -172,6 +178,7 @@ Options:
 - firebase_app_id: Firebase app id for incrementing the build version number and DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
+- code_sign_identity: Xcode code signing identity (string) used to analyze the archive. Optional, required only if `analyze_archive` is true
 """
 lane :build_Beta do |options|
   increment_version_number(version_number: options[:version])
@@ -184,7 +191,9 @@ lane :build_Beta do |options|
     build: options[:build],
     filename: options[:filename],
     path: options[:path],
-    analyze_archive: options[:analyze_archive]
+    analyze_archive: options[:analyze_archive],
+    code_sign_identity: options[:code_sign_identity],
+    code_sign_mode: "debug"
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -201,6 +210,7 @@ Options:
 - firebase_app_id: Firebase app id for DSYM uploads
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 - analyze_archive: boolean to determine whether to analyze the archive during the build process (default: false)
+- code_sign_identity: Xcode code signing identity (string) used to analyze the archive. Optional, required only if `analyze_archive` is true
 """
 lane :build_RC do |options|
   increment_version_number(version_number: options[:version])
@@ -213,7 +223,9 @@ lane :build_RC do |options|
     build: options[:build],
     filename: options[:filename],
     path: options[:path],
-    analyze_archive: options[:analyze_archive]
+    analyze_archive: options[:analyze_archive],
+    code_sign_identity: options[:code_sign_identity],
+    code_sign_mode: "release"
   )
 
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
@@ -238,17 +250,17 @@ lane :get_release_version_number do |options|
     build_version_source = "user input"
   elsif (not branch_name.nil? and not branch_name.empty?)
     branch_name_components = branch_name.split("/")
-    UI.user_error!("Invalid branch name '#{branch_name}', can't process further wth the build") unless branch_name_components.length > 1
+    UI.user_error!("Invalid branch name '#{branch_name}', can't process further with the build") unless branch_name_components.length > 1
     build_version = branch_name_components[-1]
     build_version_source = "branch name"
   else
     UI.user_error!(
       "Unable to derive the build version from either 'build_version_override' or 'branch_name' " \
-      "lane arguments, can't process further wth the build"
+      "lane arguments, can't process further with the build"
     )
   end
 
-  UI.user_error!("Invalid build version format '#{build_version}', can't process further wth the build") unless !!(
+  UI.user_error!("Invalid build version format '#{build_version}', can't process further with the build") unless !!(
     (build_version =~ semver_regex_1) or (build_version =~ semver_regex_2)
   )
 
@@ -286,7 +298,7 @@ lane :get_release_build_number do |options|
     build_number = (latest_build_number + 1).to_s
   end
 
-  UI.user_error!("Invalid build number '#{build_number}', can't process further wth the build") unless !!(
+  UI.user_error!("Invalid build number '#{build_number}', can't process further with the build") unless !!(
     build_number =~ build_number_regex
   )
 
@@ -420,7 +432,9 @@ private_lane :build do |options|
       version: options[:version],
       build: options[:build],
       filename: options[:filename],
-      path: options[:path]
+      path: options[:path],
+      code_sign_identity: options[:code_sign_identity],
+      code_sign_mode: options[:code_sign_mode]
     )
   else
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
@@ -442,7 +456,12 @@ private_lane :build do |options|
   end
 end
 
-private_lane :build_and_analyze do |options|  
+private_lane :build_and_analyze do |options|
+  code_sign_identity = options[:code_sign_identity]
+  UI.user_error!("Invalid or missing code sign identity, can't process further with the build") if (code_sign_identity.nil? or code_sign_identity.empty?)
+
+  code_sign_mode = options[:code_sign_mode]
+
   xcarchive_path = File.expand_path("../" + options[:path] + options[:filename] + ".xcarchive")
   analyze_archive_util_path = File.expand_path("../" + ANALYZE_ARCHIVE_UTIL_PATH)
 
@@ -453,9 +472,9 @@ private_lane :build_and_analyze do |options|
     export_method: options[:export_method],
     xcarchive_path: xcarchive_path
   )
-      
-  sh("#{analyze_archive_util_path} '#{xcarchive_path}'")
-  
+
+  sh("#{analyze_archive_util_path} '#{xcarchive_path}' '#{code_sign_identity}' '#{code_sign_mode}'")
+
   create_ipa(
     path: options[:path],
     filename: options[:filename],

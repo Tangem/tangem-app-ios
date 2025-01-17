@@ -34,7 +34,7 @@ final class ExpressFeeSelectorViewModel: ObservableObject, Identifiable {
         self.expressInteractor = expressInteractor
         self.coordinator = coordinator
 
-        selectedFeeOption = expressInteractor.getFeeOption()
+        selectedFeeOption = expressInteractor.getState().fees.selected
         bind()
     }
 
@@ -46,15 +46,17 @@ final class ExpressFeeSelectorViewModel: ObservableObject, Identifiable {
             .withWeakCaptureOf(self)
             .receive(on: DispatchQueue.main)
             .sink { viewModel, state in
-                viewModel.setupView(state: state)
+                viewModel.setupView(fees: state.fees)
             }
             .store(in: &bag)
     }
 
-    private func setupView(state: ExpressInteractor.State) {
+    private func setupView(fees: ExpressInteractor.Fees) {
+        selectedFeeOption = fees.selected
+
         // Should use the option's array for the correct order
         feeRowViewModels = [FeeOption.market, .fast].compactMap { option in
-            guard let fee = state.fees[option] else {
+            guard let fee = fees.fees[option] else {
                 return nil
             }
 

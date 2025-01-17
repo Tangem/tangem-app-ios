@@ -317,8 +317,6 @@ class WalletModel {
             return newUpdatePublisher.eraseToAnyPublisher()
         }
 
-        AppLog.shared.debug("🔄 Start updating \(self)")
-
         if !silent {
             updateState(.loading)
         }
@@ -329,8 +327,6 @@ class WalletModel {
             .receive(on: updateQueue)
             .sink { [weak self] newState in
                 guard let self else { return }
-
-                AppLog.shared.debug("🔄 Finished common update for \(self)")
 
                 updatePublisher?.send(mapState(newState))
                 updatePublisher?.send(completion: .finished)
@@ -349,14 +345,10 @@ class WalletModel {
     private func walletManagerDidUpdate(_ walletManagerState: WalletManagerState) {
         switch walletManagerState {
         case .loaded:
-            AppLog.shared.debug("🔄 Finished updating for \(self)")
-
             if let demoBalance {
                 walletManager.wallet.add(coinValue: demoBalance)
             }
-        case .failed:
-            AppLog.shared.debug("🔄 Failed updating for \(self)")
-        case .loading, .initial:
+        case .failed, .loading, .initial:
             break
         }
 
@@ -396,18 +388,14 @@ class WalletModel {
             return .just(output: ())
         }
 
-        AppLog.shared.debug("🔄 Start loading quotes for \(self)")
-
         return quotesRepository
             .loadQuotes(currencyIds: [currencyId])
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { walletModel, dict in
-                AppLog.shared.debug("🔄 Finished loading quotes for \(walletModel)")
                 guard dict[currencyId] == nil else {
                     return
                 }
 
-                AppLog.shared.debug("🔄 Quotes wasn't loaded for \(walletModel)")
                 walletModel._rate.send(.loaded(nil))
             })
             .mapToVoid()
@@ -506,7 +494,6 @@ extension WalletModel {
             return .just(output: ())
         }
 
-        AppLog.shared.debug("TransactionsHistory for \(self) start the updating")
         return _transactionHistoryService.update()
     }
 
@@ -542,15 +529,15 @@ extension WalletModel {
             return
         }
 
-        AppLog.shared.debug("\(self) has pending local transactions \(pendingTransactions.map { $0.hash }). Try to insert it to transaction history")
+        AppLog.shared.debug("\(self) has pending local transactions. Try to insert it to transaction history")
         let mapper = PendingTransactionRecordMapper(formatter: formatter)
 
         pendingTransactions.forEach { pending in
             if items.contains(where: { $0.hash == pending.hash }) {
-                AppLog.shared.debug("\(self) Transaction history already contains \(pending.hash)")
+                AppLog.shared.debug("\(self) Transaction history already contains hash")
             } else {
                 let record = mapper.mapToTransactionRecord(pending: pending)
-                AppLog.shared.debug("\(self) Inserted to transaction history \(record.hash)")
+                AppLog.shared.debug("\(self) Inserted to transaction history hash")
                 items.insert(record, at: 0)
             }
         }

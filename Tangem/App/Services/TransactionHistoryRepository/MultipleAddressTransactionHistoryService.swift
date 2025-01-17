@@ -90,7 +90,7 @@ private extension MultipleAddressTransactionHistoryService {
         // Collect publishers for the next page if the page is exist
         let publishers: [LoadingPublisher] = addresses.compactMap { address in
             guard canFetchHistory else {
-                AppLog.shared.debug("Address \(address) in \(self) reached the end of list")
+                AppLog.shared.debug("Address in \(self) reached the end of list")
                 return nil
             }
 
@@ -129,7 +129,7 @@ private extension MultipleAddressTransactionHistoryService {
                 for response in responses {
                     service.addToStorage(records: response.response.records)
 
-                    AppLog.shared.debug("Address \(response.address) in \(String(describing: self)) loaded")
+                    AppLog.shared.debug("Address in \(String(describing: self)) loaded")
                 }
 
                 result(.success(()))
