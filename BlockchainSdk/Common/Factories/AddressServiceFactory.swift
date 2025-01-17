@@ -149,6 +149,8 @@ public struct AddressServiceFactory {
             return BitcoinLegacyAddressService(networkParams: networkParams)
         case .fact0rn:
             return Fact0rnAddressService()
+        case .alephium:
+            return AlephiumAddressService()
         }
     }
 }

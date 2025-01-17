@@ -129,7 +129,8 @@ extension CoinType {
              .xodex,
              .clore,
              .fact0rn,
-             .odysseyChain:
+             .odysseyChain,
+             .alephium:
             // Blockchains that are not in WalletCore yet
             return nil
         }

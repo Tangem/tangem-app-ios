@@ -116,6 +116,9 @@
 		2DA57BC32CD650E900C890DF /* CasperAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D616FE62CD1414000581EA6 /* CasperAddressService.swift */; };
 		2DA8AB122A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */; };
 		2DAB6B6F2CE28E8500B4A10C /* MinimumAmountRestrictable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */; };
+		2DB200692D3A8DB300E499A3 /* AlephiumWalletAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB200682D3A8DB300E499A3 /* AlephiumWalletAssembly.swift */; };
+		2DB2006B2D3A8E6200E499A3 /* AlephiumAddressService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB2006A2D3A8E6200E499A3 /* AlephiumAddressService.swift */; };
+		2DB2006D2D3A903E00E499A3 /* AlephiumExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB2006C2D3A903E00E499A3 /* AlephiumExternalLinkProvider.swift */; };
 		2DB3614B2C14FBAB00BB1D38 /* SegmentedPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */; };
 		2DB3614D2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */; };
 		2DB3614F2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */; };
@@ -3305,6 +3308,9 @@
 		2D92E6562D0C2088008FDECF /* SolanaDummyNetworkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolanaDummyNetworkRouter.swift; sourceTree = "<group>"; };
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumAmountRestrictable.swift; sourceTree = "<group>"; };
+		2DB200682D3A8DB300E499A3 /* AlephiumWalletAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumWalletAssembly.swift; sourceTree = "<group>"; };
+		2DB2006A2D3A8E6200E499A3 /* AlephiumAddressService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumAddressService.swift; sourceTree = "<group>"; };
+		2DB2006C2D3A903E00E499A3 /* AlephiumExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumExternalLinkProvider.swift; sourceTree = "<group>"; };
 		2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerView.swift; sourceTree = "<group>"; };
 		2DB3614C2C14FBF500BB1D38 /* SegmentedPickerView+EnviromentValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedPickerView+EnviromentValues.swift"; sourceTree = "<group>"; };
 		2DB3614E2C14FC5700BB1D38 /* SegmentedPickerViewContentStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerViewContentStyle.swift; sourceTree = "<group>"; };
@@ -6673,6 +6679,16 @@
 				2DC46B9F2C945C4400749F7C /* BasicTooltipView.swift */,
 			);
 			path = Tooltip;
+			sourceTree = "<group>";
+		};
+		2DB200672D3A8D9300E499A3 /* Alephium */ = {
+			isa = PBXGroup;
+			children = (
+				2DB2006A2D3A8E6200E499A3 /* AlephiumAddressService.swift */,
+				2DB2006C2D3A903E00E499A3 /* AlephiumExternalLinkProvider.swift */,
+				2DB200682D3A8DB300E499A3 /* AlephiumWalletAssembly.swift */,
+			);
+			path = Alephium;
 			sourceTree = "<group>";
 		};
 		2DB361492C14FB9200BB1D38 /* SegmentPickerView */ = {
@@ -10943,6 +10959,7 @@
 		B62D3EA92CBC79D900C2460E /* Blockchains */ = {
 			isa = PBXGroup;
 			children = (
+				2DB200672D3A8D9300E499A3 /* Alephium */,
 				B62D3BBC2CBC79D900C2460E /* Algorand */,
 				B62D3BCF2CBC79D900C2460E /* Aptos */,
 				B62D3BD72CBC79D900C2460E /* Binance */,
@@ -18842,6 +18859,7 @@
 				B62D413E2CBC79DA00C2460E /* NEARNetworkResult.TransactionSendAsync.swift in Sources */,
 				B62D40B92CBC79DA00C2460E /* Playa3ullGamesExternalLinkProvider.swift in Sources */,
 				B62D40122CBC79DA00C2460E /* OP_2SWAP.swift in Sources */,
+				2DB2006B2D3A8E6200E499A3 /* AlephiumAddressService.swift in Sources */,
 				B62D3FEB2CBC79DA00C2460E /* OP_CHECKMULTISIGVERIFY.swift in Sources */,
 				B62D41862CBC79DA00C2460E /* RSKExternalLinkProvider.swift in Sources */,
 				B62D42C02CBC79DB00C2460E /* WalletError.swift in Sources */,
@@ -19177,6 +19195,7 @@
 				B62D40842CBC79DA00C2460E /* DucatusExternalLinkProvider.swift in Sources */,
 				B62D3FBA2CBC79DA00C2460E /* BinanceExternalLinkProvider.swift in Sources */,
 				2D8F9E782CF9B314007434A4 /* CloreBlockBookConfig.swift in Sources */,
+				2DB2006D2D3A903E00E499A3 /* AlephiumExternalLinkProvider.swift in Sources */,
 				B62D40512CBC79DA00C2460E /* CardanoUtil.swift in Sources */,
 				B62D424B2CBC79DB00C2460E /* OnfinalityAPIResolver.swift in Sources */,
 				B62D40342CBC79DA00C2460E /* BitcoinCashExternalLinkProvider.swift in Sources */,
@@ -19407,6 +19426,7 @@
 				B62D410E2CBC79DA00C2460E /* KoinosDTOMapper.swift in Sources */,
 				B62D40452CBC79DA00C2460E /* RosettaTarget.swift in Sources */,
 				B62D3FAE2CBC79DA00C2460E /* AptosTransactionInfo.swift in Sources */,
+				2DB200692D3A8DB300E499A3 /* AlephiumWalletAssembly.swift in Sources */,
 				B62D40952CBC79DA00C2460E /* EthereumNetworkProvider.swift in Sources */,
 				B62D42822CBC79DB00C2460E /* EthereumTransactionHistoryMapper.swift in Sources */,
 				B62D41CA2CBC79DB00C2460E /* exchange_contract.pb.swift in Sources */,

@@ -95,7 +95,8 @@ struct AddressTypesConfig {
              .xodex,
              .clore,
              .fact0rn,
-             .odysseyChain:
+             .odysseyChain,
+             .alephium:
             return [.default]
         }
     }
