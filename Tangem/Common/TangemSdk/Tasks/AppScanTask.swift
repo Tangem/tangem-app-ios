@@ -76,6 +76,11 @@ final class AppScanTask: CardSessionRunnable {
 
         let visaUtils = VisaUtilities(isTestnet: false)
         if visaUtils.isVisaCard(card) {
+            guard FeatureProvider.isAvailable(.visa) else {
+                completion(.failure(.notSupportedFirmwareVersion))
+                return
+            }
+
             readVisaCard(session, completion)
             return
         }

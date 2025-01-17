@@ -2,8 +2,8 @@ name: Beta - Build and Deploy
 
 on:
   push:
-   branches:
-    - 'develop'
+    branches:
+      - 'develop'
   workflow_dispatch:
     inputs:
       build_description:
@@ -20,6 +20,11 @@ on:
           Optional base branch for constructing Jira issues diff. Leave blank (default value) to use 
           the most recent release branch ('releases/*') created from the current branch or its ancestor
         type: string
+      analyze_archive:
+        description: >
+          Whether the archive should be analyzed during the build process (default: false)
+        type: boolean
+        default: false
 
 concurrency:
   group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
@@ -73,13 +78,14 @@ jobs:
       - name: Jira Get Issues Summary
         uses: tangem/jira-action@master
         id: jira-issues-summary
+        continue-on-error: true
         with:
           action: 'getIssuesSummary'
           issues: '${{ steps.git-diff.outputs.issues }}'
 
       - name: Jira Check Version
         id: jira-check-version
-        if: false # TODO: Enable, requires IOS-8508
+        if: false # TODO: Enable, requires IOS-8785
         uses: tangem/jira-action@master
         with:
           action: 'checkVersion'
@@ -87,7 +93,7 @@ jobs:
           version: '${{ env.next_version_name }}'
 
       - name: Jira Create Version
-        if: false # TODO: Enable, requires IOS-8508
+        if: false # TODO: Enable, requires IOS-8785
         # if: ${{ steps.jira-check-version.outputs.result == 'false' }}
         uses: tangem/jira-action@master
         with:
@@ -96,7 +102,7 @@ jobs:
           version: '${{ env.next_version_name }}'
 
       - name: Jira Set Version To Issues
-        if: false # TODO: Enable, requires IOS-8508
+        if: false # TODO: Enable, requires IOS-8785
         uses: tangem/jira-action@master
         with:
           action: 'setVersionToIssues'
@@ -115,6 +121,9 @@ jobs:
       path: 'fastlane/builds/'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
       xcode_version_override: '${{ inputs.xcode_version_override }}'
+      # GA boolean inputs are just awful https://stackoverflow.com/questions/76292948
+      # The reusable workflow requires all input params to be of type string, so we use this ugly ternary operator here
+      analyze_archive: ${{ inputs.analyze_archive == true && 'true' || 'false' }}
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'

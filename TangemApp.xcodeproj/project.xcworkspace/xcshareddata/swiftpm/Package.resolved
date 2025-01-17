@@ -600,7 +600,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Tangem/tangem-sdk-ios.git",
       "state" : {
-        "revision" : "f09ed00d81556183dc6265d5a82e836768341646"
+        "revision" : "f986f41b7bd7def6317d49a2cd6ea97f0a6f22a5"
       }
     },
     {
@@ -626,8 +626,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/wallet-core-binaries-ios.git",
       "state" : {
-        "revision" : "15923918d890a38bb7e8dd42887bf62c419ee48d",
-        "version" : "4.1.20-tangem2"
+        "revision" : "64eac18714238266c7737ddd0bd94cf79b5b2d94",
+        "version" : "4.1.20-tangem4"
       }
     },
     {

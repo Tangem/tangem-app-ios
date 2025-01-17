@@ -120,7 +120,8 @@ struct TransactionParamsBuilder {
              .chiliz,
              .xodex,
              .clore,
-             .fact0rn:
+             .fact0rn,
+             .odysseyChain:
             throw TransactionParamsBuilderError.extraIdNotSupported
         }
     }

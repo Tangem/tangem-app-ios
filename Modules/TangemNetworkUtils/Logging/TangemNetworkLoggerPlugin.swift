@@ -201,7 +201,7 @@ public extension TangemNetworkLoggerPlugin.Configuration {
     }
 }
 
-// MARK: TargetType+
+// MARK: - TargetType+
 
 private extension TargetType {
     var requestDescription: String {
