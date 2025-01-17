@@ -147,6 +147,7 @@ struct SupportedBlockchains {
             .xodex,
             .clore,
             .odysseyChain(testnet: false),
+            .bitrock(testnet: false),
             .fact0rn,
         ]
     }
@@ -205,6 +206,7 @@ struct SupportedBlockchains {
             .energyWebEVM(testnet: true),
             .core(testnet: true),
             .odysseyChain(testnet: true),
+            .bitrock(testnet: true),
         ]
     }
 
