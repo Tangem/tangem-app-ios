@@ -14,9 +14,9 @@ protocol OnboardingSeedPhraseGenerationDelegate: AnyObject {
 }
 
 class OnboardingSeedPhraseGenerateViewModel: ObservableObject {
-    var availableLengths: [MnemonicLenght] = [.twelveWords, .twentyFourWords]
+    var availableLengths: [MnemonicLength] = [.twelveWords, .twentyFourWords]
 
-    @Published var selectedLenght: MnemonicLenght = .twelveWords
+    @Published var selectedLength: MnemonicLength = .twelveWords
     @Published var words: [String] = []
 
     private weak var seedPhraseManager: SeedPhraseManager?
@@ -27,17 +27,17 @@ class OnboardingSeedPhraseGenerateViewModel: ObservableObject {
     init(seedPhraseManager: SeedPhraseManager, delegate: OnboardingSeedPhraseGenerationDelegate?) {
         self.seedPhraseManager = seedPhraseManager
         self.delegate = delegate
-        words = seedPhraseManager.mnemonics[selectedLenght.entropyLength]?.mnemonicComponents ?? []
+        words = seedPhraseManager.mnemonics[selectedLength.entropyLength]?.mnemonicComponents ?? []
 
         bind()
     }
 
     func continueAction() {
-        delegate?.continuePhraseGeneration(with: selectedLenght.entropyLength)
+        delegate?.continuePhraseGeneration(with: selectedLength.entropyLength)
     }
 
     private func bind() {
-        selectedLengthSubscription = $selectedLenght
+        selectedLengthSubscription = $selectedLength
             .dropFirst()
             .map { $0.entropyLength }
             .withWeakCaptureOf(self)
@@ -47,7 +47,7 @@ class OnboardingSeedPhraseGenerateViewModel: ObservableObject {
 }
 
 extension OnboardingSeedPhraseGenerateViewModel {
-    enum MnemonicLenght: Identifiable {
+    enum MnemonicLength: Identifiable {
         case twelveWords
         case twentyFourWords
 
@@ -63,7 +63,7 @@ extension OnboardingSeedPhraseGenerateViewModel {
     }
 }
 
-private extension OnboardingSeedPhraseGenerateViewModel.MnemonicLenght {
+private extension OnboardingSeedPhraseGenerateViewModel.MnemonicLength {
     var entropyLength: EntropyLength {
         switch self {
         case .twelveWords: return .bits128
