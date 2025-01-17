@@ -27,7 +27,7 @@ struct Fact0rnWalletAssembly: WalletManagerAssembly {
                 addresses: input.wallet.addresses
             )
 
-            let anyPoviders: [AnyBitcoinNetworkProvider] = APIResolver(blockchain: input.blockchain, config: input.blockchainSdkConfig)
+            let providers: [AnyBitcoinNetworkProvider] = APIResolver(blockchain: input.blockchain, config: input.blockchainSdkConfig)
                 .resolveProviders(apiInfos: input.apiInfo, factory: { nodeInfo, _ in
                     let electrumWebSocketProvider = ElectrumWebSocketProvider(url: nodeInfo.url)
                     let provider = Fact0rnNetworkProvider(
@@ -38,7 +38,7 @@ struct Fact0rnWalletAssembly: WalletManagerAssembly {
                     return AnyBitcoinNetworkProvider(provider)
                 })
 
-            $0.networkService = BitcoinNetworkService(providers: anyPoviders)
+            $0.networkService = BitcoinNetworkService(providers: providers)
         }
     }
 }
