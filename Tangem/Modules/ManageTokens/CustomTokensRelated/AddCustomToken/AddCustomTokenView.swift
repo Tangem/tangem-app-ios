@@ -210,9 +210,20 @@ private struct TextInputWithTitle: View {
             }
 
             HStack(spacing: 0) {
-                customTextField
-                    .opacity(isLoading ? 0 : 1)
-                    .overlay(skeleton, alignment: .leading)
+                CustomTextField(
+                    text: text,
+                    isResponder: .constant(nil),
+                    actionButtonTapped: .constant(false),
+                    handleKeyboard: true,
+                    keyboard: keyboardType,
+                    textColor: isEnabled ? UIColor.textPrimary1 : UIColor.textDisabled,
+                    font: UIFonts.Regular.subheadline,
+                    placeholder: placeholder,
+                    isEnabled: isEnabled
+                )
+                .setAutocapitalizationType(autocapitalizationType)
+                .opacity(isLoading ? 0 : 1)
+                .overlay(skeleton, alignment: .leading)
 
                 Spacer(minLength: 0)
             }
@@ -220,23 +231,6 @@ private struct TextInputWithTitle: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .animation(.default, value: error == nil)
-    }
-
-    private var customTextField: some View {
-        var customTextField = CustomTextField(
-            text: text,
-            isResponder: .constant(nil),
-            actionButtonTapped: .constant(false),
-            handleKeyboard: true,
-            keyboard: keyboardType,
-            textColor: isEnabled ? UIColor.textPrimary1 : UIColor.textDisabled,
-            font: UIFonts.Regular.subheadline,
-            placeholder: placeholder,
-            isEnabled: isEnabled
-        )
-        customTextField.autocapitalizationType = autocapitalizationType
-
-        return customTextField
     }
 
     @ViewBuilder

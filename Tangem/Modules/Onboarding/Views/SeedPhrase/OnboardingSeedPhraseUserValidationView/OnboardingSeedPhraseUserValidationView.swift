@@ -112,6 +112,7 @@ private struct WordInputView: View {
                 placeholder: "",
                 isEnabled: true
             )
+            .setAutocapitalizationType(.none)
             .padding(.vertical, 12)
 
             if isResponder ?? false {

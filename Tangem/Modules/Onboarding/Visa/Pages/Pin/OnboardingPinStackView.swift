@@ -58,6 +58,7 @@ struct OnboardingPinStackView: View {
             placeholder: "",
             maxCount: maxDigits
         )
+        .setAutocapitalizationType(.none)
         .disabled(isDisabled)
     }
 

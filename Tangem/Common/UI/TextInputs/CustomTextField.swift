@@ -240,6 +240,16 @@ struct CustomTextField: UIViewRepresentable {
     }
 }
 
+// MARK: - Setupable
+
+extension CustomTextField: Setupable {
+    func setAutocapitalizationType(_ autocapitalizationType: UITextAutocapitalizationType) -> Self {
+        map { $0.autocapitalizationType = autocapitalizationType }
+    }
+}
+
+// MARK: - Auxiliary types
+
 private class CustomUITextField: UITextField {
     var onPaste: () -> Void = {}
 

@@ -24,7 +24,6 @@ public struct UITextInputSecurityHardeningConfigurator {
             uiTextField.isSecureTextEntry = isSecured
             uiTextField.textContentType = .dummyValue
             uiTextField.spellCheckingType = .no
-            uiTextField.autocapitalizationType = .none
             uiTextField.autocorrectionType = .no
             uiTextField.smartInsertDeleteType = .no
             uiTextField.smartDashesType = .no
@@ -40,7 +39,6 @@ public struct UITextInputSecurityHardeningConfigurator {
             uiTextView.isSecureTextEntry = isSecured
             uiTextView.textContentType = .dummyValue
             uiTextView.spellCheckingType = .no
-            uiTextView.autocapitalizationType = .none
             uiTextView.autocorrectionType = .no
             uiTextView.smartInsertDeleteType = .no
             uiTextView.smartDashesType = .no

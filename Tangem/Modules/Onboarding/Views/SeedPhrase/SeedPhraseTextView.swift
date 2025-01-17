@@ -28,6 +28,7 @@ struct SeedPhraseTextView: UIViewRepresentable {
         configurator.configure(textView)
 
         textView.backgroundColor = nil
+        textView.autocapitalizationType = .none
         textView.delegate = context.coordinator
         textView.allowsEditingTextAttributes = false
         textView.enablesReturnKeyAutomatically = false
