@@ -60,6 +60,21 @@ struct SendDecimalNumberTextField: View {
     }
 
     var body: some View {
+        Group {
+            // Disabling animations for the `viewModel.measuredTextSize` property to prevent
+            // an unwanted animated transition from truncated text to the non-truncated one
+            if #available(iOS 17.0, *) {
+                content
+                    .transaction(value: viewModel.measuredTextSize) { $0.animation = nil }
+            } else {
+                content
+                    .animation(nil, value: viewModel.measuredTextSize)
+            }
+        }
+        .frame(height: viewModel.measuredTextSize.height)
+    }
+
+    private var content: some View {
         GeometryReader { proxy in
             ZStack(alignment: alignment) {
                 let (scale, width) = scaleAndWidth(using: proxy)
@@ -91,7 +106,6 @@ struct SendDecimalNumberTextField: View {
             .infinityFrame() // Provides centered alignment within `GeometryReader`
             .overlay(textSizeMeasurer)
         }
-        .frame(height: viewModel.measuredTextSize.height)
     }
 
     /// A dummy invisible view that is used to calculate the ideal (unlimited) width for a single-line input string.
