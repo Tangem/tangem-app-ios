@@ -15,6 +15,8 @@ import TangemVisa
 protocol VisaOnboardingAlertPresenter: AnyObject {
     @MainActor
     func showAlert(_ alert: AlertBinder) async
+    @MainActor
+    func showContactSupportAlert(for error: Error) async
 }
 
 protocol VisaOnboardingRoutable: AnyObject {
@@ -55,7 +57,7 @@ class VisaOnboardingViewModel: ObservableObject {
     )
 
     lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(accessCodeValidator: visaActivationManager, delegate: self)
-    lazy var walletSelectorViewModel = VisaOnboardingApproveWalletSelectorViewModel(delegate: self)
+    lazy var walletSelectorViewModel = VisaOnboardingApproveWalletSelectorViewModel(remoteStateProvider: self, delegate: self)
     var tangemWalletApproveViewModel: VisaOnboardingTangemWalletDeployApproveViewModel?
     var walletConnectViewModel: VisaOnboardingWalletConnectViewModel?
     lazy var inProgressViewModel: VisaOnboardingInProgressViewModel? = VisaOnboardingViewModelsBuilder().buildInProgressModel(
@@ -291,6 +293,28 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
         self.alert = alert
     }
 
+    @MainActor
+    func showContactSupportAlert(for error: Error) async {
+        let alert = Alert(
+            title: Text(Localization.commonError),
+            message: Text("Failed to during activation process. Error: \(error.localizedDescription)"),
+            primaryButton: .default(
+                Text(Localization.detailsRowTitleContactToSupport),
+                action: { [weak self] in
+                    self?.openSupport()
+                }
+            ),
+            secondaryButton: .destructive(
+                Text("Cancel Activation"),
+                action: { [weak self] in
+                    self?.closeOnboarding()
+                }
+            )
+        )
+
+        await showAlert(AlertBinder(alert: alert))
+    }
+
     func useSelectedCode(accessCode: String) async throws {
         try visaActivationManager.saveAccessCode(accessCode: accessCode)
         try await visaActivationManager.startActivation()
@@ -347,7 +371,13 @@ private extension VisaOnboardingViewModel {
     }
 }
 
-// MARK: - ApproveWalletSelectorDelegate
+// MARK: - ApproveWalletSelector protocols
+
+extension VisaOnboardingViewModel: VisaOnboardingRemoteStateProvider {
+    func loadCurrentRemoteState() async throws -> VisaCardActivationRemoteState {
+        try await visaActivationManager.refreshActivationRemoteState()
+    }
+}
 
 extension VisaOnboardingViewModel: VisaOnboardingApproveWalletSelectorDelegate {
     func useExternalWallet() {

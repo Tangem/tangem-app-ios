@@ -18,7 +18,7 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
     private var delegate: VisaOnboardingInProgressDelegate?
     private var safariHandle: SafariHandle?
 
-    private let statusUpdateTimeIntervalSec: TimeInterval = 15
+    private let statusUpdateTimeIntervalSec: TimeInterval = 10
 
     private var scheduler = AsyncTaskScheduler()
 
@@ -30,8 +30,10 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
         let visaURL = VisaUtilities().walletConnectURL
         safariHandle = safariManager.openURL(visaURL) { [weak self] successURL in
             self?.safariHandle = nil
+            // Right now `successURL` is not defined, so every url will be succes for now
             self?.proceedOnboardingIfPossible()
         }
+        setupStatusUpdateTask()
     }
 
     func openShareSheet() {
@@ -41,7 +43,7 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
         AppPresenter.shared.show(av)
         setupStatusUpdateTask()
     }
-    
+
     func cancelStatusUpdates() {
         scheduler.cancel()
     }
@@ -60,6 +62,8 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
                 await self?.proceedOnboarding()
             } catch {
                 self?.log("Failed to check if onboarding can proceed: \(error)")
+                self?.scheduler.cancel()
+                await self?.delegate?.showContactSupportAlert(for: error)
             }
         }
     }
@@ -69,13 +73,13 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
             do {
                 if try await viewModel.delegate?.canProceedOnboarding() ?? false {
                     await viewModel.proceedOnboarding()
-                    return
+                } else {
+                    viewModel.setupStatusUpdateTask()
                 }
             } catch {
                 viewModel.log("Failed to check if onboarding can proceed: \(error)")
+                await viewModel.delegate?.showContactSupportAlert(for: error)
             }
-
-            viewModel.setupStatusUpdateTask()
         }
     }
 
