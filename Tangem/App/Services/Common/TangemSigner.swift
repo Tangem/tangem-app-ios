@@ -29,7 +29,14 @@ struct TangemSigner: TransactionSigner {
         self.sdk = sdk
     }
 
-    func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
+    func sign(hashes: [Data], walletPublicKeys: [Wallet.PublicKey]) -> AnyPublisher<[Data], Error> {
+        hashes.publisher
+            .flatMap { hash in
+                walletPublicKeys.publisher
+                    .flatMap { publicKey in
+                        
+                    }
+            }
         Future<[Data], Error> { promise in
             let signCommand = SignAndReadTask(
                 hashes: hashes,

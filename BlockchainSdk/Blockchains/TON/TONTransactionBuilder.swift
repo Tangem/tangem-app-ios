@@ -182,7 +182,7 @@ final class TONTransactionBuilder {
         params: TONTransactionParams?
     ) throws -> TheOpenNetworkJettonTransfer {
         TheOpenNetworkJettonTransfer.with {
-            $0.jettonAmount = (amount.value * token.decimalValue).uint64Value
+            $0.jettonAmount = BigUInt((amount.value * token.decimalValue).uint64Value).serialize()
             $0.toOwner = destination
             $0.responseAddress = wallet.address
             $0.forwardAmount = 1 // needs some amount to send "jetton transfer notification", use minimum

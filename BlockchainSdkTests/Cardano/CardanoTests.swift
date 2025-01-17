@@ -329,7 +329,7 @@ class CardanoTests: XCTestCase {
         publicKeys.add(data: sKey)
         publicKeys.add(data: pKey)
 
-        let compileWithSignatures = TransactionCompiler.compileWithSignatures(
+        let compileWithSignatures = TransactionCompiler.tangemCompileWithSignatures(
             coinType: .cardano,
             txInputData: txInputData,
             signatures: signatures,

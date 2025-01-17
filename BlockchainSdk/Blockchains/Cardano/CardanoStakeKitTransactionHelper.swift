@@ -26,7 +26,7 @@ struct CardanoStakeKitTransactionHelper {
 
     func prepareForSend(_ transaction: StakeKitTransaction, signature: SignatureInfo) throws -> Data {
         let transaction = try cardanoTransaction(from: transaction.unsignedData)
-        return try transactionBuilder.buildStakingForSend(transaction: transaction, signature: signature)
+        return try transactionBuilder.buildStakingForSend(transaction: transaction, signatures: [signature])
     }
 
     private func cardanoTransaction(from unsignedData: String) throws -> CardanoTransaction {

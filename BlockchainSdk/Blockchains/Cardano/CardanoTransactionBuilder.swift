@@ -35,7 +35,7 @@ extension CardanoTransactionBuilder {
 
     func buildForSend(transaction: Transaction, signature: SignatureInfo) throws -> Data {
         let input = try buildCardanoSigningInput(transaction: transaction)
-        return try buildSigningOutput(from: input, signature: signature)
+        return try buildSigningOutput(from: input, signatures: [signature])
     }
 
     func buildStakingForSign(transaction: CardanoTransaction) throws -> Data {
@@ -43,9 +43,9 @@ extension CardanoTransactionBuilder {
         return try preSignOutputHash(from: input)
     }
 
-    func buildStakingForSend(transaction: CardanoTransaction, signature: SignatureInfo) throws -> Data {
+    func buildStakingForSend(transaction: CardanoTransaction, signatures: [SignatureInfo]) throws -> Data {
         let input = try buildCardanoStakingSigningInput(transaction: transaction)
-        return try buildSigningOutput(from: input, signature: signature)
+        return try buildSigningOutput(from: input, signatures: signatures)
     }
 
     func getFee(amount: Amount, destination: String, source: String) throws -> FeeResult {
@@ -338,23 +338,26 @@ private extension CardanoTransactionBuilder {
         return preSigningOutput.dataHash
     }
 
-    private func buildSigningOutput(from input: CardanoSigningInput, signature: SignatureInfo) throws -> Data {
+    private func buildSigningOutput(from input: CardanoSigningInput, signatures: [SignatureInfo]) throws -> Data {
         let txInputData = try input.serializedData()
 
-        let signatures = DataVector()
-        signatures.add(data: signature.signature)
+        let signaturesVector = DataVector()
+        let publicKeysVector = DataVector()
 
-        let publicKeys = DataVector()
-        // WalletCore used here `.ed25519Cardano` curve with 128 bytes publicKey.
-        // For more info see CardanoUtil
-        let publicKey = signature.publicKey.trailingZeroPadding(toLength: CardanoUtil.extendedPublicKeyCount)
-        publicKeys.add(data: publicKey)
+        signatures.forEach { signature in
+            signaturesVector.add(data: signature.signature)
+            // WalletCore used here `.ed25519Cardano` curve with 128 bytes publicKey.
+            // For more info see CardanoUtil
+            publicKeysVector.add(
+                data: signature.publicKey.trailingZeroPadding(toLength: CardanoUtil.extendedPublicKeyCount)
+            )
+        }
 
         let compileWithSignatures = TransactionCompiler.compileWithSignatures(
             coinType: coinType,
             txInputData: txInputData,
-            signatures: signatures,
-            publicKeys: publicKeys
+            signatures: signaturesVector,
+            publicKeys: publicKeysVector
         )
 
         let output = try CardanoSigningOutput(serializedData: compileWithSignatures)

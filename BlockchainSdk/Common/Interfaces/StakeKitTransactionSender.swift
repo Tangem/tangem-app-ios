@@ -36,7 +36,7 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
 
                 do {
                     let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
-                    let signatures: [SignatureInfo] = try await signer.sign(hashes: preparedHashes, walletPublicKey: wallet.publicKey).async()
+                    let signatures: [SignatureInfo] = try await signer.sign(hashes: preparedHashes, walletPublicKeys: [wallet.publicKey]).async()
 
                     for (transaction, signature) in zip(transactions, signatures) {
                         try Task.checkCancellation()
