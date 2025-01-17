@@ -121,7 +121,8 @@ struct TransactionParamsBuilder {
              .xodex,
              .clore,
              .fact0rn,
-             .odysseyChain:
+             .odysseyChain,
+             .bitrock:
             throw TransactionParamsBuilderError.extraIdNotSupported
         }
     }
