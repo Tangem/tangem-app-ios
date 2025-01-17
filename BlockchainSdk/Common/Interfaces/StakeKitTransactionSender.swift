@@ -19,7 +19,7 @@ protocol StakeKitTransactionSenderProvider {
     associatedtype RawTransaction
 
     func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data
-    func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction
+    func prepareDataForSend(transaction: StakeKitTransaction, signatures: [SignatureInfo]) throws -> RawTransaction
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String
 }
 
@@ -36,11 +36,11 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
 
                 do {
                     let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
-                    let signatures: [SignatureInfo] = try await signer.sign(hashes: preparedHashes, walletPublicKeys: [wallet.publicKey]).async()
+                    let signatures: [SignatureInfo] = try await signer.sign(hashes: preparedHashes, walletPublicKey: wallet.publicKey).async()
 
                     for (transaction, signature) in zip(transactions, signatures) {
                         try Task.checkCancellation()
-                        let rawTransaction = try prepareDataForSend(transaction: transaction, signature: signature)
+                        let rawTransaction = try prepareDataForSend(transaction: transaction, signatures: [signature])
 
                         do {
                             let result: TransactionSendResult = try await broadcast(transaction: transaction, rawTransaction: rawTransaction)

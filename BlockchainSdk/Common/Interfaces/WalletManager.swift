@@ -74,42 +74,25 @@ public protocol TransactionSender {
 }
 
 public protocol TransactionSigner {
-    func sign(hashes: [Data], walletPublicKeys: [Wallet.PublicKey]) -> AnyPublisher<[Data], Error>
     func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error>
     func sign(hash: Data, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<Data, Error>
-    func sign(hash: Data, walletPublicKeys: [Wallet.PublicKey]) -> AnyPublisher<[Data], Error>
+    func sign(dataToSign: [Wallet.PublicKey.HDKey: Data], seedKey: Data) -> AnyPublisher<[Data], Error>
 }
 
 extension TransactionSigner {
-    func sign(hash: Data, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<Data, Error> {
-        sign(hashes: [hash], walletPublicKeys: [walletPublicKey])
-            .compactMap { $0.first }
-            .eraseToAnyPublisher()
-    }
-
-    func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
-        sign(hashes: hashes, walletPublicKeys: [walletPublicKey])
-    }
-
-    func sign(hash: Data, walletPublicKeys: [Wallet.PublicKey]) -> AnyPublisher<[Data], Error> {
-        sign(hashes: [hash], walletPublicKeys: walletPublicKeys)
-    }
-
     func sign(hash: Data, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<SignatureInfo, Error> {
-        sign(hashes: [hash], walletPublicKeys: [walletPublicKey])
-            .compactMap { $0.first }
+        sign(hash: hash, walletPublicKey: walletPublicKey)
+            .map { signature in
+                SignatureInfo(signature: signature, publicKey: walletPublicKey.blockchainKey, hash: hash)
+            }
             .eraseToAnyPublisher()
     }
 
-    func sign(hashes: [Data], walletPublicKeys: [Wallet.PublicKey]) -> AnyPublisher<[SignatureInfo], Error> {
-        sign(hashes: hashes, walletPublicKeys: walletPublicKeys)
+    func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[SignatureInfo], Error> {
+        sign(hashes: hashes, walletPublicKey: walletPublicKey)
             .map { signatures in
-                signatures.enumerated().map { index, signature in
-                    SignatureInfo(
-                        signature: signature,
-                        publicKey: walletPublicKeys[index].blockchainKey,
-                        hash: hashes[index]
-                    )
+                zip(hashes, signatures).map { hash, signature in
+                    SignatureInfo(signature: signature, publicKey: walletPublicKey.blockchainKey, hash: hash)
                 }
             }
             .eraseToAnyPublisher()

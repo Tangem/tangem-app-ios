@@ -29,20 +29,37 @@ struct TangemSigner: TransactionSigner {
         self.sdk = sdk
     }
 
-    func sign(hashes: [Data], walletPublicKeys: [Wallet.PublicKey]) -> AnyPublisher<[Data], Error> {
-        hashes.publisher
-            .flatMap { hash in
-                walletPublicKeys.publisher
-                    .flatMap { publicKey in
-                        
-                    }
-            }
+    func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
         Future<[Data], Error> { promise in
             let signCommand = SignAndReadTask(
                 hashes: hashes,
                 walletPublicKey: walletPublicKey.seedKey,
                 pairWalletPublicKey: twinKey?.getPairKey(for: walletPublicKey.seedKey),
-                derivationPath: walletPublicKey.signDerivationPath
+                derivationPath: walletPublicKey.derivationPath
+            )
+
+            sdk.startSession(with: signCommand, filter: filter, initialMessage: initialMessage) { signResult in
+                switch signResult {
+                case .success(let response):
+                    latestSigner.send(response.card)
+                    promise(.success(response.signatures))
+                case .failure(let error):
+                    promise(.failure(error))
+                }
+
+                withExtendedLifetime(signCommand) {}
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func sign(dataToSign: [Wallet.PublicKey.HDKey: Data], seedKey: Data) -> AnyPublisher<[Data], Error> {
+        Future<[Data], Error> { promise in
+            let signCommand = SignAndReadTask(
+                hashes: hashes,
+                walletPublicKey: walletPublicKey.seedKey,
+                pairWalletPublicKey: twinKey?.getPairKey(for: walletPublicKey.seedKey),
+                derivationPath: walletPublicKey.derivationPath
             )
 
             sdk.startSession(with: signCommand, filter: filter, initialMessage: initialMessage) { signResult in

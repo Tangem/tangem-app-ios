@@ -230,23 +230,6 @@ class TronWalletManager: BaseManager, WalletManager {
 extension TronWalletManager: ThenProcessable {}
 
 private class DummySigner: TransactionSigner {
-    func sign(hashes: [Data], walletPublicKeys: [Wallet.PublicKey]) -> AnyPublisher<[Data], any Error> {
-        hashes.publisher
-            .withWeakCaptureOf(self)
-            .flatMap { signer, hash in
-                do {
-                    let signature = try Secp256k1Utils().sign(hash, with: signer.privateKey)
-                    return Just(signature)
-                        .setFailureType(to: Error.self)
-                        .eraseToAnyPublisher()
-                } catch {
-                    return .anyFail(error: error)
-                }
-            }
-            .collect()
-            .eraseToAnyPublisher()
-    }
-
     let privateKey: Data
     let publicKey: Wallet.PublicKey
 
@@ -255,6 +238,17 @@ private class DummySigner: TransactionSigner {
         let compressedPublicKey = try! Secp256k1Key(with: keyPair.publicKey).compress()
         publicKey = Wallet.PublicKey(seedKey: compressedPublicKey, derivationType: .none)
         privateKey = keyPair.privateKey
+    }
+
+    func sign(hash: Data, walletPublicKey: Wallet.PublicKey) -> AnyPublisher<Data, Error> {
+        do {
+            let signature = try Secp256k1Utils().sign(hash, with: privateKey)
+            return Just(signature)
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        } catch {
+            return .anyFail(error: error)
+        }
     }
 
     func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
