@@ -57,10 +57,10 @@ class CommonPendingOnrampTransactionsManager {
                 for: record
             )
 
-            pendingExpressTransactionAnalyticsTracker.trackStatusForTransaction(
-                branch: .onramp,
+            pendingExpressTransactionAnalyticsTracker.trackStatusForOnrampTransaction(
                 transactionId: pendingTransaction.transactionRecord.expressTransactionId,
                 tokenSymbol: tokenItem.currencySymbol,
+                currencySymbol: pendingTransaction.transactionRecord.fromCurrencyCode,
                 status: pendingTransaction.transactionRecord.transactionStatus,
                 provider: pendingTransaction.transactionRecord.provider
             )
