@@ -2,7 +2,7 @@
 //  JSONDecoder.DateDecodingStrategy+.swift
 //  TangemFoundation
 //
-//  Created by m3g0byt3 on 11.11.2024.
+//  Created by Andrey Fedorov on 11.11.2024.
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 

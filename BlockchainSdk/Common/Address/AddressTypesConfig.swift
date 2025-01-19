@@ -96,6 +96,7 @@ struct AddressTypesConfig {
              .clore,
              .fact0rn,
              .odysseyChain,
+             .bitrock,
              .alephium:
             return [.default]
         }

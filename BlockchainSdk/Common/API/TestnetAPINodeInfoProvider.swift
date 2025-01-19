@@ -249,6 +249,10 @@ struct TestnetAPINodeInfoProvider {
             return [
                 .init(url: URL(string: "https://testnode.dioneprotocol.com/ext/bc/D/rpc")!),
             ]
+        case .bitrock:
+            return [
+                .init(url: URL(string: "https://testnet.bit-rock.io")!),
+            ]
         case .alephium:
             return []
         // TODO: Refactor in IOS-6639

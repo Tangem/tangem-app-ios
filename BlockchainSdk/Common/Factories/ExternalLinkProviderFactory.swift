@@ -175,6 +175,8 @@ public struct ExternalLinkProviderFactory {
             return Fact0rnExternalLinkProvider()
         case .odysseyChain:
             return OdysseyChainExternalLinkProvider(isTestnet: isTestnet)
+        case .bitrock:
+            return BitrockExternalLinkProvider(isTestnet: isTestnet)
         case .alephium:
             return AlephiumExternalLinkProvider()
         }

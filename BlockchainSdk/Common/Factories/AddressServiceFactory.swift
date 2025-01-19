@@ -65,7 +65,8 @@ public struct AddressServiceFactory {
              .canxium,
              .chiliz,
              .xodex,
-             .odysseyChain:
+             .odysseyChain,
+             .bitrock:
             return EthereumAddressService()
         case .rsk:
             return RskAddressService()
