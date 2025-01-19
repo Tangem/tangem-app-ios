@@ -1604,4 +1604,15 @@ class AddressesTests: XCTestCase {
         let scriptHash = try Fact0rnAddressService.addressToScriptHash(address: expectedAddress)
         XCTAssertEqual(scriptHash, expectedScriptHash)
     }
+
+    // MARK: - Alephium
+
+    func testGenerationGeneration() throws {
+        let addressService = AlephiumAddressService()
+        let publicKeyData = Data(hexString: "0x025ad4a937b43f426d1bc2de5a5061c82c5218b2d0f52c132b3ddd0d6c07c4efca")
+        let address = try addressService.makeAddress(from: publicKeyData)
+        let expectedAddress = "1HqAa1eHkqmXuSh7ECW6jF9ygZ2CMZYe1JthwcQ7NbgUe"
+
+        XCTAssertEqual(address.value, expectedAddress)
+    }
 }
