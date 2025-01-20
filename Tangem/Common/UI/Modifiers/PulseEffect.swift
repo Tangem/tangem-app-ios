@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct PulseEffect: ViewModifier {
-    @State private var pulseIsInMaxState: Bool = true
+    @State private var isAnimating: Bool = false
 
     private let range: ClosedRange<Double>
     private let duration: TimeInterval
@@ -21,8 +21,8 @@ struct PulseEffect: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .opacity(pulseIsInMaxState ? range.upperBound : range.lowerBound)
-            .onAppear { pulseIsInMaxState = false }
-            .animation(.smooth(duration: duration).repeatForever(), value: pulseIsInMaxState)
+            .opacity(isAnimating ? range.lowerBound : range.upperBound)
+            .onAppear { isAnimating = true }
+            .animation(.smooth(duration: duration).repeatForever(), value: isAnimating)
     }
 }

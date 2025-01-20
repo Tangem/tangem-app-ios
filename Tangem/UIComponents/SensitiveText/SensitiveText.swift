@@ -53,7 +53,16 @@ extension SensitiveText {
 
 extension SensitiveText.TextType: Hashable {
     static func == (lhs: SensitiveText.TextType, rhs: SensitiveText.TextType) -> Bool {
-        lhs.hashValue == rhs.hashValue
+        switch (lhs, rhs) {
+        case (.string(let lhs), .string(let rhs)):
+            return lhs == rhs
+        case (.attributed(let lhs), .attributed(let rhs)):
+            return lhs == rhs
+        case (.builder(let lhsBuilder, let lhs), .builder(let rhsBbuilder, let rhs)):
+            return lhsBuilder(lhs) == rhsBbuilder(rhs)
+        default:
+            return false
+        }
     }
 
     func hash(into hasher: inout Hasher) {
