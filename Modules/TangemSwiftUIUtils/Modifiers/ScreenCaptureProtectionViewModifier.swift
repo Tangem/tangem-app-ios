@@ -107,6 +107,7 @@ private struct ScreenCaptureProtectionContainerView<Content>: UIViewControllerRe
 
         let containerView = containerViewController.view!
         let contentView = contentViewController.view!
+
         contentView.backgroundColor = .clear
         contentView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(contentView)
@@ -118,11 +119,6 @@ private struct ScreenCaptureProtectionContainerView<Content>: UIViewControllerRe
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
         contentViewController.didMove(toParent: containerViewController)
-
-        contentView.layer.borderColor = UIColor.red.cgColor // FIXME: Andrey Fedorov - Test only, remove when not needed
-        contentView.layer.borderWidth = 1.0 // FIXME: Andrey Fedorov - Test only, remove when not needed
-        containerView.layer.borderColor = UIColor.green.cgColor // FIXME: Andrey Fedorov - Test only, remove when not needed
-        containerView.layer.borderWidth = 2.0 // FIXME: Andrey Fedorov - Test only, remove when not needed
 
         return containerViewController
     }
