@@ -56,7 +56,7 @@ final class SingleTokenNotificationManager {
                 self?.setupNoAccountNotification(with: message)
             case .loading, .created:
                 break
-            case .idle, .noDerivation:
+            case .loaded, .noDerivation:
                 guard stakingState != .loading else { return } // fixes issue with staking notification animated re-appear
                 self?.setupLoadedStateNotifications()
             }
