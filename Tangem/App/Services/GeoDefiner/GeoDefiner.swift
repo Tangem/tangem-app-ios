@@ -23,7 +23,7 @@ class GeoDefiner: Initializable {
         loadingBag = tangemApiService
             .loadGeo()
             .subscribe(on: DispatchQueue.global())
-            .receiveValue{ [weak self] code in
+            .receiveValue { [weak self] code in
                 self?._geoIpRegionCode = code
             }
     }
