@@ -9,7 +9,11 @@
 import Foundation
 import Combine
 
-protocol TangemApiService: AnyObject, Initializable {
+protocol TangemApiService: AnyObject {
+    // MARK: - Geo
+
+    func loadGeo() -> AnyPublisher<String, Error>
+
     // MARK: - Coins and quotes
 
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error>

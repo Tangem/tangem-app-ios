@@ -31,7 +31,6 @@ protocol SingleTokenRoutable {
 }
 
 final class SingleTokenRouter: SingleTokenRoutable {
-    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.keysManager) private var keysManager: KeysManager
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 

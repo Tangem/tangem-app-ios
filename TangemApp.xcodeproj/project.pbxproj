@@ -2736,6 +2736,7 @@
 		EF914D4E2A604615001F00B2 /* QuotesDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF914D4D2A604615001F00B2 /* QuotesDTO.swift */; };
 		EF914D502A604627001F00B2 /* QuotesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF914D4F2A604627001F00B2 /* QuotesMapper.swift */; };
 		EF914D522A612E49001F00B2 /* Wallet2Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF914D512A612E49001F00B2 /* Wallet2Config.swift */; };
+		EF9156152D3E8CA40037521D /* GeoDefiner.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9156142D3E8CA40037521D /* GeoDefiner.swift */; };
 		EF9180502C74A3DD001D2122 /* ValidatorCompactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF91804F2C74A3DD001D2122 /* ValidatorCompactView.swift */; };
 		EF92412F2934BB8000C28551 /* MainButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF92412E2934BB8000C28551 /* MainButton.swift */; };
 		EF9241362934E25900C28551 /* IconURLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9241352934E25900C28551 /* IconURLBuilder.swift */; };
@@ -5925,6 +5926,7 @@
 		EF914D4D2A604615001F00B2 /* QuotesDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotesDTO.swift; sourceTree = "<group>"; };
 		EF914D4F2A604627001F00B2 /* QuotesMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotesMapper.swift; sourceTree = "<group>"; };
 		EF914D512A612E49001F00B2 /* Wallet2Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet2Config.swift; sourceTree = "<group>"; };
+		EF9156142D3E8CA40037521D /* GeoDefiner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoDefiner.swift; sourceTree = "<group>"; };
 		EF91804F2C74A3DD001D2122 /* ValidatorCompactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatorCompactView.swift; sourceTree = "<group>"; };
 		EF92412E2934BB8000C28551 /* MainButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainButton.swift; sourceTree = "<group>"; };
 		EF9241352934E25900C28551 /* IconURLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconURLBuilder.swift; sourceTree = "<group>"; };
@@ -12817,6 +12819,7 @@
 		DC0A57DA2822A4DC0031BECC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EF9156162D3E8CAC0037521D /* GeoDefiner */,
 				DA76BF502CEF966300199317 /* PendingTransactionsManager */,
 				EF2561102CC6A8E000D3C16A /* Onramp */,
 				DA64DAC82C08BE71000CBC1E /* UserWalletNameIndexationHelper */,
@@ -15200,6 +15203,14 @@
 				EF914D4F2A604627001F00B2 /* QuotesMapper.swift */,
 			);
 			path = Quotes;
+			sourceTree = "<group>";
+		};
+		EF9156162D3E8CAC0037521D /* GeoDefiner */ = {
+			isa = PBXGroup;
+			children = (
+				EF9156142D3E8CA40037521D /* GeoDefiner.swift */,
+			);
+			path = GeoDefiner;
 			sourceTree = "<group>";
 		};
 		EF91804E2C74A3D2001D2122 /* ValidatorCompactView */ = {
@@ -18516,6 +18527,7 @@
 				EF56B3D22A03AFDB002CCE27 /* DefaultMenuRowView.swift in Sources */,
 				EF033B182B8631C700A71600 /* UIResponder+.swift in Sources */,
 				EF95442D2C3C52A400041FCD /* SendStepsManagerInputOutput.swift in Sources */,
+				EF9156152D3E8CA40037521D /* GeoDefiner.swift in Sources */,
 				B04718FF2B4E7C3B00444734 /* VisaBalancesLimitsBottomSheetView.swift in Sources */,
 				2D57CA862C3D0B0D0070D477 /* MarketsWalletDataSource.swift in Sources */,
 				EF6CB17E292E1190001335EA /* EnvironmentSetupViewModel.swift in Sources */,

@@ -51,6 +51,16 @@ class CommonTangemApiService {
 // MARK: - TangemApiService
 
 extension CommonTangemApiService: TangemApiService {
+    func loadGeo() -> AnyPublisher<String, any Error> {
+        provider
+            .requestPublisher(TangemApiTarget(type: .geo, authData: authData))
+            .filterSuccessfulStatusAndRedirectCodes()
+            .map(GeoResponse.self)
+            .map(\.code)
+            .eraseError()
+            .eraseToAnyPublisher()
+    }
+
     func loadTokens(for key: String) -> AnyPublisher<UserTokenList?, TangemAPIError> {
         let target = TangemApiTarget(type: .getUserWalletTokens(key: key), authData: authData)
 
@@ -274,10 +284,6 @@ extension CommonTangemApiService: TangemApiService {
     }
 
     // MARK: - Init
-
-    func initialize() {
-        AppLog.shared.debug("CommonTangemApiService initialized")
-    }
 
     func setAuthData(_ authData: TangemApiTarget.AuthData) {
         self.authData = authData
