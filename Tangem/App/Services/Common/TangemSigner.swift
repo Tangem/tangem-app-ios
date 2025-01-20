@@ -55,12 +55,7 @@ struct TangemSigner: TransactionSigner {
     
     func sign(dataToSign: [Wallet.PublicKey.HDKey: Data], seedKey: Data) -> AnyPublisher<[Data], Error> {
         Future<[Data], Error> { promise in
-            let signCommand = SignAndReadTask(
-                hashes: hashes,
-                walletPublicKey: walletPublicKey.seedKey,
-                pairWalletPublicKey: twinKey?.getPairKey(for: walletPublicKey.seedKey),
-                derivationPath: walletPublicKey.derivationPath
-            )
+            let signCommand = MultipleSignTask(dataToSign: dataToSign, seedKey: seedKey)
 
             sdk.startSession(with: signCommand, filter: filter, initialMessage: initialMessage) { signResult in
                 switch signResult {

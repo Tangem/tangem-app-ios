@@ -8,60 +8,56 @@
 import Foundation
 import TangemSdk
 import BlockchainSdk
+import TangemFoundation
 
 class MultipleSignTask: CardSessionRunnable {
     private let dataToSign: [Wallet.PublicKey.HDKey: Data]
     private let seedKey: Data
-    
-    /// Derive multiple wallet  public keys according to BIP32 (Private parent key → public child key).
-    /// Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
-    /// - Parameters:
-    ///   - walletPublicKey: Seed public key.
-    ///   - derivationPaths: Multiple derivation paths. Repeated items will be ignored.
+
     public init(dataToSign: [Wallet.PublicKey.HDKey: Data], seedKey: Data) {
         self.dataToSign = dataToSign
         self.seedKey = seedKey
     }
     
     deinit {
-        Log.debug("DeriveWalletPublicKeysTask deinit")
+        Log.debug("MultipleSignTask deinit")
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<[Data]>) {
-        runDerivation(at: 0, keys: [:], in: session, completion: completion)
+        let queue = OperationQueue.current?.underlyingQueue ?? .main
+        TangemFoundation.runTask(in: self) { task in
+            let result: Result<[Data], TangemSdkError>
+            do {
+                let signed = try await task.dataToSign.asyncMap { hdKey, hash in
+                    try await task.runSign(hdKey: hdKey, hash: hash, session: session)
+                }
+                result = .success(signed.flatMap { $0 })
+            } catch {
+                result = .failure(error.toTangemSdkError())
+            }
+            queue.async {
+                completion(result)
+            }
+        }
     }
     
-    private func runDerivation(at index: Int, keys: DerivedKeys, in session: CardSession, completion: @escaping CompletionResult<[Data]>) {
-        guard index < derivationPaths.count else {
-            completion(.success(keys))
-            return
-        }
-        let path = derivationPaths[index]
-        let task = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: path)
-        task.run(in: session) { result in
-            var keys = keys
-
-            switch result {
-            case .success(let key):
-                keys[path] = key
-            case .failure(let error):
-                switch error {
-                case .nonHardenedDerivationNotSupported, .walletNotFound, .unsupportedCurve:
-                    // continue derivation
-                    Log.error(error)
-                default:
-                    if keys.keys.isEmpty {
-                        completion(.failure(error))
-                    } else {
-                        Log.error(error)
-                        // return partial response
-                        completion(.success(keys))
-                    }
-                    return
+    private func runSign(hdKey: Wallet.PublicKey.HDKey, hash: Data, session: CardSession) async throws -> [Data] {
+        let signCommand = SignAndReadTask(
+            hashes: [hash],
+            walletPublicKey: seedKey,
+            pairWalletPublicKey: nil,
+            derivationPath: hdKey.path
+        )
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            signCommand.run(in: session) { result in
+                switch result {
+                case .success(let hashes):
+                    continuation.resume(returning: hashes.signatures)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
                 }
             }
-
-            self.runDerivation(at: index + 1, keys: keys, in: session, completion: completion)
         }
     }
 }
