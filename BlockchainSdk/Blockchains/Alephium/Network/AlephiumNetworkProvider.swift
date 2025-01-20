@@ -38,23 +38,23 @@ struct AlephiumNetworkProvider: HostProvider {
     func getBalance(address: String) -> AnyPublisher<Decimal, Error> {
         requestPublisher(for: .init(node: node, targetType: .getBalance(address: address)))
     }
-    
+
     func getUTXOs(address: String) -> AnyPublisher<AlephiumNetworkResponse.UTXOs, Error> {
         requestPublisher(for: .init(node: node, targetType: .getUTXO(address: address)))
     }
-    
+
     func buildTransaction(
         transfer: AlephiumNetworkRequest.BuildTransferTx
     ) -> AnyPublisher<AlephiumNetworkResponse.BuildTransferTxResult, Error> {
         requestPublisher(for: .init(node: node, targetType: .buildTransaction(transfer)))
     }
-    
+
     func submit(
         transaction: AlephiumNetworkRequest.Submit
     ) -> AnyPublisher<AlephiumNetworkResponse.Submit, Error> {
         requestPublisher(for: .init(node: node, targetType: .submitTransaction(transaction)))
     }
-    
+
     func transactionStatus(by id: String) -> AnyPublisher<AlephiumNetworkResponse.Status, Error> {
         requestPublisher(for: .init(node: node, targetType: .transactionStatus(txId: id)))
     }

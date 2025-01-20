@@ -13,12 +13,12 @@ enum AlephiumNetworkRequest {
         let fromPublicKey: String
         let destinations: [Destination]
     }
-    
+
     struct Destination: Encodable {
         let address: String
         let attoAlphAmount: String
     }
-    
+
     struct Submit: Encodable {
         let unsignedTx: String
         let signature: String

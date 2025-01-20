@@ -67,7 +67,7 @@ struct AlephiumProviderTarget: TargetType {
         var headers = [
             "Accept": "application/json",
         ]
-        
+
         if let headersKeyInfo = node.headers {
             headers[headersKeyInfo.headerName] = headersKeyInfo.headerValue
         }

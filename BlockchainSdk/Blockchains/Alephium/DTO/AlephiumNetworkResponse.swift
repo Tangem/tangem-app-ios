@@ -18,11 +18,11 @@ enum AlephiumNetworkResponse {
         let fromGroup: Int
         let toGroup: Int
     }
-    
+
     struct UTXOs: Decodable {
         let utxos: [UTXO]
     }
-    
+
     struct UTXO: Decodable {
         let ref: Ref
         let amount: String
@@ -40,15 +40,15 @@ enum AlephiumNetworkResponse {
         let id: String
         let amount: String
     }
-    
+
     struct Submit: Decodable {
         let txId: String
     }
-    
+
     struct Status: Decodable {
         let type: StatusType
     }
-    
+
     enum StatusType: String, Decodable {
         case confirmed = "Confirmed"
         case memPooled = "MemPooled"
