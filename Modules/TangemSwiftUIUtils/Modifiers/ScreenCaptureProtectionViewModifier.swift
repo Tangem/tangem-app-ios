@@ -147,11 +147,12 @@ private final class ScreenCaptureProtectionContainerViewController: UIViewContro
     }()
 
     private var screenCaptureProtectionView: UIView {
-        if let view: UIView = uiTextField.firstSubview(where: { NSStringFromClass(type(of: $0)) == Self.screenCaptureProtectionViewName }) {
+        let viewName = Self.screenCaptureProtectionViewName
+        if let view: UIView = uiTextField.firstSubview(where: { NSStringFromClass(type(of: $0)) == viewName }) {
             return view
         }
 
-        assertionFailure("Unable to find the view of type '\(Self.screenCaptureProtectionViewName)' in the view hierarchy of '\(uiTextField)'")
+        assertionFailure("Unable to find the view of type '\(viewName)' in the view hierarchy of '\(uiTextField)'")
 
         return uiTextField.subviews.first ?? UIView()
     }
