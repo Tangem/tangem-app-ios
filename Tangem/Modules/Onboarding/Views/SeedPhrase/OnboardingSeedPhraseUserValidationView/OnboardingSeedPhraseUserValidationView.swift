@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemSwiftUIUtils
 
 struct OnboardingSeedPhraseUserValidationView: View {
     @ObservedObject var viewModel: OnboardingSeedPhraseUserValidationViewModel
@@ -98,30 +99,34 @@ private struct WordInputView: View {
                 )
                 .frame(width: 38, alignment: .leading)
                 .padding(.leading, 16)
+                .layoutPriority(1000.0)
 
-            CustomTextField(
-                text: text,
-                isResponder: $isResponder,
-                actionButtonTapped: .constant(false),
-                clearsOnBeginEditing: false,
-                handleKeyboard: true,
-                keyboard: .asciiCapable,
-                clearButtonMode: .never,
-                textColor: UIColor(hasError ? Colors.Text.warning : Colors.Text.primary1),
-                font: UIFonts.Regular.body,
-                placeholder: "",
-                isEnabled: true
-            )
-            .setAutocapitalizationType(.none)
-            .padding(.vertical, 12)
+            HStack(spacing: 0.0) {
+                CustomTextField(
+                    text: text,
+                    isResponder: $isResponder,
+                    actionButtonTapped: .constant(false),
+                    clearsOnBeginEditing: false,
+                    handleKeyboard: true,
+                    keyboard: .asciiCapable,
+                    clearButtonMode: .never,
+                    textColor: UIColor(hasError ? Colors.Text.warning : Colors.Text.primary1),
+                    font: UIFonts.Regular.body,
+                    placeholder: "",
+                    isEnabled: true
+                )
+                .setAutocapitalizationType(.none)
+                .padding(.vertical, 12)
 
-            if isResponder ?? false {
-                Button(action: { text.wrappedValue = "" }) {
-                    Assets.clear.image
-                        .foregroundColor(Colors.Icon.informative)
-                        .padding(.horizontal, 16)
+                if isResponder ?? false {
+                    Button(action: { text.wrappedValue = "" }) {
+                        Assets.clear.image
+                            .foregroundColor(Colors.Icon.informative)
+                            .padding(.horizontal, 16)
+                    }
                 }
             }
+            .screenCaptureProtection()
         }
         .frame(minHeight: 46)
         .background(Colors.Field.primary)

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemSwiftUIUtils
 
 struct OnboardingSeedPhraseImportView: View {
     @ObservedObject var viewModel: OnboardingSeedPhraseImportViewModel
@@ -26,6 +27,7 @@ struct OnboardingSeedPhraseImportView: View {
                             inputProcessor: viewModel.inputProcessor,
                             shouldBecomeFirstResponderAtStart: true
                         )
+                        .screenCaptureProtection()
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
                         .background(Colors.Field.primary)
@@ -101,6 +103,7 @@ struct OnboardingSeedPhraseImportView: View {
                 })
                 Spacer()
             }
+            .debugBorder(color: .yellow)
 
             CustomTextField(
                 text: $viewModel.passphrase,
@@ -112,6 +115,8 @@ struct OnboardingSeedPhraseImportView: View {
                 placeholder: Localization.sendOptionalField
             )
             .setAutocapitalizationType(.none)
+            .debugBorder(color: .red)
+            .screenCaptureProtection()
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
