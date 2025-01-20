@@ -13,14 +13,14 @@ public struct StakeKitTransaction: Hashable {
     let amount: Amount
     let fee: Fee
     let unsignedData: String
-    let params: StakeKitTransactionParams?
+    let params: StakeKitTransactionParams
 
     public init(
         id: String,
         amount: Amount,
         fee: Fee,
         unsignedData: String,
-        params: StakeKitTransactionParams? = nil
+        params: StakeKitTransactionParams
     ) {
         self.id = id
         self.amount = amount
@@ -42,8 +42,10 @@ public struct StakeKitTransactionSendError: Error {
 
 public struct StakeKitTransactionParams: Hashable, TransactionParams {
     let validator: String?
+    let solanaBlockhashDate: Date
 
-    public init(validator: String? = nil) {
+    public init(validator: String? = nil, solanaBlockhashDate: Date) {
         self.validator = validator
+        self.solanaBlockhashDate = solanaBlockhashDate
     }
 }

@@ -77,7 +77,11 @@ private extension StakingTransactionDispatcher {
             transactions = Array(transactions[offset...])
         }
 
-        let stream = sender.sendStakeKit(transactions: transactions, signer: transactionSigner, delay: 5)
+        let delay: UInt64? = switch walletModel.tokenItem.blockchain {
+        case .tron: 5
+        default: nil
+        }
+        let stream = sender.sendStakeKit(transactions: transactions, signer: transactionSigner, delay: delay)
 
         var transactionDispatcherResult: TransactionDispatcherResult?
 
