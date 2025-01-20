@@ -127,6 +127,15 @@ private struct ScreenCaptureProtectionContainerView<Content>: UIViewControllerRe
 }
 
 private final class ScreenCaptureProtectionContainerViewController: UIViewController {
+    private static var screenCaptureProtectionViewName = [
+        "_",
+        "UI",
+        "Text",
+        "Layout",
+        "Canvas",
+        "View",
+    ].joined()
+
     // This property also maintains a strong reference to the `UITextField` instance
     // (necessary since this instance isn't embedded into the view hierarchy).
     private lazy var uiTextField: UITextField = {
@@ -136,8 +145,13 @@ private final class ScreenCaptureProtectionContainerViewController: UIViewContro
     }()
 
     private var screenCaptureProtectionView: UIView {
-        // TODO: Andrey Fedorov - Find the proper view in the view hierarchy instead
-        uiTextField.subviews.first!
+        if let view: UIView = uiTextField.firstSubview(where: { NSStringFromClass(type(of: $0)) == Self.screenCaptureProtectionViewName }) {
+            return view
+        }
+
+        assertionFailure("Unable to find the view of type '\(Self.screenCaptureProtectionViewName)' in the view hierarchy of '\(uiTextField)'")
+
+        return uiTextField.subviews.first ?? UIView()
     }
 
     override func loadView() {
@@ -149,5 +163,23 @@ private final class ScreenCaptureProtectionContainerViewController: UIViewContro
         if #available(iOS 16.0, *) {
             preferredContentSize = container.preferredContentSize
         }
+    }
+}
+
+// MARK: - Convenience extensions
+
+private extension UIView {
+    func firstSubview<T>(where predicate: (_ subview: UIView) -> Bool) -> T? {
+        for subview in subviews {
+            if predicate(subview) {
+                return subview as? T
+            }
+
+            if let firstSubview: T? = subview.firstSubview(where: predicate) {
+                return firstSubview
+            }
+        }
+
+        return nil
     }
 }
