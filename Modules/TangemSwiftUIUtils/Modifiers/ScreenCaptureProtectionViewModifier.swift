@@ -16,46 +16,115 @@ public extension View {
     /// Protects the given view from both screenshots and built-in screen recording.
     @ViewBuilder
     func screenCaptureProtection() -> some View {
-        modifier(ScreenCaptureProtectionViewModifier())
+        if #available(iOS 16.0, *) {
+            modifier(ScreenCaptureProtectionIOS16AndAboveViewModifier())
+        } else {
+            modifier(ScreenCaptureProtectionIOS15AndBelowViewModifier())
+        }
     }
 }
 
-// MARK: - Private implementation
+// MARK: - Private implementation iOS 15
 
-private struct ScreenCaptureProtectionViewModifier: ViewModifier {
+@available(iOS, deprecated: 16.0, message: "Not used on iOS 16+, can be safely removed")
+private struct ScreenCaptureProtectionIOS15AndBelowViewModifier: ViewModifier {
+    @State private var contentSizeChange: CGSize?
+
+    func body(content: Content) -> some View {
+        ScreenCaptureProtectionContainerView(
+            content: { content },
+            onContentSizeChange: { contentSizeChange = $0 }
+        )
+        .frame(width: contentSizeChange?.width, height: contentSizeChange?.height)
+    }
+}
+
+// MARK: - Private implementation iOS 16+
+
+@available(iOS 16.0, *)
+private struct ScreenCaptureProtectionIOS16AndAboveViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         ScreenCaptureProtectionContainerView { content }
     }
 }
 
+@available(iOS 16.0, *)
+private final class PreferredContentSizeForwardingUIHostingController<T>: UIHostingController<T> where T: View {
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let contentSize = view.bounds.size
+        if contentSize != preferredContentSize {
+            preferredContentSize = view.bounds.size
+        }
+    }
+}
+
+// MARK: - Private implementation shared
+
 private struct ScreenCaptureProtectionContainerView<Content>: UIViewControllerRepresentable where Content: View {
     typealias UIViewControllerType = UIViewController
+    typealias OnContentSizeChange = (_ size: CGSize) -> Void
 
     private let content: () -> Content
 
-    init(content: @escaping () -> Content) {
+    @available(iOS, deprecated: 16.0, message: "Not used on iOS 16+, can be safely removed")
+    private let onContentSizeChange: OnContentSizeChange?
+
+    @available(iOS, deprecated: 16.0, message: "Use 'init(content:)' instead. Not used on iOS 16+, can be safely removed")
+    init(
+        content: @escaping () -> Content,
+        onContentSizeChange: @escaping OnContentSizeChange
+    ) {
         self.content = content
+        self.onContentSizeChange = onContentSizeChange
+    }
+
+    @available(iOS 16.0, *)
+    init(
+        content: @escaping () -> Content
+    ) {
+        self.content = content
+        onContentSizeChange = nil
     }
 
     func makeUIViewController(context: Context) -> UIViewControllerType {
-        let containerController = ScreenCaptureProtectionContainerViewController()
-        let hostingController = UIHostingController(rootView: content())
-        containerController.addChild(hostingController)
+        let containerViewController = ScreenCaptureProtectionContainerViewController()
+        let contentViewController: UIViewControllerType
 
-        let containerView = containerController.view!
-        let hostingView = hostingController.view!
-        hostingView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(hostingView)
+        if #available(iOS 16.0, *) {
+            let hostingViewController = PreferredContentSizeForwardingUIHostingController(rootView: content())
+            hostingViewController.sizingOptions = .preferredContentSize
+            contentViewController = hostingViewController
+        } else {
+            let rootView = content()
+                .readGeometry(\.size) { size in
+                    onContentSizeChange?(size)
+                }
+            contentViewController = UIHostingController(rootView: rootView)
+        }
+
+        containerViewController.addChild(contentViewController)
+
+        let containerView = containerViewController.view!
+        let contentView = contentViewController.view!
+        contentView.backgroundColor = .clear
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(contentView)
 
         NSLayoutConstraint.activate([
-            hostingView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            hostingView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            hostingView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            hostingView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            contentView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
-        hostingController.didMove(toParent: containerController)
+        contentViewController.didMove(toParent: containerViewController)
 
-        return containerController
+        contentView.layer.borderColor = UIColor.red.cgColor // FIXME: Andrey Fedorov - Test only, remove when not needed
+        contentView.layer.borderWidth = 1.0 // FIXME: Andrey Fedorov - Test only, remove when not needed
+        containerView.layer.borderColor = UIColor.green.cgColor // FIXME: Andrey Fedorov - Test only, remove when not needed
+        containerView.layer.borderWidth = 2.0 // FIXME: Andrey Fedorov - Test only, remove when not needed
+
+        return containerViewController
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
@@ -77,5 +146,12 @@ private final class ScreenCaptureProtectionContainerViewController: UIViewContro
 
     override func loadView() {
         view = screenCaptureProtectionView
+    }
+
+    override func preferredContentSizeDidChange(forChildContentContainer container: any UIContentContainer) {
+        super.preferredContentSizeDidChange(forChildContentContainer: container)
+        if #available(iOS 16.0, *) {
+            preferredContentSize = container.preferredContentSize
+        }
     }
 }
