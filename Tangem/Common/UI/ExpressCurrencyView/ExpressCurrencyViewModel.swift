@@ -62,7 +62,7 @@ final class ExpressCurrencyViewModel: ObservableObject, Identifiable {
                 switch state {
                 case .created, .loading:
                     self?.balanceState = .loading
-                case .idle:
+                case .loaded:
                     let formatted = wallet.balanceValue.map { BalanceFormatter().formatDecimal($0) }
                     self?.balanceState = .formatted(formatted ?? BalanceFormatter.defaultEmptyBalanceString)
                 case .noAccount, .failed, .noDerivation:
