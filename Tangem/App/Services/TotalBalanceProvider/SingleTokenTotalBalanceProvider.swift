@@ -44,7 +44,7 @@ class SingleTokenTotalBalanceProvider {
                             allTokensBalancesIncluded: true
                         ))
                     )
-                case .idle, .noAccount:
+                case .loaded, .noAccount:
                     balanceProvider.totalBalanceSubject.send(
                         .loaded(.init(
                             balance: balanceProvider.isFiat ? walletModel.fiatValue : walletModel.balanceValue,
