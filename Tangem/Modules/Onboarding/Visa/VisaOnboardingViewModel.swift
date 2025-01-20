@@ -124,12 +124,11 @@ class VisaOnboardingViewModel: ObservableObject {
     }
 
     func openSupport() {
-        guard FeatureStorage.instance.isVisaAPIMocksEnabled else {
+        if FeatureStorage.instance.isVisaAPIMocksEnabled {
+            VisaMocksManager.instance.showMocksMenu(presenter: self)
+        } else {
             openSupportSheet()
-            return
         }
-
-        VisaMocksManager.instance.showMocksMenu(presenter: self)
     }
 
     private func openSupportSheet() {
