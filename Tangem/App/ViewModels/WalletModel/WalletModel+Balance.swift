@@ -172,4 +172,18 @@ extension WalletModel {
     struct BalanceFormatted: Hashable {
         let crypto, fiat: String
     }
+
+    // Don't use yet
+    // TODO: https://tangem.atlassian.net/browse/IOS-8906
+    enum Rate: Hashable {
+        case cached(TokenBalanceType.Cached)
+        case actual(Decimal)
+
+        var value: Decimal {
+            switch self {
+            case .cached(let value): value.balance
+            case .actual(let value): value
+            }
+        }
+    }
 }

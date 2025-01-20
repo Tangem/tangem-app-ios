@@ -63,8 +63,7 @@ struct SupportedBlockchains {
 
     /// Blockchains for test. They don't include in supported blockchains by default
     private func testableBlockchains() -> Set<Blockchain> {
-        [
-        ]
+        []
     }
 
     private func mainnetBlockchains() -> Set<Blockchain> {
@@ -149,6 +148,7 @@ struct SupportedBlockchains {
             .clore,
             .odysseyChain(testnet: false),
             .bitrock(testnet: false),
+            .fact0rn,
         ]
     }
 

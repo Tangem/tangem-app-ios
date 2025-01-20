@@ -8,6 +8,16 @@
 
 import Foundation
 
+/*
+ Electrum responses
+ Supports specs:
+
+ - Original: https://bitcoincash.network/electrum/protocol-methods.html
+ - Rostrum (Nexa): https://bitcoinunlimited.gitlab.io/rostrum/
+ - Radiant: https://electrumx.readthedocs.io/en/latest/
+ - Fact0rn: https://electrumx-spesmilo.readthedocs.io/en/latest//
+ */
+
 enum ElectrumDTO {
     enum Response {
         struct Balance: Decodable {
@@ -34,18 +44,20 @@ enum ElectrumDTO {
         }
 
         struct Transaction: Decodable {
-            let blockhash: String
-            let blocktime: UInt64
-            let confirmations: Int
+            let blockhash: String?
+            let blocktime: UInt64?
+            let confirmations: Int?
             let hash: String
             let hex: String
             let locktime: Int
             let size: Int
-            let time: Int
+            let time: Int?
             let txid: String
             let version: Int
             let vin: [Vin]
             let vout: [Vout]
+            let fee: Decimal?
+            let feeSatoshi: Decimal?
         }
 
         struct Vin: Decodable {
@@ -53,6 +65,7 @@ enum ElectrumDTO {
             let sequence: UInt64
             let txid: String
             let vout: Int
+            let address: String?
         }
 
         struct Vout: Decodable {
@@ -67,10 +80,10 @@ enum ElectrumDTO {
         }
 
         struct ScriptPubKey: Decodable {
-            let addresses: [String]
+            let address: String
             let asm: String
             let hex: String
-            let reqSigs: Int
+            let reqSigs: Int?
             let type: String
         }
     }
