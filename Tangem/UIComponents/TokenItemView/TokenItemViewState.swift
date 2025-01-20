@@ -28,7 +28,7 @@ enum TokenItemViewState {
             self = .noDerivation
         case .loading:
             self = .loading
-        case .idle:
+        case .loaded:
             // respect walletModel.isLoading and walletModel.isSuccessfullyLoaded, just show "–"
             switch walletModel.stakingManagerState {
             case .loadingError, .availableToStake, .staked, .notEnabled, .temporaryUnavailable:
