@@ -22,7 +22,6 @@ class MarketsTokenDetailsCoordinator: CoordinatorObject {
     // MARK: - Child ViewModels
 
     @Published var receiveBottomSheetViewModel: ReceiveBottomSheetViewModel? = nil
-    @Published var warningBankCardViewModel: WarningBankCardViewModel? = nil
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
     @Published var exchangesListViewModel: MarketsTokenDetailsExchangesListViewModel? = nil
 
@@ -137,15 +136,7 @@ extension MarketsTokenDetailsCoordinator {
             return
         }
 
-        if portfolioCoordinatorFactory.canBuy {
-            openBuyCrypto(at: url, with: walletModel)
-        } else {
-            openBankWarning { [weak self] in
-                self?.openBuyCrypto(at: url, with: walletModel)
-            } declineCallback: { [weak self] in
-                self?.openP2PTutorial()
-            }
-        }
+        openBuyCrypto(at: url, with: walletModel)
     }
 
     func openExchange(for walletModel: WalletModel, with userWalletModel: UserWalletModel) {
@@ -181,21 +172,6 @@ extension MarketsTokenDetailsCoordinator {
 // MARK: - Utilities functions
 
 extension MarketsTokenDetailsCoordinator {
-    func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void) {
-        let delay = 0.6
-        warningBankCardViewModel = .init(confirmCallback: { [weak self] in
-            self?.warningBankCardViewModel = nil
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                confirmCallback()
-            }
-        }, declineCallback: { [weak self] in
-            self?.warningBankCardViewModel = nil
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                declineCallback()
-            }
-        })
-    }
-
     func openBuyCrypto(at url: URL, with walletModel: WalletModel) {
         safariHandle = safariManager.openURL(url) { [weak self] _ in
             self?.safariHandle = nil
@@ -204,15 +180,5 @@ extension MarketsTokenDetailsCoordinator {
                 walletModel.update(silent: true)
             }
         }
-    }
-
-    func openP2PTutorial() {
-        modalWebViewModel = WebViewContainerViewModel(
-            url: AppConstants.howToBuyURL,
-            title: "",
-            addLoadingIndicator: true,
-            withCloseButton: false,
-            urlActions: [:]
-        )
     }
 }
