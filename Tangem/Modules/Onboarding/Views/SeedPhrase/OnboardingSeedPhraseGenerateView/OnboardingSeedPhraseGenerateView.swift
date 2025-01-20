@@ -110,9 +110,9 @@ struct OnboardingSeedPhraseGenerateView: View {
                     Text("\(viewModel.words[index])")
                         .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
                         .printSize("seed #\(index)")
-                        .fixedSize() // ios 15+ only
+                        // .fixedSize() // ios 15+ only
                         .screenCaptureProtection()
-                        //.fixedSize() // ios 16+ only
+                        .fixedSize() // ios 16+ only
 
                     Spacer()
                 }

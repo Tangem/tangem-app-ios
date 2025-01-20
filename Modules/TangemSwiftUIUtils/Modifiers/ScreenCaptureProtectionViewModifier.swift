@@ -23,15 +23,9 @@ public extension View {
 // MARK: - Private implementation
 
 private struct ScreenCaptureProtectionViewModifier: ViewModifier {
-    @State private var size: CGSize?
-
     func body(content: Content) -> some View {
-        ScreenCaptureProtectionContainerView(
-            content: { content },
-            onSizeChange: { size = $0 }
-        )
-        .frame(width: size?.width, height: size?.height)
-        .debugBorder(color: .green)
+        ScreenCaptureProtectionContainerView { content }
+            .debugBorder(color: .green)
     }
 }
 
@@ -39,29 +33,23 @@ private struct ScreenCaptureProtectionContainerView<Content>: UIViewControllerRe
     typealias UIViewControllerType = UIViewController
 
     private let content: () -> Content
-    private let onSizeChange: (_ size: CGSize) -> Void
 
     init(
-        content: @escaping () -> Content,
-        onSizeChange: @escaping (_ size: CGSize) -> Void
+        content: @escaping () -> Content
     ) {
         self.content = content
-        self.onSizeChange = onSizeChange
     }
 
     func makeUIViewController(context: Context) -> UIViewControllerType {
         let containerController = ScreenCaptureProtectionContainerViewController()
-        let hostingController = _UIHostingController(
-            rootView: content()
-                .readGeometry(
-                    \.size,
-                    onChange: { size in
-                        onSizeChange(size)
-                        _ = print("\(#function) called at \(CACurrentMediaTime()) with size: \(size)")
-                    }
-                )
-        )
+        let hostingController = _UIHostingController(rootView: content())
         containerController.addChild(hostingController)
+
+        if #available(iOS 16.0, *) {
+            hostingController.sizingOptions = .preferredContentSize
+        } else {
+            fatalError()
+        }
 
         let containerView = containerController.view!
         let hostingView = hostingController.view!
@@ -110,18 +98,19 @@ private final class ScreenCaptureProtectionContainerViewController: UIViewContro
         view = screenCaptureProtectionView
     }
 
-//    override func preferredContentSizeDidChange(forChildContentContainer container: any UIContentContainer) {
-//        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(container.preferredContentSize)")
-//        super.preferredContentSizeDidChange(forChildContentContainer: container)
-//        preferredContentSize = container.preferredContentSize
-//    }
+    override func preferredContentSizeDidChange(forChildContentContainer container: any UIContentContainer) {
+        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(container.preferredContentSize)")
+        super.preferredContentSizeDidChange(forChildContentContainer: container)
+        preferredContentSize = container.preferredContentSize
+    }
 }
 
 final class _UIHostingController<T>: UIHostingController<T> where T: View {
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(view.frame) \(view.bounds.size) \(preferredContentSize)")
-//        preferredContentSize = view.bounds.size
-//    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let _ = print("\(#function) called at \(CACurrentMediaTime()) with \(view.frame) \(view.bounds.size) \(preferredContentSize)")
+        preferredContentSize = view.bounds.size
+    }
+}
 }
 }
