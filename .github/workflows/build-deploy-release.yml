@@ -2,8 +2,8 @@ name: Release - Build and Deploy
 
 on:
   push:
-   branches:
-    - 'releases/**'
+    branches:
+      - 'releases/**'
   workflow_dispatch:
     inputs:
       build_description:
@@ -23,6 +23,11 @@ on:
         description: >
           Optional build number override. Leave blank (default value) to use the latest value obtained from App Store Connect + 1
         type: string
+      analyze_archive:
+        description: >
+          Whether the archive should be analyzed during the build process (default: true)
+        type: boolean
+        default: false # TODO: Enable by default
 
 concurrency:
   group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
@@ -97,6 +102,12 @@ jobs:
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
       xcode_version_override: '${{ inputs.xcode_version_override }}'
       arm_runners_only: true
+      # GA boolean inputs are just awful https://stackoverflow.com/questions/76292948
+      # - The reusable workflow requires all input params to be of type string, so we use this ugly ternary operator here
+      # - When a workflow is triggered by push, there is no input, therefore the condition
+      #  `github.event_name == 'push'` provides the default value (`true`) in this case
+      #analyze_archive: ${{ (github.event_name == 'push' || inputs.analyze_archive == true) && 'true' || 'false' }}
+      analyze_archive: ${{ inputs.analyze_archive == true && 'true' || 'false' }}  # TODO: Enable by default
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'

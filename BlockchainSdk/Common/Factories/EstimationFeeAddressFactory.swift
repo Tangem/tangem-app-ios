@@ -57,7 +57,8 @@ struct EstimationFeeAddressFactory {
              .kava, .cronos, .telos, .octa, .shibarium, .disChain,
              .areon, .playa3ullGames, .pulsechain, .aurora, .manta,
              .zkSync, .moonbeam, .polygonZkEVM, .moonriver, .mantle,
-             .flare, .taraxa, .base, .blast, .cyber, .energyWebEVM, .core, .canxium, .chiliz, .xodex:
+             .flare, .taraxa, .base, .blast, .cyber, .energyWebEVM,
+             .core, .canxium, .chiliz, .xodex, .odysseyChain, .bitrock:
             return "0x52bb4012854f808CF9BAbd855e44E506dAf6C077"
         case .ethereumClassic:
             return "0xc49722a6f4Fe5A1347710dEAAa1fafF4c275689b"
@@ -111,9 +112,7 @@ struct EstimationFeeAddressFactory {
         case .clore:
             return "AJfAu7RJxiTowM9qVaTbVuS5JCPCpV3p7M"
         case .fact0rn:
-            // TODO: [Fact0rn] Add estimation fee address
-            // https://tangem.atlassian.net/browse/IOS-8759
-            return ""
+            return "fact1q69h3nzh7rl2uv09zp5pw26vw58wdcl2j4lyag0"
         }
     }
 }

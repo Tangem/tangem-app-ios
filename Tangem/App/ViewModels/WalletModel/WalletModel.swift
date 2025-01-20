@@ -11,6 +11,7 @@ import Combine
 import CombineExt
 import BlockchainSdk
 import TangemStaking
+import TangemFoundation
 
 class WalletModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
@@ -28,6 +29,18 @@ class WalletModel {
 
     var state: State {
         _state.value
+    }
+
+    var statePublisher: AnyPublisher<State, Never> {
+        _state.eraseToAnyPublisher()
+    }
+
+    var rate: LoadingResult<Rate?, Never> {
+        _rate.value
+    }
+
+    var ratePublisher: AnyPublisher<LoadingResult<Rate?, Never>, Never> {
+        _rate.eraseToAnyPublisher()
     }
 
     /// Listen tx history changes
@@ -99,14 +112,6 @@ class WalletModel {
         case .token:
             return false
         }
-    }
-
-    var rateFormatted: String {
-        guard let rate = quote?.price else {
-            return BalanceFormatter.defaultEmptyBalanceString
-        }
-
-        return formatter.formatFiatBalance(rate, formattingOptions: .defaultFiatFormattingOptions)
     }
 
     /// Quotes can't be fetched for custom tokens.
@@ -205,7 +210,7 @@ class WalletModel {
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
     private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
     private var _state: CurrentValueSubject<State, Never> = .init(.created)
-    private var _rate: CurrentValueSubject<LoadingValue<Decimal?>, Never> = .init(.loading)
+    private var _rate: CurrentValueSubject<LoadingResult<Rate?, Never>, Never> = .init(.loading)
     private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
 
     let converter = BalanceConverter()
@@ -235,7 +240,7 @@ class WalletModel {
         performHealthCheckIfNeeded(shouldPerform: shouldPerformHealthCheck)
     }
 
-    func bind() {
+    private func bind() {
         walletManager.statePublisher
             .filter { !$0.isInitialState }
             .receive(on: updateQueue)
@@ -247,21 +252,12 @@ class WalletModel {
         quotesRepository
             .quotesPublisher
             .dropFirst() // we need to drop first value because it's an empty dictionary
-            .map { [canUseQuotes, tokenItem] quotes -> Decimal? in
-                guard
-                    canUseQuotes,
-                    let currencyId = tokenItem.currencyId
-                else {
-                    return nil
-                }
-
-                return quotes[currencyId]?.price
+            .map { [currencyId = tokenItem.currencyId] quotes -> Decimal? in
+                currencyId.flatMap { quotes[$0]?.price }
             }
             .removeDuplicates()
             .sink { [weak self] rate in
-                guard let self else { return }
-
-                _rate.send(.loaded(rate))
+                self?._rate.send(.success(rate.map { .actual($0) }))
             }
             .store(in: &bag)
 
@@ -342,6 +338,8 @@ class WalletModel {
         startUpdatingTimer()
     }
 
+    // MARK: - State updates
+
     private func walletManagerDidUpdate(_ walletManagerState: WalletManagerState) {
         switch walletManagerState {
         case .loaded:
@@ -358,7 +356,11 @@ class WalletModel {
     private func mapState(_ walletManagerState: WalletManagerState) -> WalletModel.State {
         switch walletManagerState {
         case .loaded:
-            return .idle
+            if let balance = wallet.amounts[amountType]?.value {
+                return .loaded(balance)
+            }
+
+            return .failed(error: WalletModelError.balanceNotFound.localizedDescription)
         case .failed(WalletError.noAccount(let message, let amountToCreate)):
             return .noAccount(message: message, amountToCreate: amountToCreate)
         case .failed(let error):
@@ -380,11 +382,8 @@ class WalletModel {
     // MARK: - Load Quotes
 
     private func loadQuotes() -> AnyPublisher<Void, Never> {
-        guard
-            canUseQuotes,
-            let currencyId = tokenItem.currencyId
-        else {
-            _rate.send(.loaded(nil))
+        guard let currencyId = tokenItem.currencyId else {
+            _rate.send(.success(nil))
             return .just(output: ())
         }
 
@@ -396,7 +395,7 @@ class WalletModel {
                     return
                 }
 
-                walletModel._rate.send(.loaded(nil))
+                walletModel._rate.send(.success(nil))
             })
             .mapToVoid()
             .eraseToAnyPublisher()
@@ -677,5 +676,17 @@ extension WalletModel: TransactionHistoryFetcher {
 
     func clearHistory() {
         _transactionHistoryService?.clearHistory()
+    }
+}
+
+// MARK: - WalletModelError
+
+enum WalletModelError: LocalizedError {
+    case balanceNotFound
+
+    var errorDescription: String? {
+        switch self {
+        case .balanceNotFound: "Balance not found"
+        }
     }
 }

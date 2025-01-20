@@ -97,6 +97,8 @@ public indirect enum Blockchain: Equatable, Hashable {
     case xodex
     case clore
     case fact0rn
+    case odysseyChain(testnet: Bool)
+    case bitrock(testnet: Bool)
 
     public var isTestnet: Bool {
         switch self {
@@ -141,7 +143,9 @@ public indirect enum Blockchain: Equatable, Hashable {
              .kaspa(let testnet),
              .energyWebEVM(let testnet),
              .core(let testnet),
-             .chiliz(let testnet):
+             .chiliz(let testnet),
+             .odysseyChain(let testnet),
+             .bitrock(let testnet):
             return testnet
         case .litecoin,
              .ducatus,
@@ -313,7 +317,9 @@ public indirect enum Blockchain: Equatable, Hashable {
              .core,
              .canxium,
              .chiliz,
-             .xodex:
+             .xodex,
+             .odysseyChain,
+             .bitrock:
             return 18
         case .cardano,
              .xrp,
@@ -494,6 +500,10 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "CLORE"
         case .fact0rn:
             return "FACT"
+        case .odysseyChain:
+            return "DIONE"
+        case .bitrock:
+            return "BROCK"
         }
     }
 
@@ -574,6 +584,10 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "Energy Web X" + (isTestnet ? " Paseo Testnet" : "")
         case .chiliz:
             return "Chiliz" + (isTestnet ? "Spicy Testnet " : "")
+        case .odysseyChain:
+            return "Odyssey Chain" + testnetSuffix
+        case .bitrock:
+            return "Bitrock" + testnetSuffix
         default:
             var name = "\(self)".capitalizingFirstLetter()
             if let index = name.firstIndex(of: "(") {
@@ -829,6 +843,8 @@ public extension Blockchain {
         case .canxium: return 3003
         case .chiliz: return isTestnet ? 88882 : 88888
         case .xodex: return 2415
+        case .odysseyChain: return isTestnet ? 131313 : 153153
+        case .bitrock: return isTestnet ? 7771 : 7171
         default:
             return nil
         }
@@ -901,6 +917,8 @@ public extension Blockchain {
         case .chiliz: return false
         case .xodex: return false
         case .canxium: return true
+        case .odysseyChain: return true
+        case .bitrock: return false // eth_feeHistory all zeroes
         default:
             assertionFailure("Don't forget about evm here")
             return false
@@ -1044,6 +1062,8 @@ extension Blockchain: Codable {
         case .xodex: return "xodex"
         case .clore: return "clore-ai"
         case .fact0rn: return "fact0rn"
+        case .odysseyChain: return "dione"
+        case .bitrock: return "bitrock"
         }
     }
 
@@ -1146,6 +1166,8 @@ extension Blockchain: Codable {
         case "xodex": self = .xodex
         case "clore-ai": self = .clore
         case "fact0rn": self = .fact0rn
+        case "dione": self = .odysseyChain(testnet: isTestnet)
+        case "bitrock": self = .bitrock(testnet: isTestnet)
         default:
             throw BlockchainSdkError.decodingFailed
         }
@@ -1399,6 +1421,10 @@ private extension Blockchain {
             return "clore-ai"
         case .fact0rn:
             return "fact0rn"
+        case .odysseyChain:
+            return "dione"
+        case .bitrock:
+            return "bitrock"
         }
     }
 
@@ -1456,7 +1482,9 @@ extension Blockchain {
              .core,
              .canxium,
              .chiliz,
-             .xodex:
+             .xodex,
+             .odysseyChain,
+             .bitrock:
             return EthereumWalletAssembly()
         case .optimism,
              .manta,
