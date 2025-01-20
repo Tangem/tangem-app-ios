@@ -12,7 +12,7 @@ struct AlephiumExternalLinkProvider: ExternalLinkProvider {
     private let baseExplorerUrl = "https://explorer.alephium.org"
 
     var testnetFaucetURL: URL? {
-        nil
+        URL(string: "https://faucet.testnet.alephium.org")
     }
 
     func url(address: String, contractAddress: String?) -> URL? {

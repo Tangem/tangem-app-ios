@@ -10,6 +10,11 @@ import Foundation
 
 /// A top-level namespace.
 enum AlephiumNetworkResponse {
+    struct Balance: Decodable {
+        let balance: String
+        let lockedBalance: String
+    }
+    
     struct BuildTransferTxResult: Decodable {
         let unsignedTx: String
         let gasAmount: Int

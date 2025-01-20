@@ -7,40 +7,30 @@
 //
 
 import Foundation
-import TangemSdk
 
-public protocol VisaOTPRepository: AnyObject {
-    func hasSavedOTP(cardId: String) throws -> Bool
-    func getOTP(cardId: String) throws -> Data?
-    func saveOTP(_ otp: Data, cardId: String) throws
-    func removeOTP(cardId: String) throws
+protocol VisaOTPRepository: AnyObject {
+    func hasSavedOTP(cardId: String) -> Bool
+    func getOTP(cardId: String) -> Data?
+    func saveOTP(_ otp: Data, cardId: String)
+    func removeOTP(cardId: String)
 }
 
-final class CommonVisaOTPRepository {
-    let secureStorage = SecureStorage()
+final class CommonVisaOTPRepository: VisaOTPRepository {
+    private var otpDict = [String: Data]()
 
-    private let otpStorageKeyPrefix = "tangem_visa_otp_"
-
-    private func otpStorageKey(cardId: String) -> String {
-        return otpStorageKeyPrefix + cardId
-    }
-}
-
-extension CommonVisaOTPRepository: VisaOTPRepository {
-    func hasSavedOTP(cardId: String) throws -> Bool {
-        let otp = try getOTP(cardId: cardId)
-        return otp != nil
+    func hasSavedOTP(cardId: String) -> Bool {
+        return getOTP(cardId: cardId) != nil
     }
 
-    func getOTP(cardId: String) throws -> Data? {
-        try secureStorage.get(otpStorageKey(cardId: cardId))
+    func getOTP(cardId: String) -> Data? {
+        return otpDict[cardId]
     }
 
-    func saveOTP(_ otp: Data, cardId: String) throws {
-        try secureStorage.store(otp, forKey: otpStorageKey(cardId: cardId))
+    func saveOTP(_ otp: Data, cardId: String) {
+        otpDict[cardId] = otp
     }
 
-    func removeOTP(cardId: String) throws {
-        try secureStorage.delete(otpStorageKey(cardId: cardId))
+    func removeOTP(cardId: String) {
+        otpDict[cardId] = nil
     }
 }

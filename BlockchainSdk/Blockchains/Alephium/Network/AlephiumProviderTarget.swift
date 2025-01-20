@@ -23,7 +23,7 @@ struct AlephiumProviderTarget: TargetType {
     }
 
     var baseURL: URL {
-        URL(string: "")!
+        node.url
     }
 
     var path: String {

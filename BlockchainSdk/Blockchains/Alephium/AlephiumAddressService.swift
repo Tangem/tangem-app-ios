@@ -29,7 +29,8 @@ extension AlephiumAddressService: AddressProvider, AddressValidator {
     }
 
     func validate(_ address: String) -> Bool {
-        return false
+        // TODO: - https://tangem.atlassian.net/browse/IOS-8982
+        false
     }
 }
 

@@ -35,7 +35,7 @@ struct AlephiumNetworkProvider: HostProvider {
 
     // MARK: - Implementation
 
-    func getBalance(address: String) -> AnyPublisher<Decimal, Error> {
+    func getBalance(address: String) -> AnyPublisher<AlephiumNetworkResponse.Balance, Error> {
         requestPublisher(for: .init(node: node, targetType: .getBalance(address: address)))
     }
 
@@ -49,9 +49,7 @@ struct AlephiumNetworkProvider: HostProvider {
         requestPublisher(for: .init(node: node, targetType: .buildTransaction(transfer)))
     }
 
-    func submit(
-        transaction: AlephiumNetworkRequest.Submit
-    ) -> AnyPublisher<AlephiumNetworkResponse.Submit, Error> {
+    func submit(transaction: AlephiumNetworkRequest.Submit) -> AnyPublisher<AlephiumNetworkResponse.Submit, Error> {
         requestPublisher(for: .init(node: node, targetType: .submitTransaction(transaction)))
     }
 
