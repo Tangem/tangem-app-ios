@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemSwiftUIUtils
 
 struct MainBottomSheetHintView: View {
     let isDraggingHorizontally: Bool

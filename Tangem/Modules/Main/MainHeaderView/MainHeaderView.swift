@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemSwiftUIUtils
 
 struct MainHeaderView: View {
     @ObservedObject var viewModel: MainHeaderViewModel

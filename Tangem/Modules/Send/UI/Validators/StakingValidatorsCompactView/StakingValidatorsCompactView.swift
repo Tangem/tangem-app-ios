@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftUI
+import TangemSwiftUIUtils
 
 struct StakingValidatorsCompactView: View {
     @ObservedObject var viewModel: StakingValidatorsCompactViewModel

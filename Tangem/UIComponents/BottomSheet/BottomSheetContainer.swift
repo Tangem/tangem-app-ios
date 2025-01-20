@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import TangemUIKitUtils
+import TangemSwiftUIUtils
 
 struct BottomSheetContainer<ContentView: View>: View {
     @ObservedObject private var stateObject: StateObject

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemSwiftUIUtils
 
 struct CardsStackAnimatorSettings {
     let topCardSize: CGSize

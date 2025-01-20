@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemSwiftUIUtils
 
 struct SingleCardOnboardingView: View {
     @ObservedObject var viewModel: SingleCardOnboardingViewModel

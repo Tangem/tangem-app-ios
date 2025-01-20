@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemSwiftUIUtils
 
 struct WalletOnboardingView: View {
     @ObservedObject var viewModel: WalletOnboardingViewModel
