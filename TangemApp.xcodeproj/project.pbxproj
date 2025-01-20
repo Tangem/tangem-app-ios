@@ -2572,6 +2572,7 @@
 		EF40C1112CF5EA2D007EF710 /* ExpressProvidersList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF40C1102CF5EA2D007EF710 /* ExpressProvidersList.swift */; };
 		EF40C1122CF5EE1A007EF710 /* Sequence+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B674D6D82A96AC8800172491 /* Sequence+.swift */; };
 		EF41937A2C2DE0CB006A30A5 /* SendAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4193792C2DE0CB006A30A5 /* SendAmount.swift */; };
+		EF41A3D12D3E576F00FA7020 /* LanguageCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF41A3D02D3E576F00FA7020 /* LanguageCode.swift */; };
 		EF435A052C2B124A00B627EB /* SendDestinationInputOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF435A042C2B124A00B627EB /* SendDestinationInputOutput.swift */; };
 		EF435A072C2B1F2300B627EB /* SendDestinationTransactionHistoryProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF435A062C2B1F2300B627EB /* SendDestinationTransactionHistoryProvider.swift */; };
 		EF4535372976C1D80030639A /* FixedSpacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4535362976C1D80030639A /* FixedSpacer.swift */; };
@@ -5747,6 +5748,7 @@
 		EF407E6D2C04D81100366733 /* Period.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Period.swift; sourceTree = "<group>"; };
 		EF40C1102CF5EA2D007EF710 /* ExpressProvidersList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProvidersList.swift; sourceTree = "<group>"; };
 		EF4193792C2DE0CB006A30A5 /* SendAmount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendAmount.swift; sourceTree = "<group>"; };
+		EF41A3D02D3E576F00FA7020 /* LanguageCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageCode.swift; sourceTree = "<group>"; };
 		EF435A042C2B124A00B627EB /* SendDestinationInputOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendDestinationInputOutput.swift; sourceTree = "<group>"; };
 		EF435A062C2B1F2300B627EB /* SendDestinationTransactionHistoryProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendDestinationTransactionHistoryProvider.swift; sourceTree = "<group>"; };
 		EF4535362976C1D80030639A /* FixedSpacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSpacer.swift; sourceTree = "<group>"; };
@@ -15652,6 +15654,7 @@
 				EF4BEFDE28AD3EE500C5D1BE /* ContentState.swift */,
 				EFAF63E82927CA63004B3227 /* Setupable.swift */,
 				EFD5FE422C1369AE0047242E /* GeometryEffect.swift */,
+				EF41A3D02D3E576F00FA7020 /* LanguageCode.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -18477,6 +18480,7 @@
 				DAA5E31228D2137C003C0E80 /* UserWalletEncryptionKeyStorage.swift in Sources */,
 				5DF612A224E6E0ED001BF301 /* AddressFormatter.swift in Sources */,
 				EFA6164E2B62A96B0013A129 /* TransactionSendAvailabilityProvider.swift in Sources */,
+				EF41A3D12D3E576F00FA7020 /* LanguageCode.swift in Sources */,
 				2D535E732A0CB4D20081EB76 /* BottomSheetInfoViewModel.swift in Sources */,
 				5D384B9424FD51C000C2C92C /* DetailsViewModel.swift in Sources */,
 				2DC567692B0DFFAF00B0244F /* MarketsRoutable.swift in Sources */,
