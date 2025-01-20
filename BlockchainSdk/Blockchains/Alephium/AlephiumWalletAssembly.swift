@@ -10,6 +10,10 @@ import Foundation
 
 struct AlephiumWalletAssembly: WalletManagerAssembly {
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
-        fatalError("Not implemented")
+        AlephiumWalletManager(
+            wallet: input.wallet,
+            networkService: AlephiumNetworkService(),
+            transactionBuilder: AlephiumTransactionBuilder()
+        )
     }
 }

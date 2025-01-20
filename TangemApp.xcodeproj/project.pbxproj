@@ -161,6 +161,10 @@
 		2DC567812B0E047700B0244F /* MainBottomSheetUIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC5677A2B0E047700B0244F /* MainBottomSheetUIManager.swift */; };
 		2DC5DAAD29B782420039154A /* TonCenterApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC5DAAC29B782420039154A /* TonCenterApiKeys.swift */; };
 		2DCAEE4B2B13E4F800C87E09 /* GetBlockAccessTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCAEE4A2B13E4F800C87E09 /* GetBlockAccessTokens.swift */; };
+		2DCFBA5C2D3E782600A51D84 /* AlephiumWalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA5B2D3E782600A51D84 /* AlephiumWalletManager.swift */; };
+		2DCFBA5E2D3E785200A51D84 /* AlephiumNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA5D2D3E785200A51D84 /* AlephiumNetworkService.swift */; };
+		2DCFBA602D3E786B00A51D84 /* AlephiumTransactionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA5F2D3E786B00A51D84 /* AlephiumTransactionBuilder.swift */; };
+		2DCFBA632D3E797B00A51D84 /* AlephiumNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA622D3E797B00A51D84 /* AlephiumNetworkProvider.swift */; };
 		2DD5C39A2C4EA6570000658D /* MarketsListPrefetchDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5C3982C4EA6570000658D /* MarketsListPrefetchDataSource.swift */; };
 		2DD5C39B2C4EA6570000658D /* MarketsListDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5C3992C4EA6570000658D /* MarketsListDataController.swift */; };
 		2DD754D72AE1660D0009CA64 /* GenerateAddressesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD754D62AE1660D0009CA64 /* GenerateAddressesViewModel.swift */; };
@@ -3356,6 +3360,10 @@
 		2DC5677A2B0E047700B0244F /* MainBottomSheetUIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBottomSheetUIManager.swift; sourceTree = "<group>"; };
 		2DC5DAAC29B782420039154A /* TonCenterApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TonCenterApiKeys.swift; sourceTree = "<group>"; };
 		2DCAEE4A2B13E4F800C87E09 /* GetBlockAccessTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetBlockAccessTokens.swift; sourceTree = "<group>"; };
+		2DCFBA5B2D3E782600A51D84 /* AlephiumWalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumWalletManager.swift; sourceTree = "<group>"; };
+		2DCFBA5D2D3E785200A51D84 /* AlephiumNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumNetworkService.swift; sourceTree = "<group>"; };
+		2DCFBA5F2D3E786B00A51D84 /* AlephiumTransactionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumTransactionBuilder.swift; sourceTree = "<group>"; };
+		2DCFBA622D3E797B00A51D84 /* AlephiumNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumNetworkProvider.swift; sourceTree = "<group>"; };
 		2DD5C3982C4EA6570000658D /* MarketsListPrefetchDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsListPrefetchDataSource.swift; sourceTree = "<group>"; };
 		2DD5C3992C4EA6570000658D /* MarketsListDataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsListDataController.swift; sourceTree = "<group>"; };
 		2DD754D62AE1660D0009CA64 /* GenerateAddressesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAddressesViewModel.swift; sourceTree = "<group>"; };
@@ -6709,9 +6717,13 @@
 		2DB200712D3D75AD00E499A3 /* Alephium */ = {
 			isa = PBXGroup;
 			children = (
+				2DCFBA612D3E797100A51D84 /* Network */,
 				2DB2006E2D3D75AD00E499A3 /* AlephiumAddressService.swift */,
 				2DB2006F2D3D75AD00E499A3 /* AlephiumExternalLinkProvider.swift */,
+				2DCFBA5D2D3E785200A51D84 /* AlephiumNetworkService.swift */,
+				2DCFBA5F2D3E786B00A51D84 /* AlephiumTransactionBuilder.swift */,
 				2DB200702D3D75AD00E499A3 /* AlephiumWalletAssembly.swift */,
+				2DCFBA5B2D3E782600A51D84 /* AlephiumWalletManager.swift */,
 			);
 			path = Alephium;
 			sourceTree = "<group>";
@@ -6856,6 +6868,14 @@
 				2DC5677A2B0E047700B0244F /* MainBottomSheetUIManager.swift */,
 			);
 			path = Other;
+			sourceTree = "<group>";
+		};
+		2DCFBA612D3E797100A51D84 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				2DCFBA622D3E797B00A51D84 /* AlephiumNetworkProvider.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		2DD754D52AE166000009CA64 /* GenerateAddressesView */ = {
@@ -18802,6 +18822,7 @@
 				B62D40C22CBC79DA00C2460E /* SmartContractMethod.swift in Sources */,
 				B62D40442CBC79DA00C2460E /* RosettaResponse.swift in Sources */,
 				B62D40ED2CBC79DA00C2460E /* HederaAddressService.swift in Sources */,
+				2DCFBA602D3E786B00A51D84 /* AlephiumTransactionBuilder.swift in Sources */,
 				B62D3FE32CBC79DA00C2460E /* OP_EQUAL.swift in Sources */,
 				B62D3FE52CBC79DA00C2460E /* OP_INVERT.swift in Sources */,
 				B62D3FE12CBC79DA00C2460E /* OP_WITHIN.swift in Sources */,
@@ -18841,6 +18862,7 @@
 				B62D42D92CBC79DB00C2460E /* String+.swift in Sources */,
 				B62D42712CBC79DB00C2460E /* BitcoinTransactionFeeCalculator.swift in Sources */,
 				B62D422B2CBC79DB00C2460E /* BlockBookResponses.swift in Sources */,
+				2DCFBA632D3E797B00A51D84 /* AlephiumNetworkProvider.swift in Sources */,
 				B62D3F982CBC79DA00C2460E /* AlgorandTransactionParams.swift in Sources */,
 				B62D3FB32CBC79DA00C2460E /* AptosAddressService.swift in Sources */,
 				B62D40612CBC79DA00C2460E /* ChiaTransactionBuilder.swift in Sources */,
@@ -18994,6 +19016,7 @@
 				2D54FECF2CDBD696004FC466 /* CasperNetworkService.swift in Sources */,
 				2D54FED02CDBD696004FC466 /* CasperNetworkRequest.swift in Sources */,
 				2D54FED12CDBD696004FC466 /* CasperBalance.swift in Sources */,
+				2DCFBA5E2D3E785200A51D84 /* AlephiumNetworkService.swift in Sources */,
 				2D54FED22CDBD696004FC466 /* CasperNetworkResponse.Balance.swift in Sources */,
 				B62D42CB2CBC79DB00C2460E /* Data+.swift in Sources */,
 				B62D42112CBC79DB00C2460E /* SigningAlgorithm.swift in Sources */,
@@ -19209,6 +19232,7 @@
 				B62D40FC2CBC79DA00C2460E /* ICPTransactionParams.swift in Sources */,
 				B62D42362CBC79DB00C2460E /* ElectrumAddressInfo.swift in Sources */,
 				B62D40582CBC79DA00C2460E /* ClvmProgram.swift in Sources */,
+				2DCFBA5C2D3E782600A51D84 /* AlephiumWalletManager.swift in Sources */,
 				B62D405D2CBC79DA00C2460E /* ChiaAddressService.swift in Sources */,
 				B62D416C2CBC79DA00C2460E /* SubstrateWalletAssembly.swift in Sources */,
 				B62D3F962CBC79DA00C2460E /* AlgorandTransactionBuildParams.swift in Sources */,
