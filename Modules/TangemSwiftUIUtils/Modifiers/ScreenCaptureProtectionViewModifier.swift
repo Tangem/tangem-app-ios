@@ -59,16 +59,18 @@ private final class PreferredContentSizeForwardingUIHostingController<T>: UIHost
     }
 }
 
-// MARK: - Private implementation shared
+// MARK: - Private implementation common
 
 private struct ScreenCaptureProtectionContainerView<Content>: UIViewControllerRepresentable where Content: View {
     typealias UIViewControllerType = UIViewController
-    typealias OnContentSizeChange = (_ size: CGSize) -> Void
 
-    private let content: () -> Content
+    @available(iOS, deprecated: 16.0, message: "Not used on iOS 16+, can be safely removed")
+    typealias OnContentSizeChange = (_ size: CGSize) -> Void
 
     @available(iOS, deprecated: 16.0, message: "Not used on iOS 16+, can be safely removed")
     private let onContentSizeChange: OnContentSizeChange?
+
+    private let content: () -> Content
 
     @available(iOS, deprecated: 16.0, message: "Use 'init(content:)' instead. Not used on iOS 16+, can be safely removed")
     init(
