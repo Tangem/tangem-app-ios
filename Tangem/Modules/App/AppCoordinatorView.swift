@@ -51,6 +51,7 @@ struct AppCoordinatorView: CoordinatorView {
 
     @ViewBuilder
     private var content: some View {
+        // We need stack to force transition animation work
         ZStack {
             switch coordinator.viewState {
             case .welcome(let welcomeCoordinator):
@@ -82,7 +83,5 @@ struct AppCoordinatorView: CoordinatorView {
                 EmptyView()
             }
         }
-        // We need stack to force transition animation work
-        .animation(.easeIn, value: coordinator.viewState)
     }
 }

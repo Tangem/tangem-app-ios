@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 import TangemSdk
 
 class WelcomeCoordinator: CoordinatorObject {
@@ -76,7 +77,9 @@ class WelcomeCoordinator: CoordinatorObject {
         }
 
         let dismissAction: Action<WelcomeOnboardingCoordinator.OutputOptions> = { [weak self] _ in
-            self?.welcomeOnboardingCoordinator = nil
+            withAnimation(.easeIn) {
+                self?.welcomeOnboardingCoordinator = nil
+            }
         }
 
         let coordinator = WelcomeOnboardingCoordinator(dismissAction: dismissAction)

@@ -24,13 +24,17 @@ struct WelcomeOnboardingView: View {
 
     @ViewBuilder
     private var content: some View {
-        switch viewModel.viewState {
-        case .tos(let viewModel):
-            WelcomeOnboardingTOSView(viewModel: viewModel)
-        case .pushNotifications(let viewModel):
-            WelcomeOnboardingPushNotificationsView(viewModel: viewModel)
-        case .none:
-            EmptyView()
+        ZStack { // for transition animation
+            switch viewModel.viewState {
+            case .tos(let viewModel):
+                WelcomeOnboardingTOSView(viewModel: viewModel)
+                    .transition(.opacity)
+            case .pushNotifications(let viewModel):
+                WelcomeOnboardingPushNotificationsView(viewModel: viewModel)
+                    .transition(.opacity)
+            case .none:
+                EmptyView()
+            }
         }
     }
 }

@@ -55,7 +55,9 @@ final class WelcomeOnboardingViewModel: ObservableObject {
             return
         }
 
-        viewState = makeViewState()
+        withAnimation(.easeIn) {
+            viewState = makeViewState()
+        }
     }
 
     private func makeViewState() -> WelcomeOnboardingViewModel.ViewState {
