@@ -344,15 +344,10 @@ private extension CommonVisaActivationManager {
         }
 
         let otp: Data
-        do {
-            if let storedOTP = try otpRepository.getOTP(cardId: activationInput.cardId) {
-                otp = storedOTP
-            } else {
-                log("Failed to find stored OTP in repository. Continuing activation without OTP.")
-                otp = Data()
-            }
-        } catch {
-            log("Failed to get stored OTP. Continuing activation without OTP. Error: \(error)")
+        if let storedOTP = otpRepository.getOTP(cardId: activationInput.cardId) {
+            otp = storedOTP
+        } else {
+            log("Failed to find stored OTP in repository. Continuing activation without OTP.")
             otp = Data()
         }
 

@@ -13,7 +13,7 @@ struct OnboardingSeedPhraseGenerateView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("", selection: $viewModel.selectedLenght, content: {
+            Picker("", selection: $viewModel.selectedLength, content: {
                 ForEach(viewModel.availableLengths) { mnemonicLength in
                     Text(mnemonicLength.pickerTitle)
                 }
@@ -23,7 +23,7 @@ struct OnboardingSeedPhraseGenerateView: View {
 
             VStack(spacing: 0) {
                 VStack {
-                    switch viewModel.selectedLenght {
+                    switch viewModel.selectedLength {
                     case .twelveWords:
                         twelveWordsContent
                     case .twentyFourWords:
@@ -44,7 +44,7 @@ struct OnboardingSeedPhraseGenerateView: View {
                 .padding(.bottom, AppConstants.isSmallScreen ? 10 : 6)
             }
         }
-        .animation(.default, value: viewModel.selectedLenght)
+        .animation(.default, value: viewModel.selectedLength)
         .padding(.top, 20)
     }
 
@@ -53,7 +53,7 @@ struct OnboardingSeedPhraseGenerateView: View {
             Text(Localization.onboardingSeedGenerateTitle)
                 .style(Fonts.Bold.title1, color: Colors.Text.primary1)
 
-            Text(viewModel.selectedLenght.descriptionMessage)
+            Text(viewModel.selectedLength.descriptionMessage)
                 .style(Fonts.Regular.callout, color: Colors.Text.secondary)
                 .multilineTextAlignment(.center)
                 .lineSpacing(2)

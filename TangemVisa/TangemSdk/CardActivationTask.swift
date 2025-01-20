@@ -27,7 +27,7 @@ final class CardActivationTask: CardSessionRunnable {
     typealias CompletionHandler = CompletionResult<CardActivationResponse>
 
     private weak var orderProvider: CardActivationTaskOrderProvider?
-    private weak var otpRepository: VisaOTPRepository?
+    private var otpRepository: VisaOTPRepository
     private let logger: InternalLogger
 
     private let selectedAccessCode: String
@@ -135,29 +135,16 @@ private extension CardActivationTask {
             return
         }
 
-        guard let otpRepository else {
-            completion(.failure(.underlying(error: VisaActivationError.missingOTPRepository)))
+        if let otp = otpRepository.getOTP(cardId: card.cardId) {
+            waitForOrder(rootOTP: otp, in: session, completion: completion)
             return
-        }
-
-        do {
-            if let otp = try otpRepository.getOTP(cardId: card.cardId) {
-                waitForOrder(rootOTP: otp, in: session, completion: completion)
-                return
-            }
-        } catch {
-            log("Failed to get saved OTP: \(error)")
         }
 
         let otpCommand = GenerateOTPCommand()
         otpCommand.run(in: session) { result in
             switch result {
             case .success(let otpResponse):
-                do {
-                    try otpRepository.saveOTP(otpResponse.rootOTP, cardId: card.cardId)
-                } catch {
-                    self.log("Failed to save OTP in secure storage. Error: \(error)")
-                }
+                self.otpRepository.saveOTP(otpResponse.rootOTP, cardId: card.cardId)
                 self.waitForOrder(rootOTP: otpResponse.rootOTP, in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
@@ -220,17 +207,13 @@ private extension CardActivationTask {
             return
         }
 
-        do {
-            guard let otp = try otpRepository?.getOTP(cardId: card.cardId) else {
-                completion(.failure(.underlying(error: VisaActivationError.missingRootOTP)))
-                return
-            }
-
-            let cardActivationResponse = CardActivationResponse(signedActivationOrder: signedOrder, rootOTP: otp)
-            setupAccessCode(signResponse: cardActivationResponse, in: session, completion: completion)
-        } catch {
-            completion(.failure(.underlying(error: error)))
+        guard let otp = otpRepository.getOTP(cardId: card.cardId) else {
+            completion(.failure(.underlying(error: VisaActivationError.missingRootOTP)))
+            return
         }
+
+        let cardActivationResponse = CardActivationResponse(signedActivationOrder: signedOrder, rootOTP: otp)
+        setupAccessCode(signResponse: cardActivationResponse, in: session, completion: completion)
     }
 
     func setupAccessCode(
