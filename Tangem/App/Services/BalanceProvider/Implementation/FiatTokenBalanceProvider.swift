@@ -1,5 +1,5 @@
 //
-//  FiatTokenBalanceProvider.swift
+//  FiatBalanceProvider.swift
 //  TangemApp
 //
 //  Created by Sergey Balashov on 24.12.2024.
@@ -10,7 +10,7 @@ import Combine
 import TangemFoundation
 import TangemStaking
 
-struct FiatTokenBalanceProvider {
+struct FiatBalanceProvider {
     private let walletModel: WalletModel
     private let cryptoBalanceProvider: TokenBalanceProvider
     private let balanceFormatter = BalanceFormatter()
@@ -23,14 +23,13 @@ struct FiatTokenBalanceProvider {
 
 // MARK: - TokenBalanceProvider
 
-extension FiatTokenBalanceProvider: TokenBalanceProvider {
+extension FiatBalanceProvider: TokenBalanceProvider {
     var balanceType: TokenBalanceType {
         mapToTokenBalance(rate: walletModel.rate, balanceType: cryptoBalanceProvider.balanceType)
     }
 
     var balanceTypePublisher: AnyPublisher<TokenBalanceType, Never> {
         Publishers.CombineLatest(
-            // Listen if rate was loaded after main balance
             walletModel.ratePublisher.removeDuplicates(),
             cryptoBalanceProvider.balanceTypePublisher.removeDuplicates()
         )
@@ -51,53 +50,71 @@ extension FiatTokenBalanceProvider: TokenBalanceProvider {
 
 // MARK: - Private
 
-extension FiatTokenBalanceProvider {
-    func mapToTokenBalance(rate: LoadingResult<WalletModel.Rate?, Never>, balanceType: TokenBalanceType) -> TokenBalanceType {
+extension FiatBalanceProvider {
+    func mapToTokenBalance(rate: WalletModel.Rate, balanceType: TokenBalanceType) -> TokenBalanceType {
         switch (rate, balanceType) {
-        // There is no rate because it's custom token
-        case (.success(.none), _) where walletModel.isCustom:
+        // There is no rate because token is custom
+        case (.custom, _):
             return .empty(.custom)
 
-        // There is no crypto value to convert
+        // There is no crypto
         case (_, .empty(let reason)):
             return .empty(reason)
 
-        // There is no rate but main balance is still loading
+        // Main balance is still loading
         // Then show loading to avoid showing empty fiat when crypto is loading
-        case (.success(.none), .loading):
+        // Or rate is loading
+        case (_, .loading(.none)), (.loading(.none), _):
             return .loading(.none)
 
-        // There is no rate
-        case (.success(.none), _):
-            return .empty(.noData)
-
-        // There is no crypto value because there was an error
-        case (_, .failure(.none)):
+        // There is no crypto or no rate value without cache
+        case (.failure(.none), _), (_, .failure(.none)):
             return .failure(.none)
 
-        // There is rate is loading and we can't convert it
-        case (.loading, _), (_, .loading(.none)):
-            return .loading(.none)
-
-        // Has some rate and cached value
-        case (.success(.some(let rate)), .loading(.some(let cached))):
-            let fiat = cached.balance * rate.value
+        // Both is loading and has cached value
+        case (.loading(.some(let rate)), .loading(.some(let cached))):
+            let fiat = cached.balance * rate.price
             return .loading(.init(balance: fiat, date: cached.date))
 
-        // Has some rate and cached value
-        case (.success(.some(let rate)), .failure(.some(let cached))):
-            let fiat = cached.balance * rate.value
+        // Both is failure and has cached value
+        case (.failure(.some(let rate)), .failure(.some(let cached))):
+            let fiat = cached.balance * rate.price
             return .failure(.init(balance: fiat, date: cached.date))
 
-        // Has cached rate and cached value
-        case (.success(.some(.cached(let rate))), .loaded(let value)):
-            let fiat = value * rate.balance
+        // Has some rate and loading cached value
+        case (.loaded(let rate), .loading(.some(let cached))):
+            let fiat = cached.balance * rate.price
+            return .loading(.init(balance: fiat, date: cached.date))
+
+        // Has some rate and failure cached value
+        case (.loaded(let rate), .failure(.some(let cached))):
+            let fiat = cached.balance * rate.price
+            return .failure(.init(balance: fiat, date: cached.date))
+
+        // Has some rate and loaded value
+        case (.loaded(let rate), .loaded(let value)):
+            let fiat = value * rate.price
+            return .loaded(fiat)
+
+        // Has some cached rate and loading cached value
+        case (.failure(.some(let rate)), .loading(.some(let cached))):
+            let fiat = cached.balance * rate.price
+            return .loading(.init(balance: fiat, date: rate.date))
+
+        // Has some cached rate and loaded crypto value
+        case (.failure(.some(let rate)), .loaded(let value)):
+            let fiat = value * rate.price
             return .failure(.init(balance: fiat, date: rate.date))
 
-        // Has some rate and cached value
-        case (.success(.some(.actual(let rate))), .loaded(let value)):
-            let fiat = value * rate
-            return .loaded(fiat)
+        // Rate is loading with cached value and crypto cached value
+        case (.loading(.some(let rate)), .failure(.some(let cached))):
+            let fiat = cached.balance * rate.price
+            return .loading(.init(balance: fiat, date: rate.date))
+
+        // Rate is loading with cached value and crypto loaded value
+        case (.loading(.some(let rate)), .loaded(let value)):
+            let fiat = value * rate.price
+            return .loading(.init(balance: fiat, date: rate.date))
         }
     }
 
