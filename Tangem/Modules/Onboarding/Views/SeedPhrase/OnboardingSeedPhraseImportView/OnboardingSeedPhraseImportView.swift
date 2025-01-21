@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemSwiftUIUtils
+import TangemUI
 
 struct OnboardingSeedPhraseImportView: View {
     @ObservedObject var viewModel: OnboardingSeedPhraseImportViewModel

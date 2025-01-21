@@ -8,7 +8,7 @@
 
 import SwiftUI
 import BlockchainSdk
-import TangemSwiftUIUtils
+import TangemUI
 
 struct ManageTokensItemNetworkSelectorView: View {
     @ObservedObject var viewModel: ManageTokensItemNetworkSelectorViewModel

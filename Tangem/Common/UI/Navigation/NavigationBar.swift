@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemSwiftUIUtils
+import TangemUI
 
 struct ArrowBack: View {
     let action: () -> Void

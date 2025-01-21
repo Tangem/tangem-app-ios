@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemSwiftUIUtils
+import TangemUI
 
 struct TokenItemView: View {
     @ObservedObject private var viewModel: TokenItemViewModel

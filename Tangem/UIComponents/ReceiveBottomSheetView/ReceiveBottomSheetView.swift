@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemSwiftUIUtils
+import TangemUI
 
 struct ReceiveBottomSheetView: View {
     @ObservedObject var viewModel: ReceiveBottomSheetViewModel

@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemSwiftUIUtils
+import TangemUI
 
 struct MarketsTokenDetailsExchangesListView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsExchangesListViewModel

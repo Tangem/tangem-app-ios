@@ -8,7 +8,7 @@
 
 import SwiftUI
 import Combine
-import TangemSwiftUIUtils
+import TangemUI
 
 struct OnboardingProgressCheckmarksView: View {
     var numberOfSteps: Int

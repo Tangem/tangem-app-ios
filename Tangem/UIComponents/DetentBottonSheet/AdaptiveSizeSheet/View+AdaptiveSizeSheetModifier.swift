@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemSwiftUIUtils
+import TangemUI
 
 struct AdaptiveSizeSheetModifier: ViewModifier {
     @StateObject private var viewModel = AdaptiveSizeSheetViewModel()

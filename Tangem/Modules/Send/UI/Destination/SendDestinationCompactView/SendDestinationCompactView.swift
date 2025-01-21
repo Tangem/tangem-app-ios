@@ -8,7 +8,7 @@
 
 import Foundation
 import SwiftUI
-import TangemSwiftUIUtils
+import TangemUI
 
 struct SendDestinationCompactView: View {
     @ObservedObject var viewModel: SendDestinationCompactViewModel

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import SwiftUI
-import TangemSwiftUIUtils
+import TangemUI
 
 // MARK: - SwiftUI view
 

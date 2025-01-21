@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemSwiftUIUtils
+import TangemUI
 
 struct TwinsOnboardingView: View {
     @ObservedObject var viewModel: TwinsOnboardingViewModel
