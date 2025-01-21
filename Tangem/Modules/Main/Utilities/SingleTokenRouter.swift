@@ -13,7 +13,7 @@ import TangemExpress
 
 protocol SingleTokenRoutable {
     func openReceive(walletModel: WalletModel)
-    func openBuyCryptoIfPossible(walletModel: WalletModel)
+    func openBuy(walletModel: WalletModel)
     func openSend(walletModel: WalletModel)
     func openExchange(walletModel: WalletModel)
     func openStaking(walletModel: WalletModel)
@@ -31,7 +31,6 @@ protocol SingleTokenRoutable {
 }
 
 final class SingleTokenRouter: SingleTokenRoutable {
-    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.keysManager) private var keysManager: KeysManager
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
 
@@ -58,15 +57,19 @@ final class SingleTokenRouter: SingleTokenRoutable {
         )
     }
 
-    func openBuyCryptoIfPossible(walletModel: WalletModel) {
-        if tangemApiService.geoIpRegionCode == LanguageCode.ru {
-            coordinator?.openBankWarning { [weak self] in
-                self?.openBuy(for: walletModel)
-            } declineCallback: { [weak self] in
-                self?.coordinator?.openP2PTutorial()
+    func openBuy(walletModel: WalletModel) {
+        assert(!FeatureProvider.isAvailable(.onramp), "Use open openOnramp(for:) instead")
+
+        let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
+
+        guard let url = exchangeUtility.buyURL else { return }
+
+        coordinator?.openBuyCrypto(at: url) { [weak self] in
+            self?.sendAnalyticsEvent(.tokenBought, for: walletModel)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                walletModel.update(silent: true)
             }
-        } else {
-            openBuy(for: walletModel)
         }
     }
 
@@ -174,22 +177,6 @@ final class SingleTokenRouter: SingleTokenRoutable {
         }
 
         return Blockchain.ethereum(testnet: false).coinId
-    }
-
-    private func openBuy(for walletModel: WalletModel) {
-        assert(!FeatureProvider.isAvailable(.onramp), "Use open openOnramp(for:) instead")
-
-        let exchangeUtility = buildExchangeCryptoUtility(for: walletModel)
-
-        guard let url = exchangeUtility.buyURL else { return }
-
-        coordinator?.openBuyCrypto(at: url) { [weak self] in
-            self?.sendAnalyticsEvent(.tokenBought, for: walletModel)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                walletModel.update(silent: true)
-            }
-        }
     }
 }
 

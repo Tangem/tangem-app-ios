@@ -16,8 +16,6 @@ protocol SingleTokenBaseRoutable: AnyObject {
     func openSellCrypto(at url: URL, action: @escaping (String) -> Void)
     func openSend(userWalletModel: UserWalletModel, walletModel: WalletModel)
     func openSendToSell(amountToSend: Amount, destination: String, tag: String?, userWalletModel: UserWalletModel, walletModel: WalletModel)
-    func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void)
-    func openP2PTutorial()
     func openExpress(input: CommonExpressModulesFactory.InputModel)
     func openStaking(options: StakingDetailsCoordinator.Options)
     func openInSafari(url: URL)
