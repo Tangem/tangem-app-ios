@@ -12,6 +12,8 @@ import TangemUI
 struct OnboardingSeedPhraseGenerateView: View {
     @ObservedObject var viewModel: OnboardingSeedPhraseGenerateViewModel
 
+    @State var wordsColumnMaxWidth: CGFloat?
+
     var body: some View {
         VStack(spacing: 0) {
             Picker("", selection: $viewModel.selectedLength, content: {
@@ -104,8 +106,11 @@ struct OnboardingSeedPhraseGenerateView: View {
         VStack(alignment: .leading, spacing: verticalSpacing) {
             ForEach(indexRange, id: \.self) { index in
                 HStack(alignment: .center, spacing: 0) {
-                    Text("\(index + 1).\t")
+                    Text("\(index + 1). ") // The space character after the dot is 'U+2009 THIN SPACE'
                         .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
+                        .fixedSize()
+                        .readGeometry(\.size.width, onChange: updateWordsColumnMaxWidth(width:))
+                        .frame(width: wordsColumnMaxWidth, alignment: .leading)
 
                     let wordView = Text("\(viewModel.words[index])")
                         .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
@@ -126,6 +131,10 @@ struct OnboardingSeedPhraseGenerateView: View {
                 }
             }
         }
+    }
+
+    private func updateWordsColumnMaxWidth(width: CGFloat) {
+        wordsColumnMaxWidth = max(wordsColumnMaxWidth ?? .zero, width)
     }
 }
 
