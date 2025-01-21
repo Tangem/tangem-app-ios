@@ -51,8 +51,6 @@ struct UserTokensReorderingLogger {
             objectDescription: objectDescription,
             userInfo: [
                 "state": description(for: walletModel?.state),
-                "fiatValue": description(for: walletModel?.fiatValue),
-                "balanceValue": description(for: walletModel?.balanceValue),
                 "canUseQuotes": description(for: walletModel?.canUseQuotes),
                 "isCustom": description(for: walletModel?.isCustom),
             ]

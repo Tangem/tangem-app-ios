@@ -99,6 +99,11 @@ final class SingleTokenNotificationManager {
             events.append(.maticMigration)
         }
 
+        /// We need display alert for user with Kaspa token is beta feature
+        if walletModel.blockchainNetwork.blockchain == .kaspa(testnet: false), walletModel.tokenItem.isToken {
+            events.append(.kaspaTokensBeta)
+        }
+
         if let sendingRestrictions = walletModel.sendingRestrictions {
             let isFeeCurrencyPurchaseAllowed = walletModelsManager.walletModels.contains {
                 $0.tokenItem == walletModel.feeTokenItem && $0.blockchainNetwork == walletModel.blockchainNetwork
@@ -269,7 +274,8 @@ final class SingleTokenNotificationManager {
             return .incompleteKaspaTokenTransaction(
                 revealTransaction: .init(
                     formattedValue: configurationData.formattedValue,
-                    currencySymbol: configurationData.currencySymbol
+                    currencySymbol: configurationData.currencySymbol,
+                    blockchainName: blockchain.displayName
                 ) { [weak walletModel] in
                     walletModel?.assetRequirementsManager?.discardRequirements(for: asset)
                 }
@@ -328,6 +334,8 @@ extension SingleTokenNotificationManager: NotificationManager {
         if let event = notification.settings.event as? TokenNotificationEvent {
             switch event {
             case .hasUnfulfilledRequirements(.incompleteKaspaTokenTransaction(let revealTransaction)):
+                Analytics.log(event: .tokenButtonRevealCancel, params: event.analyticsParams)
+
                 interactionDelegate?.confirmDiscardingUnfulfilledAssetRequirements(
                     with: .incompleteKaspaTokenTransaction(revealTransaction: revealTransaction),
                     confirmationAction: { [weak self] in

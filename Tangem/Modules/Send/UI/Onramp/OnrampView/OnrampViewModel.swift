@@ -60,9 +60,9 @@ private extension OnrampViewModel {
             .store(in: &bag)
 
         interactor
-            .selectedProviderPublisher
+            .selectedLoadedProviderPublisher
             .removeDuplicates()
-            .compactMap { $0?.legalText(branch: .onramp) }
+            .map { $0?.legalText(branch: .onramp) }
             .receive(on: DispatchQueue.main)
             .assign(to: \.legalText, on: self, ownership: .weak)
             .store(in: &bag)

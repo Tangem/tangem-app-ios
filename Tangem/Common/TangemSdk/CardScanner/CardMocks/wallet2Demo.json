@@ -35,8 +35,8 @@
   },
   "isPasscodeSet" : false,
   "batchId" : "CB79",
-  "cardPublicKey" : "03A0073A9601D1B747518A716CF5FD7C1540962F9A7F317287E74AC35F42E9A5BC",
-  "cardId" : "AF15000001195773",
+  "cardPublicKey" : "0000",
+  "cardId" : "CB79000000000000",
   "attestation" : {
     "cardKeyAttestation" : "failed",
     "firmwareAttestation" : "skipped",
@@ -158,12 +158,12 @@
   },
   "issuer" : {
     "name" : "TANGEM SDK",
-    "publicKey" : "025F16BD1D2EAFE463E62A335A09E6B2BBCBD04452526885CB679FC4D27AF1BD22"
+    "publicKey" : "0000"
   },
   "manufacturer" : {
     "name" : "TANGEM",
     "manufactureDate" : "2021-03-15",
-    "signature" : "F3F61FA1864251641964237C039AEC3D12D3F060507F80F33A22C0A9393BE5BE66AEE4273639D661797F1406584F4A01364B8F6D9C5AE600C339D29487C7A3AC"
+    "signature" : "00000"
   },
   "firmwareVersion" : {
     "major" : 6,

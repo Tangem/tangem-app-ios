@@ -234,8 +234,14 @@ extension Analytics {
         case tokenNoticeNetworkUnreachable = "[Token] Notice - Network Unreachable"
         case tokenNoticeNotEnoughFee = "[Token] Notice - Not Enough Fee"
         case tokenNoticeActionInactive = "[Token] Notice - Action Inactive"
+        case tokenNoticeRevealTransaction = "[Token] Notice - Reveal Transaction"
+        case tokenButtonRevealCancel = "[Token] Button - Reveal Cancel"
+        case tokenButtonRevealTryAgain = "[Token] Button - Reveal Try Again"
         case walletPromoButtonClicked = "[Main Screen] Note Promo Button"
         case walletPromoAppear = "[Main Screen] Notice - Note Promo"
+        case mainNoticeSeedSupport = "[Main Screen] Notice - Seed Phrase Support"
+        case mainNoticeSeedSupportButtonYes = "[Main Screen] Button - Support Yes"
+        case mainNoticeSeedSupportButtonNo = "[Main Screen] Button - Support No"
 
         // MARK: - BlockchainSdk exceptions
 
@@ -369,20 +375,20 @@ extension Analytics {
         case onrampButtonGoToProvider = "[Onramp] Button - Go To Provider"
         case onrampOnrampStatus = "[Onramp] Onramp Status"
 
-        // MARK: - Action buttons
+        // MARK: - Action Buttons
 
-        case actionButtonsBuyButton = "[Action Buttons] Button - Buy"
-        case actionButtonsSellButton = "[Action Buttons] Button - Sell"
-        case actionButtonsSwapButton = "[Action Buttons] Button - Swap"
-        case actionButtonsSwapScreenOpened = "[Action Buttons] Swap Screen Opened"
-        case actionButtonsBuyScreenOpened = "[Action Buttons] Buy Screen Opened"
-        case actionButtonsSellScreenOpened = "[Action Buttons] Sell Screen Opened"
-        case actionButtonsSellTokenClicked = "[Action Buttons] Sell Token Clicked"
-        case actionButtonsBuyTokenClicked = "[Action Buttons] Buy Token Clicked"
-        case actionButtonsSwapTokenClicked = "[Action Buttons] Swap Token Clicked"
-        case actionButtonsReceiveTokenClicked = "[Action Buttons] Receive Token Clicked"
-        case actionButtonsRemoveButtonClicked = "[Action Buttons] Remove Button Clicked"
-        case actionButtonsButtonClose = "[Action Buttons] Button - Close"
+        case actionButtonsBuyButton = "[Main Screen] Button - Buy"
+        case actionButtonsSellButton = "[Main Screen] Button - Sell"
+        case actionButtonsSwapButton = "[Main Screen] Button - Swap"
+        case actionButtonsSwapScreenOpened = "[Main Screen] Swap Screen Opened"
+        case actionButtonsBuyScreenOpened = "[Main Screen] Buy Screen Opened"
+        case actionButtonsSellScreenOpened = "[Main Screen] Sell Screen Opened"
+        case actionButtonsSellTokenClicked = "[Main Screen] Sell Token Clicked"
+        case actionButtonsBuyTokenClicked = "[Main Screen] Buy Token Clicked"
+        case actionButtonsSwapTokenClicked = "[Main Screen] Swap Token Clicked"
+        case actionButtonsReceiveTokenClicked = "[Main Screen] Receive Token Clicked"
+        case actionButtonsRemoveButtonClicked = "[Main Screen] Remove Button Clicked"
+        case actionButtonsButtonClose = "[Main Screen] Button - Close"
         case actionButtonsHotTokenClicked = "[Main Screen] Hot Token Clicked"
         case actionButtonsHotTokenError = "[Main Screen] Hot Token Error"
     }

@@ -1021,7 +1021,7 @@
 "warning_kaspa_unfinished_token_transaction_discard_message" = "Bist Du sicher, dass Du die Transaktion stornieren willst? Du kannst die Transaktion nicht erneut starten.";
 "warning_kaspa_unfinished_token_transaction_message" = "Deine Transaktion mit einem Betrag von %1$@ %2$@ wurde nicht abgeschlossen. Du kannst versuchen, diese erneut abzuschließen.";
 "warning_kaspa_unfinished_token_transaction_title" = "Du hast eine nicht abgeschlossene Transaktion";
-"warning_last_balance_updated_time" = "Letzte Aktualisierung war %@";
+"warning_last_balance_updated_time" = "Last update was %@";
 "warning_long_transaction_message" = "iPhone 7/7+ kann in diesem Netzwerk keine Transaktionen signieren. Um diesen Vorgang abzuschließen, verwende bitte ein anderes Telefon.";
 "warning_long_transaction_title" = "Transaktionssignierung nicht verfügbar";
 "warning_low_signatures_message" = "Auf dieser Karte oder Ring sind nur noch %@ Unterschriften übrig. Du musst dein gesamtes Guthaben abheben.";

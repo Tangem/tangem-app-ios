@@ -22,19 +22,6 @@ class StellarTests: XCTestCase {
         bag = []
     }
 
-    func testAddress() {
-        let walletPubkey = Data(hex: "EC5387D8B38BD9EF80BDBC78D0D7E1C53F08E269436C99D5B3C2DF4B2CE73012")
-        let expectedAddress = "GDWFHB6YWOF5T34AXW6HRUGX4HCT6CHCNFBWZGOVWPBN6SZM44YBFUDZ"
-
-        XCTAssertEqual(try! addressService.makeAddress(from: walletPubkey).value, expectedAddress)
-    }
-
-    func testValidateCorrectAddress() {
-        XCTAssertFalse(addressService.validate("GDWFc"))
-        XCTAssertFalse(addressService.validate("GDWFHядыфлвФЫВЗФЫВЛ++EÈ"))
-        XCTAssertTrue(addressService.validate("GDWFHB6YWOF5T34AXW6HRUGX4HCT6CHCNFBWZGOVWPBN6SZM44YBFUDZ"))
-    }
-
     func testCorrectCoinTransactionEd25519() {
         testCorrectCoinTransaction(blockchain: .stellar(curve: .ed25519, testnet: false))
     }

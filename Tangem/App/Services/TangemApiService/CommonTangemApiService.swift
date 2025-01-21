@@ -272,6 +272,20 @@ extension CommonTangemApiService: TangemApiService {
         try await request(for: .hotCrypto(requestModel))
     }
 
+    func getSeedNotifyStatus(userWalletId: String) async throws -> SeedNotifyDTO {
+        return try await request(for: .seedNotifyGetStatus(userWalletId: userWalletId), decoder: decoder)
+    }
+
+    func setSeedNotifyStatus(userWalletId: String, status: SeedNotifyStatus) async throws {
+        let target = TangemApiTarget(type: .seedNotifySetStatus(userWalletId: userWalletId, status: status), authData: authData)
+        _ = try await provider.asyncRequest(target)
+    }
+
+    func setWalletInitialized(userWalletId: String) async throws {
+        let target = TangemApiTarget(type: .walletInitialized(userWalletId: userWalletId), authData: authData)
+        _ = try await provider.asyncRequest(target)
+    }
+
     // MARK: - Init
 
     func initialize() {
