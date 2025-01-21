@@ -55,12 +55,10 @@ struct TokenItemView: View {
                                     .frame(width: 12, height: 12)
                             }
 
-                            LoadableTextView(
+                            LoadableTokenBalanceView(
                                 state: viewModel.balanceFiat,
-                                font: Fonts.Regular.subheadline,
-                                textColor: Colors.Text.primary1,
-                                loaderSize: .init(width: 40, height: 12),
-                                isSensitiveText: true
+                                style: .init(font: Fonts.Regular.subheadline, textColor: Colors.Text.primary1),
+                                loader: .init(size: .init(width: 40, height: 12))
                             )
                             .layoutPriority(3)
                         }
@@ -88,12 +86,10 @@ struct TokenItemView: View {
 
                         Spacer(minLength: Constants.spacerLength)
 
-                        LoadableTextView(
+                        LoadableTokenBalanceView(
                             state: viewModel.balanceCrypto,
-                            font: Fonts.Regular.caption1,
-                            textColor: Colors.Text.tertiary,
-                            loaderSize: .init(width: 40, height: 12),
-                            isSensitiveText: true
+                            style: .init(font: Fonts.Regular.caption1, textColor: Colors.Text.tertiary),
+                            loader: .init(size: .init(width: 40, height: 12))
                         )
                         .layoutPriority(3)
                     }

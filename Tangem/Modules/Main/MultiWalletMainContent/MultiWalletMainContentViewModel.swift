@@ -367,7 +367,7 @@ extension MultiWalletMainContentViewModel {
                 return
             }
 
-            tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+            tokenRouter.openBuy(walletModel: walletModel)
         }
     }
 

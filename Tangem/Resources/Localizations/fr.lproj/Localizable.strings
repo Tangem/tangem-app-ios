@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "ADA insuffisant";
 "common_accept" = "Accepter";
 "common_access_denied" = "Accès refusé";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Tous";
 "common_allow" = "Permettre";
 "common_analytics" = "Analytique";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "Illimité";
 "home_button_order" = "Commandez";
 "home_button_scan" = "Scannez";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Ces informations ont été générées avec l'IA.\nAppuyez ici si vous trouvez des erreurs.";
 "initial_message_change_access_code_body" = "Touchez, pour modifier le code d'accès";
 "initial_message_change_passcode_body" = "Touchez, pour modifier le mot de passe";

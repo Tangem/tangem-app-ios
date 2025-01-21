@@ -11,6 +11,13 @@ import SwiftUI
 struct ActionButtonsTokenSelectItemView: View {
     private let model: ActionButtonsTokenSelectorItem
     private let action: () -> Void
+    private var isLoading: Bool {
+        // the model is loading if one of balances is loading
+        switch (model.balance, model.fiatBalance) {
+        case (.loading, _), (_, .loading): true
+        default: false
+        }
+    }
 
     init(model: ActionButtonsTokenSelectorItem, action: @escaping () -> Void) {
         self.model = model
@@ -28,7 +35,7 @@ struct ActionButtonsTokenSelectItemView: View {
         }
         .contentShape(Rectangle())
         .onTapGesture(perform: action)
-        .disabled(model.isDisabled || model.isLoading)
+        .disabled(model.isDisabled || isLoading)
     }
 
     private var infoView: some View {
@@ -50,12 +57,13 @@ struct ActionButtonsTokenSelectItemView: View {
 
             Spacer(minLength: 4)
 
-            LoadableTextView(
-                state: model.isLoading ? .loading : .loaded(text: model.fiatBalance),
-                font: Fonts.Bold.subheadline,
-                textColor: model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1,
-                loaderSize: .init(width: 40, height: 12),
-                isSensitiveText: true
+            LoadableTokenBalanceView(
+                state: model.fiatBalance,
+                style: .init(
+                    font: Fonts.Regular.subheadline,
+                    textColor: model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1
+                ),
+                loader: .init(size: .init(width: 40, height: 12))
             )
         }
     }
@@ -70,12 +78,13 @@ struct ActionButtonsTokenSelectItemView: View {
 
             Spacer(minLength: 4)
 
-            LoadableTextView(
-                state: model.isLoading ? .loading : .loaded(text: model.balance),
-                font: Fonts.Regular.caption1,
-                textColor: model.isDisabled ? Colors.Text.disabled : Colors.Text.tertiary,
-                loaderSize: .init(width: 40, height: 12),
-                isSensitiveText: true
+            LoadableTokenBalanceView(
+                state: model.balance,
+                style: .init(
+                    font: Fonts.Bold.caption1,
+                    textColor: model.isDisabled ? Colors.Text.disabled : Colors.Text.tertiary
+                ),
+                loader: .init(size: .init(width: 40, height: 12))
             )
         }
     }
