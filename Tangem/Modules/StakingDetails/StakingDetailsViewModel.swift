@@ -115,7 +115,7 @@ private extension StakingDetailsViewModel {
         switch state {
         case .created, .loading:
             break
-        case .idle, .failed, .noAccount, .noDerivation:
+        case .loaded, .failed, .noAccount, .noDerivation:
             let hasBalance = (walletModel.availableBalance.crypto ?? 0) > 0
             actionButtonDisabled = !hasBalance
         }

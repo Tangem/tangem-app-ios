@@ -33,15 +33,12 @@ struct MainHeaderView: View {
                         .cornerRadiusContinuous(6)
                         .padding(.vertical, 5)
                 } else {
-                    BalanceTitleView(balance: viewModel.balance, isLoading: viewModel.isLoadingFiatBalance)
-                        .overlay(
-                            SensitiveText(viewModel.balance)
-                                .multilineTextAlignment(.leading)
-                                .fixedSize(horizontal: true, vertical: true)
-                                .readGeometry(\.size, bindTo: $balanceTextSize)
-                                .opacity(0.0),
-                            alignment: .leading
-                        )
+                    LoadableTokenBalanceView(
+                        state: viewModel.balance,
+                        style: .init(font: Fonts.Regular.title1, textColor: Colors.Text.primary1),
+                        loader: .init(size: .init(width: 102, height: 24), cornerRadius: 6)
+                    )
+                    .readGeometry(\.size, bindTo: $balanceTextSize)
                 }
 
                 Spacer(minLength: 10)
