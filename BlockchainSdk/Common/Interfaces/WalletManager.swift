@@ -68,6 +68,12 @@ extension BlockchainDataProvider {
     var outputsCount: Int? { return nil }
 }
 
+public struct SignData {
+    public let derivationPath: DerivationPath
+    public let hash: Data
+    public let publicKey: Data
+}
+
 @available(iOS 13.0, *)
 public protocol TransactionSender {
     func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError>
@@ -101,8 +107,9 @@ extension TransactionSigner {
     func sign(dataToSign: [SignData], seedKey: Data) -> AnyPublisher<[SignatureInfo], Error> {
         sign(dataToSign: dataToSign, seedKey: seedKey)
             .map { signatures in
-                signatures.map { signature in
-                    SignatureInfo(signature: signature., publicKey: signature.1, hash: Data())
+                signatures.compactMap { signature -> SignatureInfo? in
+                    guard let hash = dataToSign.first(where: { $0.publicKey == signature.1 })?.hash else { return nil }
+                    return SignatureInfo(signature: signature.0, publicKey: signature.1, hash: hash)
                 }
             }
             .eraseToAnyPublisher()

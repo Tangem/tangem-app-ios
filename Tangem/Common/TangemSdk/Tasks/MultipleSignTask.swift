@@ -68,20 +68,14 @@ class MultipleSignTask: CardSessionRunnable {
         return try await withCheckedThrowingContinuation { continuation in
             signCommand.run(in: session) { result in
                 switch result {
-                case .success(let hashes):
-                    continuation.resume(returning: hashes)
+                case .success(let signResponse):
+                    continuation.resume(returning: signResponse)
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }
             }
         }
     }
-}
-
-public struct SignData {
-    public let derivationPath: DerivationPath
-    public let hash: Data
-    public let publicKey: Data
 }
 
 extension MultipleSignTask {

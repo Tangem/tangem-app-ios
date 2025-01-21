@@ -263,8 +263,6 @@ extension CardanoWalletManager: StakeKitTransactionSender, StakeKitTransactionSe
         from transactions: [StakeKitTransaction],
         signer: any TransactionSigner
     ) async throws -> [Data] {
-        var dataToSign = [DerivationPath: (Data, Data)]()
-
         let firstDerivationPath: DerivationPath
         let secondDerivationPath: DerivationPath
 
@@ -281,21 +279,37 @@ extension CardanoWalletManager: StakeKitTransactionSender, StakeKitTransactionSe
         default: fatalError()
         }
 
-        for transaction in transactions {
-            let hashToSign = try prepareDataForSign(transaction: transaction)
-            dataToSign[firstDerivationPath] = (hashToSign, firstPublicKey)
-            dataToSign[secondDerivationPath] = (hashToSign, secondPublicKey)
+        var transactionHashes = [StakeKitTransaction: Data]()
+        
+        let hashes = try transactions.map { transaction in
+            try prepareDataForSign(transaction: transaction)
         }
 
+        let data = try transactions
+            .map { transaction in
+                let hashToSign = try prepareDataForSign(transaction: transaction)
+                transactionHashes[transaction] = hashToSign
+                let signData1 = SignData(derivationPath: firstDerivationPath, hash: hashToSign, publicKey: firstPublicKey)
+                let signData2 = SignData(derivationPath: secondDerivationPath, hash: hashToSign, publicKey: secondPublicKey)
+                return [signData1, signData2]
+            }
+            .flatMap { $0 }
+
         let signatures: [SignatureInfo] = try await signer.sign(
-            dataToSign: dataToSign,
+            dataToSign: data,
             seedKey: wallet.publicKey.seedKey
         ).async()
-        
+
         let stakeKitTransactionHelper = CardanoStakeKitTransactionHelper(transactionBuilder: transactionBuilder)
 
-        return try zip(transactions, signatures).map { transaction, signature in
-            try stakeKitTransactionHelper.prepareForSend(transaction, signatures: signatures)
+//        return transactions.map { transaction in
+//            guard let
+//        }
+        return try signatures.map { signature in
+            guard let transaction = transactionHashes[signature.hash] else {
+                throw WalletError.empty
+            }
+            return try stakeKitTransactionHelper.prepareForSend(transaction, signatures: signatures)
         }
     }
 }

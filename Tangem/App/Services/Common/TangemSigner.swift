@@ -54,7 +54,7 @@ struct TangemSigner: TransactionSigner {
     }
 
     func sign(
-        dataToSign: [MultipleSignTask.SignData],
+        dataToSign: [SignData],
         seedKey: Data
     ) -> AnyPublisher<[(Data, Data)], Error> {
         Future<[(Data, Data)], Error> { promise in
@@ -66,7 +66,7 @@ struct TangemSigner: TransactionSigner {
                     if let lastResponse = response.last {
                         latestSigner.send(lastResponse.card)
                     }
-                    promise(.success(response.map { ($0.publicKey, $0.signature) }))
+                    promise(.success(response.map { ($0.signature, $0.publicKey) }))
                 case .failure(let error):
                     promise(.failure(error))
                 }

@@ -256,7 +256,7 @@ private class DummySigner: TransactionSigner {
     }
 
     func sign(
-        dataToSign: [DerivationPath: (Data, Data)],
+        dataToSign: [SignData],
         seedKey: Data
     ) -> AnyPublisher<[(Data, Data)], Error> {
         fatalError()

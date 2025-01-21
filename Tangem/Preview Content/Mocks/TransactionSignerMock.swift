@@ -27,7 +27,7 @@ class TransactionSignerMock: TransactionSigner {
         .anyFail(error: "Error")
     }
 
-    func sign(dataToSign: [DerivationPath: (Data, Data)], seedKey: Data) -> AnyPublisher<[(Data, Data)], any Error> {
+    func sign(dataToSign: [SignData], seedKey: Data) -> AnyPublisher<[(Data, Data)], any Error> {
         .anyFail(error: "Error")
     }
 }

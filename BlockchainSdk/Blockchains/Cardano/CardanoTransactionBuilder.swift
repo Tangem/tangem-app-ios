@@ -19,8 +19,11 @@ class CardanoTransactionBuilder {
 
     private var outputs: [CardanoUnspentOutput] = []
     private let coinType: CoinType = .cardano
+    private let address: String
 
-    init() {}
+    init(address: String) {
+        self.address = address
+    }
 }
 
 extension CardanoTransactionBuilder {
@@ -239,7 +242,6 @@ private extension CardanoTransactionBuilder {
     }
 
     func buildCardanoStakingSigningInput(transaction: CardanoTransaction) throws -> CardanoSigningInput {
-        let address = "addr1q9z4qsz7zklgspq3a2f4nxrlpmj5km6xetehsr986h0s5sdqq2fng80j8u9vehl8yl9sx40qmne35ftejmkt4789j9ashdhr97"
         let stakingAddress = Cardano.getStakingAddress(baseAddress: address)
 
         var input = try CardanoSigningInput.with {
@@ -353,7 +355,7 @@ private extension CardanoTransactionBuilder {
             )
         }
 
-        let compileWithSignatures = TransactionCompiler.compileWithSignatures(
+        let compileWithSignatures = TransactionCompiler.compileWithMultipleSignatures(
             coinType: coinType,
             txInputData: txInputData,
             signatures: signaturesVector,
