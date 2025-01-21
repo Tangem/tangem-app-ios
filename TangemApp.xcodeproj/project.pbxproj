@@ -1740,6 +1740,7 @@
 		B6421A8D2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6421A8C2C9272800053DD8B /* MainBottomSheetHeaderViewModelDelegate.swift */; };
 		B6438A0E2D091BE5009439CA /* FirebaseAnalyticsEventConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6438A0D2D091BE5009439CA /* FirebaseAnalyticsEventConverter.swift */; };
 		B643B8072B1965EA002DE401 /* PerformanceMonitorConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B643B8062B1965EA002DE401 /* PerformanceMonitorConfigurator.swift */; };
+		B64404412D3FE77300195004 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = B64404402D3FE77300195004 /* FirebasePerformance */; };
 		B64598FF2B59B4AC000FD73F /* RateAppAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64598FE2B59B4AC000FD73F /* RateAppAction.swift */; };
 		B645BF3E2C59239700D8A2A5 /* CommonMarketsHistoryChartProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B645BF3C2C59239700D8A2A5 /* CommonMarketsHistoryChartProvider.swift */; };
 		B645BF3F2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B645BF3D2C59239700D8A2A5 /* MarketsHistoryChartProvider.swift */; };
@@ -6232,6 +6233,7 @@
 				EFEE239D2BFF62D60099917E /* TangemStaking.framework in Frameworks */,
 				B620FCAE2C5D337900AD0FD1 /* DGCharts in Frameworks */,
 				B62C16812CBE0BA000522683 /* Alamofire in Frameworks */,
+				B64404412D3FE77300195004 /* FirebasePerformance in Frameworks */,
 				F92DB9C72CD4C24800C16530 /* TangemModules in Frameworks */,
 				B6DDDE812CF39C69008DEA94 /* AnalyticsConnector in Frameworks */,
 				B6DDDE7B2CF391EF008DEA94 /* Kingfisher in Frameworks */,
@@ -16282,6 +16284,7 @@
 				B62C24882CF48327003377F1 /* FirebaseCrashlytics */,
 				B62C248A2CF48327003377F1 /* FirebaseMessaging */,
 				B69FC9082CF67D9300A5C51D /* GDPerformanceView-Swift */,
+				B64404402D3FE77300195004 /* FirebasePerformance */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -26170,6 +26173,10 @@
 		B63DFC4D2CD4EABB00720D9F /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TangemModules;
+		};
+		B64404402D3FE77300195004 /* FirebasePerformance */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FirebasePerformance;
 		};
 		B655F5792CBC871F002391AF /* secp256k1 */ = {
 			isa = XCSwiftPackageProductDependency;
