@@ -13,8 +13,8 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
     @Published var isLoadingBalance = true
     @Published var isLoadingFiatBalance = true
 
-    @Published var cryptoBalance = ""
-    @Published var fiatBalance: AttributedString = .init(BalanceFormatter.defaultEmptyBalanceString)
+    @Published var cryptoBalance: LoadableTokenBalanceView.State = .loading()
+    @Published var fiatBalance: LoadableTokenBalanceView.State = .loading()
 
     @Published var buttons: [FixedSizeButtonWithIconInfo] = []
 
@@ -55,8 +55,8 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
     }
 
     private func setupEmptyBalances() {
-        fiatBalance = .init(BalanceFormatter.defaultEmptyBalanceString)
-        cryptoBalance = BalanceFormatter.defaultEmptyBalanceString
+        fiatBalance = .empty
+        cryptoBalance = .empty
     }
 
     private func setupBalances(balances: LoadingValue<Balances>, type: BalanceType) {
@@ -83,11 +83,11 @@ final class BalanceWithButtonsViewModel: ObservableObject, Identifiable {
 
         switch selectedBalanceType {
         case .all:
-            cryptoBalance = balances.all.crypto
-            fiatBalance = formatter.formatAttributedTotalBalance(fiatBalance: balances.all.fiat)
+            cryptoBalance = .loaded(text: .string(balances.all.crypto))
+            fiatBalance = .loaded(text: .attributed(formatter.formatAttributedTotalBalance(fiatBalance: balances.all.fiat)))
         case .available:
-            cryptoBalance = balances.available.crypto
-            fiatBalance = formatter.formatAttributedTotalBalance(fiatBalance: balances.available.fiat)
+            cryptoBalance = .loaded(text: .string(balances.available.crypto))
+            fiatBalance = .loaded(text: .attributed(formatter.formatAttributedTotalBalance(fiatBalance: balances.available.fiat)))
         }
     }
 }
