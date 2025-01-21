@@ -1,6 +1,6 @@
 //
 //  ScreenCaptureProtectionViewModifier.swift
-//  TangemSwiftUIUtils
+//  TangemUI
 //
 //  Created by Andrey Fedorov on 17.01.2025.
 //  Copyright © 2025 Tangem AG. All rights reserved.
