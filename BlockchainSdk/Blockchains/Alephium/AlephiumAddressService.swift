@@ -22,27 +22,24 @@ extension AlephiumAddressService: AddressProvider, AddressValidator {
             throw Error.undefinedBlake2bHash
         }
 
-        let hashData = Data(hexString: Prefix.value()) + blake2bHash
-        let address = Base58.encode(hashData)
+        let hashData = Data(hexString: Constants.prefixAddressValue.addHexPrefix()) + blake2bHash
+        let address = hashData.base58EncodedString
 
         return PlainAddress(value: address, publicKey: publicKey, type: addressType)
     }
 
     func validate(_ address: String) -> Bool {
-        // TODO: - https://tangem.atlassian.net/browse/IOS-8982
-        false
+        let hexDataString = address.base58DecodedData.hexString
+        let withoutHexString = hexDataString.removeHexPrefix()
+        return withoutHexString.hasPrefix(Constants.prefixAddressValue) && withoutHexString.count == 66
     }
 }
 
 // MARK: - Helpers
 
 extension AlephiumAddressService {
-    enum Prefix {
-        static let prefix = "00"
-
-        static func value() -> String {
-            prefix.addHexPrefix()
-        }
+    enum Constants {
+        static let prefixAddressValue = "00"
     }
 
     enum Error: LocalizedError {
