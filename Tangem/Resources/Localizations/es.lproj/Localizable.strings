@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "ADA insuficiente";
 "common_accept" = "Aceptar";
 "common_access_denied" = "Acceso denegado";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Todos";
 "common_allow" = "Autorizar";
 "common_analytics" = "Analítica";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "Ilimitado";
 "home_button_order" = "Pedir Tangem";
 "home_button_scan" = "Escanee";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Esta información fue generada con IA.\nPulse aquí si encuentra algún error.";
 "initial_message_change_access_code_body" = "Para cambiar el código de acceso coloque la tarjeta o el anillo como se muestra arriba y no lo retire hasta el fin de la operación";
 "initial_message_change_passcode_body" = "Toque para cambiar la contraseña";
@@ -624,8 +628,6 @@
 "reset_card_without_backup_to_factory_message" = "El reseteo a valores de fábrica eliminará completamente la billetera de la tarjeta/anillo seleccionado y lo eliminará de la app. No podrá restaurar la billetera actual.";
 "ring_promo_text" = "Si tienes un Anillo Tangem, ¡3 swaps sin comisión en Changelly hasta el 15/11!";
 "ring_promo_title" = "¡Intercambia con 0%% de comisión!";
-"russian_bank_card_warning_subtitle" = "¿Tiene una tarjeta bancaria de otro país y un permiso de residencia o registro fuera de la Federación Rusa?";
-"russian_bank_card_warning_title" = "Las tarjetas bancarias rusas no se aceptan actualmente";
 "save_user_wallet_agreement_access_description" = "Inicie sesión en la app y comprueba su saldo sin escanear la tarjeta o el anillo";
 "save_user_wallet_agreement_access_title" = "Acceder a la app";
 "save_user_wallet_agreement_allow" = "Permitir usar %@";

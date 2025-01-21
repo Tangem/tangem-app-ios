@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "Недостатньо ADA";
 "common_accept" = "Прийняти";
 "common_access_denied" = "Доступ заборонено";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Усе";
 "common_allow" = "Дозволити";
 "common_analytics" = "Аналітика";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "Необмежено";
 "home_button_order" = "Купити";
 "home_button_scan" = "Сканувати";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Ця інформація була створена за допомогою ШІ.\nНатисніть тут, якщо знайшли помилку.";
 "initial_message_change_access_code_body" = "Щоб змінити код доступу, прикладіть картку або кільце, як показано вище, і не прибирайте її до закінчення операції";
 "initial_message_change_passcode_body" = "Щоб змінити пароль, прикладіть картку, як показано вище, і не прибирайте її до закінчення операції";
@@ -624,8 +628,6 @@
 "reset_card_without_backup_to_factory_message" = "Скидання до заводських налаштувань призведе до повного видалення гаманця з обраної картки або кільця. Ви не зможете відновити поточний гаманець.";
 "ring_promo_text" = "Власникам кілець - 3 обміни без комісії на Changelly до 15.11!";
 "ring_promo_title" = "Обмін з 0%% комісією!";
-"russian_bank_card_warning_subtitle" = "У вас є банківська картка іншої країни та посвідка на проживання або реєстрація за межами Російської Федерації?";
-"russian_bank_card_warning_title" = "Російські банківські картки наразі не приймаються";
 "save_user_wallet_agreement_access_description" = "Увійдіть у додаток та слідкуйте за своїм балансом без сканування картки чи кільця";
 "save_user_wallet_agreement_access_title" = "Доступ до додатку";
 "save_user_wallet_agreement_allow" = "Використовувати %@";
