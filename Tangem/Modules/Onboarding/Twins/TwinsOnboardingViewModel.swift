@@ -220,7 +220,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             break
         case .topup:
             if canBuy {
-                openCryptoShopIfPossible()
+                openBuyCrypto()
             } else {
                 supplementButtonAction()
             }

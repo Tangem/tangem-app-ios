@@ -58,10 +58,5 @@ struct OnboardingCoordinatorView: CoordinatorView {
             .bottomSheet(item: $coordinator.addressQrBottomSheetContentViewModel, backgroundColor: bottomSheetBackground) {
                 AddressQrBottomSheetContent(viewModel: $0)
             }
-
-        NavHolder()
-            .bottomSheet(item: $coordinator.warningBankCardViewModel, backgroundColor: bottomSheetBackground) {
-                WarningBankCardView(viewModel: $0)
-            }
     }
 }
