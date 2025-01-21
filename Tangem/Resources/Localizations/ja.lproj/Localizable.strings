@@ -55,6 +55,8 @@
 "balance_hidden_do_not_show_button" = "今後表示しない";
 "balance_hidden_got_it_button" = "わかりました";
 "balance_hidden_title" = "残高は非表示";
+"beta_mode_warning_message" = "ブロックチェーン開発者によると、Kaspaトークンは現在ベータ版です。アップデートをお楽しみに！";
+"beta_mode_warning_title" = "ベータモード";
 "biometry_touch_id_reason" = "タッチIDは、アプリにカードまたはリングを保存するために使用されます";
 "button_start_backup_process" = "バックアップ処理を開始する";
 "buy_token_description" = "銀行カードまたはその他の支払い方法を使用する";
@@ -83,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "ADAが不足しています。";
 "common_accept" = "受け入れる";
 "common_access_denied" = "アクセスが拒否されました";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "すべて";
 "common_allow" = "許可する";
 "common_analytics" = "アナリティクス";
@@ -331,6 +335,8 @@
 "give_permission_unlimited" = "無制限";
 "home_button_order" = "Tangemを注文";
 "home_button_scan" = "Tangemをスキャン";
+"hot_crypto_add_token_subtitle" = "%@へ";
+"hot_crypto_token_network" = "%@内";
 "information_generated_with_ai" = "この情報はAIで生成されました。 \nエラーが見つかった場合は、ここをタップしてください。";
 "initial_message_change_access_code_body" = "アクセスコードを変更するには、上図のようにカードまたはリングをタップし、操作が終了するまで取り外さないでください。";
 "initial_message_change_passcode_body" = "パスコードを変更するには、上記のようにカードをタップし、操作が終了するまで取り外さないでください。";
@@ -622,8 +628,6 @@
 "reset_card_without_backup_to_factory_message" = "工場出荷時の状態にリセットすると、選択したカードやリングからウォレットが完全に削除され、アプリから削除されます。現在のウォレットを復元することはできません。";
 "ring_promo_text" = "Tangem Ringユーザーは、11/15日までChangelly経由でスワップを3回手数料ゼロで行えます！";
 "ring_promo_title" = "今すぐ手数料0%%でスワップしましょう！";
-"russian_bank_card_warning_subtitle" = "他の国の銀行カードと、ロシア連邦外での居住許可証または登録をお持ちですか?";
-"russian_bank_card_warning_title" = "ロシアの銀行カードは現在ご利用いただけません";
 "save_user_wallet_agreement_access_description" = "アプリにログインして、カードまたはリングをスキャンせずに残高を確認できます";
 "save_user_wallet_agreement_access_title" = "アプリにアクセスする";
 "save_user_wallet_agreement_allow" = "%@ の使用を許可";
@@ -924,7 +928,7 @@
 "user_push_notification_agreement_argument_two" = "新しいプロモーション情報をいち早く入手しましょう";
 "user_push_notification_agreement_header" = "プッシュ通知を使用しますか?";
 "user_wallet_list_add_button" = "新しいウォレットを追加";
-"user_wallet_list_delete_prompt" = "本当にこのウォレットを削除してもよろしいですか?";
+"user_wallet_list_delete_prompt" = "このウォレットを忘れてもよろしいですか？";
 "user_wallet_list_error_wallet_already_saved" = "このウォレットはすでに保存されています。別のウォレットを追加できます。";
 "user_wallet_list_rename_popup_placeholder" = "ウォレット名";
 "user_wallet_list_rename_popup_title" = "ウォレット名の変更";
@@ -1017,6 +1021,7 @@
 "warning_kaspa_unfinished_token_transaction_discard_message" = "取引をキャンセルしてもよろしいですか? 取引を再試行することはできません";
 "warning_kaspa_unfinished_token_transaction_message" = "%1$@ %2$@の取引が完了しませんでした。もう一度試して完了してください。";
 "warning_kaspa_unfinished_token_transaction_title" = "未完了の取引があります";
+"warning_last_balance_updated_time" = "最終更新日は%@です";
 "warning_long_transaction_message" = "iPhone 7/7+ はこのネットワーク上で取引に署名できません。この操作を完了するには、別のデバイスを使用してください。";
 "warning_long_transaction_title" = "取引署名は利用できません";
 "warning_low_signatures_message" = "このカードには%@の署名のみが残っています。資金をすべて引き出す必要があります。";
@@ -1040,11 +1045,16 @@
 "warning_rate_app_title" = "Tangemを楽しんでいますか?";
 "warning_receive_blocked_hedera_token_association_required_message" = "トークンを受け取る前に、トークンを関連付ける必要があります。";
 "warning_rent_fee_title" = "ネットワーク使用料が必要です";
+"warning_seedphrase_issue_answer_no" = "ありがとうございます。準備完了です。これ以上の操作は必要ありません。";
+"warning_seedphrase_issue_answer_yes" = "Tangemの公式ウェブサイトに移動します。そちらの指示に従ってください。";
+"warning_seedphrase_issue_message" = "このアプリ経由でTangemサポートチームに直接連絡したことがありますか？";
+"warning_seedphrase_issue_title" = "必須のセキュリティアップデート";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ は %2$@ ネットワーク内のアセットです。%3$@ 取引を行うには、ネットワーク手数料のために %4$@ (%5$@) を入金する必要があります。";
 "warning_send_blocked_funds_for_fee_title" = "ネットワーク料金をカバーするための%1$@が足りません";
 "warning_solana_rent_fee_message" = "Solana ネットワークは 2 日ごとに%1$@のレンタル料を請求します。レンタル料を支払えないアカウントはネットワークから削除されます。アカウントに%2$@以上入金すると、無料で使用できます。";
 "warning_some_networks_unreachable_message" = "下にスワイプして更新するか、後でもう一度お試しください。";
 "warning_some_networks_unreachable_title" = "一部のネットワークにアクセスできません";
+"warning_some_token_balances_not_updated" = "一部のトークン残高を更新できませんでした";
 "warning_system_deprecation_title" = "システムアップデートが必要です";
 "warning_system_deprecation_with_date_message" = "お使いのバージョンのオペレーティングシステムのサポートは%@に終了します。今後アプリのアップデートを受け取るには、最新バージョンにアップデートする必要があります。";
 "warning_system_update_message" = "Tangemは、安定・安全な操作のために最新のiOSアップデートをインストールすることを推奨しています。";

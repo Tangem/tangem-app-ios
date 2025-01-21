@@ -55,6 +55,8 @@
 "balance_hidden_do_not_show_button" = "Nicht mehr anzeigen";
 "balance_hidden_got_it_button" = "Verstanden";
 "balance_hidden_title" = "Guthaben sind ausgeblendet";
+"beta_mode_warning_message" = "Laut den Blockchain-Entwicklern befinden sich der Kaspa-Token derzeit in der Betaphase. Bleibe dran für Updates!";
+"beta_mode_warning_title" = "Beta-Phase";
 "biometry_touch_id_reason" = "Touch ID wird zum Speichern deiner Karten oder Ringe in der App verwendet";
 "button_start_backup_process" = "Backup-Prozess starten";
 "buy_token_description" = "Verwende eine Bankkarte oder eine andere Zahlungsmethode";
@@ -83,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "Nicht genug ADA";
 "common_accept" = "Akzeptieren";
 "common_access_denied" = "Zugang verweigert";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Alle";
 "common_allow" = "Erlauben";
 "common_analytics" = "Analysen";
@@ -102,7 +106,7 @@
 "common_change" = "Ändern";
 "common_choose_action" = "Aktion wählen";
 "common_claim" = "Beanspruchen";
-"common_claim_rewards" = "Stakingbelohnungen beanstpruchen";
+"common_claim_rewards" = "Stakingbelohnungen beanspruchen";
 "common_close" = "Schließen";
 "common_confirm" = "Bestätigen";
 "common_continue" = "Weiter";
@@ -188,7 +192,7 @@
 "common_understand" = "Ich verstehe";
 "common_unknown_error" = "Es ist ein Fehler aufgetreten. Bitte versuche es erneut.";
 "common_unreachable" = "Nicht erreichbar";
-"common_unstake" = "staking beenden";
+"common_unstake" = "Staking beenden";
 "common_warning" = "Warnung";
 "common_week" = "woche";
 "common_with" = "mit";
@@ -331,6 +335,8 @@
 "give_permission_unlimited" = "Unbegrenzt";
 "home_button_order" = "Karte oder Ring bestellen";
 "home_button_scan" = "Karte oder Ring scannen";
+"hot_crypto_add_token_subtitle" = "An %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Diese Informationen wurden mithilfe von KI generiert.\nTippe hier, wenn Du Fehler finden.";
 "initial_message_change_access_code_body" = "Um den Zugangscode zu ändern, halte die Karte oder Ring wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
 "initial_message_change_passcode_body" = "Um den Passcode zu ändern, halte die Karte oder Ring wie oben gezeigt an das Gerät und entferne sie erst am Ende des Vorgangs.";
@@ -622,8 +628,6 @@
 "reset_card_without_backup_to_factory_message" = "Beim Zurücksetzen auf die Werkseinstellungen wird die Wallet der ausgewählten Karte oder Ring vollständig gelöscht und aus der App entfernt. Es ist nicht möglich, die aktuelle Wallet wiederherzustellen.";
 "ring_promo_text" = "Ringbesitzer erhalten bis zum 15.11. 3 provisionsfreie Swaps auf Changelly!";
 "ring_promo_title" = "Jetzt mit 0 %% Gebühren tauschen!";
-"russian_bank_card_warning_subtitle" = "Besitzt du eine Bankkarte aus einem anderen Land und eine Aufenthaltserlaubnis oder Registrierung außerhalb der Russischen Föderation?";
-"russian_bank_card_warning_title" = "Russische Bankkarten werden derzeit nicht akzeptiert";
 "save_user_wallet_agreement_access_description" = "Melde dich bei der App an und überprüfe dein Guthaben, ohne die Karte oder Ring zu scannen";
 "save_user_wallet_agreement_access_title" = "Zugriff auf die App";
 "save_user_wallet_agreement_allow" = "Verwendung von %@ zulassen";
@@ -775,7 +779,7 @@
 "staking_notification_stake_entire_balance_text" = "Du bist dabei, Dein gesamtes Guthaben zu staken. Wir empfehlen, einen kleinen Betrag übrig zu lassen, um die Netzwerkgebühren für die Aufhebung des Stakes oder das Einfordern von Prämien abzudecken.";
 "staking_notification_unlock_text" = "Entsperre dein Geld, um es aus dem Staking-Prozess abzuheben. Das Freischalten nimmt %@.";
 "staking_notification_unstake_cosmos_text" = "Nach Ablauf der 21-tägigen Bindungsfrist kannst Du über Dein Guthaben verfügen. Die Prämie wird zusammen mit dem ungestaketen Guthaben abgehoben.";
-"staking_notification_unstake_text" = "Deine Assets steht Dir nach Ablauf der Frist für die Aufhebung der Bindung %@ zur Verfügung.";
+"staking_notification_unstake_text" = "Deine Assets stehen Dir nach Ablauf der Frist für die Aufhebung der Bindung %@ zur Verfügung.";
 "staking_notification_withdraw_text" = "Du kannst Dein Guthaben jetzt abheben. Es steht Dir sofort zur Verfügung.";
 "staking_notifications_revote_tron_text" = "Wenn du im Tron-Netzwerk mit einem neuen Validator stakest, werden alle zuvor eingesetzten Assets automatisch an diesen Validator übertragen.";
 "staking_preparing" = "Vorbereitung";
@@ -808,7 +812,7 @@
 "staking_tap_to_unlock_or_vote" = "Tippe zum Entsperren oder Abstimmen";
 "staking_tap_to_withdraw" = "Zum abheben antippen";
 "staking_title_stake" = "Stake %@";
-"staking_title_unstake" = "Staking beenden%@";
+"staking_title_unstake" = "Staking beenden %@";
 "staking_transaction_in_progress_text" = "Die Transaktion wird bearbeitet! Derzeit findet eine Validierung in der Blockchain statt. Dies kann einige Minuten dauern.";
 "staking_unbonding" = "Lösen der Bindungen";
 "staking_unbonding_in" = "Entbindung in";
@@ -924,7 +928,7 @@
 "user_push_notification_agreement_argument_two" = "Sei der Erste, der von neuen Aktionen erfährt";
 "user_push_notification_agreement_header" = "Möchtest du Push-Benachrichtigungen verwenden?";
 "user_wallet_list_add_button" = "Neues Wallet hinzufügen";
-"user_wallet_list_delete_prompt" = "Möchtest du diese Wallet wirklich löschen?";
+"user_wallet_list_delete_prompt" = "Möchtest Du diese Wallet wirklich entfernen?";
 "user_wallet_list_error_wallet_already_saved" = "Dieses Wallet wurde bereits gespeichert, du kannst ein weiteres hinzufügen";
 "user_wallet_list_rename_popup_placeholder" = "Wallet-Name";
 "user_wallet_list_rename_popup_title" = "Wallet umbenennen";
@@ -932,7 +936,7 @@
 "voice_over_open_card_details" = "Gerätedetails öffnen";
 "voice_over_open_new_wallet_connect_session" = "QR-Code scannen, um eine neue WalletConnect Sitzung zu öffnen";
 "wallet_balance_missing_derivation" = "Karte oder Ring scannen";
-"wallet_been_activated_message" = "Diese Wallet wurde bereits früher aktiviert.\nWenn es nicht von Dir durchgeführt wurde, wende Dich bitte an den Support.\nTangem verkauft niemals Wallets zusammen mit dem vorgenerierten Zugangscode.";
+"wallet_been_activated_message" = "Dieses Wallet wurde bereits früher aktiviert. \n Wenn dies nicht von Dir durchgeführt wurde, wende Dich bitte an den Support. \n Tangem verkauft niemals Wallets zusammen mit vorgenerierten Zugangscodes.";
 "wallet_connect_alert_sign_message" = "Aufforderung zum Signieren einer Nachricht. \n\n %@";
 "wallet_connect_bnb_sign_message" = "Dapp %1$@, mit der Bitte um\nBNB-Transaktion zu unterzeichnen.\n\n%2$@";
 "wallet_connect_bnb_trade_order_message" = "Handelsauftrag für %1$@\n Preis: %2$@\n Zu erhaltender Betrag: %3$@\n Zu zahlender Betrag: %4$@";
@@ -1017,6 +1021,7 @@
 "warning_kaspa_unfinished_token_transaction_discard_message" = "Bist Du sicher, dass Du die Transaktion stornieren willst? Du kannst die Transaktion nicht erneut starten.";
 "warning_kaspa_unfinished_token_transaction_message" = "Deine Transaktion mit einem Betrag von %1$@ %2$@ wurde nicht abgeschlossen. Du kannst versuchen, diese erneut abzuschließen.";
 "warning_kaspa_unfinished_token_transaction_title" = "Du hast eine nicht abgeschlossene Transaktion";
+"warning_last_balance_updated_time" = "Letzte Aktualisierung war %@";
 "warning_long_transaction_message" = "iPhone 7/7+ kann in diesem Netzwerk keine Transaktionen signieren. Um diesen Vorgang abzuschließen, verwende bitte ein anderes Telefon.";
 "warning_long_transaction_title" = "Transaktionssignierung nicht verfügbar";
 "warning_low_signatures_message" = "Auf dieser Karte oder Ring sind nur noch %@ Unterschriften übrig. Du musst dein gesamtes Guthaben abheben.";
@@ -1040,11 +1045,16 @@
 "warning_rate_app_title" = "Gefällt dir Tangem?";
 "warning_receive_blocked_hedera_token_association_required_message" = "Du musst deinen Token zuordnen, bevor du Token erhalten kannst";
 "warning_rent_fee_title" = "Netzmietgebühr erforderlich";
+"warning_seedphrase_issue_answer_no" = "Vielen Dank! Alles erledigt! Keine weiteren Maßnahmen erforderlich.";
+"warning_seedphrase_issue_answer_yes" = "Sie werden jetzt auf die offizielle Tangem-Website weitergeleitet. Bitte lesen und befolgen Sie dort die Anweisungen.";
+"warning_seedphrase_issue_message" = "Hast Du das Tangem-Supportteam schon einmal direkt über diese Anwendung kontaktiert?";
+"warning_seedphrase_issue_title" = "Verpflichtendes Sicherheitsupdate";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ ist ein Vermögenswert im %2$@ Netzwerk. Um eine %3$@ Transaktion durchzuführen, musst du etwas %4$@ (%5$@) einzahlen, um die Netzwerkgebühr zu decken.";
 "warning_send_blocked_funds_for_fee_title" = "Unzureichende %1$@ zur Deckung der Netzgebühr";
 "warning_solana_rent_fee_message" = "Das Solana-Netzwerk erhebt alle 2 Tage eine Miete von %1$@. Konten, die sich die Miete nicht leisten können, werden aus dem Netzwerk gelöscht. Hinterlege deinem Konto mit mehr als %2$@, um es kostenlos zu nutzen.";
 "warning_some_networks_unreachable_message" = "Wischen Sie nach unten, um zu aktualisieren, oder versuchen Sie es später erneut.";
 "warning_some_networks_unreachable_title" = "Einige Netzwerke sind nicht erreichbar";
+"warning_some_token_balances_not_updated" = "Einige Token-Guthaben konnten nicht aktualisiert werden";
 "warning_system_deprecation_title" = "Systemupdate erforderlich";
 "warning_system_deprecation_with_date_message" = "Der Support für deine Betriebssystemversion endet am %@ . Um zukünftige App-Updates zu erhalten, musst du auf die neueste Version aktualisieren.";
 "warning_system_update_message" = "Tangem empfiehlt die Installation des neuesten iOS-Updates für einen stabilen und sicheren Betrieb";

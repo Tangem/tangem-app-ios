@@ -55,6 +55,8 @@
 "balance_hidden_do_not_show_button" = "Больше не показывать";
 "balance_hidden_got_it_button" = "Понятно";
 "balance_hidden_title" = "Балансы скрыты";
+"beta_mode_warning_message" = "Согласно информации от разработчиков сети, токены Kaspa находятся в режиме бета. Следите за обновлениями!";
+"beta_mode_warning_title" = "Бета режим";
 "biometry_touch_id_reason" = "Touch ID используется для сохранения карт и колец в приложении";
 "button_start_backup_process" = "Начать резервное копирование";
 "buy_token_description" = "Используйте банковскую карту или другие методы оплаты";
@@ -83,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "Недостаточно ADA";
 "common_accept" = "Принять";
 "common_access_denied" = "Доступ запрещен";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Все";
 "common_allow" = "Разрешить";
 "common_analytics" = "Аналитика";
@@ -215,7 +219,7 @@
 "custom_token_network_input_not_selected" = "Не выбрано";
 "custom_token_network_input_title" = "Сеть";
 "custom_token_network_selector_title" = "Сеть";
-"custom_token_subtitle" = "Вы можете добавить токен в ручную, если он не поддерживается Tangem";
+"custom_token_subtitle" = "Вы можете добавить токен вручную, если он не поддерживается Tangem";
 "custom_token_token_symbol_input_placeholder" = "Например, USDC";
 "custom_token_token_symbol_input_title" = "Символ";
 "custom_token_token_symbol_input_title_old" = "Символ токена";
@@ -331,6 +335,8 @@
 "give_permission_unlimited" = "Безлимитно";
 "home_button_order" = "Купить";
 "home_button_scan" = "Сканировать";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Эта информация была сгенерирована ИИ.\nНажмите здесь, если обнаружили ошибку.";
 "initial_message_change_access_code_body" = "Чтобы изменить код доступа, приложите карту или кольцо как показано выше и не убирайте до окончания операции";
 "initial_message_change_passcode_body" = "Чтобы изменить пароль, приложите карту как показано выше и не убирайте до окончания операции";
@@ -622,8 +628,6 @@
 "reset_card_without_backup_to_factory_message" = "Сброс к заводским настройкам приведет к полному удалению кошелька с выбранной карты или кольца. Вы не сможете восстановить текущий кошелек.";
 "ring_promo_text" = "Владельцам колец — 3 обмена без комиссии на Changelly до 15.11!";
 "ring_promo_title" = "Обмен с 0%% комиссией!";
-"russian_bank_card_warning_subtitle" = "У вас есть карта банка другой страны, а также вид на жительство или регистрация вне РФ?";
-"russian_bank_card_warning_title" = "Карты банков РФ в данный момент не принимаются";
 "save_user_wallet_agreement_access_description" = "Войдите в приложение и следите за своим балансом без сканирования карты или кольца";
 "save_user_wallet_agreement_access_title" = "Доступ в приложение";
 "save_user_wallet_agreement_allow" = "Использовать %@";
@@ -924,7 +928,7 @@
 "user_push_notification_agreement_argument_two" = "Узнавайте первым о новых акциях";
 "user_push_notification_agreement_header" = "Хотите использовать Push-уведомления?";
 "user_wallet_list_add_button" = "Добавить новый кошелек";
-"user_wallet_list_delete_prompt" = "Вы уверены, что хотите удалить этот кошелек?";
+"user_wallet_list_delete_prompt" = "Вы уверены, что хотите забыть этот кошелек?";
 "user_wallet_list_error_wallet_already_saved" = "Этот кошелек уже был сохранен, вы можете добавить другой";
 "user_wallet_list_rename_popup_placeholder" = "Имя кошелька";
 "user_wallet_list_rename_popup_title" = "Переименование кошелька";
@@ -1017,6 +1021,7 @@
 "warning_kaspa_unfinished_token_transaction_discard_message" = "Вы уверены что хотите отменить эту транзакцию? Вы не сможете отправить ее еще раз";
 "warning_kaspa_unfinished_token_transaction_message" = "Ваша транзакция %1$@ %2$@ не была завершена. Вы можете попробовать отправить ее еще раз.";
 "warning_kaspa_unfinished_token_transaction_title" = "У вас есть незавершенная транзакция";
+"warning_last_balance_updated_time" = "Last update was %@";
 "warning_long_transaction_message" = "iPhone 7/7+ не может подписывать транзакции в данной сети. Для завершения этой операции, пожалуйста, используйте другой телефон";
 "warning_long_transaction_title" = "Невозможно подписать транзакцию";
 "warning_low_signatures_message" = "На этой карте осталось всего %@ подписей. Вам следует вывести все ваши средства.";
@@ -1040,11 +1045,16 @@
 "warning_rate_app_title" = "Нравится Tangem?";
 "warning_receive_blocked_hedera_token_association_required_message" = "Вам необходимо провести ассоциацию токена для того, чтобы иметь возможность принимать его";
 "warning_rent_fee_title" = "Необходима плата за аренду сети";
+"warning_seedphrase_issue_answer_no" = "Спасибо! Всё в порядке! Дальнейшие действия не требуются.";
+"warning_seedphrase_issue_answer_yes" = "Вы будете перенаправлены на официальный сайт Tangem. Пожалуйста, прочитайте и выполните указанные там инструкции.";
+"warning_seedphrase_issue_message" = "Вы когда-либо обращались в службу поддержки Tangem напрямую из этого приложения?";
+"warning_seedphrase_issue_title" = "Обязательное обновление безопасности";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ - это монета в сети %2$@. Для совершения транзакции %3$@, вам необходимо внести немного %4$@ (%5$@), чтобы покрыть комиссию сети.";
 "warning_send_blocked_funds_for_fee_title" = "Недостаточно %1$@ для оплаты комиссии сети";
 "warning_solana_rent_fee_message" = "Сеть Solana взимает арендную плату в размере %1$@ каждые 2 дня. Аккаунты, которые не могут позволить себе арендную плату, удаляются из сети. Пополните свой счет более чем на %2$@, чтобы не платить арендную плату.";
 "warning_some_networks_unreachable_message" = "Свайпните вниз для обновления или попробуйте позже.";
 "warning_some_networks_unreachable_title" = "Некоторые сети недоступны";
+"warning_some_token_balances_not_updated" = "Some token balances could not updated";
 "warning_system_deprecation_title" = "Требуется обновление системы";
 "warning_system_deprecation_with_date_message" = "Поддержка вашей версии операционной системы завершится %@. Для получения последующих обновлений приложения, необходимо обновить ее до последней версии.";
 "warning_system_update_message" = "Tangem рекомендует установить последнее обновление iOS для стабильной и безопасной работы";
