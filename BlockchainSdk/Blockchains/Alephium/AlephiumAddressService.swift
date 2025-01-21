@@ -8,7 +8,6 @@
 
 import Foundation
 import TangemSdk
-import BitcoinCore
 
 struct AlephiumAddressService {}
 

@@ -11,15 +11,14 @@ import Foundation
 // TODO: - https://tangem.atlassian.net/browse/IOS-8988
 final class AlephiumTransactionBuilder {
     // MARK: - Private Properties
-    
+
     private var utxo: [AlephiumUTXO] = []
-    
+
     // MARK: - Public Implementation
-    
+
     func update(utxo: [AlephiumUTXO]) {
         self.utxo = utxo
     }
-    
+
     // MARK: - Private Implementation
-    
 }

@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "ADA insuficiente";
 "common_accept" = "Aceptar";
 "common_access_denied" = "Acceso denegado";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Todos";
 "common_allow" = "Autorizar";
 "common_analytics" = "Analítica";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "Ilimitado";
 "home_button_order" = "Pedir Tangem";
 "home_button_scan" = "Escanee";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Esta información fue generada con IA.\nPulse aquí si encuentra algún error.";
 "initial_message_change_access_code_body" = "Para cambiar el código de acceso coloque la tarjeta o el anillo como se muestra arriba y no lo retire hasta el fin de la operación";
 "initial_message_change_passcode_body" = "Toque para cambiar la contraseña";

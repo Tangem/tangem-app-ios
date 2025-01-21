@@ -14,7 +14,7 @@ enum AlephiumNetworkResponse {
         let balance: String
         let lockedBalance: String
     }
-    
+
     struct BuildTransferTxResult: Decodable {
         let unsignedTx: String
         let gasAmount: Int

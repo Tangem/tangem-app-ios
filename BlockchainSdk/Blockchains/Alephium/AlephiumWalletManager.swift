@@ -67,12 +67,11 @@ class AlephiumWalletManager: BaseManager, WalletManager {
     }
 
     // MARK: - Private Implementation
-    
+
     private func updateWallet(accountInfo: AlephiumAccountInfo) {
         wallet.add(coinValue: accountInfo.balance.value)
         transactionBuilder.update(utxo: accountInfo.utxo)
     }
-    
 }
 
 // MARK: - Constants

@@ -20,9 +20,9 @@ class AlephiumNetworkService: MultiNetworkProvider {
     init(providers: [AlephiumNetworkProvider]) {
         self.providers = providers
     }
-    
+
     // MARK: - Implementation
-    
+
     func getAccountInfo(for address: String) -> AnyPublisher<AlephiumAccountInfo, Error> {
         Publishers.Zip(
             getBalance(address: address),
@@ -34,7 +34,7 @@ class AlephiumNetworkService: MultiNetworkProvider {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func getFee(
         from publicKey: String,
         destination: String,
@@ -44,12 +44,12 @@ class AlephiumNetworkService: MultiNetworkProvider {
             address: destination,
             attoAlphAmount: amount
         )
-        
+
         let transfer = AlephiumNetworkRequest.BuildTransferTx(
             fromPublicKey: publicKey,
             destinations: [destination]
         )
-        
+
         return providerPublisher { provider in
             provider
                 .buildTransaction(transfer: transfer)
@@ -59,9 +59,9 @@ class AlephiumNetworkService: MultiNetworkProvider {
                 .eraseToAnyPublisher()
         }
     }
-    
+
     // MARK: - Private Implementations
-    
+
     private func getBalance(address: String) -> AnyPublisher<AlephiumBalanceInfo, Error> {
         providerPublisher { provider in
             provider
@@ -73,13 +73,13 @@ class AlephiumNetworkService: MultiNetworkProvider {
                     else {
                         throw WalletError.empty
                     }
-                    
+
                     return AlephiumBalanceInfo(value: balance, lockedValue: lockedBalance)
                 }
                 .eraseToAnyPublisher()
         }
     }
-    
+
     private func getUTXO(address: String) -> AnyPublisher<[AlephiumUTXO], Error> {
         providerPublisher { provider in
             provider

@@ -17,7 +17,7 @@ struct AlephiumWalletAssembly: WalletManagerAssembly {
                     networkConfig: input.networkConfig
                 )
             }
-        
+
         return AlephiumWalletManager(
             wallet: input.wallet,
             networkService: AlephiumNetworkService(providers: providers),
