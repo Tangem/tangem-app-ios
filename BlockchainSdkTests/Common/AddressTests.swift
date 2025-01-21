@@ -1627,4 +1627,16 @@ class AddressesTests: XCTestCase {
 
         XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
     }
+
+    func testAlephiumAddressValidation() throws {
+        let addressService = AlephiumAddressService()
+
+        XCTAssertTrue(addressService.validate("12ZGzgQEpgQCWQrD8eyNihFXBF7QPGbWzSnGQSSUES98E"))
+        XCTAssertTrue(addressService.validate("1HqAa1eHkqmXuSh7ECW6jF9ygZ2CMZYe1JthwcQ7NbgUe"))
+
+        XCTAssertFalse(addressService.validate("0x00"))
+        XCTAssertFalse(addressService.validate("0x0"))
+        XCTAssertFalse(addressService.validate("1HqAa1eHkqmXuSh7ECW6jF9ygZ2CMZYe1JthwcQ7NsKSmsak"))
+        XCTAssertFalse(addressService.validate("1HqAa1eHkqmXuSh7ECW6jF9ygZ2CMZYe1J"))
+    }
 }
