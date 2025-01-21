@@ -60,12 +60,10 @@ struct MarketsPortfolioTokenItemView: View {
                             .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                             .hidden(true)
                     } else {
-                        LoadableTextView(
+                        LoadableTokenBalanceView(
                             state: viewModel.balanceFiat,
-                            font: Fonts.Regular.subheadline,
-                            textColor: Colors.Text.primary1,
-                            loaderSize: .init(width: 40, height: 12),
-                            isSensitiveText: true
+                            style: .init(font: Fonts.Regular.subheadline, textColor: Colors.Text.primary1),
+                            loader: .init(size: .init(width: 40, height: 12))
                         )
                         .layoutPriority(3)
                     }
@@ -84,12 +82,10 @@ struct MarketsPortfolioTokenItemView: View {
                     Spacer(minLength: Constants.spacerLength)
 
                     if !viewModel.hasError {
-                        LoadableTextView(
+                        LoadableTokenBalanceView(
                             state: viewModel.balanceCrypto,
-                            font: Fonts.Regular.caption1,
-                            textColor: Colors.Text.tertiary,
-                            loaderSize: .init(width: 40, height: 12),
-                            isSensitiveText: true
+                            style: .init(font: Fonts.Regular.caption1, textColor: Colors.Text.tertiary),
+                            loader: .init(size: .init(width: 40, height: 12))
                         )
                         .layoutPriority(3)
                     }
