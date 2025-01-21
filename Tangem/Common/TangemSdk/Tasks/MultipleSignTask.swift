@@ -11,27 +11,39 @@ import BlockchainSdk
 import TangemFoundation
 
 class MultipleSignTask: CardSessionRunnable {
-    private let dataToSign: [Wallet.PublicKey.HDKey: Data]
+    private let dataToSign: [SignData]
     private let seedKey: Data
 
-    public init(dataToSign: [Wallet.PublicKey.HDKey: Data], seedKey: Data) {
+    public init(dataToSign: [SignData], seedKey: Data) {
         self.dataToSign = dataToSign
         self.seedKey = seedKey
     }
-    
+
     deinit {
         Log.debug("MultipleSignTask deinit")
     }
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<[Data]>) {
+
+    public func run(in session: CardSession, completion: @escaping CompletionResult<[MultipleSignTaskResponse]>) {
         let queue = OperationQueue.current?.underlyingQueue ?? .main
         TangemFoundation.runTask(in: self) { task in
-            let result: Result<[Data], TangemSdkError>
+            let result: Result<[MultipleSignTaskResponse], TangemSdkError>
             do {
-                let signed = try await task.dataToSign.asyncMap { hdKey, hash in
-                    try await task.runSign(hdKey: hdKey, hash: hash, session: session)
+                let signed = try await task.dataToSign.asyncMap { data in
+                    let signResponse = try await task.runSign(
+                        derivationPath: data.derivationPath,
+                        hash: data.hash,
+                        session: session
+                    )
+                    guard let signature = signResponse.signatures.first else {
+                        throw TangemSdkError.signHashesNotAvailable
+                    }
+                    return MultipleSignTaskResponse(
+                        signature: signature,
+                        card: signResponse.card,
+                        publicKey: data.publicKey
+                    )
                 }
-                result = .success(signed.flatMap { $0 })
+                result = .success(signed)
             } catch {
                 result = .failure(error.toTangemSdkError())
             }
@@ -40,24 +52,42 @@ class MultipleSignTask: CardSessionRunnable {
             }
         }
     }
-    
-    private func runSign(hdKey: Wallet.PublicKey.HDKey, hash: Data, session: CardSession) async throws -> [Data] {
+
+    private func runSign(
+        derivationPath: DerivationPath,
+        hash: Data,
+        session: CardSession
+    ) async throws -> SignAndReadTask.SignAndReadTaskResponse {
         let signCommand = SignAndReadTask(
             hashes: [hash],
             walletPublicKey: seedKey,
             pairWalletPublicKey: nil,
-            derivationPath: hdKey.path
+            derivationPath: derivationPath
         )
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             signCommand.run(in: session) { result in
                 switch result {
                 case .success(let hashes):
-                    continuation.resume(returning: hashes.signatures)
+                    continuation.resume(returning: hashes)
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }
             }
         }
+    }
+}
+
+public struct SignData {
+    public let derivationPath: DerivationPath
+    public let hash: Data
+    public let publicKey: Data
+}
+
+extension MultipleSignTask {
+    struct MultipleSignTaskResponse {
+        let signature: Data
+        let card: Card
+        let publicKey: Data
     }
 }

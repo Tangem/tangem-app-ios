@@ -19,8 +19,29 @@ protocol StakeKitTransactionSenderProvider {
     associatedtype RawTransaction
 
     func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data
-    func prepareDataForSend(transaction: StakeKitTransaction, signatures: [SignatureInfo]) throws -> RawTransaction
+    func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String
+    func buildRawTransactions(
+        from transactions: [StakeKitTransaction],
+        signer: TransactionSigner
+    ) async throws -> [RawTransaction]
+}
+
+extension StakeKitTransactionSenderProvider {
+//    func prepareDataForSend(transaction: StakeKitTransaction, signatures: [SignatureInfo]) throws -> RawTransaction {
+//        guard let signature = signatures.first else { throw WalletError.empty }
+//        return try prepareDataForSend(transaction: transaction, signature: signature)
+//    }
+}
+
+protocol StakeKitMultiSignatureTransactionSenderProvider: StakeKitTransactionSenderProvider {
+    func prepareDataForSend(transaction: StakeKitTransaction, signatures: [SignatureInfo]) throws -> RawTransaction
+}
+
+extension StakeKitMultiSignatureTransactionSenderProvider {
+    func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction {
+        try prepareDataForSend(transaction: transaction, signatures: [signature])
+    }
 }
 
 // MARK: - Common implementation for StakeKitTransactionSenderProvider
@@ -35,13 +56,10 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                 }
 
                 do {
-                    let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
-                    let signatures: [SignatureInfo] = try await signer.sign(hashes: preparedHashes, walletPublicKey: wallet.publicKey).async()
+                    let rawTransactions = try await buildRawTransactions(from: transactions, signer: signer)
 
-                    for (transaction, signature) in zip(transactions, signatures) {
+                    for (transaction, rawTransaction) in zip(transactions, rawTransactions) {
                         try Task.checkCancellation()
-                        let rawTransaction = try prepareDataForSend(transaction: transaction, signatures: [signature])
-
                         do {
                             let result: TransactionSendResult = try await broadcast(transaction: transaction, rawTransaction: rawTransaction)
                             try Task.checkCancellation()
@@ -92,5 +110,20 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
     @MainActor
     private func addPendingTransaction(_ record: PendingTransactionRecord) {
         wallet.addPendingTransaction(record)
+    }
+
+    func buildRawTransactions(
+        from transactions: [StakeKitTransaction],
+        signer: TransactionSigner
+    ) async throws -> [RawTransaction] {
+        let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
+        let signatures: [SignatureInfo] = try await signer.sign(
+            hashes: preparedHashes,
+            walletPublicKey: wallet.publicKey
+        ).async()
+
+        return try zip(transactions, signatures).map { transaction, signature in
+            try prepareDataForSend(transaction: transaction, signature: signature)
+        }
     }
 }

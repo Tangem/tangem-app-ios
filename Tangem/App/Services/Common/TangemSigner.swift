@@ -52,16 +52,21 @@ struct TangemSigner: TransactionSigner {
         }
         .eraseToAnyPublisher()
     }
-    
-    func sign(dataToSign: [Wallet.PublicKey.HDKey: Data], seedKey: Data) -> AnyPublisher<[Data], Error> {
-        Future<[Data], Error> { promise in
+
+    func sign(
+        dataToSign: [MultipleSignTask.SignData],
+        seedKey: Data
+    ) -> AnyPublisher<[(Data, Data)], Error> {
+        Future<[(Data, Data)], Error> { promise in
             let signCommand = MultipleSignTask(dataToSign: dataToSign, seedKey: seedKey)
 
             sdk.startSession(with: signCommand, filter: filter, initialMessage: initialMessage) { signResult in
                 switch signResult {
                 case .success(let response):
-                    latestSigner.send(response.card)
-                    promise(.success(response.signatures))
+                    if let lastResponse = response.last {
+                        latestSigner.send(lastResponse.card)
+                    }
+                    promise(.success(response.map { ($0.publicKey, $0.signature) }))
                 case .failure(let error):
                     promise(.failure(error))
                 }

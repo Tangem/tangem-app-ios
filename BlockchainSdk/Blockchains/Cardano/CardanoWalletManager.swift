@@ -251,11 +251,51 @@ extension CardanoWalletManager: StakeKitTransactionSender, StakeKitTransactionSe
     func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction {
         try CardanoStakeKitTransactionHelper(
             transactionBuilder: transactionBuilder
-        ).prepareForSend(transaction, signature: signature)
+        ).prepareForSend(transaction, signatures: [signature])
     }
 
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String {
         let hex = rawTransaction.hexString
         return try await networkService.send(transaction: rawTransaction).async()
+    }
+
+    func buildRawTransactions(
+        from transactions: [StakeKitTransaction],
+        signer: any TransactionSigner
+    ) async throws -> [Data] {
+        var dataToSign = [DerivationPath: (Data, Data)]()
+
+        let firstDerivationPath: DerivationPath
+        let secondDerivationPath: DerivationPath
+
+        let firstPublicKey = wallet.publicKey.blockchainKey
+        let secondPublicKey: Data
+
+        switch wallet.publicKey.derivationType {
+        case .double(let first, let second):
+            firstDerivationPath = first.path
+            secondDerivationPath = second.path
+
+            secondPublicKey = second.extendedPublicKey.publicKey
+
+        default: fatalError()
+        }
+
+        for transaction in transactions {
+            let hashToSign = try prepareDataForSign(transaction: transaction)
+            dataToSign[firstDerivationPath] = (hashToSign, firstPublicKey)
+            dataToSign[secondDerivationPath] = (hashToSign, secondPublicKey)
+        }
+
+        let signatures: [SignatureInfo] = try await signer.sign(
+            dataToSign: dataToSign,
+            seedKey: wallet.publicKey.seedKey
+        ).async()
+        
+        let stakeKitTransactionHelper = CardanoStakeKitTransactionHelper(transactionBuilder: transactionBuilder)
+
+        return try zip(transactions, signatures).map { transaction, signature in
+            try stakeKitTransactionHelper.prepareForSend(transaction, signatures: signatures)
+        }
     }
 }
