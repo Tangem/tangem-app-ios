@@ -2287,6 +2287,7 @@
 		DC5118692860B3E1004FB954 /* PreviewCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5118682860B3E1004FB954 /* PreviewCard.swift */; };
 		DC51187A2860B704004FB954 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5118792860B704004FB954 /* AppCoordinator.swift */; };
 		DC51187C2860B728004FB954 /* AppCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC51187B2860B728004FB954 /* AppCoordinatorView.swift */; };
+		DC57CE6E2D3F930D00EBECD3 /* ActionButtonsTokenSelectItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC57CE6D2D3F930D00EBECD3 /* ActionButtonsTokenSelectItemViewModel.swift */; };
 		DC592B872C41961D005AB9A7 /* StakeKitDTO+SubmitHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC592B862C41961D005AB9A7 /* StakeKitDTO+SubmitHash.swift */; };
 		DC592B8A2C419F50005AB9A7 /* StakingPendingHashesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC592B892C419F50005AB9A7 /* StakingPendingHashesRepository.swift */; };
 		DC592B8C2C41A0EB005AB9A7 /* StakingPendingHashesSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC592B8B2C41A0EB005AB9A7 /* StakingPendingHashesSender.swift */; };
@@ -5456,6 +5457,7 @@
 		DC5118682860B3E1004FB954 /* PreviewCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCard.swift; sourceTree = "<group>"; };
 		DC5118792860B704004FB954 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		DC51187B2860B728004FB954 /* AppCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinatorView.swift; sourceTree = "<group>"; };
+		DC57CE6D2D3F930D00EBECD3 /* ActionButtonsTokenSelectItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonsTokenSelectItemViewModel.swift; sourceTree = "<group>"; };
 		DC592B862C41961D005AB9A7 /* StakeKitDTO+SubmitHash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StakeKitDTO+SubmitHash.swift"; sourceTree = "<group>"; };
 		DC592B892C419F50005AB9A7 /* StakingPendingHashesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingPendingHashesRepository.swift; sourceTree = "<group>"; };
 		DC592B8B2C41A0EB005AB9A7 /* StakingPendingHashesSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingPendingHashesSender.swift; sourceTree = "<group>"; };
@@ -13097,7 +13099,6 @@
 		DC283AB22CCA60760043F7D2 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				DC2891742CD4BE0300F57F59 /* ActionButtonsTokenSelectItemView.swift */,
 				DCBE4CED2CC8C8E800855904 /* ActionButtonsView.swift */,
 			);
 			path = View;
@@ -13376,6 +13377,31 @@
 				DC5118682860B3E1004FB954 /* PreviewCard.swift */,
 			);
 			path = Preview;
+			sourceTree = "<group>";
+		};
+		DC57CE6A2D3F92FE00EBECD3 /* TokenSelectItem */ = {
+			isa = PBXGroup;
+			children = (
+				DC57CE6C2D3F930900EBECD3 /* ViewModel */,
+				DC57CE6B2D3F930600EBECD3 /* View */,
+			);
+			path = TokenSelectItem;
+			sourceTree = "<group>";
+		};
+		DC57CE6B2D3F930600EBECD3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DC2891742CD4BE0300F57F59 /* ActionButtonsTokenSelectItemView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DC57CE6C2D3F930900EBECD3 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DC57CE6D2D3F930D00EBECD3 /* ActionButtonsTokenSelectItemViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		DC592B882C419EA9005AB9A7 /* StakingPendingHashes */ = {
@@ -13720,6 +13746,7 @@
 		DCBE4CEC2CC8C8D800855904 /* ActionButtons */ = {
 			isa = PBXGroup;
 			children = (
+				DC57CE6A2D3F92FE00EBECD3 /* TokenSelectItem */,
 				DC2158712D0308AB007720F8 /* Service */,
 				DC2891A52CDAE90200F57F59 /* BuyButton */,
 				DCE2F7CB2CE34A4700BDE145 /* SellButton */,
@@ -17512,6 +17539,7 @@
 				DC6D99FE2BAA2481001F620A /* NDEFURLParser.swift in Sources */,
 				B0E7489C2A3C130B0015E3FC /* ReceiveBottomSheetView.swift in Sources */,
 				B00371C22A8A5F8800D77A4B /* FakeDerivationManager.swift in Sources */,
+				DC57CE6E2D3F930D00EBECD3 /* ActionButtonsTokenSelectItemViewModel.swift in Sources */,
 				EFD32AEB29EE7F390026353E /* Feature.swift in Sources */,
 				DC9A4A2D2AB4ADD30031C7C2 /* UserCodeRecovering.swift in Sources */,
 				5D78D11D261E084700F98B18 /* CreateMultiWalletTask.swift in Sources */,

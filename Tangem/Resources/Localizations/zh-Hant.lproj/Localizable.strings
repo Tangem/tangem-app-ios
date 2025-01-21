@@ -628,6 +628,8 @@
 "reset_card_without_backup_to_factory_message" = "恢復原廠設置將從所選卡中完全刪除錢包並將其從應用程序中刪除。您將無法恢復當前錢包";
 "ring_promo_text" = "Ring owners get 3 commission-free swaps on Changelly until 15.11!";
 "ring_promo_title" = "Swap With 0%% Fees Now!";
+"russian_bank_card_warning_subtitle" = "Do you have a bank card from another country and a residence permit or registration outside the Russian Federation?";
+"russian_bank_card_warning_title" = "目前不接受俄羅斯銀行卡";
 "save_user_wallet_agreement_access_description" = "登錄應用程序並在不掃描卡片的情況下檢查您的資產";
 "save_user_wallet_agreement_access_title" = "訪問應用程序";
 "save_user_wallet_agreement_allow" = "允許使用 %@";

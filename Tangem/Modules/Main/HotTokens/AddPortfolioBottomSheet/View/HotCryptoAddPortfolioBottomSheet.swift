@@ -12,10 +12,10 @@ import SwiftUI
 struct HotCryptoAddPortfolioBottomSheet: View {
     let info: HotCryptoAddToPortfolioModel
     let action: () -> Void
-    
+
     private var tokenNetwork: String {
         let blockchain = Blockchain.allMainnetCases.first { $0.networkId == info.token.networkId }
-        
+
         return blockchain?.displayName ?? ""
     }
 

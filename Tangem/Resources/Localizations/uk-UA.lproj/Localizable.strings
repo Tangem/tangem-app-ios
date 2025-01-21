@@ -628,6 +628,8 @@
 "reset_card_without_backup_to_factory_message" = "Скидання до заводських налаштувань призведе до повного видалення гаманця з обраної картки або кільця. Ви не зможете відновити поточний гаманець.";
 "ring_promo_text" = "Власникам кілець - 3 обміни без комісії на Changelly до 15.11!";
 "ring_promo_title" = "Обмін з 0%% комісією!";
+"russian_bank_card_warning_subtitle" = "У вас є банківська картка іншої країни та посвідка на проживання або реєстрація за межами Російської Федерації?";
+"russian_bank_card_warning_title" = "Російські банківські картки наразі не приймаються";
 "save_user_wallet_agreement_access_description" = "Увійдіть у додаток та слідкуйте за своїм балансом без сканування картки чи кільця";
 "save_user_wallet_agreement_access_title" = "Доступ до додатку";
 "save_user_wallet_agreement_allow" = "Використовувати %@";
