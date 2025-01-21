@@ -628,6 +628,8 @@
 "reset_card_without_backup_to_factory_message" = "La réinitialisation aux paramètres d'usine supprimera complètement le portefeuille de la carte sélectionnée et le supprimera de l'application. Vous ne pourrez pas restaurer le portefeuille actuel.";
 "ring_promo_text" = "Les propriétaires du Tangem Ring ont droit à 3 swap gratis sur Changelly jusqu'au 15/11 !";
 "ring_promo_title" = "Échangez avec 0 %% de frais !";
+"russian_bank_card_warning_subtitle" = "Avez-vous une carte bancaire d'un autre pays et un permis de séjour ou une inscription en dehors de la Fédération de Russie ?";
+"russian_bank_card_warning_title" = "Les cartes bancaires russes ne sont actuellement pas acceptées";
 "save_user_wallet_agreement_access_description" = "Connectez-vous à l'application et vérifiez votre solde sans scanner la carte";
 "save_user_wallet_agreement_access_title" = "Accéder à l'application";
 "save_user_wallet_agreement_allow" = "Autoriser l'utilisation de %@";

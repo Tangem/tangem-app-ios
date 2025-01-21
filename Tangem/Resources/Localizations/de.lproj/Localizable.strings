@@ -628,6 +628,8 @@
 "reset_card_without_backup_to_factory_message" = "Beim Zurücksetzen auf die Werkseinstellungen wird die Wallet der ausgewählten Karte oder Ring vollständig gelöscht und aus der App entfernt. Es ist nicht möglich, die aktuelle Wallet wiederherzustellen.";
 "ring_promo_text" = "Ringbesitzer erhalten bis zum 15.11. 3 provisionsfreie Swaps auf Changelly!";
 "ring_promo_title" = "Jetzt mit 0 %% Gebühren tauschen!";
+"russian_bank_card_warning_subtitle" = "Besitzt du eine Bankkarte aus einem anderen Land und eine Aufenthaltserlaubnis oder Registrierung außerhalb der Russischen Föderation?";
+"russian_bank_card_warning_title" = "Russische Bankkarten werden derzeit nicht akzeptiert";
 "save_user_wallet_agreement_access_description" = "Melde dich bei der App an und überprüfe dein Guthaben, ohne die Karte oder Ring zu scannen";
 "save_user_wallet_agreement_access_title" = "Zugriff auf die App";
 "save_user_wallet_agreement_allow" = "Verwendung von %@ zulassen";
