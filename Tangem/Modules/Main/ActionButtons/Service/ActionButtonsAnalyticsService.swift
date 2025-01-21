@@ -54,11 +54,11 @@ enum ActionButtonsAnalyticsService {
     static func removeButtonClicked(tokenSymbol: String) {
         Analytics.log(event: .actionButtonsRemoveButtonClicked, params: [.token: tokenSymbol])
     }
-    
+
     static func hotTokenClicked(tokenSymbol: String) {
         Analytics.log(event: .actionButtonsHotTokenClicked, params: [.token: tokenSymbol])
     }
-    
+
     static func hotTokenError(errorCode: String) {
         Analytics.log(event: .actionButtonsHotTokenError, params: [.errorCode: errorCode])
     }

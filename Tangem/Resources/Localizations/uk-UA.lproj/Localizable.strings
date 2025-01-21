@@ -55,6 +55,8 @@
 "balance_hidden_do_not_show_button" = "Більше не показувати";
 "balance_hidden_got_it_button" = "Зрозуміло";
 "balance_hidden_title" = "Баланси приховані";
+"beta_mode_warning_message" = "According to the blockchain developers, Kaspa tokens are currently in beta. Stay tuned for updates!";
+"beta_mode_warning_title" = "Beta Mode";
 "biometry_touch_id_reason" = "Touch ID використовується для збереження ваших карток та кілець у додатку";
 "button_start_backup_process" = "Почніть процес резервного копіювання";
 "buy_token_description" = "Використовуйте банківську картку або інші способи оплати";
@@ -83,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "Недостатньо ADA";
 "common_accept" = "Прийняти";
 "common_access_denied" = "Доступ заборонено";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Усе";
 "common_allow" = "Дозволити";
 "common_analytics" = "Аналітика";
@@ -331,6 +335,8 @@
 "give_permission_unlimited" = "Необмежено";
 "home_button_order" = "Купити";
 "home_button_scan" = "Сканувати";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Ця інформація була створена за допомогою ШІ.\nНатисніть тут, якщо знайшли помилку.";
 "initial_message_change_access_code_body" = "Щоб змінити код доступу, прикладіть картку або кільце, як показано вище, і не прибирайте її до закінчення операції";
 "initial_message_change_passcode_body" = "Щоб змінити пароль, прикладіть картку, як показано вище, і не прибирайте її до закінчення операції";
@@ -622,8 +628,6 @@
 "reset_card_without_backup_to_factory_message" = "Скидання до заводських налаштувань призведе до повного видалення гаманця з обраної картки або кільця. Ви не зможете відновити поточний гаманець.";
 "ring_promo_text" = "Власникам кілець - 3 обміни без комісії на Changelly до 15.11!";
 "ring_promo_title" = "Обмін з 0%% комісією!";
-"russian_bank_card_warning_subtitle" = "У вас є банківська картка іншої країни та посвідка на проживання або реєстрація за межами Російської Федерації?";
-"russian_bank_card_warning_title" = "Російські банківські картки наразі не приймаються";
 "save_user_wallet_agreement_access_description" = "Увійдіть у додаток та слідкуйте за своїм балансом без сканування картки чи кільця";
 "save_user_wallet_agreement_access_title" = "Доступ до додатку";
 "save_user_wallet_agreement_allow" = "Використовувати %@";
@@ -1017,6 +1021,7 @@
 "warning_kaspa_unfinished_token_transaction_discard_message" = "Ви впевнені, що хочете скасувати цю транзакцію? Ви не зможете відправити її ще раз";
 "warning_kaspa_unfinished_token_transaction_message" = "Ваша транзакція %1$@ %2$@ не була завершена. Ви можете спробувати відправити її ще раз.";
 "warning_kaspa_unfinished_token_transaction_title" = "У вас є незавершена транзакція";
+"warning_last_balance_updated_time" = "Last update was %@";
 "warning_long_transaction_message" = "iPhone 7/7+ не може підписувати транзакції в цій мережі. Щоб виконати цю операцію, скористайтеся, будь ласка, іншим телефоном";
 "warning_long_transaction_title" = "Підписання транзакції недоступне";
 "warning_low_signatures_message" = "На цій картці залишається лише %@ підписів. Ви повинні вивести всі свої кошти.";
@@ -1040,11 +1045,16 @@
 "warning_rate_app_title" = "Подобається Tangem?";
 "warning_receive_blocked_hedera_token_association_required_message" = "Вам необхідно провести асоціацію токена, щоб мати можливість приймати його";
 "warning_rent_fee_title" = "Необхідна плата за оренду мережі";
+"warning_seedphrase_issue_answer_no" = "Дякуємо! Все добре! Подальших дій не потрібно.";
+"warning_seedphrase_issue_answer_yes" = "Ви будете перенаправлені на офіційний сайт Tangem. Будь ласка, прочитайте та виконайте вказані там інструкції.";
+"warning_seedphrase_issue_message" = "Ви коли-небудь зверталися до служби підтримки Tangem безпосередньо з цього додатку?";
+"warning_seedphrase_issue_title" = "Обов’язкове оновлення безпеки";
 "warning_send_blocked_funds_for_fee_message" = "%1$@ є активом у мережі %2$@. Щоб здійснити транзакцію %3$@, ви повинні внести певну суму %4$@ (%5$@), щоб покрити комісію мережі.";
 "warning_send_blocked_funds_for_fee_title" = "Недостатньо %1$@ для покриття комісії мережі";
 "warning_solana_rent_fee_message" = "Мережа Solana стягує орендну плату у розмірі %1$@ кожні 2 дні. Акаунти, які не можуть дозволити собі орендну плату, видаляються з мережі. Поповніть свій рахунок на суму понад %2$@, щоб не платити орендну плату.";
 "warning_some_networks_unreachable_message" = "Проведіть пальцем вниз для оновлення або спробуйте пізніше.";
 "warning_some_networks_unreachable_title" = "Деякі мережі недоступні";
+"warning_some_token_balances_not_updated" = "Some token balances could not updated";
 "warning_system_deprecation_title" = "Потрібне оновлення системи";
 "warning_system_deprecation_with_date_message" = "Підтримка вашої версії операційної системи буде припинена %@. Щоб отримувати майбутні оновлення програми, ви повинні оновити її до останньої версії.";
 "warning_system_update_message" = "Tangem рекомендує встановити останнє оновлення iOS для стабільної та безпечної роботи";

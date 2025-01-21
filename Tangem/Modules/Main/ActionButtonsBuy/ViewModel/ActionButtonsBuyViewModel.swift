@@ -12,27 +12,27 @@ import Foundation
 
 final class ActionButtonsBuyViewModel: ObservableObject {
     // MARK: - Dependencies
-    
+
     @Injected(\.exchangeService)
     private var exchangeService: ExchangeService
-    
+
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
-    
+
     // MARK: - Published properties
-    
+
     @Published var alert: AlertBinder?
     @Published private(set) var hotCryptoItems: [HotCryptoDataItem] = []
-    
+
     // MARK: - Child viewModel
-    
+
     let tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel
-    
+
     // MARK: - Private property
-    
+
     private weak var coordinator: ActionButtonsBuyRoutable?
     private var bag = Set<AnyCancellable>()
-    
+
     private var disabledLocalizedReason: String? {
         guard
             !FeatureProvider.isAvailable(.onramp),
@@ -40,13 +40,13 @@ final class ActionButtonsBuyViewModel: ObservableObject {
         else {
             return nil
         }
-        
+
         return reason
     }
-    
+
     private let hotCryptoItemsSubject: CurrentValueSubject<[HotCryptoDataItem], Never>
     private let userWalletModel: UserWalletModel
-    
+
     init(
         tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel,
         coordinator: some ActionButtonsBuyRoutable,
@@ -57,10 +57,10 @@ final class ActionButtonsBuyViewModel: ObservableObject {
         self.coordinator = coordinator
         self.hotCryptoItemsSubject = hotCryptoItemsSubject
         self.userWalletModel = userWalletModel
-        
+
         bind()
     }
-    
+
     func handleViewAction(_ action: Action) {
         switch action {
         case .onAppear:
@@ -76,15 +76,15 @@ final class ActionButtonsBuyViewModel: ObservableObject {
             addTokenToPortfolio(token)
         }
     }
-    
+
     private func handleTokenTap(_ token: ActionButtonsTokenSelectorItem) {
         if let disabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
-        
+
         ActionButtonsAnalyticsService.trackTokenClicked(.buy, tokenSymbol: token.infoProvider.tokenItem.currencySymbol)
-        
+
         openBuy(for: token.walletModel)
     }
 }
@@ -102,7 +102,7 @@ extension ActionButtonsBuyViewModel {
                 viewModel.updateHotTokens(viewModel.hotCryptoItems)
             }
             .store(in: &bag)
-        
+
         hotCryptoItemsSubject
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
@@ -120,15 +120,15 @@ extension ActionButtonsBuyViewModel {
         let walletModelNetworkIds = userWalletModel.walletModelsManager.walletModels.map(\.blockchainNetwork.blockchain.networkId)
         hotCryptoItems = hotTokens.filter { !walletModelNetworkIds.contains($0.networkId) }
     }
-    
+
     func addTokenToPortfolio(_ token: HotCryptoDataItem) {
         if let disabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
         }
-        
+
         let tokenItemMapper = TokenItemMapper(supportedBlockchains: Blockchain.allMainnetCases.toSet())
-        
+
         guard
             let mappedToken = tokenItemMapper.mapToTokenItem(
                 id: token.id,
@@ -143,18 +143,17 @@ extension ActionButtonsBuyViewModel {
         else {
             return
         }
-        
-        
+
         userWalletModel.userTokensManager.add(mappedToken) { [weak self] result in
             guard let self, result.error == nil else { return }
-            
+
             handleTokenAdding(tokenItem: mappedToken)
         }
     }
-    
+
     private func handleTokenAdding(tokenItem: TokenItem) {
         let walletModels = userWalletModel.walletModelsManager.walletModels
-        
+
         guard
             let walletModel = walletModels.first(where: { tokenItem.id == $0.tokenItem.id }),
             canBuy(walletModel)
@@ -162,11 +161,11 @@ extension ActionButtonsBuyViewModel {
             coordinator?.closeAddToPortfolio()
             return
         }
-        
+
         ActionButtonsAnalyticsService.hotTokenClicked(tokenSymbol: walletModel.tokenItem.currencySymbol)
-        
+
         coordinator?.closeAddToPortfolio()
-        
+
         openBuy(for: walletModel)
     }
 }
@@ -181,7 +180,7 @@ private extension ActionButtonsBuyViewModel {
             coordinator?.openBuyCrypto(at: buyUrl)
         }
     }
-    
+
     func canBuy(_ walletModel: WalletModel) -> Bool {
         let canOnramp = FeatureProvider.isAvailable(.onramp) && expressAvailabilityProvider.canOnramp(tokenItem: walletModel.tokenItem)
         let canBuy = !FeatureProvider.isAvailable(.onramp) && exchangeService.canBuy(
@@ -189,10 +188,10 @@ private extension ActionButtonsBuyViewModel {
             amountType: walletModel.amountType,
             blockchain: walletModel.blockchainNetwork.blockchain
         )
-        
+
         return canOnramp || canBuy
     }
-    
+
     func makeBuyUrl(from walletModel: WalletModel) -> URL? {
         let buyUrl = exchangeService.getBuyUrl(
             currencySymbol: walletModel.tokenItem.currencySymbol,
@@ -200,7 +199,7 @@ private extension ActionButtonsBuyViewModel {
             blockchain: walletModel.blockchainNetwork.blockchain,
             walletAddress: walletModel.defaultAddress
         )
-        
+
         return buyUrl
     }
 }
