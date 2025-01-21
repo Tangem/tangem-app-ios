@@ -27,41 +27,34 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
 
     private var safariHandle: SafariHandle?
 
-    private let expressTokensListAdapter: ExpressTokensListAdapter
-    private let tokenSorter: TokenAvailabilitySorter
-    private let hotCryptoItemsSubject: CurrentValueSubject<[HotCryptoDataItem], Never>
-    private let userWalletModel: UserWalletModel
-
     required init(
-        expressTokensListAdapter: some ExpressTokensListAdapter,
-        tokenSorter: some TokenAvailabilitySorter = CommonBuyTokenAvailabilitySorter(),
         dismissAction: @escaping Action<Void>,
-        hotCryptoItemsSubject: CurrentValueSubject<[HotCryptoDataItem], Never>,
-        userWalletModel: some UserWalletModel,
         popToRootAction: @escaping Action<PopToRootOptions> = { _ in }
     ) {
-        self.expressTokensListAdapter = expressTokensListAdapter
-        self.tokenSorter = tokenSorter
         self.dismissAction = dismissAction
-        self.hotCryptoItemsSubject = hotCryptoItemsSubject
-        self.userWalletModel = userWalletModel
         self.popToRootAction = popToRootAction
     }
 
     func start(with options: Options) {
-        actionButtonsBuyViewModel = ActionButtonsBuyViewModel(
-            tokenSelectorViewModel: makeTokenSelectorViewModel(),
-            coordinator: self,
-            hotCryptoItemsSubject: hotCryptoItemsSubject,
-            userWalletModel: userWalletModel
-        )
+        switch options {
+        case .default(let options):
+            actionButtonsBuyViewModel = ActionButtonsBuyViewModel(
+                tokenSelectorViewModel: makeTokenSelectorViewModel(
+                    expressTokensListAdapter: options.expressTokensListAdapter,
+                    tokenSorter: options.tokenSorter
+                ),
+                coordinator: self,
+                hotCryptoItemsPublisher: options.hotCryptoItemsPublisher,
+                userWalletModel: options.userWalletModel
+            )
+        }
     }
 }
 
 // MARK: - ActionButtonsBuyRoutable
 
 extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
-    func openOnramp(walletModel: WalletModel) {
+    func openOnramp(walletModel: WalletModel, userWalletModel: UserWalletModel) {
         let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?> = { [weak self] _ in
             self?.dismiss()
         }
@@ -97,14 +90,21 @@ extension ActionButtonsBuyCoordinator: ActionButtonsBuyRoutable {
 
 extension ActionButtonsBuyCoordinator {
     enum Options {
-        case `default`
+        case `default`(options: DefaultActionButtonBuyCoordinatorOptions)
+
+        struct DefaultActionButtonBuyCoordinatorOptions {
+            let userWalletModel: UserWalletModel
+            let hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>
+            let expressTokensListAdapter: ExpressTokensListAdapter
+            let tokenSorter: TokenAvailabilitySorter
+        }
     }
 }
 
 // MARK: - Factory method
 
 private extension ActionButtonsBuyCoordinator {
-    func makeTokenSelectorViewModel() -> ActionButtonsTokenSelectorViewModel {
+    func makeTokenSelectorViewModel(expressTokensListAdapter: some ExpressTokensListAdapter, tokenSorter: TokenAvailabilitySorter) -> ActionButtonsTokenSelectorViewModel {
         TokenSelectorViewModel(
             tokenSelectorItemBuilder: ActionButtonsTokenSelectorItemBuilder(),
             strings: BuyTokenSelectorStrings(),

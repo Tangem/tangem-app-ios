@@ -26,9 +26,10 @@ final class ActionButtonsViewModel: ObservableObject {
 
     // MARK: Button ViewModels
 
-    let buyActionButtonViewModel: BuyActionButtonViewModel
     let sellActionButtonViewModel: SellActionButtonViewModel
     let swapActionButtonViewModel: SwapActionButtonViewModel
+
+    private(set) var buyActionButtonViewModel: BuyActionButtonViewModel?
 
     // MARK: Private properties
 
@@ -39,6 +40,7 @@ final class ActionButtonsViewModel: ObservableObject {
     private var lastSellInitializeState: ExchangeServiceState?
     private var lastBuyInitializeState: ExchangeServiceState?
     private var hotCryptoItemsSubject = CurrentValueSubject<[HotCryptoDataItem], Never>([])
+
     private var isHotTokensNotLoaded = true
 
     private let expressTokensListAdapter: ExpressTokensListAdapter
@@ -51,14 +53,6 @@ final class ActionButtonsViewModel: ObservableObject {
     ) {
         self.expressTokensListAdapter = expressTokensListAdapter
         self.userWalletModel = userWalletModel
-
-        buyActionButtonViewModel = BuyActionButtonViewModel(
-            model: .buy,
-            coordinator: coordinator,
-            lastButtonTapped: lastButtonTapped,
-            hotCryptoItemsSubject: hotCryptoItemsSubject,
-            userWalletModel: userWalletModel
-        )
 
         sellActionButtonViewModel = SellActionButtonViewModel(
             model: .sell,
@@ -74,6 +68,8 @@ final class ActionButtonsViewModel: ObservableObject {
             userWalletModel: userWalletModel
         )
 
+        makeBuyButtonViewModel(coordinator)
+
         bind()
         fetchHotCrypto()
     }
@@ -82,6 +78,16 @@ final class ActionButtonsViewModel: ObservableObject {
         // do nothing if already iniitialized
         exchangeService.initialize()
         fetchHotCrypto()
+    }
+
+    func makeBuyButtonViewModel(_ coordinator: ActionButtonsBuyFlowRoutable) {
+        buyActionButtonViewModel = BuyActionButtonViewModel(
+            model: .buy,
+            coordinator: coordinator,
+            lastButtonTapped: lastButtonTapped,
+            hotCryptoItemsPublisher: hotCryptoItemsSubject.eraseToAnyPublisher(),
+            userWalletModel: userWalletModel
+        )
     }
 }
 
@@ -114,7 +120,7 @@ private extension ActionButtonsViewModel {
 
     @MainActor
     private func disabledAllButtons() {
-        buyActionButtonViewModel.updateState(to: .disabled)
+        buyActionButtonViewModel?.updateState(to: .disabled)
         sellActionButtonViewModel.updateState(to: .disabled)
         swapActionButtonViewModel.updateState(to: .disabled)
     }
@@ -185,8 +191,8 @@ private extension ActionButtonsViewModel {
 
             switch exchangeServiceState {
             case .initializing: viewModel.handleBuyUpdatingState()
-            case .initialized: viewModel.buyActionButtonViewModel.updateState(to: .idle)
-            case .failed(let error): viewModel.buyActionButtonViewModel.updateState(
+            case .initialized: viewModel.buyActionButtonViewModel?.updateState(to: .idle)
+            case .failed(let error): viewModel.buyActionButtonViewModel?.updateState(
                     to: .restricted(reason: error.localizedDescription)
                 )
             }
@@ -200,7 +206,7 @@ private extension ActionButtonsViewModel {
             switch expressUpdateState {
             case .updating: viewModel.handleBuyUpdatingState()
             case .updated: viewModel.handleBuyUpdatedState()
-            case .failed: viewModel.buyActionButtonViewModel.updateState(
+            case .failed: viewModel.buyActionButtonViewModel?.updateState(
                     to: .restricted(reason: Localization.actionButtonsSomethingWrongAlertMessage)
                 )
             }
@@ -209,17 +215,17 @@ private extension ActionButtonsViewModel {
 
     @MainActor
     func handleBuyUpdatingState() {
-        switch buyActionButtonViewModel.viewState {
+        switch buyActionButtonViewModel?.viewState {
         case .idle:
-            buyActionButtonViewModel.updateState(to: .initial)
-        case .restricted, .loading, .initial, .disabled:
+            buyActionButtonViewModel?.updateState(to: .initial)
+        case .restricted, .loading, .initial, .disabled, .none:
             break
         }
     }
 
     @MainActor
     func handleBuyUpdatedState() {
-        buyActionButtonViewModel.updateState(
+        buyActionButtonViewModel?.updateState(
             to: userWalletModel.walletModelsManager.walletModels.isEmpty ? .disabled : .idle
         )
     }

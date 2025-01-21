@@ -11,7 +11,7 @@ import Combine
 protocol ActionButtonsBuyFlowRoutable: AnyObject {
     func openBuy(
         userWalletModel: some UserWalletModel,
-        hotCryptoItemsSubject: CurrentValueSubject<[HotCryptoDataItem], Never>
+        hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>
     )
     func openP2PTutorial()
     func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void)

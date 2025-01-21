@@ -475,20 +475,24 @@ extension MainCoordinator: PushNotificationsPermissionRequestDelegate {
 extension MainCoordinator: ActionButtonsBuyFlowRoutable {
     func openBuy(
         userWalletModel: some UserWalletModel,
-        hotCryptoItemsSubject: CurrentValueSubject<[HotCryptoDataItem], Never>
+        hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>
     ) {
         let dismissAction: Action<Void> = { [weak self] _ in
             self?.actionButtonsBuyCoordinator = nil
         }
 
-        let coordinator = ActionButtonsBuyCoordinator(
-            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
-            dismissAction: dismissAction,
-            hotCryptoItemsSubject: hotCryptoItemsSubject,
-            userWalletModel: userWalletModel
-        )
+        let coordinator = ActionButtonsBuyCoordinator(dismissAction: dismissAction)
 
-        coordinator.start(with: .default)
+        coordinator.start(
+            with: .default(
+                options: .init(
+                    userWalletModel: userWalletModel,
+                    hotCryptoItemsPublisher: hotCryptoItemsPublisher,
+                    expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+                    tokenSorter: CommonBuyTokenAvailabilitySorter()
+                )
+            )
+        )
 
         actionButtonsBuyCoordinator = coordinator
     }

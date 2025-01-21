@@ -44,18 +44,18 @@ final class ActionButtonsBuyViewModel: ObservableObject {
         return reason
     }
 
-    private let hotCryptoItemsSubject: CurrentValueSubject<[HotCryptoDataItem], Never>
+    private let hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>
     private let userWalletModel: UserWalletModel
 
     init(
         tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel,
         coordinator: some ActionButtonsBuyRoutable,
-        hotCryptoItemsSubject: CurrentValueSubject<[HotCryptoDataItem], Never>,
+        hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>,
         userWalletModel: some UserWalletModel
     ) {
         self.tokenSelectorViewModel = tokenSelectorViewModel
         self.coordinator = coordinator
-        self.hotCryptoItemsSubject = hotCryptoItemsSubject
+        self.hotCryptoItemsPublisher = hotCryptoItemsPublisher
         self.userWalletModel = userWalletModel
 
         bind()
@@ -103,7 +103,7 @@ extension ActionButtonsBuyViewModel {
             }
             .store(in: &bag)
 
-        hotCryptoItemsSubject
+        hotCryptoItemsPublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, hotTokens in
@@ -127,7 +127,7 @@ extension ActionButtonsBuyViewModel {
             return
         }
 
-        let tokenItemMapper = TokenItemMapper(supportedBlockchains: Blockchain.allMainnetCases.toSet())
+        let tokenItemMapper = TokenItemMapper(supportedBlockchains: userWalletModel.config.supportedBlockchains)
 
         guard
             let mappedToken = tokenItemMapper.mapToTokenItem(
@@ -175,7 +175,7 @@ extension ActionButtonsBuyViewModel {
 private extension ActionButtonsBuyViewModel {
     func openBuy(for walletModel: WalletModel) {
         if FeatureProvider.isAvailable(.onramp) {
-            coordinator?.openOnramp(walletModel: walletModel)
+            coordinator?.openOnramp(walletModel: walletModel, userWalletModel: userWalletModel)
         } else if let buyUrl = makeBuyUrl(from: walletModel) {
             coordinator?.openBuyCrypto(at: buyUrl)
         }

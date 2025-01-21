@@ -24,6 +24,10 @@ final class ActionButtonsTokenSelectItemViewModel: ObservableObject {
     init(model: ActionButtonsTokenSelectorItem) {
         self.model = model
 
+        bind()
+    }
+
+    private func bind() {
         itemStateBag = model.infoProvider.tokenItemStatePublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
@@ -32,8 +36,8 @@ final class ActionButtonsTokenSelectItemViewModel: ObservableObject {
                 case .loading:
                     viewModel.updateBalances(to: .loading)
                 case .loaded:
-                    viewModel.fiatBalanceState = .loaded(text: model.infoProvider.fiatBalance)
-                    viewModel.balanceState = .loaded(text: model.infoProvider.balance)
+                    viewModel.fiatBalanceState = .loaded(text: viewModel.model.infoProvider.fiatBalance)
+                    viewModel.balanceState = .loaded(text: viewModel.model.infoProvider.balance)
                 default:
                     viewModel.updateBalances(to: .noData)
                 }

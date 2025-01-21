@@ -12,14 +12,20 @@ import SwiftUI
 struct HotCryptoAddPortfolioBottomSheet: View {
     let info: HotCryptoAddToPortfolioModel
     let action: () -> Void
+    
+    private var tokenNetwork: String {
+        let blockchain = Blockchain.allMainnetCases.first { $0.networkId == info.token.networkId }
+        
+        return blockchain?.displayName ?? ""
+    }
 
     var body: some View {
         VStack(spacing: 0) {
-            Text("Add token")
+            Text(Localization.commonAddToken)
                 .style(Fonts.Bold.body, color: Colors.Text.primary1)
                 .padding(.bottom, 8)
 
-            Text("to \(info.walletName)")
+            Text(Localization.hotCryptoAddTokenSubtitle(info.walletName))
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 .padding(.bottom, 28)
 
@@ -30,11 +36,11 @@ struct HotCryptoAddPortfolioBottomSheet: View {
                 .style(Fonts.Bold.caption1, color: Colors.Text.primary1)
                 .padding(.bottom, 16)
 
-            Text("In \(Blockchain.allMainnetCases.first(where: { $0.networkId == info.token.networkId })?.displayName ?? "")")
+            Text(tokenNetwork)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 .padding(.bottom, 16)
 
-            MainButton(title: "Add to portfolio", icon: .trailing(Assets.tangemIcon), action: action)
+            MainButton(title: Localization.commonAddToPortfolio, icon: .trailing(Assets.tangemIcon), action: action)
                 .padding(.bottom, 6)
         }
         .padding(.horizontal, 16)
