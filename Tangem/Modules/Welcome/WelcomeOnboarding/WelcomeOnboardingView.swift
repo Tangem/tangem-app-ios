@@ -28,10 +28,10 @@ struct WelcomeOnboardingView: View {
             switch viewModel.viewState {
             case .tos(let viewModel):
                 WelcomeOnboardingTOSView(viewModel: viewModel)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
             case .pushNotifications(let viewModel):
                 WelcomeOnboardingPushNotificationsView(viewModel: viewModel)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
             case .none:
                 EmptyView()
             }

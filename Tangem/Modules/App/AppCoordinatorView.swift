@@ -56,24 +56,24 @@ struct AppCoordinatorView: CoordinatorView {
             switch coordinator.viewState {
             case .welcome(let welcomeCoordinator):
                 WelcomeCoordinatorView(coordinator: welcomeCoordinator)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(true)
             case .uncompleteBackup(let uncompletedBackupCoordinator):
                 UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(true)
             case .auth(let authCoordinator):
                 AuthCoordinatorView(coordinator: authCoordinator)
                     .setNamespace(namespace)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(true)
             case .main(let mainCoordinator):
                 MainCoordinatorView(coordinator: mainCoordinator)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(false)
             case .onboarding(let onboardingCoordinator):
                 OnboardingCoordinatorView(coordinator: onboardingCoordinator)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(true)
             case .lock:
                 LockView(usesNamespace: true)

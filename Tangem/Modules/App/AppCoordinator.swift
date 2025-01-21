@@ -89,7 +89,7 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func setupLock() {
-        setStateAnimated(.lock)
+        setState(.lock)
     }
 
     private func setupWelcome() {
@@ -106,7 +106,7 @@ class AppCoordinator: CoordinatorObject {
 
         let welcomeCoordinator = WelcomeCoordinator(dismissAction: dismissAction)
         welcomeCoordinator.start(with: .init())
-        setStateAnimated(.welcome(welcomeCoordinator))
+        setState(.welcome(welcomeCoordinator))
     }
 
     private func setupAuth(unlockOnAppear: Bool) {
@@ -124,7 +124,7 @@ class AppCoordinator: CoordinatorObject {
         let authCoordinator = AuthCoordinator(dismissAction: dismissAction)
         authCoordinator.start(with: .init(unlockOnAppear: unlockOnAppear))
 
-        setStateAnimated(.auth(authCoordinator))
+        setState(.auth(authCoordinator))
     }
 
     private func setupUncompletedBackup() {
@@ -135,7 +135,7 @@ class AppCoordinator: CoordinatorObject {
         let uncompleteBackupCoordinator = UncompletedBackupCoordinator(dismissAction: dismissAction)
         uncompleteBackupCoordinator.start()
 
-        setStateAnimated(.uncompleteBackup(uncompleteBackupCoordinator))
+        setState(.uncompleteBackup(uncompleteBackupCoordinator))
     }
 
     /// - Note: The coordinator is set up only once and only when the feature toggle is enabled.
@@ -172,10 +172,8 @@ class AppCoordinator: CoordinatorObject {
             .store(in: &bag)
     }
 
-    private func setStateAnimated(_ newViewState: AppCoordinator.ViewState) {
-        withAnimation(.easeIn) {
-            viewState = newViewState
-        }
+    private func setState(_ newViewState: AppCoordinator.ViewState) {
+        viewState = newViewState
     }
 }
 
@@ -235,7 +233,7 @@ extension AppCoordinator {
         let coordinator = OnboardingCoordinator(dismissAction: dismissAction)
         let options = OnboardingCoordinator.Options(input: input)
         coordinator.start(with: options)
-        setStateAnimated(.onboarding(coordinator))
+        setState(.onboarding(coordinator))
     }
 
     func openMain(with userWalletModel: UserWalletModel) {
@@ -243,7 +241,7 @@ extension AppCoordinator {
         let options = MainCoordinator.Options(userWalletModel: userWalletModel)
         coordinator.start(with: options)
 
-        setStateAnimated(.main(coordinator))
+        setState(.main(coordinator))
     }
 }
 
