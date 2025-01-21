@@ -8424,7 +8424,6 @@
 			children = (
 				DC2891772CD9107E00F57F59 /* CloseToolbarButton */,
 				DCC05A5E2CD17DE6004CE6A4 /* TokenSelectorView */,
-				DC77F2542CD508D9001B2929 /* SUILabel.swift */,
 				EF0E1DAE2CE3A2A5003D47AA /* ProgressDots */,
 				B0340B9C2C50C7B2008FF6FC /* AnimationModifiers */,
 				B0FF12662C4A811000C81ED8 /* EnvironmentKeys */,
@@ -8467,6 +8466,7 @@
 				2DC46C372C98022500749F7C /* Shapes */,
 				2DADFF9E2C98A9F30029F390 /* Tooltip */,
 				2DE0BA972CA930CE002C09D9 /* CommonHeaders */,
+				DC77F2542CD508D9001B2929 /* SUILabel.swift */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
