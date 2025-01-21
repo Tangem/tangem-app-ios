@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "Not enough ADA";
 "common_accept" = "Accetta";
 "common_access_denied" = "Access denied";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "All";
 "common_allow" = "Allow";
 "common_analytics" = "Analytics";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "Unlimited";
 "home_button_order" = "Order Tangem";
 "home_button_scan" = "Scansiona carta";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "This information was generated with AI.\nTap here, if you find any errors.";
 "initial_message_change_access_code_body" = "Avvicina per modificare il codice di accesso";
 "initial_message_change_passcode_body" = "Avvicina per modificare la password";
