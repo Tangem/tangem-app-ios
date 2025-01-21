@@ -85,8 +85,8 @@
 "cardano_max_amount_has_token_title" = "ADAが不足しています。";
 "common_accept" = "受け入れる";
 "common_access_denied" = "アクセスが拒否されました";
-"common_add_to_portfolio" = "Add to portfolio";
-"common_add_token" = "Add token";
+"common_add_to_portfolio" = "ポートフォリオに追加";
+"common_add_token" = "トークンを追加";
 "common_all" = "すべて";
 "common_allow" = "許可する";
 "common_analytics" = "アナリティクス";
