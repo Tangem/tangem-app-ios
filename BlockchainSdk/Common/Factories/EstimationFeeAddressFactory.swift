@@ -113,6 +113,9 @@ struct EstimationFeeAddressFactory {
             return "AJfAu7RJxiTowM9qVaTbVuS5JCPCpV3p7M"
         case .fact0rn:
             return "fact1q69h3nzh7rl2uv09zp5pw26vw58wdcl2j4lyag0"
+        case .alephium:
+            // TODO: - https://tangem.atlassian.net/browse/IOS-8466
+            return ""
         }
     }
 }

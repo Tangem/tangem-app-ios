@@ -139,6 +139,8 @@ struct DerivationConfigV2: DerivationConfig {
             return "m/44'/1313'/0'/0/0"
         case .fact0rn:
             return "m/44'/42069'/0'/0/0"
+        case .alephium:
+            return "m/44'/1234'/0'/0/0"
         }
     }
 }
