@@ -256,6 +256,9 @@ struct TestnetAPINodeInfoProvider {
         case .apeChain:
             return [
                 .init(url: URL(string: "https://curtis.rpc.caldera.xyz/http")!),
+        case .sonic:
+            return [
+                .init(url: URL(string: "https://sonic-blaze-rpc.publicnode.com")!),
             ]
         // TODO: Refactor in IOS-6639
         case .bitcoin, .litecoin, .disChain, .rsk, .bitcoinCash, .binance, .cardano,

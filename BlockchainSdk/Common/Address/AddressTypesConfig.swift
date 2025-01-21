@@ -97,7 +97,8 @@ struct AddressTypesConfig {
              .fact0rn,
              .odysseyChain,
              .bitrock,
-             .apeChain:
+             .apeChain,
+             .sonic:
             return [.default]
         }
     }

@@ -1969,6 +1969,7 @@
 		C21707172D395292000AC361 /* BitrockExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21707162D395290000AC361 /* BitrockExternalLinkProvider.swift */; };
 		C27A0EEE2D3648D400AC2336 /* OdysseyChainExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27A0EED2D3648D100AC2336 /* OdysseyChainExternalLinkProvider.swift */; };
 		C287C61D2D410D640068B899 /* ApeChainExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C287C61C2D410D620068B899 /* ApeChainExternalLinkProvider.swift */; };
+		C2DD0E042D3EBA3200B45935 /* SonicExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DD0E032D3EBA3000B45935 /* SonicExternalLinkProvider.swift */; };
 		DA070DE22ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE02ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift */; };
 		DA070DE32ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE12ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift */; };
 		DA070DE52ADD4F6600F7C0E4 /* SprinklrConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE42ADD4F6500F7C0E4 /* SprinklrConfig.swift */; };
@@ -5158,6 +5159,7 @@
 		C21707162D395290000AC361 /* BitrockExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitrockExternalLinkProvider.swift; sourceTree = "<group>"; };
 		C27A0EED2D3648D100AC2336 /* OdysseyChainExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OdysseyChainExternalLinkProvider.swift; sourceTree = "<group>"; };
 		C287C61C2D410D620068B899 /* ApeChainExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApeChainExternalLinkProvider.swift; sourceTree = "<group>"; };
+		C2DD0E032D3EBA3000B45935 /* SonicExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonicExternalLinkProvider.swift; sourceTree = "<group>"; };
 		DA070DE02ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatView.swift; sourceTree = "<group>"; };
 		DA070DE12ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatViewModel.swift; sourceTree = "<group>"; };
 		DA070DE42ADD4F6500F7C0E4 /* SprinklrConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrConfig.swift; sourceTree = "<group>"; };
@@ -10118,6 +10120,7 @@
 			isa = PBXGroup;
 			children = (
 				C287C61C2D410D620068B899 /* ApeChainExternalLinkProvider.swift */,
+				C2DD0E032D3EBA3000B45935 /* SonicExternalLinkProvider.swift */,
 				C27A0EED2D3648D100AC2336 /* OdysseyChainExternalLinkProvider.swift */,
 				C21707162D395290000AC361 /* BitrockExternalLinkProvider.swift */,
 				DC77F2562CD63813001B2929 /* CanxiumExternalLinkProvider.swift */,
@@ -19391,6 +19394,7 @@
 				B62D400C2CBC79DA00C2460E /* OP_SIZE.swift in Sources */,
 				B62D41C72CBC79DB00C2460E /* asset_issue_contract.pb.swift in Sources */,
 				B62D40AE2CBC79DA00C2460E /* FantomExternalLinkProvider.swift in Sources */,
+				C2DD0E042D3EBA3200B45935 /* SonicExternalLinkProvider.swift in Sources */,
 				B62D41B72CBC79DB00C2460E /* TONProvider.swift in Sources */,
 				B62D42382CBC79DB00C2460E /* ElectrumNetworkProvider.swift in Sources */,
 				B62D41D62CBC79DB00C2460E /* TronAPIResolver.swift in Sources */,
