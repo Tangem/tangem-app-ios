@@ -1604,4 +1604,39 @@ class AddressesTests: XCTestCase {
         let scriptHash = try Fact0rnAddressService.addressToScriptHash(address: expectedAddress)
         XCTAssertEqual(scriptHash, expectedScriptHash)
     }
+
+    // MARK: - Alephium
+
+    func testAlephiumGenerationDefault() throws {
+        let addressService = AlephiumAddressService()
+        let publicKeyData = Data(hexString: "0x025ad4a937b43f426d1bc2de5a5061c82c5218b2d0f52c132b3ddd0d6c07c4efca")
+        let address = try addressService.makeAddress(from: publicKeyData)
+        let expectedAddress = "1HqAa1eHkqmXuSh7ECW6jF9ygZ2CMZYe1JthwcQ7NbgUe"
+
+        XCTAssertEqual(address.value, expectedAddress)
+    }
+
+    func testAlephiumAddressGeneration() throws {
+        let addressService = AlephiumAddressService()
+        let compressedAddress = try addressService.makeAddress(from: secpCompressedKey, type: .default)
+        let decompressedAddress = try addressService.makeAddress(from: secpDecompressedKey, type: .default)
+        let expectedAddress = "12ZGzgQEpgQCWQrD8eyNihFXBF7QPGbWzSnGQSSUES98E"
+
+        XCTAssertEqual(compressedAddress.value, expectedAddress)
+        XCTAssertEqual(compressedAddress.value, decompressedAddress.value)
+
+        XCTAssertThrowsError(try addressService.makeAddress(from: edKey))
+    }
+
+    func testAlephiumAddressValidation() throws {
+        let addressService = AlephiumAddressService()
+
+        XCTAssertTrue(addressService.validate("12ZGzgQEpgQCWQrD8eyNihFXBF7QPGbWzSnGQSSUES98E"))
+        XCTAssertTrue(addressService.validate("1HqAa1eHkqmXuSh7ECW6jF9ygZ2CMZYe1JthwcQ7NbgUe"))
+
+        XCTAssertFalse(addressService.validate("0x00"))
+        XCTAssertFalse(addressService.validate("0x0"))
+        XCTAssertFalse(addressService.validate("1HqAa1eHkqmXuSh7ECW6jF9ygZ2CMZYe1JthwcQ7NsKSmsak"))
+        XCTAssertFalse(addressService.validate("1HqAa1eHkqmXuSh7ECW6jF9ygZ2CMZYe1J"))
+    }
 }
