@@ -276,11 +276,11 @@ extension CardanoWalletManager: StakeKitTransactionSender, StakeKitTransactionSe
 
             secondPublicKey = second.extendedPublicKey.publicKey
 
-        default: fatalError()
+        default: throw WalletError.failedToBuildTx
         }
 
         var transactionHashes = [StakeKitTransaction: Data]()
-        
+
         let hashes = try transactions.map { transaction in
             try prepareDataForSign(transaction: transaction)
         }
@@ -302,14 +302,17 @@ extension CardanoWalletManager: StakeKitTransactionSender, StakeKitTransactionSe
 
         let stakeKitTransactionHelper = CardanoStakeKitTransactionHelper(transactionBuilder: transactionBuilder)
 
-//        return transactions.map { transaction in
-//            guard let
-//        }
-        return try signatures.map { signature in
-            guard let transaction = transactionHashes[signature.hash] else {
-                throw WalletError.empty
-            }
+        return try transactions.compactMap { transaction -> Data? in
+            guard let hash = transactionHashes[transaction] else { return nil }
+            let signatures = signatures.filter { $0.hash == hash }
+
             return try stakeKitTransactionHelper.prepareForSend(transaction, signatures: signatures)
         }
+//        return try signatures.map { signature in
+//            guard let transaction = transactionHashes[signature.hash] else {
+//                throw WalletError.empty
+//            }
+//            return try stakeKitTransactionHelper.prepareForSend(transaction, signatures: signatures)
+//        }
     }
 }
