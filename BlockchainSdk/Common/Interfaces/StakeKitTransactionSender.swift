@@ -36,23 +36,49 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
 
                 do {
                     let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
-                    let signatures: [SignatureInfo] = try await signer.sign(hashes: preparedHashes, walletPublicKey: wallet.publicKey).async()
+                    let signatures: [SignatureInfo] = try await signer.sign(
+                        hashes: preparedHashes,
+                        walletPublicKey: wallet.publicKey
+                    ).async()
 
-                    for (transaction, signature) in zip(transactions, signatures) {
-                        try Task.checkCancellation()
-                        let rawTransaction = try prepareDataForSend(transaction: transaction, signature: signature)
-
-                        do {
-                            let result: TransactionSendResult = try await broadcast(transaction: transaction, rawTransaction: rawTransaction)
+                    if let second {
+                        for (transaction, signature) in zip(transactions, signatures) {
                             try Task.checkCancellation()
-                            continuation.yield(.init(transaction: transaction, result: result))
-                        } catch {
-                            throw StakeKitTransactionSendError(transaction: transaction, error: error)
-                        }
+                            let rawTransaction = try prepareDataForSend(transaction: transaction, signature: signature)
 
-                        if transactions.count > 1, let second {
-                            Log.log("\(self) start \(second) second delay between the transactions sending")
-                            try await Task.sleep(nanoseconds: second * NSEC_PER_SEC)
+                            do {
+                                let result: TransactionSendResult = try await broadcast(
+                                    transaction: transaction,
+                                    rawTransaction: rawTransaction
+                                )
+                                try Task.checkCancellation()
+                                continuation.yield(.init(transaction: transaction, result: result))
+                            } catch {
+                                throw StakeKitTransactionSendError(transaction: transaction, error: error)
+                            }
+
+                            if transactions.count > 1 {
+                                Log.log("\(self) start \(second) second delay between the transactions sending")
+                                try await Task.sleep(nanoseconds: second * NSEC_PER_SEC)
+                            }
+                        }
+                    } else {
+                        _ = try await withThrowingTaskGroup(of: TransactionSendResult.self) { group in
+                            for (transaction, signature) in zip(transactions, signatures) {
+                                let rawTransaction = try self.prepareDataForSend(
+                                    transaction: transaction,
+                                    signature: signature
+                                )
+                                group.addTask {
+                                    try await self.broadcast(transaction: transaction, rawTransaction: rawTransaction)
+                                }
+
+                                for try await result in group {
+                                    try Task.checkCancellation()
+                                    continuation.yield(.init(transaction: transaction, result: result))
+                                }
+                            }
+                            return []
                         }
                     }
 

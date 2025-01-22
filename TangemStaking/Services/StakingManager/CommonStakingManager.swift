@@ -342,11 +342,25 @@ private extension CommonStakingManager {
             let action = try await getPendingTransactionAction(request: request)
             return action
         case .withdraw(let passthroughs), .claimUnstaked(let passthroughs):
-            let actions = try await passthroughs.asyncMap { passthrough in
-                let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
-                let action = try await getPendingTransactionAction(request: request)
-                return action
+            let actions = try await withThrowingTaskGroup(of: StakingTransactionAction.self) { group in
+                for passthrough in passthroughs {
+                    let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+                    group.addTask {
+                        try await self.getPendingTransactionAction(request: request)
+                    }
+                }
+
+                var actions = [StakingTransactionAction]()
+                for try await action in group {
+                    actions.append(action)
+                }
+                return actions
             }
+//            let actions = try await passthroughs.asyncMap { passthrough in
+//                let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+//                let action = try await getPendingTransactionAction(request: request)
+//                return action
+//            }
 
             return mapToStakingTransactionAction(
                 amount: request.amount,
