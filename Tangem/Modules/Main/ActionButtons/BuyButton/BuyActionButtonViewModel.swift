@@ -39,10 +39,6 @@ final class BuyActionButtonViewModel: ActionButtonViewModel {
     private var expressProviderState: ExpressAvailabilityUpdateState = .updating
     private var exchangeServiceState: ExchangeServiceState = .initializing
 
-    private var isBuyAvailable: Bool {
-        tangemApiService.geoIpRegionCode != LanguageCode.ru
-    }
-
     private let lastButtonTapped: PassthroughSubject<ActionButtonModel, Never>
     private let userWalletModel: UserWalletModel
 
@@ -171,32 +167,7 @@ extension BuyActionButtonViewModel {
 
 extension BuyActionButtonViewModel {
     private func openBuy() {
-        if FeatureProvider.isAvailable(.onramp) {
-            coordinator?.openBuy(userWalletModel: userWalletModel)
-        } else {
-            openBuyLegacy()
-        }
-    }
-
-    private func openBuyLegacy() {
-        if isBuyAvailable {
-            coordinator?.openBuy(userWalletModel: userWalletModel)
-        } else {
-            openBanking()
-        }
-    }
-
-    private func openBanking() {
-        coordinator?.openBankWarning(
-            confirmCallback: { [weak self] in
-                guard let self else { return }
-
-                coordinator?.openBuy(userWalletModel: userWalletModel)
-            },
-            declineCallback: { [weak self] in
-                self?.coordinator?.openP2PTutorial()
-            }
-        )
+        coordinator?.openBuy(userWalletModel: userWalletModel)
     }
 }
 

@@ -8,6 +8,4 @@
 
 protocol ActionButtonsBuyFlowRoutable: AnyObject {
     func openBuy(userWalletModel: some UserWalletModel)
-    func openP2PTutorial()
-    func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void)
 }
