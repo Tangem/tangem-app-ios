@@ -42,28 +42,29 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                     ).async()
 
                     _ = try await withThrowingTaskGroup(of: (TransactionSendResult, StakeKitTransaction).self) { group in
-                        for (transaction, signature) in zip(transactions, signatures) {
+                        for (index, (transaction, signature)) in zip(transactions, signatures).enumerated() {
                             let rawTransaction = try self.prepareDataForSend(
                                 transaction: transaction,
                                 signature: signature
                             )
 
                             group.addTask {
+                                try Task.checkCancellation()
+                                if transactions.count > 1, let second {
+                                    Log.log("\(self) start \(second) second delay between the transactions sending")
+                                    try await Task.sleep(nanoseconds: UInt64(index) * second * NSEC_PER_SEC)
+                                    try Task.checkCancellation()
+                                }
                                 let result: TransactionSendResult = try await self.broadcast(
                                     transaction: transaction,
                                     rawTransaction: rawTransaction
                                 )
                                 return (result, transaction)
                             }
-
-                            if transactions.count > 1, let second {
-                                Log.log("\(self) start \(second) second delay between the transactions sending")
-                                try await Task.sleep(nanoseconds: second * NSEC_PER_SEC)
-                            }
+                            
                         }
 
                         for try await result in group {
-                            try Task.checkCancellation()
                             continuation.yield(.init(transaction: result.1, result: result.0))
                         }
                         return []
