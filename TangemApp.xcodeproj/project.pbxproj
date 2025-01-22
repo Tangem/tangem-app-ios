@@ -3862,7 +3862,6 @@
 		B0BB972C2B18654300053954 /* CommonExpressPendingTransactionRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonExpressPendingTransactionRepository.swift; sourceTree = "<group>"; };
 		B0BB972D2B18654300053954 /* ExpressPendingTransactionRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressPendingTransactionRepository.swift; sourceTree = "<group>"; };
 		B0BB972E2B18654300053954 /* ExpressPendingTransactionRecord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressPendingTransactionRecord.swift; sourceTree = "<group>"; };
-		B0BBE71D2D312B1200F8611B /* tangem-sdk-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "tangem-sdk-ios"; path = "../tangem-sdk-ios"; sourceTree = SOURCE_ROOT; };
 		B0BDF9B72B4D267F00EEBE4F /* MainHeaderTotalBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHeaderTotalBalanceProvider.swift; sourceTree = "<group>"; };
 		B0BDF9B92B4D3BB300EEBE4F /* MainHeaderUserWalletStateInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHeaderUserWalletStateInfoProvider.swift; sourceTree = "<group>"; };
 		B0BDF9BB2B4D3D9C00EEBE4F /* MainHeaderBalanceFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHeaderBalanceFormatter.swift; sourceTree = "<group>"; };
@@ -7045,7 +7044,6 @@
 				B62D43792CBC7EC700C2460E /* BlockchainSdkExample */,
 				5D3F77C324BF56D800E8695B /* Products */,
 				2E5061A84512B23CCB5F2E17 /* Frameworks */,
-				B0BBE71D2D312B1200F8611B /* tangem-sdk-ios */,
 			);
 			sourceTree = "<group>";
 		};
