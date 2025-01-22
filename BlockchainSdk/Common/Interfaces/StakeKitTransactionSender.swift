@@ -41,45 +41,32 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                         walletPublicKey: wallet.publicKey
                     ).async()
 
-                    if let second {
+                    _ = try await withThrowingTaskGroup(of: (TransactionSendResult, StakeKitTransaction).self) { group in
                         for (transaction, signature) in zip(transactions, signatures) {
-                            try Task.checkCancellation()
-                            let rawTransaction = try prepareDataForSend(transaction: transaction, signature: signature)
+                            let rawTransaction = try self.prepareDataForSend(
+                                transaction: transaction,
+                                signature: signature
+                            )
 
-                            do {
-                                let result: TransactionSendResult = try await broadcast(
+                            group.addTask {
+                                let result: TransactionSendResult = try await self.broadcast(
                                     transaction: transaction,
                                     rawTransaction: rawTransaction
                                 )
-                                try Task.checkCancellation()
-                                continuation.yield(.init(transaction: transaction, result: result))
-                            } catch {
-                                throw StakeKitTransactionSendError(transaction: transaction, error: error)
+                                return (result, transaction)
                             }
 
-                            if transactions.count > 1 {
+                            if transactions.count > 1, let second {
                                 Log.log("\(self) start \(second) second delay between the transactions sending")
                                 try await Task.sleep(nanoseconds: second * NSEC_PER_SEC)
                             }
                         }
-                    } else {
-                        _ = try await withThrowingTaskGroup(of: TransactionSendResult.self) { group in
-                            for (transaction, signature) in zip(transactions, signatures) {
-                                let rawTransaction = try self.prepareDataForSend(
-                                    transaction: transaction,
-                                    signature: signature
-                                )
-                                group.addTask {
-                                    try await self.broadcast(transaction: transaction, rawTransaction: rawTransaction)
-                                }
 
-                                for try await result in group {
-                                    try Task.checkCancellation()
-                                    continuation.yield(.init(transaction: transaction, result: result))
-                                }
-                            }
-                            return []
+                        for try await result in group {
+                            try Task.checkCancellation()
+                            continuation.yield(.init(transaction: result.1, result: result.0))
                         }
+                        return []
                     }
 
                     continuation.finish()
