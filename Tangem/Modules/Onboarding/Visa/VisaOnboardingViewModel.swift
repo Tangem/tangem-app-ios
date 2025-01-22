@@ -17,7 +17,7 @@ protocol VisaOnboardingAlertPresenter: AnyObject {
     func showAlert(_ alert: AlertBinder) async
 }
 
-protocol VisaOnboardingRoutable: AnyObject {
+protocol VisaOnboardingRoutable: OnboardingRoutable {
     func closeOnboarding()
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType)
 }
@@ -70,6 +70,10 @@ class VisaOnboardingViewModel: ObservableObject {
     }
 
     var isBackButtonVisible: Bool {
+        if currentStep == .success {
+            return false
+        }
+
         return true
     }
 
@@ -78,7 +82,15 @@ class VisaOnboardingViewModel: ObservableObject {
     }
 
     var isSupportButtonVisible: Bool {
+        if currentStep == .success {
+            return false
+        }
+
         return true
+    }
+
+    private var isOnboardingFinished: Bool {
+        currentStep == steps.last
     }
 
     private let input: OnboardingInput
@@ -103,12 +115,16 @@ class VisaOnboardingViewModel: ObservableObject {
             currentStep = visaSteps.first ?? .welcome
         }
 
+        if case .userWalletModel(let userWalletModel) = input.cardInput {
+            self.userWalletModel = userWalletModel
+        }
+
         loadImage(input.cardInput.imageLoadInput)
     }
 
     func backButtonAction() {
         switch currentStep {
-        case .welcome, .welcomeBack, .pushNotifications, .inProgress, .pinSelection, .saveUserWallet, .selectWalletForApprove:
+        case .welcome, .welcomeBack, .pushNotifications, .paymentAccountDeployInProgress, .issuerProcessingInProgress, .pinSelection, .saveUserWallet, .selectWalletForApprove:
             showCloseOnboardingAlert()
         case .accessCode:
             guard accessCodeSetupViewModel.goBack() else {
@@ -129,6 +145,10 @@ class VisaOnboardingViewModel: ObservableObject {
         } else {
             openSupportSheet()
         }
+    }
+
+    func finishOnboarding() {
+        handleOnboardingFinish()
     }
 
     private func openSupportSheet() {
@@ -155,6 +175,17 @@ class VisaOnboardingViewModel: ObservableObject {
         )
     }
 
+    private func updateUserWalletModel(with card: CardDTO) {
+        let activationStatus = visaActivationManager.activationStatus
+        let cardInfo = CardInfo(
+            card: card,
+            walletData: .visa(activationStatus),
+            name: "Visa"
+        )
+        let userWalletModel = CommonUserWalletModelFactory().makeModel(cardInfo: cardInfo)
+        self.userWalletModel = userWalletModel
+    }
+
     private func log<T>(_ message: @autoclosure () -> T) {
         AppLog.shared.debug("[VisaOnboardingViewModel] - \(message())")
     }
@@ -164,6 +195,11 @@ class VisaOnboardingViewModel: ObservableObject {
 
 private extension VisaOnboardingViewModel {
     func goToNextStep() {
+        if isOnboardingFinished {
+            handleOnboardingFinish()
+            return
+        }
+
         switch currentStep {
         case .welcome:
             goToStep(.accessCode)
@@ -176,13 +212,21 @@ private extension VisaOnboardingViewModel {
             }
         case .accessCode:
             goToStep(.selectWalletForApprove)
-        case .selectWalletForApprove, .approveUsingTangemWallet, .saveUserWallet, .pushNotifications:
+        case .selectWalletForApprove, .approveUsingTangemWallet:
             break
-        case .inProgress:
-            /// Should be decided in `proceedFromInProgress`
-            break
+        case .issuerProcessingInProgress, .saveUserWallet, .pushNotifications:
+            guard
+                let index = steps.firstIndex(of: currentStep),
+                index + 1 < steps.count
+            else {
+                return
+            }
+
+            goToStep(steps[index + 1])
+        case .paymentAccountDeployInProgress:
+            goToStep(.pinSelection)
         case .pinSelection:
-            goToStep(.inProgress)
+            goToStep(.issuerProcessingInProgress)
         case .success:
             closeOnboarding()
         }
@@ -203,6 +247,15 @@ private extension VisaOnboardingViewModel {
             }
         }
     }
+
+    func handleOnboardingFinish() {
+        guard let userWalletModel else {
+            return
+        }
+
+        userWalletRepository.add(userWalletModel)
+        coordinator?.onboardingDidFinish(userWalletModel: userWalletModel)
+    }
 }
 
 // MARK: - In progress logic&navigation
@@ -219,7 +272,7 @@ extension VisaOnboardingViewModel: VisaOnboardingInProgressDelegate {
     func proceedFromInProgress() async {
         switch visaActivationManager.activationRemoteState {
         case .activated:
-            goToStep(.saveUserWallet)
+            goToNextStep()
         case .blockedForActivation:
             // TODO: Discuss with analyst
             await showAlert("This card was blocked... Is this even possible?..".alertBinder)
@@ -228,13 +281,13 @@ extension VisaOnboardingViewModel: VisaOnboardingInProgressDelegate {
                 activationRemoteState: .paymentAccountDeploying,
                 delegate: self
             )
-            goToStep(.inProgress)
+            goToStep(.paymentAccountDeployInProgress)
         case .waitingForActivationFinishing:
             inProgressViewModel = VisaOnboardingViewModelsBuilder().buildInProgressModel(
                 activationRemoteState: .waitingForActivationFinishing,
                 delegate: self
             )
-            goToStep(.inProgress)
+            goToStep(.issuerProcessingInProgress)
         case .cardWalletSignatureRequired, .customerWalletSignatureRequired:
             await showAlert("Invalid card activation state. Please contact support".alertBinder)
         case .waitingPinCode:
@@ -258,10 +311,10 @@ extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
                 AppLog.shared.error(error)
 
                 biometryAccessGranted = false
-//                self?.didAskToSaveUserWallets(agreed: false)
+                self?.didAskToSaveUserWallets(agreed: false)
             case .success:
                 biometryAccessGranted = true
-//                self?.didAskToSaveUserWallets(agreed: true)
+                self?.didAskToSaveUserWallets(agreed: true)
             }
 
             Analytics.log(.allowBiometricID, params: [
@@ -273,8 +326,27 @@ extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
     }
 
     func didDeclineToSaveUserWallets() {
-//        didAskToSaveUserWallets(agreed: false)
+        didAskToSaveUserWallets(agreed: false)
         goToNextStep()
+    }
+
+    func didAskToSaveUserWallets(agreed: Bool) {
+        AppSettings.shared.askedToSaveUserWallets = true
+
+        AppSettings.shared.saveUserWallets = agreed
+        AppSettings.shared.saveAccessCodes = agreed
+
+        Analytics.log(.onboardingEnableBiometric, params: [.state: Analytics.ParameterValue.toggleState(for: agreed)])
+        trySaveAccessCode()
+    }
+
+    private func trySaveAccessCode() {
+        guard let cardId = userWalletModel?.tangemApiAuthData.cardId else {
+            return
+        }
+
+        let accessCode = accessCodeSetupViewModel.accessCode
+        AccessCodeSaveUtility().trySaveAccessCode(accessCode: accessCode, cardIds: [cardId])
     }
 }
 
@@ -297,7 +369,8 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
 
     func useSelectedCode(accessCode: String) async throws {
         try visaActivationManager.saveAccessCode(accessCode: accessCode)
-        try await visaActivationManager.startActivation()
+        let activationResponse = try await visaActivationManager.startActivation()
+        updateUserWalletModel(with: .init(card: activationResponse.signedActivationOrder.cardSignedOrder))
         await proceedToApproveWalletSelection()
     }
 
@@ -315,7 +388,8 @@ extension VisaOnboardingViewModel: VisaOnboardingWelcomeDelegate {
     }
 
     func continueActivation() async throws {
-        try await visaActivationManager.startActivation()
+        let activationResponse = try await visaActivationManager.startActivation()
+        updateUserWalletModel(with: .init(card: activationResponse.signedActivationOrder.cardSignedOrder))
         await proceedToApproveWalletSelection()
     }
 }

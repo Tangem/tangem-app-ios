@@ -25,7 +25,9 @@ class ActivatedVisaCardDummyManager: VisaActivationManager {
 
     func saveAccessCode(accessCode: String) throws (TangemVisa.VisaAccessCodeValidationError) {}
 
-    func startActivation() async throws (TangemVisa.VisaActivationError) {}
+    func startActivation() async throws (TangemVisa.VisaActivationError) -> CardActivationResponse {
+        throw .alreadyActivated
+    }
 
     func validateAccessCode(accessCode: String) throws (TangemVisa.VisaAccessCodeValidationError) {}
 

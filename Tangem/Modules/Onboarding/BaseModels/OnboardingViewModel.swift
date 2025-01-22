@@ -211,7 +211,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         userWalletModel = userWallet
     }
 
-    func handleUserWalletOnFinish() throws {
+    func handleUserWalletOnFinish() {
         guard let userWalletModel else {
             return
         }
@@ -271,12 +271,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
 
     func goToNextStep() {
         if isOnboardingFinished {
-            do {
-                try handleUserWalletOnFinish()
-            } catch {
-                AppLog.shared.error(error)
-                return
-            }
+            handleUserWalletOnFinish()
 
             DispatchQueue.main.async {
                 self.onboardingDidFinish()

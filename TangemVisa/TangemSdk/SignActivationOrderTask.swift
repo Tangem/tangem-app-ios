@@ -9,11 +9,12 @@
 import Foundation
 import TangemSdk
 
-struct SignedActivationOrder {
-    let order: CardActivationOrder
-    let signedOrderByCard: Data
-    let cardAttestationSalt: Data
-    let signedOrderByWallet: Data
+public struct SignedActivationOrder {
+    public let cardSignedOrder: Card
+    public let order: CardActivationOrder
+    public let signedOrderByCard: Data
+    public let cardAttestationSalt: Data
+    public let signedOrderByWallet: Data
 }
 
 class SignActivationOrderTask: CardSessionRunnable {
@@ -77,6 +78,7 @@ class SignActivationOrderTask: CardSessionRunnable {
             switch result {
             case .success(let signResponse):
                 completion(.success(SignedActivationOrder(
+                    cardSignedOrder: card,
                     order: self.orderToSign,
                     signedOrderByCard: signedOrderByCard.cardSignature,
                     cardAttestationSalt: signedOrderByCard.salt,

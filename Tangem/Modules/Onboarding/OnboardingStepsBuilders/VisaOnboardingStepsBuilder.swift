@@ -66,11 +66,11 @@ struct VisaOnboardingStepsBuilder {
             steps.append(contentsOf: approveSteps)
             fallthrough
         case .paymentAccountDeploying:
-            steps.append(contentsOf: [.inProgress, .pinSelection])
+            steps.append(contentsOf: [.paymentAccountDeployInProgress, .pinSelection, .issuerProcessingInProgress])
         case .waitingPinCode:
-            steps.append(contentsOf: [.pinSelection, .inProgress])
+            steps.append(contentsOf: [.pinSelection, .issuerProcessingInProgress])
         case .waitingForActivationFinishing:
-            steps.append(.inProgress)
+            steps.append(.issuerProcessingInProgress)
         case .activated, .blockedForActivation:
             // Card shouldn't be able to reach onboarding with this state. Anyway we don't need to add any steps
             return []
@@ -85,12 +85,13 @@ extension VisaOnboardingStepsBuilder: OnboardingStepsBuilder {
         var steps = [VisaOnboardingStep]()
 
         switch activationStatus {
-        case .activated:
-            break
         case .activationStarted(_, _, let activationRemoteState):
             steps.append(contentsOf: buildSteps(for: activationRemoteState))
         case .notStartedActivation:
             steps.append(contentsOf: [.welcome, .accessCode] + approveSteps)
+
+        case .activated:
+            return .visa(otherSteps)
         case .blocked:
             return .visa([])
         }

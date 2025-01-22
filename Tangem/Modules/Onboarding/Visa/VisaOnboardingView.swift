@@ -80,7 +80,7 @@ struct VisaOnboardingView: View {
             if let viewModel = viewModel.tangemWalletApproveViewModel {
                 VisaOnboardingTangemWalletDeployApproveView(viewModel: viewModel)
             }
-        case .inProgress:
+        case .paymentAccountDeployInProgress, .issuerProcessingInProgress:
             if let viewModel = viewModel.inProgressViewModel {
                 VisaOnboardingInProgressView(viewModel: viewModel)
             }
@@ -100,7 +100,10 @@ struct VisaOnboardingView: View {
                 )
             }
         case .success:
-            EmptyView()
+            VisaOnboardingSuccessView(
+                fireConfetti: $viewModel.shouldFireConfetti,
+                finishAction: viewModel.finishOnboarding
+            )
         }
     }
 }

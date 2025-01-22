@@ -9,15 +9,15 @@
 import Foundation
 import JWTDecode
 
+public struct CardActivationOrder {
+    public let activationOrder: String
+    public let dataToSignByCard: Data
+    public let dataToSignByWallet: Data
+}
+
 protocol CardActivationOrderProvider {
     func provideActivationOrderForSign() async throws -> CardActivationOrder
     func cancelOrderLoading()
-}
-
-struct CardActivationOrder {
-    let activationOrder: String
-    let dataToSignByCard: Data
-    let dataToSignByWallet: Data
 }
 
 final class CommonCardActivationOrderProvider {
