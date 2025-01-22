@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftUI
+import TangemUI
 
 /// Same as `DecimalNumberTextField` with  support
 /// - `InitialFocusBehavior`

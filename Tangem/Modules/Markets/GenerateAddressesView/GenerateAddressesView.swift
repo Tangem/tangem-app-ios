@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemUIKitUtils
+import TangemUIUtils
 
 struct GenerateAddressesView: View {
     let viewModel: GenerateAddressesViewModel

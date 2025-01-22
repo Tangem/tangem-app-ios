@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import TangemUIKitUtils
+import TangemUIUtils
 
 struct ResetToFactoryView: View {
     @ObservedObject private var viewModel: ResetToFactoryViewModel
