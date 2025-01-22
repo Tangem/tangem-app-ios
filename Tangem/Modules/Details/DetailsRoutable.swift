@@ -23,5 +23,6 @@ protocol DetailsRoutable: AnyObject {
     func openSocialNetwork(url: URL)
 
     func openEnvironmentSetup()
+    func openLogs()
     func dismiss()
 }

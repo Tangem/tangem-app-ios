@@ -41,6 +41,9 @@ struct DetailsCoordinatorView: CoordinatorView {
             .navigation(item: $coordinator.environmentSetupCoordinator) {
                 EnvironmentSetupCoordinatorView(coordinator: $0)
             }
+            .navigation(item: $coordinator.logsViewModel) {
+                LogsView(viewModel: $0)
+            }
     }
 
     @ViewBuilder
