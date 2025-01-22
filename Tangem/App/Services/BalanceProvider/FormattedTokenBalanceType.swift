@@ -53,7 +53,7 @@ extension FormattedTokenBalanceType: CustomStringConvertible {
         switch self {
         case .loading(let cached): "Loading cached balance: \(String(describing: cached))"
         case .failure(let cached): "Failure cached balance: \(String(describing: cached))"
-        case .loaded(let balance): "Loaded balance: \(balance)"
+        case .loaded: "Loaded balance"
         }
     }
 }
@@ -73,8 +73,12 @@ extension FormattedTokenBalanceType {
         }
     }
 
-    struct Cached: Hashable {
+    struct Cached: Hashable, CustomStringConvertible {
         let balance: String
         let date: Date
+
+        var description: String {
+            "Cached balance on date: \(date.formatted())"
+        }
     }
 }

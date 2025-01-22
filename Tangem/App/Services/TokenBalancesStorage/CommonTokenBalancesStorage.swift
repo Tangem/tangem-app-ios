@@ -42,7 +42,6 @@ extension CommonTokenBalancesStorage: TokenBalancesStorage {
             var balancesForWallet = balances[userWalletId.stringValue, default: [:]]
             balancesForWallet.updateValue([type: balance], forKey: id)
             balances.updateValue(balancesForWallet, forKey: userWalletId.stringValue)
-            log(try! balances.json())
             save()
         }
     }
@@ -60,9 +59,9 @@ private extension CommonTokenBalancesStorage {
     func loadBalances() {
         do {
             balances = try storage.value(for: .cachedBalances) ?? [:]
-            log("Load balances \(String(describing: balances))")
+            log("storage load successfully")
         } catch {
-            log("Load balances error \(error.localizedDescription)")
+            log("storage load error \(error.localizedDescription)")
             AppLog.shared.error(error)
         }
     }
@@ -71,7 +70,7 @@ private extension CommonTokenBalancesStorage {
         do {
             try storage.store(value: balances, for: .cachedBalances)
         } catch {
-            log("Save balances error \(error.localizedDescription)")
+            log("storage save error \(error.localizedDescription)")
             AppLog.shared.error(error)
         }
     }

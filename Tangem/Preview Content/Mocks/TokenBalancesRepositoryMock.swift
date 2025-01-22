@@ -7,7 +7,7 @@
 //
 
 struct TokenBalancesRepositoryMock: TokenBalancesRepository {
-    func balance(wallet: WalletModel, type: CachedBalanceType) -> CachedBalance? { nil }
+    func balance(walletModel: WalletModel, type: CachedBalanceType) -> CachedBalance? { nil }
 
-    func store(balance: CachedBalance, for wallet: WalletModel, type: CachedBalanceType) {}
+    func store(balance: CachedBalance, for walletModel: WalletModel, type: CachedBalanceType) {}
 }
