@@ -230,7 +230,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .dash,
              .kaspa,
              .ravencoin,
-             .ducatus:
+             .ducatus,
+             .fact0rn:
             return true
         default:
             return false
@@ -252,7 +253,8 @@ public indirect enum Blockchain: Equatable, Hashable {
              .dash,
              .kaspa,
              .ravencoin,
-             .ducatus:
+             .ducatus,
+             .fact0rn:
             return true
         default:
             return false
@@ -610,6 +612,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             "Toncoin"
         case .fantom:
             "Fantom"
+        case .odysseyChain:
+            "Dione"
         default:
             displayName
         }
