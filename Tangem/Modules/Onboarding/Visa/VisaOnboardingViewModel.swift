@@ -21,6 +21,7 @@ protocol VisaOnboardingAlertPresenter: AnyObject {
 
 protocol VisaOnboardingRoutable: AnyObject {
     func closeOnboarding()
+    func openBrowser(at url: URL, onSuccess: @escaping (URL) -> Void)
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType)
 }
 
@@ -239,6 +240,10 @@ extension VisaOnboardingViewModel: VisaOnboardingInProgressDelegate {
             goToStep(.pinSelection)
         }
     }
+
+    func openBrowser(at url: URL, onSuccess: @escaping (URL) -> Void) {
+        coordinator?.openBrowser(at: url, onSuccess: onSuccess)
+    }
 }
 
 // MARK: - Biometry delegate
@@ -295,9 +300,9 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
 
     @MainActor
     func showContactSupportAlert(for error: Error) async {
-        let alert = Alert(
-            title: Text(Localization.commonError),
-            message: Text("Failed to during activation process. Error: \(error.localizedDescription)"),
+        let alert = AlertBuilder.makeAlert(
+            title: Localization.commonError,
+            message: "Failed to during activation process. Error: \(error.localizedDescription)",
             primaryButton: .default(
                 Text(Localization.detailsRowTitleContactToSupport),
                 action: { [weak self] in
@@ -312,7 +317,7 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
             )
         )
 
-        await showAlert(AlertBinder(alert: alert))
+        await showAlert(alert)
     }
 
     func useSelectedCode(accessCode: String) async throws {

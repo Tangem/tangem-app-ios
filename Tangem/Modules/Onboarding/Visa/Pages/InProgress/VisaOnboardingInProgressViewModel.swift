@@ -14,6 +14,7 @@ protocol VisaOnboardingInProgressDelegate: VisaOnboardingAlertPresenter {
     func canProceedOnboarding() async throws -> Bool
     @MainActor
     func proceedFromCurrentRemoteState() async
+    func openBrowser(at url: URL, onSuccess: @escaping (URL) -> Void)
 }
 
 class VisaOnboardingInProgressViewModel: ObservableObject {

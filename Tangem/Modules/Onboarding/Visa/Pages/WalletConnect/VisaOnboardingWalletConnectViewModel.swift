@@ -13,10 +13,7 @@ import TangemVisa
 import TangemFoundation
 
 class VisaOnboardingWalletConnectViewModel: ObservableObject {
-    @Injected(\.safariManager) private var safariManager: SafariManager
-
     private var delegate: VisaOnboardingInProgressDelegate?
-    private var safariHandle: SafariHandle?
 
     private let statusUpdateTimeIntervalSec: TimeInterval = 10
 
@@ -28,11 +25,9 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
 
     func openBrowser() {
         let visaURL = VisaUtilities().walletConnectURL
-        safariHandle = safariManager.openURL(visaURL) { [weak self] successURL in
-            self?.safariHandle = nil
-            // Right now `successURL` is not defined, so every url will be succes for now
+        delegate?.openBrowser(at: visaURL, onSuccess: { [weak self] successURL in
             self?.proceedOnboardingIfPossible()
-        }
+        })
         setupStatusUpdateTask()
     }
 

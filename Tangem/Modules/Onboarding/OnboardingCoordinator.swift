@@ -179,7 +179,14 @@ extension OnboardingCoordinator: OnboardingRoutable {
     }
 }
 
-extension OnboardingCoordinator: VisaOnboardingRoutable {}
+extension OnboardingCoordinator: VisaOnboardingRoutable {
+    func openBrowser(at url: URL, onSuccess: @escaping (URL) -> Void) {
+        safariHandle = safariManager.openURL(url, onSuccess: { [weak self] onSuccessURL in
+            onSuccess(onSuccessURL)
+            self?.safariHandle = nil
+        })
+    }
+}
 
 // MARK: ViewState
 
