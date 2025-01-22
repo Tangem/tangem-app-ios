@@ -56,13 +56,6 @@ struct TokenDetailsCoordinatorView: CoordinatorView {
 
         NavHolder()
             .bottomSheet(
-                item: $coordinator.warningBankCardViewModel,
-                backgroundColor: Colors.Background.primary
-            ) {
-                WarningBankCardView(viewModel: $0)
-                    .padding(.bottom, 10)
-            }
-            .bottomSheet(
                 item: $coordinator.receiveBottomSheetViewModel,
                 settings: .init(backgroundColor: Colors.Background.primary, contentScrollsHorizontally: true)
             ) {

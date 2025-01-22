@@ -14,7 +14,7 @@ struct BitrockExternalLinkProvider: ExternalLinkProvider {
     init(isTestnet: Bool) {
         baseExplorerUrl = isTestnet
             ? "https://testnetscan.bit-rock.io"
-            : "https://scan.bit-rock.io"
+            : "https://explorer.bit-rock.io"
     }
 
     func url(address: String, contractAddress: String?) -> URL? {
