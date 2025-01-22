@@ -25,7 +25,7 @@ class CommonTokenQuotesRepository {
     init() {
         bind()
 
-        let cachedQuotes: Quotes? = try? storage.value(for: .tokenQuotes)
+        let cachedQuotes: Quotes? = try? storage.value(for: .cachedQuotes)
         _quotes.send(cachedQuotes ?? [:])
     }
 }
@@ -98,7 +98,7 @@ extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
             }
 
             _quotes.send(current)
-            try? storage.store(value: current, for: .tokenQuotes)
+            try? storage.store(value: current, for: .cachedQuotes)
         }
     }
 }
