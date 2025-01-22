@@ -61,7 +61,6 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                                 )
                                 return (result, transaction)
                             }
-                            
                         }
 
                         for try await result in group {

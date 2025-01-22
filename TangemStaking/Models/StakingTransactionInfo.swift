@@ -14,18 +14,21 @@ public struct StakingTransactionInfo: Hashable {
     public let network: String
     public let unsignedTransactionData: String
     public let fee: Decimal
+    public let stepIndex: Int
 
     public init(
         id: String,
         actionId: String,
         network: String,
         unsignedTransactionData: String,
-        fee: Decimal
+        fee: Decimal,
+        stepIndex: Int
     ) {
         self.id = id
         self.actionId = actionId
         self.network = network
         self.unsignedTransactionData = unsignedTransactionData
         self.fee = fee
+        self.stepIndex = stepIndex
     }
 }
