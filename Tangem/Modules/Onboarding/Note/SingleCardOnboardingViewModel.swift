@@ -183,7 +183,7 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
                         }
                     }
                 } else {
-                    openCryptoShopIfPossible()
+                    openBuyCrypto()
                 }
             } else {
                 supplementButtonAction()

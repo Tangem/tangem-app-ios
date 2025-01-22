@@ -39,7 +39,7 @@ class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransaction
         provider: ExpressPendingTransactionRecord.Provider
     ) {
         log(
-            event: .tokenSwapStatus,
+            event: .onrampOnrampStatus,
             params: [.token: tokenSymbol, .currency: currencySymbol],
             transactionId: transactionId,
             status: status,
