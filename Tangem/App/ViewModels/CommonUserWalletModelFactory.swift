@@ -42,7 +42,7 @@ struct CommonUserWalletModelFactory {
 
         let walletModelsManager = CommonWalletModelsManager(
             walletManagersRepository: walletManagersRepository,
-            walletModelsFactory: config.makeWalletModelsFactory()
+            walletModelsFactory: config.makeWalletModelsFactory(userWalletId: userWalletId)
         )
 
         let derivationManager: CommonDerivationManager? = {
