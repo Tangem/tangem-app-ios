@@ -436,6 +436,8 @@ private extension Blockchain {
         case .xodex: return nil
         case .clore: return nil
         case .fact0rn: return nil
+        case .odysseyChain: return nil
+        case .bitrock: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }
@@ -522,6 +524,8 @@ private extension Blockchain {
         case .xodex: return nil
         case .clore: return nil
         case .fact0rn: return nil
+        case .odysseyChain: return nil
+        case .bitrock: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
     }

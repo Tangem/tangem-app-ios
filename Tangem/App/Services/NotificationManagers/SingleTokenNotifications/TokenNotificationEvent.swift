@@ -11,7 +11,7 @@ import SwiftUI
 
 enum TokenNotificationEvent: Hashable {
     case networkUnreachable(currencySymbol: String)
-    case someNetworksUnreachable(currencySymbols: [String])
+    case networkNotUpdated(lastUpdatedDate: Date)
     case rentFee(rentMessage: String)
     case noAccount(message: String)
     case existentialDepositWarning(message: String)
@@ -21,6 +21,7 @@ enum TokenNotificationEvent: Hashable {
     case staking(tokenIconInfo: TokenIconInfo, earnUpToFormatted: String)
     case manaLevel(currentMana: String, maxMana: String)
     case maticMigration
+    case kaspaTokensBeta
 
     static func event(
         for reason: TransactionSendAvailabilityProvider.SendingRestrictions,
@@ -48,8 +49,8 @@ extension TokenNotificationEvent: NotificationEvent {
         switch self {
         case .networkUnreachable:
             return .string(Localization.warningNetworkUnreachableTitle)
-        case .someNetworksUnreachable:
-            return .string(Localization.warningSomeNetworksUnreachableTitle)
+        case .networkNotUpdated:
+            return .none
         case .rentFee:
             return .string(Localization.warningRentFeeTitle)
         case .noAccount:
@@ -70,6 +71,8 @@ extension TokenNotificationEvent: NotificationEvent {
             return .string(Localization.koinosManaLevelTitle)
         case .maticMigration:
             return .string(Localization.warningMaticMigrationTitle)
+        case .kaspaTokensBeta:
+            return .string(Localization.betaModeWarningTitle)
         }
     }
 
@@ -77,8 +80,11 @@ extension TokenNotificationEvent: NotificationEvent {
         switch self {
         case .networkUnreachable:
             return Localization.warningNetworkUnreachableMessage
-        case .someNetworksUnreachable:
-            return Localization.warningSomeNetworksUnreachableMessage
+        case .networkNotUpdated(let date):
+            // Formatting will be update
+            // TODO: https://tangem.atlassian.net/browse/IOS-8666
+            let formatted = date.formatted(date: .abbreviated, time: .shortened)
+            return Localization.warningLastBalanceUpdatedTime(formatted)
         case .rentFee(let message):
             return message
         case .noAccount(let message):
@@ -115,19 +121,22 @@ extension TokenNotificationEvent: NotificationEvent {
             return Localization.koinosManaLevelDescription(currentMana, maxMana)
         case .maticMigration:
             return Localization.warningMaticMigrationMessage
+        case .kaspaTokensBeta:
+            return Localization.betaModeWarningMessage
         }
     }
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
         case .networkUnreachable,
-             .someNetworksUnreachable,
+             .networkNotUpdated,
              .rentFee,
              .existentialDepositWarning,
              .noAccount,
              .bnbBeaconChainRetirement,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return .secondary
         // One white notification will be added later
         case .notEnoughFeeForTransaction,
@@ -140,10 +149,12 @@ extension TokenNotificationEvent: NotificationEvent {
 
     var icon: NotificationView.MessageIcon {
         switch self {
+        case .networkNotUpdated:
+            return .init(iconType: .image(Assets.failedCloud.image), color: Colors.Icon.attention)
         case .networkUnreachable,
-             .someNetworksUnreachable,
              .bnbBeaconChainRetirement,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return .init(iconType: .image(Assets.attention.image))
         case .rentFee, .noAccount, .existentialDepositWarning, .manaLevel:
             return .init(iconType: .image(Assets.blueCircleWarning.image))
@@ -165,10 +176,11 @@ extension TokenNotificationEvent: NotificationEvent {
              .existentialDepositWarning,
              .staking,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return .info
         case .networkUnreachable,
-             .someNetworksUnreachable,
+             .networkNotUpdated,
              .notEnoughFeeForTransaction,
              .bnbBeaconChainRetirement,
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
@@ -183,7 +195,7 @@ extension TokenNotificationEvent: NotificationEvent {
              .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction):
             return true
         case .networkUnreachable,
-             .someNetworksUnreachable,
+             .networkNotUpdated,
              .existentialDepositWarning,
              .notEnoughFeeForTransaction,
              .noAccount,
@@ -191,7 +203,8 @@ extension TokenNotificationEvent: NotificationEvent {
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
              .staking,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return false
         }
     }
@@ -200,13 +213,14 @@ extension TokenNotificationEvent: NotificationEvent {
         switch self {
         // One notification with button action will be added later
         case .networkUnreachable,
-             .someNetworksUnreachable,
+             .networkNotUpdated,
              .rentFee,
              .existentialDepositWarning,
              .noAccount,
              .bnbBeaconChainRetirement,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta:
             return nil
         case .notEnoughFeeForTransaction(let configuration):
             let eventConfig = configuration.eventConfiguration
@@ -245,6 +259,10 @@ extension TokenNotificationEvent {
         struct KaspaTokenRevealTransaction: Hashable {
             let formattedValue: String
             let currencySymbol: String
+
+            /// Use for only analytics parameter value
+            let blockchainName: String
+
             let onTransactionDiscard: () -> Void
 
             static func == (lhs: Self, rhs: Self) -> Bool {
@@ -271,17 +289,18 @@ extension TokenNotificationEvent {
     var analyticsEvent: Analytics.Event? {
         switch self {
         case .networkUnreachable: return .tokenNoticeNetworkUnreachable
-        case .someNetworksUnreachable: return .mainNoticeNetworksUnreachable
+        case .networkNotUpdated: return nil
         case .rentFee: return nil
         case .noAccount: return nil
         case .existentialDepositWarning: return nil
         case .notEnoughFeeForTransaction: return .tokenNoticeNotEnoughFee
         case .bnbBeaconChainRetirement: return nil
         case .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation): return nil
-        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction): return nil
+        case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction): return .tokenNoticeRevealTransaction
         case .staking: return nil
         case .manaLevel: return nil
         case .maticMigration: return nil
+        case .kaspaTokensBeta: return nil
         }
     }
 
@@ -291,10 +310,8 @@ extension TokenNotificationEvent {
             return [.token: currencySymbol]
         case .notEnoughFeeForTransaction(let configuration):
             return [.token: configuration.eventConfiguration.feeAmountTypeCurrencySymbol]
-        case .someNetworksUnreachable(let networks):
-            return [.tokens: networks.joined(separator: ", ")]
         case .hasUnfulfilledRequirements(configuration: .incompleteKaspaTokenTransaction(let revealTransaction)):
-            return [.token: revealTransaction.currencySymbol]
+            return [.token: revealTransaction.currencySymbol, .blockchain: revealTransaction.blockchainName]
         case .rentFee,
              .noAccount,
              .existentialDepositWarning,
@@ -302,7 +319,9 @@ extension TokenNotificationEvent {
              .hasUnfulfilledRequirements(configuration: .missingHederaTokenAssociation),
              .staking,
              .manaLevel,
-             .maticMigration:
+             .maticMigration,
+             .kaspaTokensBeta,
+             .networkNotUpdated:
             return [:]
         }
     }

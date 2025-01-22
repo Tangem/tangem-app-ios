@@ -23,7 +23,6 @@ class OnboardingCoordinator: CoordinatorObject {
 
     // MARK: - Child view models
 
-    @Published var warningBankCardViewModel: WarningBankCardViewModel? = nil
     @Published var modalWebViewModel: WebViewContainerViewModel? = nil
     @Published var accessCodeModel: OnboardingAccessCodeViewModel? = nil
     @Published var addressQrBottomSheetContentViewModel: AddressQrBottomSheetContentViewModel? = nil
@@ -101,31 +100,6 @@ extension OnboardingCoordinator: OnboardingTopupRoutable {
             self?.safariHandle = nil
             action()
         }
-    }
-
-    func openBankWarning(confirmCallback: @escaping () -> Void, declineCallback: @escaping () -> Void) {
-        let delay = 0.6
-        warningBankCardViewModel = .init(confirmCallback: { [weak self] in
-            self?.warningBankCardViewModel = nil
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                confirmCallback()
-            }
-        }, declineCallback: { [weak self] in
-            self?.warningBankCardViewModel = nil
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                declineCallback()
-            }
-        })
-    }
-
-    func openP2PTutorial() {
-        modalWebViewModel = WebViewContainerViewModel(
-            url: URL(string: "https://tangem.com/howtobuy.html")!,
-            title: "",
-            addLoadingIndicator: true,
-            withCloseButton: false,
-            urlActions: [:]
-        )
     }
 
     func openQR(shareAddress: String, address: String, qrNotice: String) {

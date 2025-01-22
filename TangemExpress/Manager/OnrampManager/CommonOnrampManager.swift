@@ -93,7 +93,7 @@ extension CommonOnrampManager: OnrampManager {
             let data = try await apiProvider.onrampData(item: requestItem)
             return data
         } catch let error as ExpressAPIError {
-            analyticsLogger.logExpressAPIError(error, provider: provider.provider)
+            analyticsLogger.logExpressAPIError(error, provider: provider.provider, paymentMethod: provider.paymentMethod)
             throw error
         } catch {
             analyticsLogger.logAppError(error, provider: provider.provider)
@@ -210,7 +210,7 @@ private extension CommonOnrampManager {
         return CommonOnrampProviderManager(
             pairItem: item,
             expressProvider: provider,
-            paymentMethodId: paymentMethod.id,
+            paymentMethod: paymentMethod,
             apiProvider: apiProvider,
             analyticsLogger: analyticsLogger,
             logger: logger,

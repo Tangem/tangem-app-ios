@@ -65,7 +65,7 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
                 case .noAccount(let message, _):
                     AppLog.shared.debug(message)
                     fallthrough
-                case .idle:
+                case .loaded:
                     if shouldGoToNextStep,
                        !walletModel.isEmptyIncludingPendingIncomingTxs,
                        !walletModel.isZeroAmount {
@@ -118,35 +118,18 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
 // MARK: - Navigation
 
 extension OnboardingTopupViewModel {
-    func openCryptoShopIfPossible() {
-        Analytics.log(.buttonBuyCrypto)
-
-        if tangemApiService.geoIpRegionCode == LanguageCode.ru {
-            coordinator?.openBankWarning {
-                self.openBuyCrypto()
-            } declineCallback: {
-                self.openP2PTutorial()
-            }
-        } else {
-            openBuyCrypto()
-        }
-    }
-
     func openQR() {
         Analytics.log(.onboardingButtonShowTheWalletAddress)
 
         coordinator?.openQR(shareAddress: shareAddress, address: walletAddress, qrNotice: qrNoticeMessage)
     }
 
-    private func openBuyCrypto() {
+    func openBuyCrypto() {
         guard let url = buyCryptoURL else { return }
 
+        Analytics.log(.buttonBuyCrypto)
         coordinator?.openCryptoShop(at: url) { [weak self] in
             self?.updateCardBalance()
         }
-    }
-
-    private func openP2PTutorial() {
-        coordinator?.openP2PTutorial()
     }
 }

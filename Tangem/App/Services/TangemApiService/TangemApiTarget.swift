@@ -67,6 +67,13 @@ struct TangemApiTarget: TargetType {
             return "/coins/\(requestModel.tokenId)/history"
         case .tokenExchangesList(let requestModel):
             return "/coins/\(requestModel.tokenId)/exchanges"
+
+            // MARK: SeedNotify
+
+        case .seedNotifyGetStatus(let userWalletId), .seedNotifySetStatus(let userWalletId, _):
+            return "/seedphrase-notification/\(userWalletId)"
+        case .walletInitialized:
+            return "/user-tokens"
         }
     }
 
@@ -85,16 +92,19 @@ struct TangemApiTarget: TargetType {
              .coinsHistoryChartPreview,
              .tokenMarketsDetails,
              .historyChart,
-             .tokenExchangesList:
+             .tokenExchangesList,
+             .seedNotifyGetStatus:
             return .get
-        case .saveUserWalletTokens:
+        case .saveUserWalletTokens,
+             .seedNotifySetStatus:
             return .put
         case .participateInReferralProgram,
              .validateNewUserPromotionEligibility,
              .validateOldUserPromotionEligibility,
              .awardNewUser,
              .awardOldUser,
-             .createAccount:
+             .createAccount,
+             .walletInitialized:
             return .post
         case .resetAward:
             return .delete
@@ -172,8 +182,18 @@ struct TangemApiTarget: TargetType {
                 ],
                 encoding: URLEncoding.default
             )
-        case .tokenExchangesList:
+        case .seedNotifySetStatus(_, let status):
+            let requestModel = SeedNotifyDTO(status: status)
+            return .requestParameters(requestModel, encoding: URLEncoding.default)
+        case .tokenExchangesList, .seedNotifyGetStatus:
             return .requestPlain
+        case .walletInitialized(let userWalletId):
+            return .requestParameters(
+                parameters: [
+                    "user_wallet_id": userWalletId,
+                ],
+                encoding: URLEncoding.default
+            )
         }
     }
 
@@ -220,6 +240,11 @@ extension TangemApiTarget {
 
         // Configs
         case apiList
+
+        // Seed notification
+        case seedNotifyGetStatus(userWalletId: String)
+        case seedNotifySetStatus(userWalletId: String, status: SeedNotifyStatus)
+        case walletInitialized(userWalletId: String)
     }
 
     struct AuthData {
@@ -248,7 +273,7 @@ extension TangemApiTarget: TargetTypeLogConvertible {
         switch type {
         case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart, .tokenMarketsDetails, .tokenExchangesList:
             return false
-        case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward:
+        case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward, .seedNotifyGetStatus, .seedNotifySetStatus, .walletInitialized:
             return true
         }
     }

@@ -109,14 +109,20 @@ class PendingExpressTxStatusBottomSheetViewModel: ObservableObject, Identifiable
     }
 
     func onAppear() {
-        let params: [Analytics.ParameterKey: String] = [
+        var params: [Analytics.ParameterKey: String] = [
             .token: currentTokenItem.currencySymbol,
             .provider: pendingTransaction.provider.name,
         ]
 
         switch pendingTransaction.type {
-        case .onramp:
+        case .onramp(_, let currency, _):
+            params[.currency] = currency
             Analytics.log(event: .onrampOnrampStatusOpened, params: params)
+
+            if pendingTransaction.transactionStatus == .verificationRequired {
+                Analytics.log(event: .onrampNoticeKYC, params: params)
+            }
+
         case .swap:
             Analytics.log(event: .tokenSwapStatusScreenOpened, params: params)
         }
