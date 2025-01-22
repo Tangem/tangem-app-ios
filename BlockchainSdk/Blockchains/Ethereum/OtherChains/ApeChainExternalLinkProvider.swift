@@ -9,7 +9,7 @@
 struct ApeChainExternalLinkProvider: ExternalLinkProvider {
     private let baseExplorerUrl: String
 
-    let testnetFaucetURL = URL(string: "")
+    let testnetFaucetURL = URL(string: "https://curtis.hub.caldera.xyz")
 
     init(isTestnet: Bool) {
         baseExplorerUrl = isTestnet
