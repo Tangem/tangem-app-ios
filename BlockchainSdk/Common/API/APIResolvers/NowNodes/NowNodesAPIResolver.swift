@@ -94,6 +94,8 @@ struct NowNodesAPIResolver {
             link = "https://sui.nownodes.io/\(apiKey)"
         case .tezos:
             link = "https://xtz.nownodes.io/\(apiKey)"
+        case .odysseyChain:
+            link = "https://odyssey.nownodes.io/ext/bc/D/rpc"
         default:
             return nil
         }
