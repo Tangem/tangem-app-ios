@@ -603,7 +603,7 @@ public indirect enum Blockchain: Equatable, Hashable {
         case .apeChain:
             return isTestnet ? "Curtis Testnet" : "ApeChain"
         case .sonic:
-            return "Sonic" + testnetSuffix
+            return "Sonic" + (isTestnet ? " Blaze Testnet" : "")
         default:
             var name = "\(self)".capitalizingFirstLetter()
             if let index = name.firstIndex(of: "(") {
