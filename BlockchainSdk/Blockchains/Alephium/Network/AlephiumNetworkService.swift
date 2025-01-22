@@ -84,8 +84,22 @@ class AlephiumNetworkService: MultiNetworkProvider {
         providerPublisher { provider in
             provider
                 .getUTXOs(address: address)
-                .map { utxos in
-                    []
+                .map { result in
+                    let utxo: [AlephiumUTXO] = result.utxos.compactMap {
+                        guard let amountValue = Decimal(stringValue: $0.amount) else {
+                            return nil
+                        }
+
+                        return AlephiumUTXO(
+                            hint: $0.ref.hint,
+                            key: $0.ref.key,
+                            value: amountValue,
+                            lockTime: $0.lockTime,
+                            additionalData: $0.additionalData
+                        )
+                    }
+
+                    return utxo
                 }
                 .eraseToAnyPublisher()
         }

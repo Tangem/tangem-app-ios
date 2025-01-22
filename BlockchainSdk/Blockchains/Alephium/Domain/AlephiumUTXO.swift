@@ -12,6 +12,6 @@ struct AlephiumUTXO {
     let hint: Int
     let key: String
     let value: Decimal
-    let lockTime: UInt64
+    let lockTime: Int64
     let additionalData: String
 }
