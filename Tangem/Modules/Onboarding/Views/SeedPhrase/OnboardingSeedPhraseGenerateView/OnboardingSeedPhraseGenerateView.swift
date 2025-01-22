@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct OnboardingSeedPhraseGenerateView: View {
     @ObservedObject var viewModel: OnboardingSeedPhraseGenerateViewModel
@@ -106,8 +107,20 @@ struct OnboardingSeedPhraseGenerateView: View {
                     Text("\(index + 1).\t")
                         .style(Fonts.Regular.subheadline, color: Colors.Text.tertiary)
 
-                    Text("\(viewModel.words[index])")
+                    let wordView = Text("\(viewModel.words[index])")
                         .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
+
+                    // The order of the `fixedSize` modifier must be different on iOS 15 and iOS 16+,
+                    // otherwise the layout will be broken
+                    if #available(iOS 16.0, *) {
+                        wordView
+                            .screenCaptureProtection()
+                            .fixedSize()
+                    } else {
+                        wordView
+                            .fixedSize()
+                            .screenCaptureProtection()
+                    }
 
                     Spacer()
                 }

@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftUI
+import TangemUI
 
 struct ExpressCurrencyView<Content: View>: View {
     @ObservedObject private var viewModel: ExpressCurrencyViewModel
