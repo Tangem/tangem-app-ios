@@ -8,7 +8,9 @@
 
 import Foundation
 import BlockchainSdk
-import TangemStaking
+import TangemFoundation
+
+typealias WalletModelId = WalletModel.ID
 
 extension WalletModel: Equatable {
     static func == (lhs: WalletModel, rhs: WalletModel) -> Bool {
@@ -18,29 +20,29 @@ extension WalletModel: Equatable {
 
 extension WalletModel {
     struct Id: Hashable, Identifiable, Equatable {
-        var id: Int { hashValue }
+        let id: String
+        let tokenItem: TokenItem
 
-        var key: String {
-            let network = blockchainNetwork.blockchain.networkId
-            let contract = amountType.token?.contractAddress ?? "coin"
-            return "\(network)_\(contract)"
+        init(tokenItem: TokenItem) {
+            self.tokenItem = tokenItem
+
+            let network = tokenItem.networkId
+            let contract = tokenItem.contractAddress ?? "coin"
+            let path = tokenItem.blockchainNetwork.derivationPath?.rawPath ?? "no_derivation"
+            id = "\(network)_\(contract)_\(path)"
         }
-
-        let blockchainNetwork: BlockchainNetwork
-        let amountType: Amount.AmountType
     }
 }
 
 extension WalletModel: Identifiable {
-    var id: Int {
-        Id(blockchainNetwork: blockchainNetwork, amountType: amountType).id
+    var id: String {
+        walletModelId.id
     }
 }
 
 extension WalletModel: Hashable {
     func hash(into hasher: inout Hasher) {
-        let id = Id(blockchainNetwork: blockchainNetwork, amountType: amountType)
-        hasher.combine(id)
+        hasher.combine(walletModelId)
     }
 }
 
@@ -73,7 +75,7 @@ extension WalletModel {
 
 extension WalletModel: CustomStringConvertible {
     var description: String {
-        objectDescription(
+        TangemFoundation.objectDescription(
             self,
             userInfo: [
                 "name": name,

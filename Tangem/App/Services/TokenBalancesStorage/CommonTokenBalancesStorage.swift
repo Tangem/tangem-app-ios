@@ -37,19 +37,19 @@ class CommonTokenBalancesStorage {
 // MARK: - TokenBalancesStorage
 
 extension CommonTokenBalancesStorage: TokenBalancesStorage {
-    func store(balance: CachedBalance, type: CachedBalanceType, id: WalletModel.Id, userWalletId: UserWalletId) {
+    func store(balance: CachedBalance, type: CachedBalanceType, id: WalletModelId, userWalletId: UserWalletId) {
         lock.withLock {
             var balancesForWallet = balances[userWalletId.stringValue, default: [:]]
-            balancesForWallet.updateValue([type: balance], forKey: id.key)
+            balancesForWallet.updateValue([type: balance], forKey: id)
             balances.updateValue(balancesForWallet, forKey: userWalletId.stringValue)
             log(try! balances.json())
             save()
         }
     }
 
-    func balance(for id: WalletModel.Id, userWalletId: UserWalletId, type: CachedBalanceType) -> CachedBalance? {
+    func balance(for id: WalletModelId, userWalletId: UserWalletId, type: CachedBalanceType) -> CachedBalance? {
         lock.withLock {
-            balances[userWalletId.stringValue]?[id.key]?[type]
+            balances[userWalletId.stringValue]?[id]?[type]
         }
     }
 }

@@ -18,9 +18,7 @@ class WalletModel {
     @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
 
-    var walletModelId: WalletModel.Id {
-        .init(blockchainNetwork: blockchainNetwork, amountType: amountType)
-    }
+    private(set) lazy var walletModelId: WalletModel.Id = .init(tokenItem: tokenItem)
 
     /// Listen for fiat and balance changes. This publisher will not be called if the is nothing changed. Use `update(silent:)` for waiting for update
     var walletDidChangePublisher: AnyPublisher<WalletModel.State, Never> {

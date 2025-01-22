@@ -24,10 +24,10 @@ struct CommonTokenBalancesRepository {
 
 extension CommonTokenBalancesRepository: TokenBalancesRepository {
     func balance(wallet: WalletModel, type: CachedBalanceType) -> CachedBalance? {
-        storage.balance(for: wallet.walletModelId, userWalletId: userWalletId, type: type)
+        storage.balance(for: wallet.id, userWalletId: userWalletId, type: type)
     }
 
     func store(balance: CachedBalance, for wallet: WalletModel, type: CachedBalanceType) {
-        storage.store(balance: balance, type: type, id: wallet.walletModelId, userWalletId: userWalletId)
+        storage.store(balance: balance, type: type, id: wallet.id, userWalletId: userWalletId)
     }
 }

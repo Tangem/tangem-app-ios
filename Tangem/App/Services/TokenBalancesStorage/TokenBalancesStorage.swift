@@ -9,8 +9,8 @@
 import Foundation
 
 protocol TokenBalancesStorage {
-    func store(balance: CachedBalance, type: CachedBalanceType, id: WalletModel.Id, userWalletId: UserWalletId)
-    func balance(for id: WalletModel.Id, userWalletId: UserWalletId, type: CachedBalanceType) -> CachedBalance?
+    func store(balance: CachedBalance, type: CachedBalanceType, id: WalletModelId, userWalletId: UserWalletId)
+    func balance(for id: WalletModelId, userWalletId: UserWalletId, type: CachedBalanceType) -> CachedBalance?
 }
 
 private struct TokenBalancesStorageKey: InjectionKey {
