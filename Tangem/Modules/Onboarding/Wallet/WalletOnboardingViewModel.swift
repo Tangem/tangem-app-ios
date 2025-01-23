@@ -309,6 +309,10 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
         bind()
     }
 
+    deinit {
+        AppLog.shared.debug("WalletOnboardingViewModel deinit")
+    }
+
     func onAppear() {
         if isInitialAnimPlayed {
             return

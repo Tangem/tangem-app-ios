@@ -45,6 +45,10 @@ class OnboardingCoordinator: CoordinatorObject {
         self.popToRootAction = popToRootAction
     }
 
+    deinit {
+        AppLog.shared.debug("OnboardingCoordinator deinit")
+    }
+
     func start(with options: OnboardingCoordinator.Options) {
         self.options = options
         let input = options.input

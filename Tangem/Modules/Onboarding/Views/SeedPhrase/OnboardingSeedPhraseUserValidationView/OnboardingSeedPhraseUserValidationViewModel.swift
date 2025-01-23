@@ -35,6 +35,10 @@ class OnboardingSeedPhraseUserValidationViewModel: ObservableObject {
         bind()
     }
 
+    deinit {
+        AppLog.shared.debug("OnboardingSeedPhraseUserValidationViewModel deinit")
+    }
+
     func createWallet() {
         input.createWalletAction()
     }

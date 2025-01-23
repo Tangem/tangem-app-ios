@@ -32,6 +32,10 @@ class OnboardingSeedPhraseGenerateViewModel: ObservableObject {
         bind()
     }
 
+    deinit {
+        AppLog.shared.debug("OnboardingSeedPhraseGenerateViewModel deinit")
+    }
+
     func continueAction() {
         delegate?.continuePhraseGeneration(with: selectedLength.entropyLength)
     }

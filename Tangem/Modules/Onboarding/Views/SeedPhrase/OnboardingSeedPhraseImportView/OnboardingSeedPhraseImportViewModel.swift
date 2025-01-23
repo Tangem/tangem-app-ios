@@ -36,6 +36,10 @@ class OnboardingSeedPhraseImportViewModel: ObservableObject {
         bind()
     }
 
+    deinit {
+        AppLog.shared.debug("OnboardingSeedPhraseImportViewModel deinit")
+    }
+
     func suggestionTapped(at index: Int) {
         inputProcessor.insertSuggestion(suggestions[index])
     }
