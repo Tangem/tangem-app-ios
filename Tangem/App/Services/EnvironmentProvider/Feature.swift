@@ -12,7 +12,6 @@ enum Feature: String, Hashable, CaseIterable {
     case disableFirmwareVersionLimit
     case learnToEarn
     case onramp
-    case actionButtons
     case visa
 
     var name: String {
@@ -20,7 +19,6 @@ enum Feature: String, Hashable, CaseIterable {
         case .disableFirmwareVersionLimit: return "Disable firmware version limit"
         case .learnToEarn: return "Learn to Earn"
         case .onramp: return "Onramp"
-        case .actionButtons: return "Action buttons"
         case .visa: return "Visa"
         }
     }
@@ -30,7 +28,6 @@ enum Feature: String, Hashable, CaseIterable {
         case .disableFirmwareVersionLimit: return .unspecified
         case .learnToEarn: return .unspecified
         case .onramp: return .unspecified
-        case .actionButtons: return .version("5.19")
         case .visa: return .unspecified
         }
     }

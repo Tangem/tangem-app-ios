@@ -95,9 +95,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
         bind()
 
-        if FeatureProvider.isAvailable(.actionButtons) {
-            actionButtonsViewModel = makeActionButtonsViewModel()
-        }
+        actionButtonsViewModel = makeActionButtonsViewModel()
     }
 
     deinit {
@@ -111,9 +109,7 @@ final class MultiWalletMainContentViewModel: ObservableObject {
 
         isUpdating = true
 
-        if FeatureProvider.isAvailable(.actionButtons) {
-            refreshActionButtonsData()
-        }
+        refreshActionButtonsData()
 
         userWalletModel.userTokensManager.sync { [weak self] in
             self?.isUpdating = false
