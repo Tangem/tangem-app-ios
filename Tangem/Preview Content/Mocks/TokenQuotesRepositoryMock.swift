@@ -26,7 +26,7 @@ class TokenQuotesRepositoryMock: TokenQuotesRepository, TokenQuotesRepositoryUpd
     }
 
     func quote(for item: TokenItem) -> TokenQuote? { nil }
-    func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never> { Just([:]).eraseToAnyPublisher() }
+    func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: TokenQuote], Never> { Just([:]).eraseToAnyPublisher() }
     func loadPrice(currencyCode: String, currencyId: String) -> AnyPublisher<Decimal, any Error> {
         Just(1.2345).setFailureType(to: Error.self).eraseToAnyPublisher()
     }

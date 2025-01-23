@@ -95,7 +95,7 @@ struct ActionButtonsChooseTokenView: View {
                     field: .destination,
                     selectedToken: .constant(
                         .init(
-                            id: 0,
+                            id: 0.description,
                             tokenIconInfo: .init(
                                 name: "",
                                 blockchainIconName: "",

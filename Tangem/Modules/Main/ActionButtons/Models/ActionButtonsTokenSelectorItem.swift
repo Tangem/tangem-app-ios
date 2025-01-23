@@ -9,7 +9,7 @@
 import BlockchainSdk
 
 struct ActionButtonsTokenSelectorItem: Identifiable, Equatable {
-    let id: Int
+    let id: String
     let tokenIconInfo: TokenIconInfo
     let name: String
     let symbol: String
