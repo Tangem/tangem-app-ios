@@ -16,14 +16,12 @@ public struct TangemStakingFactory {
         integrationId: String,
         wallet: StakingWallet,
         provider: StakingAPIProvider,
-        logger: Logger,
         analyticsLogger: StakingAnalyticsLogger
     ) -> StakingManager {
         CommonStakingManager(
             integrationId: integrationId,
             wallet: wallet,
             provider: provider,
-            logger: logger,
             analyticsLogger: analyticsLogger
         )
     }

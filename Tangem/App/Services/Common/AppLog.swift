@@ -10,7 +10,6 @@ import Foundation
 import TangemSdk
 import TangemLogger
 import protocol TangemVisa.VisaLogger
-import protocol TangemStaking.Logger
 
 class AppLog {
     static let shared = AppLog()
@@ -60,13 +59,3 @@ class AppLog {
 }
 
 extension AppLog: VisaLogger {}
-
-struct TangemStakingLogger: TangemStaking.Logger {
-    public func debug<T>(_ message: @autoclosure () -> T) {
-        TangemLogger.Logger.debug(.staking, message())
-    }
-
-    public func error(_ error: any Error) {
-        TangemLogger.Logger.error(.staking, error.localizedDescription)
-    }
-}
