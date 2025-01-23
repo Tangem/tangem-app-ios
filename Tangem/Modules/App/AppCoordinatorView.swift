@@ -51,28 +51,29 @@ struct AppCoordinatorView: CoordinatorView {
 
     @ViewBuilder
     private var content: some View {
+        // We need stack to force transition animation work
         ZStack {
             switch coordinator.viewState {
             case .welcome(let welcomeCoordinator):
                 WelcomeCoordinatorView(coordinator: welcomeCoordinator)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(true)
             case .uncompleteBackup(let uncompletedBackupCoordinator):
                 UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(true)
             case .auth(let authCoordinator):
                 AuthCoordinatorView(coordinator: authCoordinator)
                     .setNamespace(namespace)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(true)
             case .main(let mainCoordinator):
                 MainCoordinatorView(coordinator: mainCoordinator)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(false)
             case .onboarding(let onboardingCoordinator):
                 OnboardingCoordinatorView(coordinator: onboardingCoordinator)
-                    .transition(.opacity)
+                    .transition(.opacity.animation(.easeIn))
                     .navigationBarHidden(true)
             case .lock:
                 LockView(usesNamespace: true)
@@ -82,7 +83,5 @@ struct AppCoordinatorView: CoordinatorView {
                 EmptyView()
             }
         }
-        // We need stack to force transition animation work
-        .animation(.easeIn, value: coordinator.viewState)
     }
 }

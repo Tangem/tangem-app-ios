@@ -1,6 +1,6 @@
 //
-//  View+ReadGeometry.swift
-//  Tangem
+//  GeometryInfoReaderViewModifier.swift
+//  TangemUI
 //
 //  Created by Andrey Fedorov on 14.06.2023.
 //  Copyright © 2023 Tangem AG. All rights reserved.
@@ -8,60 +8,9 @@
 
 import SwiftUI
 
-struct GeometryInfo: Equatable {
-    static var zero: Self {
-        return GeometryInfo(
-            coordinateSpace: .local,
-            frame: .zero,
-            size: .zero,
-            safeAreaInsets: .init()
-        )
-    }
-
-    let coordinateSpace: CoordinateSpace
-    let frame: CGRect
-    let size: CGSize
-    let safeAreaInsets: EdgeInsets
-
-    fileprivate init(
-        coordinateSpace: CoordinateSpace,
-        frame: CGRect,
-        size: CGSize,
-        safeAreaInsets: EdgeInsets
-    ) {
-        self.coordinateSpace = coordinateSpace
-        self.frame = frame
-        self.size = size
-        self.safeAreaInsets = safeAreaInsets
-    }
-}
-
-extension GeometryInfo {
-    struct ThrottleInterval: ExpressibleByFloatLiteral {
-        // No throttling at all.
-        static let zero = ThrottleInterval(0.0)
-        /// Aggressive throttling, use for non-precision tasks.
-        static let aggressive = ThrottleInterval(1.0 / 30.0)
-        /// Standard 60 FPS (single frame duration: ~16msec).
-        static let standard = ThrottleInterval(1.0 / 60.0)
-        /// 120 FPS on ProMotion capable devices (single frame duration: ~8msec).
-        static let proMotion = ThrottleInterval(1.0 / 120.0)
-
-        fileprivate let value: CFTimeInterval
-
-        init(_ value: CFTimeInterval) {
-            self.value = value
-        }
-
-        init(floatLiteral value: CFTimeInterval) {
-            self.value = value
-        }
-    }
-}
-
 // MARK: - Convenience extensions
 
-extension View {
+public extension View {
     /// Closure-based helper. Use optional `keyPath` parameter if you aren't interested
     /// in the whole `GeometryInfo` but rather a single property of it.
     func readGeometry<T>(
@@ -107,6 +56,59 @@ extension View {
             throttleInterval: throttleInterval
         ) { newValue in
             value.wrappedValue = newValue
+        }
+    }
+}
+
+// MARK: - Auxiliary types
+
+public struct GeometryInfo: Equatable {
+    public static var zero: Self {
+        return GeometryInfo(
+            coordinateSpace: .local,
+            frame: .zero,
+            size: .zero,
+            safeAreaInsets: .init()
+        )
+    }
+
+    public let coordinateSpace: CoordinateSpace
+    public let frame: CGRect
+    public let size: CGSize
+    public let safeAreaInsets: EdgeInsets
+
+    fileprivate init(
+        coordinateSpace: CoordinateSpace,
+        frame: CGRect,
+        size: CGSize,
+        safeAreaInsets: EdgeInsets
+    ) {
+        self.coordinateSpace = coordinateSpace
+        self.frame = frame
+        self.size = size
+        self.safeAreaInsets = safeAreaInsets
+    }
+}
+
+public extension GeometryInfo {
+    struct ThrottleInterval: ExpressibleByFloatLiteral {
+        // No throttling at all.
+        public static let zero = ThrottleInterval(0.0)
+        /// Aggressive throttling, use for non-precision tasks.
+        public static let aggressive = ThrottleInterval(1.0 / 30.0)
+        /// Standard 60 FPS (single frame duration: ~16msec).
+        public static let standard = ThrottleInterval(1.0 / 60.0)
+        /// 120 FPS on ProMotion capable devices (single frame duration: ~8msec).
+        public static let proMotion = ThrottleInterval(1.0 / 120.0)
+
+        fileprivate let value: CFTimeInterval
+
+        public init(_ value: CFTimeInterval) {
+            self.value = value
+        }
+
+        public init(floatLiteral value: CFTimeInterval) {
+            self.value = value
         }
     }
 }
