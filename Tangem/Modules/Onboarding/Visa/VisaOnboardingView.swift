@@ -40,7 +40,7 @@ struct VisaOnboardingView: View {
                     title: .init(font: Fonts.RegularStatic.body),
                     backgroundColor: .clear
                 ),
-                leftItems: {
+                leftButtons: {
                     BackButton(
                         height: viewModel.navigationBarHeight,
                         isVisible: viewModel.isBackButtonVisible,
@@ -48,7 +48,7 @@ struct VisaOnboardingView: View {
                         action: viewModel.backButtonAction
                     )
                 },
-                rightItems: {
+                rightButtons: {
                     SupportButton(
                         height: viewModel.navigationBarHeight,
                         isVisible: viewModel.isSupportButtonVisible,
