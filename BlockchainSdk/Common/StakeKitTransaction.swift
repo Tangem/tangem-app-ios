@@ -13,6 +13,7 @@ public struct StakeKitTransaction: Hashable {
     let amount: Amount
     let fee: Fee
     let unsignedData: String
+    public let type: String
     public let stepIndex: Int
     let params: StakeKitTransactionParams
 
@@ -21,6 +22,7 @@ public struct StakeKitTransaction: Hashable {
         amount: Amount,
         fee: Fee,
         unsignedData: String,
+        type: String,
         stepIndex: Int,
         params: StakeKitTransactionParams
     ) {
@@ -28,6 +30,7 @@ public struct StakeKitTransaction: Hashable {
         self.amount = amount
         self.fee = fee
         self.unsignedData = unsignedData
+        self.type = type
         self.stepIndex = stepIndex
         self.params = params
     }

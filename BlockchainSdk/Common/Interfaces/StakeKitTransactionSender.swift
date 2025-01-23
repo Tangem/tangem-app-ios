@@ -42,6 +42,7 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                     ).async()
 
                     _ = try await withThrowingTaskGroup(of: (TransactionSendResult, StakeKitTransaction).self) { group in
+                        var results = [TransactionSendResult]()
                         for (index, (transaction, signature)) in zip(transactions, signatures).enumerated() {
                             let rawTransaction = try self.prepareDataForSend(
                                 transaction: transaction,
@@ -61,9 +62,18 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                                 )
                                 return (result, transaction)
                             }
+
+                            if transaction.type == "SPLIT" {
+                                // Wait for the current task to complete before adding the next one
+                                if let result = try await group.next() {
+                                    results.append(result.0)
+                                    continuation.yield(.init(transaction: result.1, result: result.0))
+                                    try await Task.sleep(nanoseconds: 5 * NSEC_PER_SEC)
+                                }
+                            }
                         }
 
-                        for try await result in group {
+                        for try await result in group where !results.contains(result.0) {
                             continuation.yield(.init(transaction: result.1, result: result.0))
                         }
                         return []

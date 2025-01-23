@@ -24,6 +24,7 @@ extension StakingTransactionInfo {
         network: "solana",
         unsignedTransactionData: "",
         fee: 1.23,
+        type: "STAKE",
         stepIndex: 0
     )
 }

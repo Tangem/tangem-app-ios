@@ -29,6 +29,7 @@ struct StakingTransactionMapper {
                 amount: amount,
                 fee: Fee(feeAmount),
                 unsignedData: transaction.unsignedTransactionData,
+                type: transaction.type,
                 stepIndex: transaction.stepIndex,
                 params: StakeKitTransactionParams(
                     validator: action.validator,
