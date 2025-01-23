@@ -15,3 +15,7 @@ protocol OnboardingRoutable: AnyObject {
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType)
     func openWebView(with url: URL)
 }
+
+protocol OnboardingBrowserRoutable: AnyObject {
+    func openBrowser(at url: URL, onSuccess: @escaping (URL) -> Void)
+}
