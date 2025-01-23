@@ -319,15 +319,27 @@ private extension CommonStakingManager {
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: Constants.delay)
 
-        let transactions = try await action.transactions.asyncMap { transaction in
-            try await execute(try await provider.patchTransaction(id: transaction.id))
+        let transactions = try await withThrowingTaskGroup(of: StakingTransactionInfo.self) { group in
+            action.transactions.forEach { transaction in
+                group.addTask {
+                    try Task.checkCancellation()
+                    return try await self.execute(try await self.provider.patchTransaction(id: transaction.id))
+                }
+            }
+
+            var transactions = [StakingTransactionInfo]()
+            for try await transaction in group {
+                transactions.append(transaction)
+            }
+
+            return transactions
         }
 
         return mapToStakingTransactionAction(
             actionID: action.id,
             amount: action.amount,
             validator: request.validator,
-            transactions: transactions
+            transactions: transactions.sorted(by: \.stepIndex)
         )
     }
 

@@ -51,11 +51,11 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
 
                             group.addTask {
                                 try Task.checkCancellation()
-//                                if transactions.count > 1, let second {
-//                                    Log.log("\(self) start \(second) second delay between the transactions sending")
-//                                    try await Task.sleep(nanoseconds: UInt64(index) * second * NSEC_PER_SEC)
-//                                    try Task.checkCancellation()
-//                                }
+                                if transactions.count > 1, let second {
+                                    Log.log("\(self) start \(second) second delay between the transactions sending")
+                                    try await Task.sleep(nanoseconds: UInt64(index) * second * NSEC_PER_SEC)
+                                    try Task.checkCancellation()
+                                }
                                 let result: TransactionSendResult = try await self.broadcast(
                                     transaction: transaction,
                                     rawTransaction: rawTransaction
@@ -69,7 +69,9 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                                 if let result = try await group.next() {
                                     results.append(result.0)
                                     continuation.yield(.init(transaction: result.1, result: result.0))
-                                    try await Task.sleep(nanoseconds: second * NSEC_PER_SEC)
+                                    let delay = result.1.type == "SPLIT" ? 20 : second
+                                    try await Task.sleep(nanoseconds: delay * NSEC_PER_SEC)
+                                        
                                 }
                             }
                         }

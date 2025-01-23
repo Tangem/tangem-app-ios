@@ -33,7 +33,7 @@ struct StakingTransactionMapper {
                 stepIndex: transaction.stepIndex,
                 params: StakeKitTransactionParams(
                     validator: action.validator,
-                    solanaBlockhashDate: Date()
+                    solanaBlockhashDate: transaction.createdAt ?? Date()
                 )
             )
 
