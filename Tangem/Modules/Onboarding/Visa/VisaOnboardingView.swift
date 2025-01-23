@@ -80,6 +80,10 @@ struct VisaOnboardingView: View {
             if let viewModel = viewModel.tangemWalletApproveViewModel {
                 VisaOnboardingTangemWalletDeployApproveView(viewModel: viewModel)
             }
+        case .approveUsingWalletConnect:
+            if let viewModel = viewModel.walletConnectViewModel {
+                VisaOnboardingWalletConnectView(viewModel: viewModel)
+            }
         case .inProgress:
             if let viewModel = viewModel.inProgressViewModel {
                 VisaOnboardingInProgressView(viewModel: viewModel)

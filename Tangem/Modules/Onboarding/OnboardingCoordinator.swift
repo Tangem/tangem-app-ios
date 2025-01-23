@@ -92,16 +92,20 @@ extension OnboardingCoordinator {
     }
 }
 
+// MARK: - OnboardingBrowserRoutable
+
+extension OnboardingCoordinator: OnboardingBrowserRoutable {
+    func openBrowser(at url: URL, onSuccess: @escaping (URL) -> Void) {
+        safariHandle = safariManager.openURL(url, onSuccess: { [weak self] onSuccessURL in
+            onSuccess(onSuccessURL)
+            self?.safariHandle = nil
+        })
+    }
+}
+
 // MARK: - OnboardingTopupRoutable
 
 extension OnboardingCoordinator: OnboardingTopupRoutable {
-    func openCryptoShop(at url: URL, action: @escaping () -> Void) {
-        safariHandle = safariManager.openURL(url) { [weak self] _ in
-            self?.safariHandle = nil
-            action()
-        }
-    }
-
     func openQR(shareAddress: String, address: String, qrNotice: String) {
         addressQrBottomSheetContentViewModel = .init(shareAddress: shareAddress, address: address, qrNotice: qrNotice)
     }
