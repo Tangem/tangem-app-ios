@@ -308,11 +308,5 @@ extension CardanoWalletManager: StakeKitTransactionSender, StakeKitTransactionSe
 
             return try stakeKitTransactionHelper.prepareForSend(transaction, signatures: signatures)
         }
-//        return try signatures.map { signature in
-//            guard let transaction = transactionHashes[signature.hash] else {
-//                throw WalletError.empty
-//            }
-//            return try stakeKitTransactionHelper.prepareForSend(transaction, signatures: signatures)
-//        }
     }
 }

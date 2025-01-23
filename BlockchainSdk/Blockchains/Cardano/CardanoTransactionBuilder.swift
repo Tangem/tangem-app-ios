@@ -281,7 +281,12 @@ private extension CardanoTransactionBuilder {
         return input
     }
 
-    func buildCardanoSigningInput(source: String, destination: String, option: BuildCardanoSigningInputOption, tokenAmount: TokenAmount?) throws -> CardanoSigningInput {
+    func buildCardanoSigningInput(
+        source: String,
+        destination: String,
+        option: BuildCardanoSigningInputOption,
+        tokenAmount: TokenAmount?
+    ) throws -> CardanoSigningInput {
         var input = try CardanoSigningInput.with {
             $0.utxos = try buildTxInput()
 
