@@ -36,7 +36,8 @@ final class CardActivationTask: CardSessionRunnable {
 
     private var taskCancellationError: TangemSdkError?
 
-    private var orderPublisher = CurrentValueSubject<CardActivationOrder?, Never>(nil)
+    private var orderPublisher = CurrentValueSubject<CardActivationOrder?, Error>(nil)
+    private var orderSubscription: AnyCancellable?
 
     init(
         selectedAccessCode: String,
@@ -152,15 +153,36 @@ private extension CardActivationTask {
     }
 
     func waitForOrder(rootOTP: Data, in session: CardSession, completion: @escaping CompletionHandler) {
-        completion(.failure(.underlying(error: VisaActivationError.notImplemented)))
         // TODO: IOS-8572
+        // For demo purposes only mocked implementation
+        if let taskCancellationError {
+            completion(.failure(taskCancellationError))
+            return
+        }
+
+        orderSubscription = orderPublisher
+            .compactMap { $0 }
+            .sink(receiveCompletion: { [weak self] orderPublisherCompletion in
+                if case .failure(let error) = orderPublisherCompletion {
+                    completion(.failure(.underlying(error: error)))
+                }
+
+                self?.orderSubscription = nil
+            }, receiveValue: { activationOrder in
+                self.signOrder(
+                    orderToSign: activationOrder,
+                    in: session,
+                    completion: completion
+                )
+                self.orderSubscription = nil
+            })
     }
 }
 
 // MARK: - Order signing
 
 private extension CardActivationTask {
-    func signOrder(orderToSign: Data, in session: CardSession, completion: @escaping CompletionHandler) {
+    func signOrder(orderToSign: CardActivationOrder, in session: CardSession, completion: @escaping CompletionHandler) {
         let signOrderTask = SignActivationOrderTask(orderToSign: orderToSign)
 
         signOrderTask.run(in: session, completion: { result in
@@ -262,6 +284,7 @@ private extension CardActivationTask {
             orderPublisher.send(activationOrder)
         case .failure(let error):
             taskCancellationError = .underlying(error: error)
+            orderPublisher.send(completion: .failure(error))
         }
     }
 }

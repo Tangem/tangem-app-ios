@@ -49,7 +49,14 @@ var serviceModules: [PackageDescription.Target] {
             ]
         ),
         .tangemTarget(
-            name: "TangemUIKitUtils",
+            name: "TangemUIUtils",
+            swiftSettings: [
+                // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
+                .swiftLanguageMode(.v5),
+            ]
+        ),
+        .tangemTarget(
+            name: "TangemUI",
             swiftSettings: [
                 // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
                 .swiftLanguageMode(.v5),
