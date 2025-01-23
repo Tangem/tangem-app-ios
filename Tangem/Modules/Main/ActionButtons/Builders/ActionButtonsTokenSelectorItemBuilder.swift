@@ -10,8 +10,8 @@ struct ActionButtonsTokenSelectorItemBuilder: TokenSelectorItemBuilder {
     func map(from walletModel: WalletModel, isDisabled: Bool) -> ActionButtonsTokenSelectorItem {
         let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
         let balanceBuilder = LoadableTokenBalanceViewStateBuilder()
-        let balance = walletModel.combineBalanceProvider.formattedBalanceType
-        let fiatBalance = walletModel.combineFiatBalanceProvider.formattedBalanceType
+        let balance = walletModel.totalTokenBalanceProvider.formattedBalanceType
+        let fiatBalance = walletModel.fiatTotalTokenBalanceProvider.formattedBalanceType
 
         // TODO. Better to use logic
         // from `DefaultTokenItemInfoProvider` or DefaultTokenItemInfoProvider

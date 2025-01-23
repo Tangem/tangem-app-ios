@@ -41,7 +41,7 @@ final class SingleTokenNotificationManager {
     private func bind() {
         bag = []
 
-        walletModel.combineBalanceProvider
+        walletModel.totalTokenBalanceProvider
             .balanceTypePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in

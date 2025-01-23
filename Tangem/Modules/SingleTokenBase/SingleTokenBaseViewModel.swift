@@ -275,7 +275,7 @@ extension SingleTokenBaseViewModel {
     }
 
     private func bind() {
-        walletModel.combineBalanceProvider
+        walletModel.totalTokenBalanceProvider
             .balanceTypePublisher
             .receive(on: DispatchQueue.main)
             .handleEvents(receiveOutput: { [weak self] _ in

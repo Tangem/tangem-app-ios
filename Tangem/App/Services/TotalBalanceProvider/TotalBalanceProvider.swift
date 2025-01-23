@@ -69,7 +69,7 @@ private extension TotalBalanceProvider {
 
         trackTokenBalanceLoaded(walletModels: walletModels)
 
-        let providers = walletModels.map { (tokenItem: $0.tokenItem, provider: $0.combineFiatBalanceProvider) }
+        let providers = walletModels.map { (tokenItem: $0.tokenItem, provider: $0.fiatTotalTokenBalanceProvider) }
 
         if !providers.isEmpty {
             // Setup updating listener

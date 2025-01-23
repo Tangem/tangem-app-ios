@@ -186,7 +186,7 @@ private extension ExpressTokensListViewModel {
     func mapToExpressTokenItemViewModel(walletModel: WalletModel, isDisable: Bool) -> ExpressTokenItemViewModel {
         let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
         let balance = walletModel.availableBalanceProvider.formattedBalanceType.value
-        let fiatBalance = walletModel.availableFiatBalanceProvider.formattedBalanceType.value
+        let fiatBalance = walletModel.fiatAvailableBalanceProvider.formattedBalanceType.value
 
         return ExpressTokenItemViewModel(
             id: walletModel.id,

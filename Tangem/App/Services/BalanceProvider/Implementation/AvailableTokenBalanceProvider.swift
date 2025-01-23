@@ -12,10 +12,12 @@ import Combine
 /// Just simple available to use (e.g. send) balance
 struct AvailableTokenBalanceProvider {
     private let walletModel: WalletModel
+    private let tokenBalancesRepository: TokenBalancesRepository
     private let balanceFormatter = BalanceFormatter()
 
-    init(walletModel: WalletModel) {
+    init(walletModel: WalletModel, tokenBalancesRepository: TokenBalancesRepository) {
         self.walletModel = walletModel
+        self.tokenBalancesRepository = tokenBalancesRepository
     }
 }
 
@@ -23,12 +25,12 @@ struct AvailableTokenBalanceProvider {
 
 extension AvailableTokenBalanceProvider: TokenBalanceProvider {
     var balanceType: TokenBalanceType {
-        mapToTokenBalance(state: walletModel.state)
+        mapToAvailableTokenBalance(state: walletModel.state)
     }
 
     var balanceTypePublisher: AnyPublisher<TokenBalanceType, Never> {
         walletModel.statePublisher
-            .map { self.mapToTokenBalance(state: $0) }
+            .map { self.mapToAvailableTokenBalance(state: $0) }
             .eraseToAnyPublisher()
     }
 
@@ -46,7 +48,21 @@ extension AvailableTokenBalanceProvider: TokenBalanceProvider {
 // MARK: - Private
 
 private extension AvailableTokenBalanceProvider {
-    func mapToTokenBalance(state: WalletModel.State) -> TokenBalanceType {
+    func storeBalance(balance: Decimal) {
+        tokenBalancesRepository.store(
+            balance: .init(balance: balance, date: .now),
+            for: walletModel,
+            type: .available
+        )
+    }
+
+    func cachedBalance() -> TokenBalanceType.Cached? {
+        tokenBalancesRepository.balance(walletModel: walletModel, type: .available).map {
+            .init(balance: $0.balance, date: $0.date)
+        }
+    }
+
+    func mapToAvailableTokenBalance(state: WalletModel.State) -> TokenBalanceType {
         // The `binance` always has zero balance
         if case .binance = walletModel.tokenItem.blockchain {
             return .loaded(0)
@@ -56,13 +72,14 @@ private extension AvailableTokenBalanceProvider {
         case .created:
             return .empty(.noData)
         case .loading:
-            return .loading(nil)
+            return .loading(cachedBalance())
         case .loaded(let balance):
+            storeBalance(balance: balance)
             return .loaded(balance)
         case .noAccount(let message, _):
             return .empty(.noAccount(message: message))
         case .failed:
-            return .failure(nil)
+            return .failure(cachedBalance())
         }
     }
 

@@ -70,7 +70,7 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
                        !walletModel.isEmptyIncludingPendingIncomingTxs,
                        walletModel.balanceState == .positive {
                         if let userWalletId = viewModel.userWalletModel?.userWalletId {
-                            let balance = walletModel.availableFiatBalanceProvider.balanceType.value
+                            let balance = walletModel.fiatAvailableBalanceProvider.balanceType.value
                             Analytics.logTopUpIfNeeded(balance: balance ?? 0, for: userWalletId)
                         }
                         viewModel.goToNextStep()

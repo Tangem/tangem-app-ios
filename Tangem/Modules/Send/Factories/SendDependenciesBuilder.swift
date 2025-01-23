@@ -90,7 +90,7 @@ struct SendDependenciesBuilder {
         default:
             balanceFormatted = .init(
                 crypto: walletModel.availableBalanceProvider.formattedBalanceType.value,
-                fiat: walletModel.availableFiatBalanceProvider.formattedBalanceType.value
+                fiat: walletModel.fiatAvailableBalanceProvider.formattedBalanceType.value
             )
         }
         return Localization.commonCryptoFiatFormat(balanceFormatted.crypto, balanceFormatted.fiat)

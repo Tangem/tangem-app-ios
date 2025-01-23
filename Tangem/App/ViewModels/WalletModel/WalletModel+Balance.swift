@@ -27,38 +27,6 @@ extension WalletModel {
     }
 }
 
-// MARK: - Providers
-
-extension WalletModel {
-    var availableBalanceProvider: TokenBalanceProvider {
-        AvailableTokenBalanceProvider(walletModel: self)
-    }
-
-    var stakingBalanceProvider: TokenBalanceProvider {
-        StakingTokenBalanceProvider(walletModel: self)
-    }
-
-    var combineBalanceProvider: TokenBalanceProvider {
-        TotalTokenBalanceProvider(
-            walletModel: self,
-            availableBalanceProvider: availableBalanceProvider,
-            stakingBalanceProvider: stakingBalanceProvider
-        )
-    }
-
-    var availableFiatBalanceProvider: TokenBalanceProvider {
-        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: availableBalanceProvider)
-    }
-
-    var stakingFiatBalanceProvider: TokenBalanceProvider {
-        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: stakingBalanceProvider)
-    }
-
-    var combineFiatBalanceProvider: TokenBalanceProvider {
-        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: combineBalanceProvider)
-    }
-}
-
 // MARK: - Rate
 
 extension WalletModel {

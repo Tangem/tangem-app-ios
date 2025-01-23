@@ -39,7 +39,7 @@ extension CommonExpressDestinationService: ExpressDestinationService {
             return isNotSource && isAvailable && isNotCustom && hasPair
         }
         .map { walletModel -> (walletModel: WalletModel, fiatBalance: Decimal?) in
-            (walletModel: walletModel, fiatBalance: walletModel.availableFiatBalanceProvider.balanceType.value)
+            (walletModel: walletModel, fiatBalance: walletModel.fiatAvailableBalanceProvider.balanceType.value)
         }
 
         log("Has searchableWalletModels: \(searchableWalletModels.map(\.walletModel.expressCurrency))")

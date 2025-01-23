@@ -329,13 +329,13 @@ extension TokenDetailsViewModel: SingleTokenNotificationManagerInteractionDelega
 extension TokenDetailsViewModel: BalanceWithButtonsViewModelBalanceProvider {
     var totalCryptoBalancePublisher: AnyPublisher<FormattedTokenBalanceType, Never> {
         walletModel
-            .combineBalanceProvider
+            .totalTokenBalanceProvider
             .formattedBalanceTypePublisher
     }
 
     var totalFiatBalancePublisher: AnyPublisher<FormattedTokenBalanceType, Never> {
         walletModel
-            .combineFiatBalanceProvider
+            .fiatTotalTokenBalanceProvider
             .formattedBalanceTypePublisher
     }
 
@@ -347,7 +347,7 @@ extension TokenDetailsViewModel: BalanceWithButtonsViewModelBalanceProvider {
 
     var availableFiatBalancePublisher: AnyPublisher<FormattedTokenBalanceType, Never> {
         walletModel
-            .availableFiatBalanceProvider
+            .fiatAvailableBalanceProvider
             .formattedBalanceTypePublisher
     }
 }

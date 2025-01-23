@@ -150,6 +150,6 @@ struct OrganizeTokensListFactory {
 
     private func fiatBalance(for walletModel: WalletModel) -> LoadableTokenBalanceView.State {
         LoadableTokenBalanceViewStateBuilder()
-            .build(type: walletModel.combineFiatBalanceProvider.formattedBalanceType, icon: .trailing)
+            .build(type: walletModel.fiatTotalTokenBalanceProvider.formattedBalanceType, icon: .trailing)
     }
 }

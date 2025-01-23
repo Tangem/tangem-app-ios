@@ -248,8 +248,8 @@ final class TokenSectionsAdapter {
 
     private func compareWalletModels(_ lhs: WalletModel, _ rhs: WalletModel) -> Bool {
         // Fiat balances that aren't loaded (e.g. due to network failures) fallback to zero
-        let lFiatValue = lhs.combineFiatBalanceProvider.balanceType.value ?? .zero
-        let rFiatValue = rhs.combineFiatBalanceProvider.balanceType.value ?? .zero
+        let lFiatValue = lhs.fiatTotalTokenBalanceProvider.balanceType.value ?? .zero
+        let rFiatValue = rhs.fiatTotalTokenBalanceProvider.balanceType.value ?? .zero
 
         return lFiatValue > rFiatValue
     }
@@ -314,7 +314,7 @@ private extension TokenSectionsAdapter.Section {
         return items.reduce(into: .zero) { partialResult, item in
             switch item {
             case .default(let walletModel):
-                if let fiatValue = walletModel.combineFiatBalanceProvider.balanceType.value {
+                if let fiatValue = walletModel.fiatTotalTokenBalanceProvider.balanceType.value {
                     partialResult += fiatValue
                 }
             case .withoutDerivation:

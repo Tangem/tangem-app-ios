@@ -207,9 +207,17 @@ class WalletModel {
     private lazy var _rate: CurrentValueSubject<Rate, Never> = .init(.loading(cached: quotesRepository.quote(for: tokenItem)))
 
     private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
+    private lazy var formatter = BalanceFormatter()
 
-    let converter = BalanceConverter()
-    let formatter = BalanceFormatter()
+    // MARK: - Balance providers
+
+    lazy var availableBalanceProvider = makeAvailableBalanceProvider()
+    lazy var stakingBalanceProvider = makeStakingBalanceProvider()
+    lazy var totalTokenBalanceProvider = makeTotalTokenBalanceProvider()
+
+    lazy var fiatAvailableBalanceProvider = makeFiatAvailableBalanceProvider()
+    lazy var fiatStakingBalanceProvider = makeFiatStakingBalanceProvider()
+    lazy var fiatTotalTokenBalanceProvider = makeFiatTotalTokenBalanceProvider()
 
     deinit {
         AppLog.shared.debug("🗑 \(self) deinit")
@@ -473,6 +481,38 @@ extension WalletModel {
                 walletModel.updateAfterSendingTransaction()
             })
             .mapToVoid()
+    }
+}
+
+// MARK: - Balance Provider
+
+extension WalletModel {
+    func makeAvailableBalanceProvider() -> TokenBalanceProvider {
+        AvailableTokenBalanceProvider(walletModel: self, tokenBalancesRepository: tokenBalancesRepository)
+    }
+
+    func makeStakingBalanceProvider() -> TokenBalanceProvider {
+        StakingTokenBalanceProvider(walletModel: self, tokenBalancesRepository: tokenBalancesRepository)
+    }
+
+    func makeTotalTokenBalanceProvider() -> TokenBalanceProvider {
+        TotalTokenBalanceProvider(
+            walletModel: self,
+            availableBalanceProvider: availableBalanceProvider,
+            stakingBalanceProvider: stakingBalanceProvider
+        )
+    }
+
+    func makeFiatAvailableBalanceProvider() -> TokenBalanceProvider {
+        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: availableBalanceProvider)
+    }
+
+    func makeFiatStakingBalanceProvider() -> TokenBalanceProvider {
+        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: stakingBalanceProvider)
+    }
+
+    func makeFiatTotalTokenBalanceProvider() -> TokenBalanceProvider {
+        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: totalTokenBalanceProvider)
     }
 }
 
