@@ -71,7 +71,6 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                                     continuation.yield(.init(transaction: result.1, result: result.0))
                                     let delay = result.1.type == "SPLIT" ? 20 : second
                                     try await Task.sleep(nanoseconds: delay * NSEC_PER_SEC)
-                                        
                                 }
                             }
                         }
