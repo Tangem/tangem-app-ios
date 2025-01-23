@@ -203,10 +203,10 @@ class WalletModel {
     private var updatePublisher: PassthroughSubject<State, Never>?
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
 
-    private var _state: CurrentValueSubject<State, Never> = .init(.created)
+    private let _state: CurrentValueSubject<State, Never> = .init(.created)
     private lazy var _rate: CurrentValueSubject<Rate, Never> = .init(.loading(cached: quotesRepository.quote(for: tokenItem)))
 
-    private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
+    private let _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
     private lazy var formatter = BalanceFormatter()
 
     // MARK: - Balance providers
