@@ -24,6 +24,7 @@ public enum VisaActivationError: LocalizedError {
     case accessCodeAlreadySet
     case blockedForActivation
     case invalidActivationState
+    case missingDerivationPath
     case underlyingError(Error)
 
     public var errorDescription: String? {
@@ -43,6 +44,7 @@ public enum VisaActivationError: LocalizedError {
         case .accessCodeAlreadySet: return "Access code already set, wrong task used for activation"
         case .blockedForActivation: return "This card cannot be activated. Please contact support for more information."
         case .invalidActivationState: return "Invalid activation state. Please close activation proccess and scan card again"
+        case .missingDerivationPath: return "Something went wrong. Please contact support"
         case .underlyingError(let error):
             return "Underlying Visa Activation Error: \(error.localizedDescription)"
         }

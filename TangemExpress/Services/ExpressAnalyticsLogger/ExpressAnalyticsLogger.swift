@@ -14,5 +14,5 @@ public protocol ExpressAnalyticsLogger {
 
     // Onramp
     func logAppError(_ error: Error, provider: ExpressProvider)
-    func logExpressAPIError(_ error: ExpressAPIError, provider: ExpressProvider)
+    func logExpressAPIError(_ error: ExpressAPIError, provider: ExpressProvider, paymentMethod: OnrampPaymentMethod)
 }

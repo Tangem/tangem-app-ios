@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct CardsInfoPagerView<
     Data, ID, Header, Body, BottomOverlay

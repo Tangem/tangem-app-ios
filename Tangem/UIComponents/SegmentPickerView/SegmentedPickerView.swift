@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 /*
  https://github.com/Inxel/CustomizableSegmentedControl

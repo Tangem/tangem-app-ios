@@ -203,8 +203,8 @@ extension GenericConfig: UserWalletConfig {
         }
     }
 
-    func makeWalletModelsFactory() -> WalletModelsFactory {
-        return CommonWalletModelsFactory(config: self)
+    func makeWalletModelsFactory(userWalletId: UserWalletId) -> WalletModelsFactory {
+        return CommonWalletModelsFactory(config: self, userWalletId: userWalletId)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

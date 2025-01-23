@@ -9,14 +9,6 @@
 import Foundation
 
 struct MarketsTokenDetailsPortfolioCoordinatorFactory {
-    // MARK: - Services
-
-    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
-
-    var canBuy: Bool {
-        return tangemApiService.geoIpRegionCode != LanguageCode.ru
-    }
-
     // MARK: - Utils
 
     private func buildExchangeCryptoUtility(for walletModel: WalletModel) -> ExchangeCryptoUtility {

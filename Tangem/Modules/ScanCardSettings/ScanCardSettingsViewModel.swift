@@ -80,7 +80,7 @@ extension ScanCardSettingsViewModel {
     }
 
     func showErrorAlert(error: Error) {
-        alert = AlertBuilder.makeOkErrorAlert(message: error.localizedDescription)
+        alert = error.alertBinder
     }
 
     func processSuccessScan(for cardInfo: CardInfo) {
