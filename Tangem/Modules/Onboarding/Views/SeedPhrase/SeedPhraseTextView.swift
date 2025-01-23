@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 import Combine
-import TangemUIKitUtils
+import TangemUIUtils
 
 struct SeedPhraseTextView: UIViewRepresentable {
     private unowned var inputProcessor: SeedPhraseInputProcessor
