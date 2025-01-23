@@ -13,7 +13,15 @@ import TangemStaking
 
 protocol SendSummaryInput: AnyObject {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> { get }
+    var isNotificationButtonIsLoading: AnyPublisher<Bool, Never> { get }
+
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> { get }
+}
+
+extension SendSummaryInput {
+    var isNotificationButtonIsLoading: AnyPublisher<Bool, Never> {
+        .just(output: false)
+    }
 }
 
 protocol SendSummaryOutput: AnyObject {}

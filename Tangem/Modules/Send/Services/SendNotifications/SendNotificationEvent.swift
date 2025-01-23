@@ -149,7 +149,7 @@ extension SendNotificationEvent {
     var buttonAction: NotificationButtonAction? {
         switch self {
         case .networkFeeUnreachable:
-            return .init(.refreshFee)
+            return .init(.refreshFee, withLoader: true)
         case .feeWillBeSubtractFromSendingAmount,
              .customFeeTooHigh,
              .customFeeTooLow,
