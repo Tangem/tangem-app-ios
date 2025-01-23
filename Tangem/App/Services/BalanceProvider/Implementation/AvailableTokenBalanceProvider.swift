@@ -25,12 +25,12 @@ struct AvailableTokenBalanceProvider {
 
 extension AvailableTokenBalanceProvider: TokenBalanceProvider {
     var balanceType: TokenBalanceType {
-        mapToAvailableTokenBalance(state: walletModel.state)
+        mapToTokenBalance(state: walletModel.state)
     }
 
     var balanceTypePublisher: AnyPublisher<TokenBalanceType, Never> {
         walletModel.statePublisher
-            .map { self.mapToAvailableTokenBalance(state: $0) }
+            .map { self.mapToTokenBalance(state: $0) }
             .eraseToAnyPublisher()
     }
 
@@ -62,7 +62,7 @@ private extension AvailableTokenBalanceProvider {
         }
     }
 
-    func mapToAvailableTokenBalance(state: WalletModel.State) -> TokenBalanceType {
+    func mapToTokenBalance(state: WalletModel.State) -> TokenBalanceType {
         // The `binance` always has zero balance
         if case .binance = walletModel.tokenItem.blockchain {
             return .loaded(0)
