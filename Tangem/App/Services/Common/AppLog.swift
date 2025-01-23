@@ -11,6 +11,14 @@ import TangemSdk
 import TangemLogger
 import protocol TangemVisa.VisaLogger
 
+struct TangemSdkOSLogger: TangemSdkLogger {
+    func log(_ message: String, level: Log.Level) {
+        let prefix = level.prefix.isEmpty ? level.emoji : "\(level.emoji):\(level.prefix)"
+
+        Logger.debug(.tangemSDK, "\(prefix) \(message)")
+    }
+}
+
 class AppLog {
     static let shared = AppLog()
 
@@ -22,7 +30,7 @@ class AppLog {
         var loggers: [TangemSdkLogger] = [ /* fileLogger */ ]
 
         if AppEnvironment.current.isDebug {
-            loggers.append(ConsoleLogger())
+            loggers.append(TangemSdkOSLogger())
         }
 
         return .custom(
