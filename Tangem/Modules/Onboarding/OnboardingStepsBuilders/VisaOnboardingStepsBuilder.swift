@@ -36,6 +36,7 @@ struct VisaOnboardingStepsBuilder {
         [
             .selectWalletForApprove,
             .approveUsingTangemWallet,
+            .approveUsingWalletConnect,
         ]
     }
 

@@ -40,6 +40,9 @@ class FeatureStorage {
     @AppStorageCompat(FeatureStorageKeys.useVisaTestnet)
     var isVisaTestnet = false
 
+    @AppStorageCompat(FeatureStorageKeys.useVisaAPIMocks)
+    var isVisaAPIMocksEnabled = false
+
     private init() {}
 }
 
@@ -55,4 +58,5 @@ private enum FeatureStorageKeys: String {
     case performanceMonitorEnabled = "performance_monitor_enabled"
     case mockedCardScannerEnabled = "mocked_card_scanner_enabled"
     case useVisaTestnet = "use_visa_testnet"
+    case useVisaAPIMocks = "use_visa_api_mocks"
 }

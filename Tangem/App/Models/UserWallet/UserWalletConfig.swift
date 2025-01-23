@@ -62,7 +62,7 @@ protocol UserWalletConfig: OnboardingStepsBuilderFactory, BackupServiceFactory, 
 
     func getFeatureAvailability(_ feature: UserWalletFeature) -> UserWalletFeature.Availability
 
-    func makeWalletModelsFactory() -> WalletModelsFactory
+    func makeWalletModelsFactory(userWalletId: UserWalletId) -> WalletModelsFactory
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory
 

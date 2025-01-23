@@ -18,9 +18,7 @@ class WalletModel {
     @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
 
-    var walletModelId: WalletModel.Id {
-        .init(blockchainNetwork: blockchainNetwork, amountType: amountType)
-    }
+    private(set) lazy var walletModelId: WalletModel.Id = .init(tokenItem: tokenItem)
 
     /// Listen for fiat and balance changes. This publisher will not be called if the is nothing changed. Use `update(silent:)` for waiting for update
     var walletDidChangePublisher: AnyPublisher<WalletModel.State, Never> {
@@ -35,11 +33,11 @@ class WalletModel {
         _state.eraseToAnyPublisher()
     }
 
-    var rate: LoadingResult<Rate?, Never> {
+    var rate: WalletModel.Rate {
         _rate.value
     }
 
-    var ratePublisher: AnyPublisher<LoadingResult<Rate?, Never>, Never> {
+    var ratePublisher: AnyPublisher<WalletModel.Rate, Never> {
         _rate.eraseToAnyPublisher()
     }
 
@@ -200,6 +198,7 @@ class WalletModel {
     let isCustom: Bool
 
     private let sendAvailabilityProvider: TransactionSendAvailabilityProvider
+    private let tokenBalancesRepository: TokenBalancesRepository
     private let walletManager: WalletManager
     private let _stakingManager: StakingManager?
     private let _transactionHistoryService: TransactionHistoryService?
@@ -210,7 +209,8 @@ class WalletModel {
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
     private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
     private var _state: CurrentValueSubject<State, Never> = .init(.created)
-    private var _rate: CurrentValueSubject<LoadingResult<Rate?, Never>, Never> = .init(.loading)
+    private lazy var _rate: CurrentValueSubject<Rate, Never> = .init(.loading(cached: quotesRepository.quote(for: tokenItem)))
+
     private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
 
     let converter = BalanceConverter()
@@ -227,7 +227,8 @@ class WalletModel {
         amountType: Amount.AmountType,
         shouldPerformHealthCheck: Bool,
         isCustom: Bool,
-        sendAvailabilityProvider: TransactionSendAvailabilityProvider
+        sendAvailabilityProvider: TransactionSendAvailabilityProvider,
+        tokenBalancesRepository: TokenBalancesRepository
     ) {
         self.walletManager = walletManager
         _stakingManager = stakingManager
@@ -235,6 +236,7 @@ class WalletModel {
         self.amountType = amountType
         self.isCustom = isCustom
         self.sendAvailabilityProvider = sendAvailabilityProvider
+        self.tokenBalancesRepository = tokenBalancesRepository
 
         bind()
         performHealthCheckIfNeeded(shouldPerform: shouldPerformHealthCheck)
@@ -252,16 +254,16 @@ class WalletModel {
         quotesRepository
             .quotesPublisher
             .dropFirst() // we need to drop first value because it's an empty dictionary
-            .map { [currencyId = tokenItem.currencyId] quotes -> Decimal? in
-                currencyId.flatMap { quotes[$0]?.price }
+            .map { [currencyId = tokenItem.currencyId] quotes in
+                currencyId.flatMap { quotes[$0] }
             }
             .removeDuplicates()
-            .sink { [weak self] rate in
-                self?._rate.send(.success(rate.map { .actual($0) }))
+            .sink { [weak self] quote in
+                self?.updateQuote(quote: quote)
             }
             .store(in: &bag)
 
-        let filteredRate = _rate.filter { $0 != .loading }.removeDuplicates()
+        let filteredRate = _rate.filter { !$0.isLoading }.removeDuplicates()
 
         if let stakingManager {
             _state
@@ -379,11 +381,11 @@ class WalletModel {
         }
     }
 
-    // MARK: - Load Quotes
+    // MARK: - Quotes
 
     private func loadQuotes() -> AnyPublisher<Void, Never> {
         guard let currencyId = tokenItem.currencyId else {
-            _rate.send(.success(nil))
+            _rate.send(.custom)
             return .just(output: ())
         }
 
@@ -391,15 +393,28 @@ class WalletModel {
             .loadQuotes(currencyIds: [currencyId])
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { walletModel, dict in
-                guard dict[currencyId] == nil else {
-                    return
-                }
-
-                walletModel._rate.send(.success(nil))
+                walletModel.updateQuote(quote: dict[currencyId])
             })
             .mapToVoid()
             .eraseToAnyPublisher()
     }
+
+    private func updateQuote(quote: TokenQuote?) {
+        if isCustom {
+            _rate.send(.custom)
+            return
+        }
+
+        if let quote {
+            _rate.send(.loaded(quote))
+            return
+        }
+
+        // Set to failure with saving cached value
+        _rate.send(.failure(cached: rate.cached))
+    }
+
+    // MARK: - Timer
 
     func startUpdatingTimer() {
         walletManager.setNeedsUpdate()
