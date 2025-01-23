@@ -8,7 +8,7 @@
 
 import Foundation
 import TangemSdk
-import protocol TangemExpress.Logger
+import TangemLogger
 import protocol TangemVisa.VisaLogger
 import protocol TangemStaking.Logger
 
@@ -38,7 +38,7 @@ class AppLog {
     }
 
     func debug<T>(_ message: @autoclosure () -> T) {
-        Log.debug(message())
+        TangemLogger.Logger.debug(.custom("Common"), message())
     }
 
     // TODO: Andrey Fedorov - Get rid of this method and pass file/line as arguments to `debug` (IOS-6440)
@@ -59,8 +59,14 @@ class AppLog {
     }
 }
 
-extension AppLog: TangemExpress.Logger {}
-
 extension AppLog: VisaLogger {}
 
-extension AppLog: TangemStaking.Logger {}
+struct TangemStakingLogger: TangemStaking.Logger {
+    public func debug<T>(_ message: @autoclosure () -> T) {
+        TangemLogger.Logger.debug(.staking, message())
+    }
+
+    public func error(_ error: any Error) {
+        TangemLogger.Logger.error(.staking, error.localizedDescription)
+    }
+}

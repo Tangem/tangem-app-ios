@@ -155,7 +155,7 @@ private extension CommonExpressAvailabilityProvider {
             return
         }
 
-        let provider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+        let provider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId)
         apiProvider = provider
     }
 }

@@ -7,25 +7,23 @@
 //
 
 import TangemFoundation
+import TangemLogger
 
 public actor CommonOnrampManager {
     private let apiProvider: ExpressAPIProvider
     private let onrampRepository: OnrampRepository
     private let dataRepository: OnrampDataRepository
-    private let logger: Logger
     private let analyticsLogger: ExpressAnalyticsLogger
 
     public init(
         apiProvider: ExpressAPIProvider,
         onrampRepository: OnrampRepository,
         dataRepository: OnrampDataRepository,
-        logger: Logger,
         analyticsLogger: ExpressAnalyticsLogger
     ) {
         self.apiProvider = apiProvider
         self.onrampRepository = onrampRepository
         self.dataRepository = dataRepository
-        self.logger = logger
         self.analyticsLogger = analyticsLogger
     }
 }
@@ -213,12 +211,11 @@ private extension CommonOnrampManager {
             paymentMethod: paymentMethod,
             apiProvider: apiProvider,
             analyticsLogger: analyticsLogger,
-            logger: logger,
             state: state
         )
     }
 
     func log(message: String) {
-        logger.debug("[\(TangemFoundation.objectDescription(self))] \(message)")
+        Logger.info(.express, objectDescription(self), "message")
     }
 }

@@ -43,7 +43,7 @@ class CommonPendingExpressTransactionsManager {
         self.userWalletId = userWalletId
         self.walletModel = walletModel
         self.expressRefundedTokenHandler = expressRefundedTokenHandler
-        expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+        expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId)
 
         bind()
     }

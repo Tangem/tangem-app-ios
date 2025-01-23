@@ -12,20 +12,17 @@ struct CommonExpressProviderManagerFactory: ExpressProviderManagerFactory {
     private let expressAPIProvider: ExpressAPIProvider
     private let allowanceProvider: ExpressAllowanceProvider
     private let feeProvider: FeeProvider
-    private let logger: Logger
     private let mapper: ExpressManagerMapper
 
     init(
         expressAPIProvider: ExpressAPIProvider,
         allowanceProvider: ExpressAllowanceProvider,
         feeProvider: FeeProvider,
-        logger: Logger,
         mapper: ExpressManagerMapper
     ) {
         self.expressAPIProvider = expressAPIProvider
         self.allowanceProvider = allowanceProvider
         self.feeProvider = feeProvider
-        self.logger = logger
         self.mapper = mapper
     }
 
@@ -37,7 +34,6 @@ struct CommonExpressProviderManagerFactory: ExpressProviderManagerFactory {
                 expressAPIProvider: expressAPIProvider,
                 allowanceProvider: allowanceProvider,
                 feeProvider: feeProvider,
-                logger: logger,
                 mapper: mapper
             )
         case .cex:
@@ -45,7 +41,6 @@ struct CommonExpressProviderManagerFactory: ExpressProviderManagerFactory {
                 provider: provider,
                 expressAPIProvider: expressAPIProvider,
                 feeProvider: feeProvider,
-                logger: logger,
                 mapper: mapper
             )
         case .onramp, .unknown:

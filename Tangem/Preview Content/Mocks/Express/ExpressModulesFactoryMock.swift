@@ -74,7 +74,6 @@ class ExpressModulesFactoryMock: ExpressModulesFactory {
                 selectedPolicy: selectedPolicy
             ),
             feeFormatter: feeFormatter,
-            logger: logger,
             approveViewModelInput: expressInteractor,
             coordinator: coordinator
         )
@@ -144,7 +143,6 @@ private extension ExpressModulesFactoryMock {
     var walletModelsManager: WalletModelsManager { userWalletModel.walletModelsManager }
     var userWalletId: String { userWalletModel.userWalletId.stringValue }
     var signer: TangemSigner { TangemSigner(filter: .cardId(""), sdk: TangemSdkDefaultFactory().makeTangemSdk(), twinKey: nil) }
-    var logger: Logger { AppLog.shared }
     var userTokensManager: UserTokensManager { userWalletModel.userTokensManager }
 
     var expressTokensListAdapter: ExpressTokensListAdapter {
@@ -165,7 +163,7 @@ private extension ExpressModulesFactoryMock {
     // MARK: - Methods
 
     func makeExpressAPIProvider() -> ExpressAPIProvider {
-        expressAPIProviderFactory.makeExpressAPIProvider(userId: userWalletId, logger: logger)
+        expressAPIProviderFactory.makeExpressAPIProvider(userId: userWalletId)
     }
 
     func makeExpressInteractor() -> ExpressInteractor {
@@ -174,7 +172,6 @@ private extension ExpressModulesFactoryMock {
             allowanceProvider: allowanceProvider,
             feeProvider: expressFeeProvider,
             expressRepository: expressRepository,
-            logger: logger,
             analyticsLogger: ExpressAnalyticsLoggerMock()
         )
 
@@ -190,8 +187,7 @@ private extension ExpressModulesFactoryMock {
             expressDestinationService: expressDestinationService,
             expressTransactionBuilder: expressTransactionBuilder,
             expressAPIProvider: expressAPIProvider,
-            signer: signer,
-            logger: logger
+            signer: signer
         )
 
         return interactor

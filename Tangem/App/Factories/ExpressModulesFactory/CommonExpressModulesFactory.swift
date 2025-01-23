@@ -90,7 +90,6 @@ extension CommonExpressModulesFactory: ExpressModulesFactory {
                 selectedPolicy: selectedPolicy
             ),
             feeFormatter: feeFormatter,
-            logger: logger,
             approveViewModelInput: expressInteractor,
             coordinator: coordinator
         )
@@ -171,7 +170,6 @@ private extension CommonExpressModulesFactory {
     var walletModelsManager: WalletModelsManager { userWalletModel.walletModelsManager }
     var userWalletId: String { userWalletModel.userWalletId.stringValue }
     var signer: TangemSigner { userWalletModel.signer }
-    var logger: Logger { AppLog.shared }
 
     // Be careful to use tokenItem in CommonExpressAnalyticsLogger
     // Becase there will be inly initial tokenItem without updating
@@ -195,7 +193,7 @@ private extension CommonExpressModulesFactory {
     // MARK: - Methods
 
     func makeExpressAPIProvider() -> ExpressAPIProvider {
-        expressAPIProviderFactory.makeExpressAPIProvider(userId: userWalletId, logger: logger)
+        expressAPIProviderFactory.makeExpressAPIProvider(userId: userWalletId)
     }
 
     func makeExpressInteractor() -> ExpressInteractor {
@@ -204,7 +202,6 @@ private extension CommonExpressModulesFactory {
             allowanceProvider: allowanceProvider,
             feeProvider: expressFeeProvider,
             expressRepository: expressRepository,
-            logger: logger,
             analyticsLogger: analyticsLogger
         )
 
@@ -220,8 +217,7 @@ private extension CommonExpressModulesFactory {
             expressDestinationService: expressDestinationService,
             expressTransactionBuilder: expressTransactionBuilder,
             expressAPIProvider: expressAPIProvider,
-            signer: signer,
-            logger: logger
+            signer: signer
         )
 
         return interactor

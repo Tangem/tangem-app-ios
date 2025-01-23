@@ -11,6 +11,7 @@ import Combine
 import TangemFoundation
 import TangemExpress
 import BlockchainSdk
+import TangemLogger
 
 class ExpressInteractor {
     // MARK: - Public
@@ -37,7 +38,6 @@ class ExpressInteractor {
     private let expressTransactionBuilder: ExpressTransactionBuilder
     private let expressAPIProvider: ExpressAPIProvider
     private let signer: TangemSigner
-    private let logger: Logger
 
     // MARK: - Options
 
@@ -58,8 +58,7 @@ class ExpressInteractor {
         expressDestinationService: ExpressDestinationService,
         expressTransactionBuilder: ExpressTransactionBuilder,
         expressAPIProvider: ExpressAPIProvider,
-        signer: TangemSigner,
-        logger: Logger
+        signer: TangemSigner
     ) {
         self.userWalletId = userWalletId
         self.initialWallet = initialWallet
@@ -73,7 +72,6 @@ class ExpressInteractor {
         self.expressTransactionBuilder = expressTransactionBuilder
         self.expressAPIProvider = expressAPIProvider
         self.signer = signer
-        self.logger = logger
 
         _swappingPair = .init(
             SwappingPair(
@@ -294,7 +292,7 @@ extension ExpressInteractor {
         let factory = TransactionDispatcherFactory(walletModel: sender, signer: signer)
         let transactionDispatcher = factory.makeSendDispatcher()
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
-        logger.debug("Sent the approve transaction with result: \(result)")
+        Logger.info(.express, "Sent the approve transaction with result: \(result)")
         allowanceProvider.didSendApproveTransaction(for: state.data.spender)
         logApproveTransactionSentAnalyticsEvent(policy: state.policy, signerType: result.signerType)
         updateState(.restriction(.hasPendingApproveTransaction, quote: getState().quote))
@@ -638,8 +636,8 @@ private extension ExpressInteractor {
 // MARK: - Log
 
 private extension ExpressInteractor {
-    func log(_ args: Any) {
-        logger.debug("[Express] \(self) \(args)")
+    func log<T: CustomStringConvertible>(_ args: T) {
+        Logger.info(.express, self, args)
     }
 }
 

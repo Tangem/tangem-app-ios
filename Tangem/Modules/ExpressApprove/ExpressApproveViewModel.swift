@@ -8,8 +8,9 @@
 
 import Combine
 import TangemExpress
+import TangemLogger
 import UIKit
-import enum TangemSdk.TangemSdkError
+import TangemFoundation
 import struct BlockchainSdk.Fee
 
 final class ExpressApproveViewModel: ObservableObject, Identifiable {
@@ -33,7 +34,6 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
     private let feeTokenItem: TokenItem
 
     private let feeFormatter: FeeFormatter
-    private let logger: Logger
     private let approveViewModelInput: ApproveViewModelInput
     private weak var coordinator: ExpressApproveRoutable?
 
@@ -43,12 +43,10 @@ final class ExpressApproveViewModel: ObservableObject, Identifiable {
     init(
         settings: Settings,
         feeFormatter: FeeFormatter,
-        logger: Logger,
         approveViewModelInput: ApproveViewModelInput,
         coordinator: ExpressApproveRoutable
     ) {
         self.feeFormatter = feeFormatter
-        self.logger = logger
         self.approveViewModelInput = approveViewModelInput
         self.coordinator = coordinator
 
@@ -148,14 +146,14 @@ private extension ExpressApproveViewModel {
     }
 
     func sendApproveTransaction() {
-        runTask(in: self) { viewModel in
+        TangemFoundation.runTask(in: self) { viewModel in
             do {
                 try await viewModel.approveViewModelInput.sendApproveTransaction()
                 await viewModel.didSendApproveTransaction()
             } catch TransactionDispatcherResult.Error.userCancelled {
                 // Do nothing
             } catch {
-                viewModel.logger.error(error)
+                Logger.error(.express, error)
                 await runOnMain {
                     viewModel.errorAlert = .init(title: Localization.commonError, message: error.localizedDescription)
                 }

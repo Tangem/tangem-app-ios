@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemLogger
 
 actor DEXExpressProviderManager {
     // MARK: - Dependencies
@@ -15,7 +16,6 @@ actor DEXExpressProviderManager {
     private let expressAPIProvider: ExpressAPIProvider
     private let allowanceProvider: ExpressAllowanceProvider
     private let feeProvider: FeeProvider
-    private let logger: Logger
     private let mapper: ExpressManagerMapper
 
     // MARK: - State
@@ -27,14 +27,12 @@ actor DEXExpressProviderManager {
         expressAPIProvider: ExpressAPIProvider,
         allowanceProvider: ExpressAllowanceProvider,
         feeProvider: FeeProvider,
-        logger: Logger,
         mapper: ExpressManagerMapper
     ) {
         self.provider = provider
         self.expressAPIProvider = expressAPIProvider
         self.allowanceProvider = allowanceProvider
         self.feeProvider = feeProvider
-        self.logger = logger
         self.mapper = mapper
     }
 }
@@ -206,6 +204,6 @@ private extension DEXExpressProviderManager {
     }
 
     func log(_ args: Any) {
-        logger.debug("[Express] \(self) \(args)")
+        Logger.info(.express, "\(self)", "\(args)")
     }
 }

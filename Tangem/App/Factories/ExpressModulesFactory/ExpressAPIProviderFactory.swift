@@ -11,7 +11,7 @@ import TangemExpress
 struct ExpressAPIProviderFactory {
     @Injected(\.keysManager) private var keysManager: KeysManager
 
-    func makeExpressAPIProvider(userId: String, logger: Logger) -> ExpressAPIProvider {
+    func makeExpressAPIProvider(userId: String) -> ExpressAPIProvider {
         let factory = TangemExpressFactory()
         let expressAPIType: ExpressAPIType = {
             if AppEnvironment.current.isProduction {
@@ -39,8 +39,7 @@ struct ExpressAPIProviderFactory {
             credential: credentials,
             configuration: .defaultConfiguration,
             expressAPIType: expressAPIType,
-            exchangeDataDecoder: exchangeDataDecoder,
-            logger: AppLog.shared
+            exchangeDataDecoder: exchangeDataDecoder
         )
     }
 }

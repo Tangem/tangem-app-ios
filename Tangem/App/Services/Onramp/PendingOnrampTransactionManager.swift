@@ -39,7 +39,7 @@ class CommonPendingOnrampTransactionsManager {
     ) {
         self.userWalletId = userWalletId
         self.walletModel = walletModel
-        expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId, logger: AppLog.shared)
+        expressAPIProvider = ExpressAPIProviderFactory().makeExpressAPIProvider(userId: userWalletId)
 
         bind()
     }
