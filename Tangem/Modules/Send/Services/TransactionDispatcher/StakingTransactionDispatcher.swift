@@ -81,7 +81,7 @@ private extension StakingTransactionDispatcher {
 
         let delay: UInt64? = switch walletModel.tokenItem.blockchain {
         case .tron: 5 // to stake tron 2 transactions must be executed in specific order
-        default: shouldDelayTransactions ? 1 : nil
+        default: shouldDelayTransactions ? 3 : nil // experiments based value
         }
         let stream = sender.sendStakeKit(transactions: transactions, signer: transactionSigner, delay: delay)
 
