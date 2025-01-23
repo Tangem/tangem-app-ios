@@ -20,8 +20,11 @@ struct WelcomeCoordinatorView: CoordinatorView {
 
             sheets
 
-            if let onboardingCoordinator = coordinator.welcomeOnboardingCoordinator {
-                WelcomeOnboardingCoordinatorView(coordinator: onboardingCoordinator)
+            ZStack { // for transition animation
+                if let onboardingCoordinator = coordinator.welcomeOnboardingCoordinator {
+                    WelcomeOnboardingCoordinatorView(coordinator: onboardingCoordinator)
+                        .transition(.opacity)
+                }
             }
         }
     }

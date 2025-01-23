@@ -607,6 +607,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             "Toncoin"
         case .fantom:
             "Fantom"
+        case .odysseyChain:
+            "Dione"
         default:
             displayName
         }
