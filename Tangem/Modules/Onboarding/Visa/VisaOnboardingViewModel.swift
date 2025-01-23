@@ -19,9 +19,8 @@ protocol VisaOnboardingAlertPresenter: AnyObject {
     func showContactSupportAlert(for error: Error) async
 }
 
-protocol VisaOnboardingRoutable: AnyObject {
+protocol VisaOnboardingRoutable: OnboardingBrowserRoutable {
     func closeOnboarding()
-    func openBrowser(at url: URL, onSuccess: @escaping (URL) -> Void)
     func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType)
 }
 
