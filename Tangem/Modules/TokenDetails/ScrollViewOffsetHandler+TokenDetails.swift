@@ -1,5 +1,5 @@
 //
-//  TokenDetailsScrollState.swift
+//  ScrollViewOffsetHandler+TokenDetails.swift
 //  Tangem
 //
 //  Created by Andrey Fedorov on 30.11.2023.

@@ -1,5 +1,5 @@
 //
-//  MarketsTokenDetailsScrollState.swift
+//  ScrollViewOffsetHandler+MarketsTokenDetails.swift
 //  Tangem
 //
 //  Created by Dmitry Fedorov on 05.12.2024.

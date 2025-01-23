@@ -102,7 +102,7 @@ struct MarketsTokenDetailsView: View {
         MarketsNavigationBarTitle(
             tokenName: viewModel.tokenName,
             price: viewModel.price,
-            state: viewModel.overlayContentProgress > 0
+            state: viewModel.overlayContentHidingProgress > 0
                 ? scrollOffsetHandler.state
                 : MarketsNavigationBarTitle.State(
                     priceOpacity: 1,
