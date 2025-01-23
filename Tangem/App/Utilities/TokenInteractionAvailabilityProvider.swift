@@ -136,7 +136,7 @@ struct TokenInteractionAvailabilityProvider {
              .fact0rn,
              .odysseyChain,
              .bitrock,
-             .apeChain:
+             .apeChain,
              .sonic:
             // Checking that we have at least one valid (non-empty) address
             //

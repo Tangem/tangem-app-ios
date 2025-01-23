@@ -1455,6 +1455,7 @@ private extension Blockchain {
             switch type {
             case .network: return "apechain"
             case .coin: return "apecoin"
+            }
         case .sonic:
             switch type {
             case .network: return "sonic"
@@ -1520,7 +1521,7 @@ extension Blockchain {
              .xodex,
              .odysseyChain,
              .bitrock,
-             .apeChain:
+             .apeChain,
              .sonic:
             return EthereumWalletAssembly()
         case .optimism,
