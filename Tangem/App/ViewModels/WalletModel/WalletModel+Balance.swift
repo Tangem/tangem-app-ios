@@ -31,15 +31,15 @@ extension WalletModel {
 
 extension WalletModel {
     var availableBalanceProvider: TokenBalanceProvider {
-        AvailableBalanceProvider(walletModel: self)
+        AvailableTokenBalanceProvider(walletModel: self)
     }
 
     var stakingBalanceProvider: TokenBalanceProvider {
-        StakingBalanceProvider(walletModel: self)
+        StakingTokenBalanceProvider(walletModel: self)
     }
 
     var combineBalanceProvider: TokenBalanceProvider {
-        CombineBalanceProvider(
+        TotalTokenBalanceProvider(
             walletModel: self,
             availableBalanceProvider: availableBalanceProvider,
             stakingBalanceProvider: stakingBalanceProvider
@@ -47,48 +47,15 @@ extension WalletModel {
     }
 
     var availableFiatBalanceProvider: TokenBalanceProvider {
-        FiatBalanceProvider(walletModel: self, cryptoBalanceProvider: availableBalanceProvider)
+        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: availableBalanceProvider)
     }
 
     var stakingFiatBalanceProvider: TokenBalanceProvider {
-        FiatBalanceProvider(walletModel: self, cryptoBalanceProvider: stakingBalanceProvider)
+        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: stakingBalanceProvider)
     }
 
     var combineFiatBalanceProvider: TokenBalanceProvider {
-        FiatBalanceProvider(walletModel: self, cryptoBalanceProvider: combineBalanceProvider)
-    }
-}
-
-// MARK: - Rate
-
-extension WalletModel {
-    enum Rate: Hashable {
-        case custom
-        case loading(cached: TokenQuote?)
-        case failure(cached: TokenQuote?)
-        case loaded(TokenQuote)
-
-        var isLoading: Bool {
-            switch self {
-            case .loading: true
-            case .custom, .failure, .loaded: false
-            }
-        }
-
-        var cached: TokenQuote? {
-            switch self {
-            case .custom, .loaded: nil
-            case .loading(let cached), .failure(let cached): cached
-            }
-        }
-
-        var quote: TokenQuote? {
-            switch self {
-            case .custom: nil
-            case .loading(let cached), .failure(let cached): cached
-            case .loaded(let quote): quote
-            }
-        }
+        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: combineBalanceProvider)
     }
 }
 
