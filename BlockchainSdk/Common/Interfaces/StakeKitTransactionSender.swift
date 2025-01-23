@@ -51,24 +51,25 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
 
                             group.addTask {
                                 try Task.checkCancellation()
-                                if transactions.count > 1, let second {
-                                    Log.log("\(self) start \(second) second delay between the transactions sending")
-                                    try await Task.sleep(nanoseconds: UInt64(index) * second * NSEC_PER_SEC)
-                                    try Task.checkCancellation()
-                                }
+//                                if transactions.count > 1, let second {
+//                                    Log.log("\(self) start \(second) second delay between the transactions sending")
+//                                    try await Task.sleep(nanoseconds: UInt64(index) * second * NSEC_PER_SEC)
+//                                    try Task.checkCancellation()
+//                                }
                                 let result: TransactionSendResult = try await self.broadcast(
                                     transaction: transaction,
                                     rawTransaction: rawTransaction
                                 )
+                                try Task.checkCancellation()
                                 return (result, transaction)
                             }
 
-                            if transaction.type == "SPLIT" {
+                            if transactions.count > 1, let second {
                                 // Wait for the current task to complete before adding the next one
                                 if let result = try await group.next() {
                                     results.append(result.0)
                                     continuation.yield(.init(transaction: result.1, result: result.0))
-                                    try await Task.sleep(nanoseconds: 5 * NSEC_PER_SEC)
+                                    try await Task.sleep(nanoseconds: second * NSEC_PER_SEC)
                                 }
                             }
                         }
