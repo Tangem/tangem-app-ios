@@ -19,10 +19,7 @@ class CommonTangemApiService {
         CachePolicyPlugin(),
         TimeoutIntervalPlugin(),
         DeviceInfoPlugin(),
-        TangemNetworkLoggerPlugin(configuration: .init(
-            output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
-            logOptions: .verbose
-        )),
+        TangemNetworkLoggerPlugin(logOptions: .verbose),
     ])
 
     private var bag: Set<AnyCancellable> = []

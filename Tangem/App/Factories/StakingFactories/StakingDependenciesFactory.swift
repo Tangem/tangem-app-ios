@@ -17,10 +17,7 @@ class StakingDependenciesFactory {
 
     func makeStakingAPIProvider() -> StakingAPIProvider {
         let plugins: [PluginType] = [
-            TangemNetworkLoggerPlugin(configuration: .init(
-                output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
-                logOptions: .verbose
-            )),
+            TangemNetworkLoggerPlugin(logOptions: .verbose),
         ]
 
         return TangemStakingFactory().makeStakingAPIProvider(

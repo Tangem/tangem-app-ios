@@ -204,6 +204,6 @@ private extension DEXExpressProviderManager {
     }
 
     func log(_ args: Any) {
-        Logger.info(.express, "\(self)", "\(args)")
+        Logger.info(.express, self, args)
     }
 }

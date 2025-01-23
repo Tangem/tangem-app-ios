@@ -12,16 +12,16 @@ import TangemSdk
 import TangemNetworkUtils
 
 public struct NetworkProviderConfiguration {
-    let logger: LoggerType
+    let logOptions: TangemNetworkLoggerPlugin.LogOptions?
     let urlSessionConfiguration: URLSessionConfiguration
     let credentials: Credentials?
 
     public init(
-        logger: LoggerType = .default,
+        logOptions: TangemNetworkLoggerPlugin.LogOptions? = .default,
         urlSessionConfiguration: URLSessionConfiguration = .standard,
         credentials: Credentials? = nil
     ) {
-        self.logger = logger
+        self.logOptions = logOptions
         self.urlSessionConfiguration = urlSessionConfiguration
         self.credentials = credentials
     }
@@ -29,12 +29,8 @@ public struct NetworkProviderConfiguration {
     var plugins: [PluginType] {
         var plugins: [PluginType] = []
 
-        if let logOptions = logger.logOptions {
-            let configuration = TangemNetworkLoggerPlugin.Configuration(
-                output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
-                logOptions: logOptions
-            )
-            plugins.append(TangemNetworkLoggerPlugin(configuration: configuration))
+        if let logOptions = logOptions {
+            plugins.append(TangemNetworkLoggerPlugin(logOptions: logOptions))
         }
 
         if let credentials {
@@ -51,22 +47,6 @@ public struct NetworkProviderConfiguration {
     }
 }
 
-public extension NetworkProviderConfiguration {
-    enum LoggerType {
-        case none
-        case `default`
-        case verbose
-
-        var logOptions: TangemNetworkLoggerPlugin.Configuration.LogOptions? {
-            switch self {
-            case .none: return nil
-            case .default: return .default
-            case .verbose: return .verbose
-            }
-        }
-    }
-}
-
 public extension URLSessionConfiguration {
     static let standard: URLSessionConfiguration = {
         let configuration = URLSessionConfiguration.default
@@ -74,14 +54,4 @@ public extension URLSessionConfiguration {
         configuration.timeoutIntervalForResource = 30
         return configuration
     }()
-}
-
-// MARK: - TangemNetworkLoggerPlugin + TangemSdk
-
-public extension TangemNetworkLoggerPlugin {
-    static func tangemSdkLoggerOutput(target: TargetType, items: [String]) {
-        for item in items {
-            Log.network(item)
-        }
-    }
 }

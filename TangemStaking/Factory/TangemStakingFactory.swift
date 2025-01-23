@@ -32,10 +32,7 @@ public struct TangemStakingFactory {
         plugins: [PluginType]
     ) -> StakingAPIProvider {
         let provider = MoyaProvider<StakeKitTarget>(session: Session(configuration: configuration), plugins: plugins)
-        let service = StakeKitStakingAPIService(
-            provider: provider,
-            credential: credential
-        )
+        let service = StakeKitStakingAPIService(provider: provider, credential: credential)
         let mapper = StakeKitMapper()
         return CommonStakingAPIProvider(service: service, mapper: mapper)
     }

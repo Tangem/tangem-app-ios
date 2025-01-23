@@ -80,10 +80,7 @@ public struct TangemExpressFactory {
                 refcode: credential.refcode
             ),
             DeviceInfoPlugin(),
-            TangemNetworkLoggerPlugin(configuration: .init(
-                output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
-                logOptions: .verbose
-            )),
+            TangemNetworkLoggerPlugin(logOptions: .verbose),
         ]
         let provider = MoyaProvider<ExpressAPITarget>(session: Session(configuration: configuration), plugins: plugins)
         let service = CommonExpressAPIService(provider: provider, expressAPIType: expressAPIType)

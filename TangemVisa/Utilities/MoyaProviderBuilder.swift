@@ -14,10 +14,7 @@ struct MoyaProviderBuilder {
     func buildProvider<T: TargetType>(configuration: URLSessionConfiguration) -> MoyaProvider<T> {
         let plugins: [PluginType] = [
             DeviceInfoPlugin(),
-            TangemNetworkLoggerPlugin(configuration: .init(
-                output: TangemNetworkLoggerPlugin.tangemSdkLoggerOutput,
-                logOptions: .verbose
-            )),
+            TangemNetworkLoggerPlugin(logOptions: .verbose),
         ]
 
         return MoyaProvider<T>(session: Session(configuration: configuration), plugins: plugins)
