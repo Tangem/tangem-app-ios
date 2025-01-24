@@ -23,6 +23,9 @@ extension StakingTransactionInfo {
         actionId: UUID().uuidString,
         network: "solana",
         unsignedTransactionData: "",
-        fee: 1.23
+        fee: 1.23,
+        type: "SPLIT",
+        status: "CONFIRMED",
+        stepIndex: 0
     )
 }
