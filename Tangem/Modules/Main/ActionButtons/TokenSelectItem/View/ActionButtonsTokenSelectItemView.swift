@@ -51,12 +51,10 @@ struct ActionButtonsTokenSelectItemView: View {
 
             Spacer(minLength: 4)
 
-            LoadableTextView(
+            LoadableTokenBalanceView(
                 state: viewModel.fiatBalanceState,
-                font: Fonts.Bold.subheadline,
-                textColor: viewModel.getDisabledTextColor(for: .fiatBalance),
-                loaderSize: .init(width: 40, height: 12),
-                isSensitiveText: true
+                style: .init(font: Fonts.Regular.subheadline, textColor: viewModel.getDisabledTextColor(for: .fiatBalance)),
+                loader: .init(size: .init(width: 40, height: 12))
             )
         }
     }
@@ -71,12 +69,10 @@ struct ActionButtonsTokenSelectItemView: View {
 
             Spacer(minLength: 4)
 
-            LoadableTextView(
+            LoadableTokenBalanceView(
                 state: viewModel.balanceState,
-                font: Fonts.Regular.caption1,
-                textColor: viewModel.getDisabledTextColor(for: .balance),
-                loaderSize: .init(width: 40, height: 12),
-                isSensitiveText: true
+                style: .init(font: Fonts.Bold.caption1, textColor: viewModel.getDisabledTextColor(for: .balance)),
+                loader: .init(size: .init(width: 40, height: 12))
             )
         }
     }

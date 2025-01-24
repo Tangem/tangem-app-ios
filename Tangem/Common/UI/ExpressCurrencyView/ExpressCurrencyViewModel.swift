@@ -46,7 +46,7 @@ final class ExpressCurrencyViewModel: ObservableObject, Identifiable {
         self.canChangeCurrency = canChangeCurrency
     }
 
-    func update(wallet: LoadingValue<WalletModel>, initialWalletId: Int) {
+    func update(wallet: LoadingValue<WalletModel>, initialWalletId: WalletModelId) {
         switch wallet {
         case .loading:
             canChangeCurrency = false
@@ -62,7 +62,7 @@ final class ExpressCurrencyViewModel: ObservableObject, Identifiable {
                 switch state {
                 case .created, .loading:
                     self?.balanceState = .loading
-                case .idle:
+                case .loaded:
                     let formatted = wallet.balanceValue.map { BalanceFormatter().formatDecimal($0) }
                     self?.balanceState = .formatted(formatted ?? BalanceFormatter.defaultEmptyBalanceString)
                 case .noAccount, .failed, .noDerivation:

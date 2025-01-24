@@ -10,6 +10,7 @@ import Foundation
 
 struct ReceiveNotificationEvent {
     let currencySymbol: String
+    let networkName: String
 }
 
 extension ReceiveNotificationEvent: NotificationEvent {
@@ -18,7 +19,7 @@ extension ReceiveNotificationEvent: NotificationEvent {
     }
 
     var title: NotificationView.Title? {
-        .string(Localization.receiveBottomSheetWarningMessageTitle(currencySymbol))
+        .string(Localization.receiveBottomSheetWarningTitle(currencySymbol, networkName))
     }
 
     var description: String? {

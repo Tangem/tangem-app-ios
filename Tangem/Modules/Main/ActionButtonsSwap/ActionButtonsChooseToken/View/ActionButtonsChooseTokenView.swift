@@ -97,7 +97,7 @@ struct ActionButtonsChooseTokenView: View {
                     field: .destination,
                     selectedToken: .constant(
                         .init(
-                            id: 0,
+                            id: "id",
                             isDisabled: false,
                             tokenIconInfo: .init(
                                 name: "",

@@ -94,7 +94,9 @@ struct AddressTypesConfig {
              .chiliz,
              .xodex,
              .clore,
-             .fact0rn:
+             .fact0rn,
+             .odysseyChain,
+             .bitrock:
             return [.default]
         }
     }

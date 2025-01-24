@@ -26,9 +26,6 @@ class CommonTangemApiService {
     ])
 
     private var bag: Set<AnyCancellable> = []
-
-    private let fallbackRegionCode = Locale.current.regionCode?.lowercased() ?? ""
-    private var _geoIpRegionCode: String?
     private var authData: TangemApiTarget.AuthData?
 
     private let coinsQueue = DispatchQueue(label: "coins_request_queue", qos: .default)
@@ -54,8 +51,14 @@ class CommonTangemApiService {
 // MARK: - TangemApiService
 
 extension CommonTangemApiService: TangemApiService {
-    var geoIpRegionCode: String {
-        return _geoIpRegionCode ?? fallbackRegionCode
+    func loadGeo() -> AnyPublisher<String, any Error> {
+        provider
+            .requestPublisher(TangemApiTarget(type: .geo, authData: authData))
+            .filterSuccessfulStatusAndRedirectCodes()
+            .map(GeoResponse.self)
+            .map(\.code)
+            .eraseError()
+            .eraseToAnyPublisher()
     }
 
     func loadTokens(for key: String) -> AnyPublisher<UserTokenList?, TangemAPIError> {
@@ -287,21 +290,6 @@ extension CommonTangemApiService: TangemApiService {
     }
 
     // MARK: - Init
-
-    func initialize() {
-        provider
-            .requestPublisher(TangemApiTarget(type: .geo, authData: authData))
-            .filterSuccessfulStatusAndRedirectCodes()
-            .map(GeoResponse.self)
-            .map(\.code)
-            .eraseToOptional()
-            .replaceError(with: fallbackRegionCode)
-            .subscribe(on: DispatchQueue.global())
-            .assign(to: \._geoIpRegionCode, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        AppLog.shared.debug("CommonTangemApiService initialized")
-    }
 
     func setAuthData(_ authData: TangemApiTarget.AuthData) {
         self.authData = authData

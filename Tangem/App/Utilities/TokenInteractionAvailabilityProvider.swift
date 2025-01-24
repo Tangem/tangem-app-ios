@@ -133,7 +133,9 @@ struct TokenInteractionAvailabilityProvider {
              .chiliz,
              .xodex,
              .clore,
-             .fact0rn:
+             .fact0rn,
+             .odysseyChain,
+             .bitrock:
             // Checking that we have at least one valid (non-empty) address
             //
             // If necessary, add more specific conditions for newly added blockchains

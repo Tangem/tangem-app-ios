@@ -12,8 +12,8 @@ import SwiftUI
 final class ActionButtonsTokenSelectItemViewModel: ObservableObject {
     private let model: ActionButtonsTokenSelectorItem
 
-    @Published private(set) var fiatBalanceState: LoadableTextView.State = .loading
-    @Published private(set) var balanceState: LoadableTextView.State = .loading
+    @Published private(set) var fiatBalanceState: LoadableTokenBalanceView.State = .loading()
+    @Published private(set) var balanceState: LoadableTokenBalanceView.State = .loading()
 
     private var itemStateBag: AnyCancellable?
 
@@ -30,17 +30,17 @@ final class ActionButtonsTokenSelectItemViewModel: ObservableObject {
             .sink { viewModel, newState in
                 switch newState {
                 case .loading:
-                    viewModel.updateBalances(to: .loading)
+                    viewModel.updateBalances(to: .loading())
                 case .loaded:
                     viewModel.fiatBalanceState = .loaded(text: viewModel.model.infoProvider.fiatBalance)
                     viewModel.balanceState = .loaded(text: viewModel.model.infoProvider.balance)
                 default:
-                    viewModel.updateBalances(to: .noData)
+                    viewModel.updateBalances(to: .empty)
                 }
             }
     }
 
-    private func updateBalances(to state: LoadableTextView.State) {
+    private func updateBalances(to state: LoadableTokenBalanceView.State) {
         fiatBalanceState = state
         balanceState = state
     }

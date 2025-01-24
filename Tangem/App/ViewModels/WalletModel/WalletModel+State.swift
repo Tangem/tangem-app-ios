@@ -11,7 +11,7 @@ import Foundation
 extension WalletModel {
     enum State: Hashable {
         case created
-        case idle
+        case loaded(Decimal)
         case loading
         case noAccount(message: String, amountToCreate: Decimal)
         case failed(error: String)
@@ -28,7 +28,7 @@ extension WalletModel {
 
         var isSuccessfullyLoaded: Bool {
             switch self {
-            case .idle, .noAccount:
+            case .loaded, .noAccount:
                 return true
             default:
                 return false
@@ -77,7 +77,7 @@ extension WalletModel {
             switch self {
             case .failed, .loading, .created, .noDerivation:
                 return false
-            case .noAccount, .idle:
+            case .noAccount, .loaded:
                 return true
             }
         }

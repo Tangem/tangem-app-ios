@@ -18,7 +18,7 @@ class DefaultTokenItemInfoProvider {
 }
 
 extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
-    var id: Int { walletModel.id }
+    var id: WalletModel.ID { walletModel.id }
 
     var tokenItemState: TokenItemViewState {
         TokenItemViewState(walletModel: walletModel)

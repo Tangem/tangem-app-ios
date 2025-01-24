@@ -215,8 +215,7 @@ class CommonPendingExpressTransactionsManager {
             )
             log("Transaction external status: \(expressTransaction.externalStatus.rawValue)")
             log("Refunded token: \(String(describing: refundedTokenItem))")
-            pendingExpressTransactionAnalyticsTracker.trackStatusForTransaction(
-                branch: .swap,
+            pendingExpressTransactionAnalyticsTracker.trackStatusForSwapTransaction(
                 transactionId: pendingTransaction.transactionRecord.expressTransactionId,
                 tokenSymbol: tokenItem.currencySymbol,
                 status: pendingTransaction.transactionRecord.transactionStatus,

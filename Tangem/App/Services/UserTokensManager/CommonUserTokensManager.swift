@@ -185,8 +185,7 @@ extension CommonUserTokensManager: UserTokensManager {
         // wait for walletModelsManager to be updated
         try await Task.sleep(seconds: 0.1)
 
-        let blockchainNetwork = getBlockchainNetwork(for: tokenItem)
-        let walletModelId = WalletModel.Id(blockchainNetwork: blockchainNetwork, amountType: tokenItem.amountType)
+        let walletModelId = WalletModel.Id(tokenItem: tokenItem)
 
         guard let walletModel = walletModelsManager.walletModels.first(where: { $0.id == walletModelId.id }) else {
             throw CommonUserTokensManager.Error.addressNotFound

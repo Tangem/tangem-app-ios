@@ -13,6 +13,10 @@ import BlockchainSdk
 public struct VisaUtilities {
     private let isTestnet: Bool
 
+    // TODO: Replace with real URL
+    // Right now dApp is not ready, so we don't have actual page
+    public let walletConnectURL = URL(string: "https://tangem.com/pay")!
+
     public init(isTestnet: Bool) {
         self.isTestnet = isTestnet
     }

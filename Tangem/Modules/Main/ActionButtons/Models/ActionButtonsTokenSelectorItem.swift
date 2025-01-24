@@ -9,7 +9,7 @@
 import BlockchainSdk
 
 struct ActionButtonsTokenSelectorItem: Identifiable {
-    let id: Int
+    let id: String
     let isDisabled: Bool
     let tokenIconInfo: TokenIconInfo
     let infoProvider: any TokenItemInfoProvider

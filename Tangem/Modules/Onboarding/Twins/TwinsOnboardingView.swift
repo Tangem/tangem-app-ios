@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct TwinsOnboardingView: View {
     @ObservedObject var viewModel: TwinsOnboardingViewModel
@@ -72,7 +73,7 @@ struct TwinsOnboardingView: View {
                                 title: .init(font: .system(size: 17, weight: .semibold)),
                                 backgroundColor: .clear
                             ),
-                            leftItems: {
+                            leftButtons: {
                                 BackButton(
                                     height: viewModel.navbarSize.height,
                                     isVisible: viewModel.isBackButtonVisible,
@@ -81,7 +82,7 @@ struct TwinsOnboardingView: View {
                                     viewModel.backButtonAction()
                                 }
                             },
-                            rightItems: {
+                            rightButtons: {
                                 SupportButton(
                                     height: viewModel.navbarSize.height,
                                     isVisible: viewModel.isSupportButtonVisible,

@@ -6,8 +6,10 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
+import Foundation
 import SwiftUI
 import Combine
+import TangemUIUtils
 
 struct SeedPhraseTextView: UIViewRepresentable {
     private unowned var inputProcessor: SeedPhraseInputProcessor
@@ -20,19 +22,21 @@ struct SeedPhraseTextView: UIViewRepresentable {
 
     func makeUIView(context: UIViewRepresentableContext<SeedPhraseTextView>) -> UITextView {
         let textView = UITextView()
+
+        // Security hardening settings
+        let configurator = UITextInputSecurityHardeningConfigurator(isSecured: false)
+        configurator.configure(textView)
+
         textView.backgroundColor = nil
         textView.autocapitalizationType = .none
         textView.delegate = context.coordinator
         textView.allowsEditingTextAttributes = false
         textView.enablesReturnKeyAutomatically = false
         textView.isEditable = true
-        textView.autocorrectionType = .no
         textView.returnKeyType = .next
-        textView.textContentType = .none
-        textView.spellCheckingType = .no
-        textView.smartInsertDeleteType = .no
         textView.textColor = inputProcessor.defaultTextColor
         textView.font = inputProcessor.defaultTextFont
+        textView.keyboardType = .asciiCapable // We currently only support the BIP39 English word list
         context.coordinator.setupTextView(textView)
 
         var toolbarItems = [UIBarButtonItem]()

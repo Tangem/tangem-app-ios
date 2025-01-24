@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct HotCryptoView: View {
-    private let priceService = HotCryptoPriceService()
+    private let priceUtility = HotCryptoPriceUtility()
 
     let items: [HotCryptoToken]
     let action: (HotCryptoToken) -> Void
@@ -29,7 +29,6 @@ struct HotCryptoView: View {
                 },
                 header: {
                     DefaultHeaderView(Localization.tokensListHotCryptoHeader)
-                        .frame(height: 18)
                         .padding(.init(top: 14, leading: 0, bottom: 10, trailing: 0))
                 }
             )
@@ -54,10 +53,10 @@ struct HotCryptoView: View {
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)
 
             HStack(spacing: 6) {
-                Text(priceService.formatFiatPrice(item.currentPrice))
+                Text(priceUtility.formatFiatPrice(item.currentPrice))
                     .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
 
-                TokenPriceChangeView(state: priceService.convertToPriceChangeState(from: item.priceChangePercentage24h))
+                TokenPriceChangeView(state: priceUtility.convertToPriceChangeState(from: item.priceChangePercentage24h))
             }
         }
         .lineLimit(1)

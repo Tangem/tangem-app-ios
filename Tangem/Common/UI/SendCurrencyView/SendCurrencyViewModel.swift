@@ -25,7 +25,7 @@ class SendCurrencyViewModel: ObservableObject, Identifiable {
         Analytics.log(.swapSendTokenBalanceClicked)
     }
 
-    func update(wallet: WalletModel, initialWalletId: Int) {
+    func update(wallet: WalletModel, initialWalletId: WalletModelId) {
         expressCurrencyViewModel.update(wallet: .loaded(wallet), initialWalletId: initialWalletId)
         decimalNumberTextFieldViewModel.update(maximumFractionDigits: wallet.decimalCount)
     }

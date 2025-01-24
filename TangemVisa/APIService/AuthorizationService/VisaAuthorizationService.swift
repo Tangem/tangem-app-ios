@@ -20,11 +20,11 @@ public protocol VisaAuthorizationService {
     func getAccessTokensForWalletAuth(signedChallenge: String, sessionId: String) async throws -> VisaAuthorizationTokens?
 }
 
-protocol AccessTokenRefreshService {
+public protocol VisaAuthorizationTokenRefreshService {
     func refreshAccessToken(refreshToken: String) async throws -> VisaAuthorizationTokens
 }
 
-class CommonVisaAuthorizationService {
+struct CommonVisaAuthorizationService {
     typealias AuthorizationAPIService = APIService<AuthorizationAPITarget, VisaAuthorizationAPIError>
     private let apiService: AuthorizationAPIService
 
@@ -63,7 +63,7 @@ extension CommonVisaAuthorizationService: VisaAuthorizationService {
     }
 }
 
-extension CommonVisaAuthorizationService: AccessTokenRefreshService {
+extension CommonVisaAuthorizationService: VisaAuthorizationTokenRefreshService {
     func refreshAccessToken(refreshToken: String) async throws -> VisaAuthorizationTokens {
         try await apiService.request(.init(
             target: .refreshAccessToken(refreshToken: refreshToken)
