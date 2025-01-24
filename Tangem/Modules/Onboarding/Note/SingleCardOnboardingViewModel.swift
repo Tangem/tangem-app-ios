@@ -243,11 +243,12 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
                     self.goToNextStep()
                 }
 
+            case .failure(let error) where error.toTangemSdkError().isUserCancelled:
+                // Do nothing
+                break
             case .failure(let error):
-                if !error.toTangemSdkError().isUserCancelled {
-                    AppLog.shared.error(error, params: [.action: .createWallet])
-                    alert = error.alertBinder
-                }
+                Analytics.error(error, params: [.action: .createWallet])
+                alert = error.alertBinder
             }
 
             isMainButtonBusy = false

@@ -65,7 +65,7 @@ class ReferralViewModel: ObservableObject {
             let blockchain = supportedBlockchains[award.token.networkId],
             let token = award.token.storageToken
         else {
-            AppLog.shared.error(Localization.referralErrorFailedToLoadInfo)
+            Analytics.error(Localization.referralErrorFailedToLoadInfo)
             errorAlert = AlertBuilder.makeOkErrorAlert(
                 message: Localization.referralErrorFailedToLoadInfo,
                 okAction: coordinator?.dismiss ?? {}
@@ -89,7 +89,7 @@ class ReferralViewModel: ObservableObject {
                 let referralError = ReferralError(error)
                 let message = Localization.referralErrorFailedToParticipate(referralError.code)
                 errorAlert = AlertBuilder.makeOkErrorAlert(message: message)
-                AppLog.shared.error(referralError)
+                Analytics.error(referralError)
             }
         }
 
@@ -125,7 +125,7 @@ class ReferralViewModel: ObservableObject {
         } catch {
             let referralError = ReferralError(error)
             let message = Localization.referralErrorFailedToLoadInfoWithReason(referralError.code)
-            AppLog.shared.error(referralError)
+            Analytics.error(referralError)
             errorAlert = AlertBuilder.makeOkErrorAlert(message: message, okAction: coordinator?.dismiss ?? {})
         }
     }

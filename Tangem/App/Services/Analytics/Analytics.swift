@@ -12,6 +12,7 @@ import FirebaseCrashlytics
 import BlockchainSdk
 import AmplitudeSwift
 import TangemSdk
+import TangemLogger
 
 class Analytics {
     @Injected(\.analyticsContext) private static var analyticsContext: AnalyticsContext
@@ -225,7 +226,7 @@ class Analytics {
         if let data = try? JSONSerialization.data(withJSONObject: printableParams, options: .sortedKeys),
            let paramsString = String(data: data, encoding: .utf8)?.replacingOccurrences(of: ",\"", with: ", \"") {
             let logMessage = "Analytics event: \(event). Params: \(paramsString)"
-            AppLog.shared.debug(logMessage)
+            Logger.info(.analytics, logMessage)
         }
     }
 
@@ -267,17 +268,17 @@ private extension Analytics.Event {
 
 // MARK: - AppLog error extension
 
-extension AppLog {
-    func error(_ error: Error, params: [Analytics.ParameterKey: Analytics.ParameterValue] = [:]) {
+extension Analytics {
+    static func error(_ error: Error, params: [Analytics.ParameterKey: Analytics.ParameterValue] = [:]) {
         self.error(error: error, params: params.mapValues { $0.rawValue })
     }
 
-    func error(error: Error, params: [Analytics.ParameterKey: String]) {
+    static func error(error: Error, params: [Analytics.ParameterKey: String] = [:]) {
         guard !error.toTangemSdkError().isUserCancelled else {
             return
         }
 
-        Log.error(error)
+        Logger.error(.analytics, error, params)
         Analytics.log(error: error, params: params)
     }
 }

@@ -34,7 +34,7 @@ extension KeysDerivingCardInteractor: KeysDeriving {
             case .success(let response):
                 completion(.success(response))
             case .failure(let error):
-                AppLog.shared.error(error, params: [.action: .deriveKeys])
+                Analytics.error(error, params: [.action: .deriveKeys])
                 completion(.failure(error))
             }
 

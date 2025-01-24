@@ -71,7 +71,6 @@ extension ScanCardSettingsViewModel {
                     return
                 }
 
-                AppLog.shared.error(error)
                 Analytics.tryLogCardVerificationError(error, source: .settings)
                 completion(.failure(error))
             case .success(let response):

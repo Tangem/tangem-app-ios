@@ -135,8 +135,8 @@ extension PromotionService: PromotionServiceProtocol {
                 try secureStorage.delete(promoCodeStorageKey)
             }
         } catch {
-            AppLog.shared.error(error)
-            AppLog.shared.error("Failed to update promo code")
+            Analytics.error(error)
+            Analytics.error("Failed to update promo code")
         }
     }
 
@@ -179,7 +179,7 @@ extension PromotionService: PromotionServiceProtocol {
             guard let data = try storage.get(awardedPromotionNamesStorageKey) else { return [] }
             return try JSONDecoder().decode(Set<String>.self, from: data)
         } catch {
-            AppLog.shared.error(error)
+            Analytics.error(error)
             AppLog.shared.debug("Failed to get awarded promotions")
             return []
         }
@@ -196,7 +196,7 @@ extension PromotionService: PromotionServiceProtocol {
             guard let data = try storage.get(finishedPromotionNamesStorageKey) else { return [] }
             return try JSONDecoder().decode(Set<String>.self, from: data)
         } catch {
-            AppLog.shared.error(error)
+            Analytics.error(error)
             AppLog.shared.debug("Failed to get finished promotions")
             return []
         }
@@ -308,7 +308,7 @@ extension PromotionService {
             let storage = SecureStorage()
             try storage.store(data, forKey: finishedPromotionNamesStorageKey)
         } catch {
-            AppLog.shared.error(error)
+            Analytics.error(error)
             AppLog.shared.debug("Failed to set finished programs")
         }
     }
@@ -335,7 +335,7 @@ extension PromotionService {
             let storage = SecureStorage()
             try storage.store(data, forKey: awardedPromotionNamesStorageKey)
         } catch {
-            AppLog.shared.error(error)
+            Analytics.error(error)
             AppLog.shared.debug("Failed to set awarded promotions")
         }
     }

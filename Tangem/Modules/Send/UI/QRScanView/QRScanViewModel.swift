@@ -56,7 +56,7 @@ class QRScanViewModel: ObservableObject, Identifiable {
             camera.unlockForConfiguration()
         } catch {
             AppLog.shared.debug("Failed to toggle the flash")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
     }
 

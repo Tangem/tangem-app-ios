@@ -40,7 +40,7 @@ class PersistentStorage {
             do {
                 try fileManager.createDirectory(at: containerUrl, withIntermediateDirectories: true, attributes: nil)
             } catch {
-                AppLog.shared.error(error)
+                Analytics.error(error)
             }
         }
     }

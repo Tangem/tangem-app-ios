@@ -30,7 +30,7 @@ extension CommonBannerPromotionService: BannerPromotionService {
             }
         } catch {
             AppLog.shared.debug("Check promotions catch error \(error)")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
 
         return nil

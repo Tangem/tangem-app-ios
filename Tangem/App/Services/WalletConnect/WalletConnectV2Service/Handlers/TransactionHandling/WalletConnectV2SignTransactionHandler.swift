@@ -36,7 +36,7 @@ class WalletConnectV2SignTransactionHandler {
             self.ethTransaction = ethTransaction
             walletModel = try walletModelProvider.getModel(with: ethTransaction.from, blockchainId: blockchainId)
         } catch {
-            AppLog.shared.error(error)
+            Analytics.error(error)
             throw error
         }
 

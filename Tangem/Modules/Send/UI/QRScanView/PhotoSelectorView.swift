@@ -50,7 +50,7 @@ extension PhotoSelectorView {
 
             itemProvider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
                 if let error {
-                    AppLog.shared.error(error)
+                    Analytics.error(error)
                 }
 
                 let image = object as? UIImage

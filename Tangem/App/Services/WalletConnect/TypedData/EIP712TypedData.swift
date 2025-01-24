@@ -100,7 +100,7 @@ public extension EIP712TypedData {
                 }
             }
         } catch {
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
         return encodedData
     }

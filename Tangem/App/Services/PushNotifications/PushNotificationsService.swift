@@ -49,13 +49,13 @@ final class PushNotificationsService: NSObject {
             if try await userNotificationCenter.requestAuthorization(options: requestedAuthorizationOptions) {
                 await registerForRemoteNotifications()
             } else {
-                AppLog.shared.error(
+                Analytics.error(
                     "Unable to request authorization and register for push notifications due to denied/undetermined authorization"
                 )
             }
         } catch {
-            AppLog.shared.error("Unable to request authorization and register for push notifications due to error:")
-            AppLog.shared.error(error)
+            Analytics.error("Unable to request authorization and register for push notifications due to error:")
+            Analytics.error(error)
         }
     }
 

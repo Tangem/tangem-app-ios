@@ -109,7 +109,7 @@ private extension ResetToFactoryViewModel {
                 }
 
                 if !error.isUserCancelled {
-                    AppLog.shared.error(error, params: [.action: .purgeWallet])
+                    Analytics.error(error, params: [.action: .purgeWallet])
                 }
             }
         }

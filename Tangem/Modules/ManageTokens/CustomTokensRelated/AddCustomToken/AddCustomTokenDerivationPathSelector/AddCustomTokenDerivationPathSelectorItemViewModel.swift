@@ -37,7 +37,7 @@ class AddCustomTokenDerivationPathSelectorItemViewModel: ObservableObject {
         do {
             option = .custom(derivationPath: try DerivationPath(rawPath: enteredText))
         } catch {
-            AppLog.shared.error(error)
+            Analytics.error(error)
             assertionFailure("You should validate entered derivation path")
         }
     }

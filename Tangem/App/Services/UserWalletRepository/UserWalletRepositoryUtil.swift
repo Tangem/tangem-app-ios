@@ -27,7 +27,7 @@ class UserWalletRepositoryUtil {
             try secureStorage.delete(publicDataEncryptionKeyStorageKey)
         } catch {
             AppLog.shared.debug("Failed to erase public data encryption key")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
     }
 
@@ -62,7 +62,7 @@ class UserWalletRepositoryUtil {
 
             return userWallets
         } catch {
-            AppLog.shared.error(error)
+            Analytics.error(error)
             return []
         }
     }
@@ -109,7 +109,7 @@ class UserWalletRepositoryUtil {
             AppLog.shared.debug("User wallets were saved successfully")
         } catch {
             AppLog.shared.debug("Failed to save user wallets")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
     }
 

@@ -103,7 +103,7 @@ class CommonWalletManagersRepository {
             AppLog.shared.debug("‼️ No derivation for \(entry.blockchainNetwork.blockchain.displayName)")
         } catch {
             AppLog.shared.debug("‼️ Failed to create \(entry.blockchainNetwork.blockchain.displayName)")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
 
         return nil

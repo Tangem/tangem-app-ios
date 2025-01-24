@@ -172,7 +172,7 @@ final class PolkadotAccountHealthChecker {
             AppLog.shared.debugDetailed("Finished checking account '\(account)' for reset")
         } catch {
             AppLog.shared.debugDetailed("Failed to check account '\(account)' for reset due to error: '\(error)'")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
     }
 
@@ -224,7 +224,7 @@ final class PolkadotAccountHealthChecker {
             AppLog.shared.debugDetailed("Finished checking account '\(account)' for immortal transactions")
         } catch {
             AppLog.shared.debugDetailed("Failed to check account '\(account)' for immortal transactions due to error: '\(error)'")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
     }
 

@@ -206,7 +206,7 @@ private extension CommonTokenQuotesRepository {
             }
             .catch { [weak self] error -> AnyPublisher<[String: TokenQuote], Never> in
                 self?.log("Loading quotes catch error")
-                AppLog.shared.error(error: error, params: [:])
+                Analytics.error(error: error)
                 return Just([:]).eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()

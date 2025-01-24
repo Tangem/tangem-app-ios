@@ -45,7 +45,7 @@ class UserWalletEncryptionKeyStorage {
             try biometricsStorage.store(encryptionKeyData, forKey: encryptionKeyStorageKey(for: userWalletId))
         } catch {
             AppLog.shared.debug("Failed to add UserWallet ID to the list")
-            AppLog.shared.error(error)
+            Analytics.error(error)
             return
         }
     }
@@ -56,7 +56,7 @@ class UserWalletEncryptionKeyStorage {
             try biometricsStorage.delete(encryptionKeyStorageKey(for: userWalletId))
         } catch {
             AppLog.shared.debug("Failed to delete user wallet list encryption key")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
     }
 
@@ -67,7 +67,7 @@ class UserWalletEncryptionKeyStorage {
             try biometricsStorage.store(encryptionKeyData, forKey: encryptionKeyStorageKey(for: userWalletId))
         } catch {
             AppLog.shared.debug("Failed to refresh an encryption key")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
     }
 
@@ -80,7 +80,7 @@ class UserWalletEncryptionKeyStorage {
             }
         } catch {
             AppLog.shared.debug("Failed to clear user wallet encryption keys")
-            AppLog.shared.error(error)
+            Analytics.error(error)
         }
     }
 

@@ -18,7 +18,7 @@ class CommonSmartContractMethodMapper {
             }
         } catch {
             AppLog.shared.debug("Can't map EVM contract methods data source")
-            AppLog.shared.error(error)
+            Analytics.error(error)
             return [:]
         }
     }()

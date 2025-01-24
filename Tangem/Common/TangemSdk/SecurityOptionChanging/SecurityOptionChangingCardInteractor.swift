@@ -51,7 +51,7 @@ class SecurityOptionChangingCardInteractor {
                 _currentSecurityOption.value = .accessCode
                 completion(.success(()))
             case .failure(let error):
-                AppLog.shared.error(
+                Analytics.error(
                     error,
                     params: [
                         .newSecOption: .accessCode,
@@ -76,7 +76,7 @@ class SecurityOptionChangingCardInteractor {
                 _currentSecurityOption.value = .passCode
                 completion(.success(()))
             case .failure(let error):
-                AppLog.shared.error(
+                Analytics.error(
                     error,
                     params: [
                         .newSecOption: .passcode,
@@ -100,7 +100,7 @@ class SecurityOptionChangingCardInteractor {
                 _currentSecurityOption.value = .longTap
                 completion(.success(()))
             case .failure(let error):
-                AppLog.shared.error(
+                Analytics.error(
                     error,
                     params: [
                         .newSecOption: .longTap,
