@@ -9,11 +9,20 @@
 import Foundation
 
 public struct StakeKitTransaction: Hashable {
+    public enum Status: String {
+        case confirmed = "CONFIRMED" // other statuses are not used, add if necessary
+    }
+
+    public enum TransactionType: String {
+        case split = "SPLIT" // other types are not used, add if necessary
+    }
+
     public let id: String
     let amount: Amount
     let fee: Fee
     let unsignedData: String
-    public let type: String
+    public let type: TransactionType?
+    public let status: Status?
     public let stepIndex: Int
     let params: StakeKitTransactionParams
 
@@ -22,7 +31,8 @@ public struct StakeKitTransaction: Hashable {
         amount: Amount,
         fee: Fee,
         unsignedData: String,
-        type: String,
+        type: TransactionType?,
+        status: Status?,
         stepIndex: Int,
         params: StakeKitTransactionParams
     ) {
@@ -31,6 +41,7 @@ public struct StakeKitTransaction: Hashable {
         self.fee = fee
         self.unsignedData = unsignedData
         self.type = type
+        self.status = status
         self.stepIndex = stepIndex
         self.params = params
     }

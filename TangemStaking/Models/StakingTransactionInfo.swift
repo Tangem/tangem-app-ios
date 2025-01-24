@@ -14,8 +14,8 @@ public struct StakingTransactionInfo: Hashable {
     public let network: String
     public let unsignedTransactionData: String
     public let fee: Decimal
-    public let createdAt: Date?
     public let type: String
+    public let status: String
     public let stepIndex: Int
 
     public init(
@@ -24,8 +24,8 @@ public struct StakingTransactionInfo: Hashable {
         network: String,
         unsignedTransactionData: String,
         fee: Decimal,
-        createdAt: Date? = nil,
         type: String,
+        status: String,
         stepIndex: Int
     ) {
         self.id = id
@@ -33,8 +33,8 @@ public struct StakingTransactionInfo: Hashable {
         self.network = network
         self.unsignedTransactionData = unsignedTransactionData
         self.fee = fee
-        self.createdAt = createdAt
         self.type = type
+        self.status = status
         self.stepIndex = stepIndex
     }
 }

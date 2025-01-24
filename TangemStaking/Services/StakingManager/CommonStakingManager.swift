@@ -133,6 +133,10 @@ extension CommonStakingManager: StakingManager {
         }
     }
 
+    func transactionDetails(id: String) async throws -> StakingTransactionInfo {
+        try await execute(try await provider.transaction(id: id))
+    }
+
     func transactionDidSent(action: StakingAction) {
         runTask(in: self) {
             await $0.updateState(loadActions: true)

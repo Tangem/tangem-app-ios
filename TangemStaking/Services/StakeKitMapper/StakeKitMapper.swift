@@ -198,8 +198,8 @@ struct StakeKitMapper {
             network: response.network.rawValue,
             unsignedTransactionData: mapToTransactionUnsignedData(from: unsignedTransaction, network: response.network),
             fee: fee,
-            createdAt: response.createdAt,
             type: response.type.rawValue,
+            status: response.status.rawValue,
             stepIndex: response.stepIndex
         )
     }
