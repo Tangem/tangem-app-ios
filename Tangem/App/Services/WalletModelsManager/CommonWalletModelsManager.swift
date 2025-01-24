@@ -105,7 +105,7 @@ class CommonWalletModelsManager {
             .map { $0.update(silent: false) }
             .combineLatest()
             .sink { states in
-                if states.contains(where: { $0.isBlockchainUnreachable }) {
+                if states.contains(where: \.isBlockchainUnreachable) {
                     PerformanceTracker.endTracking(token: token, with: .failure)
                 } else {
                     PerformanceTracker.endTracking(token: token, with: .success)
