@@ -10,9 +10,17 @@ import Foundation
 
 struct AlephiumWalletAssembly: WalletManagerAssembly {
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
-        AlephiumWalletManager(
+        let providers: [AlephiumNetworkProvider] = APIResolver(blockchain: input.blockchain, config: input.blockchainSdkConfig)
+            .resolveProviders(apiInfos: input.apiInfo) { nodeInfo, _ in
+                AlephiumNetworkProvider(
+                    node: nodeInfo,
+                    networkConfig: input.networkConfig
+                )
+            }
+
+        return AlephiumWalletManager(
             wallet: input.wallet,
-            networkService: AlephiumNetworkService(),
+            networkService: AlephiumNetworkService(providers: providers),
             transactionBuilder: AlephiumTransactionBuilder()
         )
     }

@@ -165,9 +165,15 @@
 		2DC5DAAD29B782420039154A /* TonCenterApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC5DAAC29B782420039154A /* TonCenterApiKeys.swift */; };
 		2DCAEE4B2B13E4F800C87E09 /* GetBlockAccessTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCAEE4A2B13E4F800C87E09 /* GetBlockAccessTokens.swift */; };
 		2DCFBA5C2D3E782600A51D84 /* AlephiumWalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA5B2D3E782600A51D84 /* AlephiumWalletManager.swift */; };
-		2DCFBA5E2D3E785200A51D84 /* AlephiumNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA5D2D3E785200A51D84 /* AlephiumNetworkService.swift */; };
 		2DCFBA602D3E786B00A51D84 /* AlephiumTransactionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA5F2D3E786B00A51D84 /* AlephiumTransactionBuilder.swift */; };
 		2DCFBA632D3E797B00A51D84 /* AlephiumNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA622D3E797B00A51D84 /* AlephiumNetworkProvider.swift */; };
+		2DCFBA7B2D400A1500A51D84 /* AlephiumUTXO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA762D400A1500A51D84 /* AlephiumUTXO.swift */; };
+		2DCFBA7C2D400A1500A51D84 /* AlephiumAccountInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA742D400A1500A51D84 /* AlephiumAccountInfo.swift */; };
+		2DCFBA7D2D400A1500A51D84 /* AlephiumNetworkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA792D400A1500A51D84 /* AlephiumNetworkResponse.swift */; };
+		2DCFBA7E2D400A1500A51D84 /* AlephiumNetworkRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA782D400A1500A51D84 /* AlephiumNetworkRequest.swift */; };
+		2DCFBA7F2D400A1500A51D84 /* AlephiumBalanceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA752D400A1500A51D84 /* AlephiumBalanceInfo.swift */; };
+		2DCFBA822D400B6E00A51D84 /* AlephiumProviderTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA812D400B6E00A51D84 /* AlephiumProviderTarget.swift */; };
+		2DCFBA832D400B6E00A51D84 /* AlephiumNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DCFBA802D400B6E00A51D84 /* AlephiumNetworkService.swift */; };
 		2DD5C39A2C4EA6570000658D /* MarketsListPrefetchDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5C3982C4EA6570000658D /* MarketsListPrefetchDataSource.swift */; };
 		2DD5C39B2C4EA6570000658D /* MarketsListDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5C3992C4EA6570000658D /* MarketsListDataController.swift */; };
 		2DD754D72AE1660D0009CA64 /* GenerateAddressesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD754D62AE1660D0009CA64 /* GenerateAddressesViewModel.swift */; };
@@ -3338,8 +3344,6 @@
 		2D92E6562D0C2088008FDECF /* SolanaDummyNetworkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolanaDummyNetworkRouter.swift; sourceTree = "<group>"; };
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumAmountRestrictable.swift; sourceTree = "<group>"; };
-		2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
-		2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnAccountModel.swift; sourceTree = "<group>"; };
 		2DB200612D34F57700E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
 		2DB200652D380C9A00E499A3 /* Fact0rnWalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnWalletManager.swift; sourceTree = "<group>"; };
 		2DB2006E2D3D75AD00E499A3 /* AlephiumAddressService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumAddressService.swift; sourceTree = "<group>"; };
@@ -3384,9 +3388,15 @@
 		2DC5DAAC29B782420039154A /* TonCenterApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TonCenterApiKeys.swift; sourceTree = "<group>"; };
 		2DCAEE4A2B13E4F800C87E09 /* GetBlockAccessTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetBlockAccessTokens.swift; sourceTree = "<group>"; };
 		2DCFBA5B2D3E782600A51D84 /* AlephiumWalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumWalletManager.swift; sourceTree = "<group>"; };
-		2DCFBA5D2D3E785200A51D84 /* AlephiumNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumNetworkService.swift; sourceTree = "<group>"; };
 		2DCFBA5F2D3E786B00A51D84 /* AlephiumTransactionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumTransactionBuilder.swift; sourceTree = "<group>"; };
 		2DCFBA622D3E797B00A51D84 /* AlephiumNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumNetworkProvider.swift; sourceTree = "<group>"; };
+		2DCFBA742D400A1500A51D84 /* AlephiumAccountInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumAccountInfo.swift; sourceTree = "<group>"; };
+		2DCFBA752D400A1500A51D84 /* AlephiumBalanceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumBalanceInfo.swift; sourceTree = "<group>"; };
+		2DCFBA762D400A1500A51D84 /* AlephiumUTXO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumUTXO.swift; sourceTree = "<group>"; };
+		2DCFBA782D400A1500A51D84 /* AlephiumNetworkRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumNetworkRequest.swift; sourceTree = "<group>"; };
+		2DCFBA792D400A1500A51D84 /* AlephiumNetworkResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumNetworkResponse.swift; sourceTree = "<group>"; };
+		2DCFBA802D400B6E00A51D84 /* AlephiumNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumNetworkService.swift; sourceTree = "<group>"; };
+		2DCFBA812D400B6E00A51D84 /* AlephiumProviderTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumProviderTarget.swift; sourceTree = "<group>"; };
 		2DD5C3982C4EA6570000658D /* MarketsListPrefetchDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsListPrefetchDataSource.swift; sourceTree = "<group>"; };
 		2DD5C3992C4EA6570000658D /* MarketsListDataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketsListDataController.swift; sourceTree = "<group>"; };
 		2DD754D62AE1660D0009CA64 /* GenerateAddressesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAddressesViewModel.swift; sourceTree = "<group>"; };
@@ -6737,15 +6747,6 @@
 			path = Tooltip;
 			sourceTree = "<group>";
 		};
-		2DB2005F2D34F2D400E499A3 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */,
-				2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */,
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		2DB200622D34F57700E499A3 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -6757,10 +6758,11 @@
 		2DB200712D3D75AD00E499A3 /* Alephium */ = {
 			isa = PBXGroup;
 			children = (
+				2DCFBA772D400A1500A51D84 /* Domain */,
+				2DCFBA7A2D400A1500A51D84 /* DTO */,
 				2DCFBA612D3E797100A51D84 /* Network */,
 				2DB2006E2D3D75AD00E499A3 /* AlephiumAddressService.swift */,
 				2DB2006F2D3D75AD00E499A3 /* AlephiumExternalLinkProvider.swift */,
-				2DCFBA5D2D3E785200A51D84 /* AlephiumNetworkService.swift */,
 				2DCFBA5F2D3E786B00A51D84 /* AlephiumTransactionBuilder.swift */,
 				2DB200702D3D75AD00E499A3 /* AlephiumWalletAssembly.swift */,
 				2DCFBA5B2D3E782600A51D84 /* AlephiumWalletManager.swift */,
@@ -6914,8 +6916,29 @@
 			isa = PBXGroup;
 			children = (
 				2DCFBA622D3E797B00A51D84 /* AlephiumNetworkProvider.swift */,
+				2DCFBA802D400B6E00A51D84 /* AlephiumNetworkService.swift */,
+				2DCFBA812D400B6E00A51D84 /* AlephiumProviderTarget.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		2DCFBA772D400A1500A51D84 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				2DCFBA742D400A1500A51D84 /* AlephiumAccountInfo.swift */,
+				2DCFBA752D400A1500A51D84 /* AlephiumBalanceInfo.swift */,
+				2DCFBA762D400A1500A51D84 /* AlephiumUTXO.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		2DCFBA7A2D400A1500A51D84 /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				2DCFBA782D400A1500A51D84 /* AlephiumNetworkRequest.swift */,
+				2DCFBA792D400A1500A51D84 /* AlephiumNetworkResponse.swift */,
+			);
+			path = DTO;
 			sourceTree = "<group>";
 		};
 		2DD754D52AE166000009CA64 /* GenerateAddressesView */ = {
@@ -19159,7 +19182,6 @@
 				2D54FECF2CDBD696004FC466 /* CasperNetworkService.swift in Sources */,
 				2D54FED02CDBD696004FC466 /* CasperNetworkRequest.swift in Sources */,
 				2D54FED12CDBD696004FC466 /* CasperBalance.swift in Sources */,
-				2DCFBA5E2D3E785200A51D84 /* AlephiumNetworkService.swift in Sources */,
 				2D54FED22CDBD696004FC466 /* CasperNetworkResponse.Balance.swift in Sources */,
 				B62D42CB2CBC79DB00C2460E /* Data+.swift in Sources */,
 				B62D42112CBC79DB00C2460E /* SigningAlgorithm.swift in Sources */,
@@ -19591,6 +19613,11 @@
 				B62D41C92CBC79DB00C2460E /* common.pb.swift in Sources */,
 				B62D3FF62CBC79DA00C2460E /* OP_IF.swift in Sources */,
 				B62D428D2CBC79DB00C2460E /* BlockBookTransactionHistoryTotalPageCountExtractor.swift in Sources */,
+				2DCFBA7B2D400A1500A51D84 /* AlephiumUTXO.swift in Sources */,
+				2DCFBA7C2D400A1500A51D84 /* AlephiumAccountInfo.swift in Sources */,
+				2DCFBA7D2D400A1500A51D84 /* AlephiumNetworkResponse.swift in Sources */,
+				2DCFBA7E2D400A1500A51D84 /* AlephiumNetworkRequest.swift in Sources */,
+				2DCFBA7F2D400A1500A51D84 /* AlephiumBalanceInfo.swift in Sources */,
 				B62D41872CBC79DA00C2460E /* SolanaAddressService.swift in Sources */,
 				B62D41392CBC79DA00C2460E /* NEARNetworkResult.AccountInfo.swift in Sources */,
 				B62D42D32CBC79DB00C2460E /* Log+.swift in Sources */,
@@ -19659,6 +19686,8 @@
 				B62D40C82CBC79DA00C2460E /* EthereumTransactionBuilder.swift in Sources */,
 				B62D425C2CBC79DB00C2460E /* AddressServiceFactory.swift in Sources */,
 				B62D40782CBC79DA00C2460E /* DecimalAddressConverter.swift in Sources */,
+				2DCFBA822D400B6E00A51D84 /* AlephiumProviderTarget.swift in Sources */,
+				2DCFBA832D400B6E00A51D84 /* AlephiumNetworkService.swift in Sources */,
 				B62D40EB2CBC79DA00C2460E /* HederaTarget.swift in Sources */,
 				0A94FAAB2CF9D25900FD6C2F /* RentExtemptionRestrictable.swift in Sources */,
 				B62D3FFF2CBC79DA00C2460E /* OP_CHECKSEQUENCEVERIFY.swift in Sources */,
