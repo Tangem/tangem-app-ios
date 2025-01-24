@@ -372,11 +372,6 @@ private extension CommonStakingManager {
                 }
                 return actions
             }
-//            let actions = try await passthroughs.asyncMap { passthrough in
-//                let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
-//                let action = try await getPendingTransactionAction(request: request)
-//                return action
-//            }
 
             return mapToStakingTransactionAction(
                 amount: request.amount,
