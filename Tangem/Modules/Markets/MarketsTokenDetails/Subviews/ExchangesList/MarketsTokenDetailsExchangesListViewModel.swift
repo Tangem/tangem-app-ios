@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
-    @Published var exchangesList: LoadingValue<[MarketsTokenDetailsExchangeItemInfo]>
+    @Published var exchangesList: LoadingValue<[MarketsTokenDetailsExchangeItemInfo]> = .loading
 
     /// For unknown reasons, the `@self` and `@identity` of our view change when push navigation is performed in other
     /// navigation controllers in the application (on the main screen for example), which causes the state of
@@ -46,12 +46,6 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
         self.exchangesListLoader = exchangesListLoader
         self.onBackButtonAction = onBackButtonAction
 
-        if let cachedResponse = exchangesListLoader.cachedTokenExchangesListDetails(for: tokenId) {
-            exchangesList = .loaded(cachedResponse)
-        } else {
-            exchangesList = .loading
-        }
-
         super.init(overlayContentProgressInitialValue: 1.0)
     }
 
@@ -60,8 +54,16 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
         loadExchangesList()
     }
 
+    func onOverlayContentStateChange(_ state: OverlayContentState) {
+        // Our view can be recreated when the bottom sheet is in a collapsed state
+        // In this case, content should be hidden (i.e. the initial progress should be zero)
+        overlayContentHidingInitialProgress = state.isCollapsed ? 0.0 : 1.0
+    }
+}
+
+extension MarketsTokenDetailsExchangesListViewModel {
     func loadExchangesList() {
-        guard loadingCancellable == nil, exchangesList.value == nil else {
+        guard loadingCancellable == nil else {
             return
         }
 
@@ -84,12 +86,6 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
                 await self?.handleLoadResult(.failure(error))
             }
         }.eraseToAnyCancellable()
-    }
-
-    func onOverlayContentStateChange(_ state: OverlayContentState) {
-        // Our view can be recreated when the bottom sheet is in a collapsed state
-        // In this case, content should be hidden (i.e. the initial progress should be zero)
-        overlayContentHidingInitialProgress = state.isCollapsed ? 0.0 : 1.0
     }
 }
 
