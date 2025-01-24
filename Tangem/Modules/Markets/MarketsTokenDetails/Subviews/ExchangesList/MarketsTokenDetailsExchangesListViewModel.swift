@@ -19,7 +19,6 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
     ///
     /// Our view is initially presented when the sheet is expanded, hence the `1.0` initial value.
     @Published private(set) var overlayContentHidingInitialProgress = 1.0
-
     var isMarketsSheetStyle: Bool { presentationStyle == .marketsSheet }
     let numberOfExchangesListedOn: Int
     let onBackButtonAction: () -> Void
