@@ -11,8 +11,8 @@ import SwiftUI
 struct HotCryptoView: View {
     private let priceService = HotCryptoPriceService()
 
-    let items: [HotCryptoDataItem]
-    let action: (HotCryptoDataItem) -> Void
+    let items: [HotCryptoToken]
+    let action: (HotCryptoToken) -> Void
 
     var body: some View {
         content
@@ -37,7 +37,7 @@ struct HotCryptoView: View {
         }
     }
 
-    private func tokenItem(item: HotCryptoDataItem) -> some View {
+    private func tokenItem(item: HotCryptoToken) -> some View {
         HStack(spacing: 12) {
             IconView(url: item.imageURL, size: Constants.iconSize)
 
@@ -48,7 +48,7 @@ struct HotCryptoView: View {
         .onTapGesture(perform: { action(item) })
     }
 
-    private func infoView(item: HotCryptoDataItem) -> some View {
+    private func infoView(item: HotCryptoToken) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(item.name)
                 .style(Fonts.Bold.subheadline, color: Colors.Text.primary1)

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct HotCryptoDataItem: Identifiable {
+struct HotCryptoToken: Identifiable {
     let id: String
     let name: String
     let networkId: String
@@ -20,7 +20,7 @@ struct HotCryptoDataItem: Identifiable {
     let imageURL: URL?
 }
 
-extension HotCryptoDataItem {
+extension HotCryptoToken {
     init(from dto: HotCryptoDTO.Response.HotToken) {
         id = dto.id
         name = dto.name

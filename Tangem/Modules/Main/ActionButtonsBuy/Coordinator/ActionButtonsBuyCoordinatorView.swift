@@ -6,7 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import BlockchainSdk
 import SwiftUI
 
 struct ActionButtonsBuyCoordinatorView: View {
@@ -24,7 +23,7 @@ struct ActionButtonsBuyCoordinatorView: View {
     }
 
     private func addToPortfolioSheet(_ info: HotCryptoAddToPortfolioModel) -> some View {
-        HotCryptoAddPortfolioBottomSheet(
+        HotCryptoAddToPortfolioBottomSheet(
             info: info,
             action: {
                 coordinator.actionButtonsBuyViewModel?.handleViewAction(.addToPortfolio(info.token))

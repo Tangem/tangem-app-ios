@@ -44,20 +44,17 @@ final class BuyActionButtonViewModel: ActionButtonViewModel {
     }
 
     private let lastButtonTapped: PassthroughSubject<ActionButtonModel, Never>
-    private let hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>
     private let userWalletModel: UserWalletModel
 
     init(
         model: ActionButtonModel,
         coordinator: some ActionButtonsBuyFlowRoutable,
         lastButtonTapped: PassthroughSubject<ActionButtonModel, Never>,
-        hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>,
         userWalletModel: some UserWalletModel
     ) {
         self.model = model
         self.coordinator = coordinator
         self.lastButtonTapped = lastButtonTapped
-        self.hotCryptoItemsPublisher = hotCryptoItemsPublisher
         self.userWalletModel = userWalletModel
 
         bind()
@@ -175,7 +172,7 @@ extension BuyActionButtonViewModel {
 extension BuyActionButtonViewModel {
     private func openBuy() {
         if FeatureProvider.isAvailable(.onramp) {
-            coordinator?.openBuy(userWalletModel: userWalletModel, hotCryptoItemsPublisher: hotCryptoItemsPublisher)
+            coordinator?.openBuy(userWalletModel: userWalletModel)
         } else {
             openBuyLegacy()
         }
@@ -183,7 +180,7 @@ extension BuyActionButtonViewModel {
 
     private func openBuyLegacy() {
         if isBuyAvailable {
-            coordinator?.openBuy(userWalletModel: userWalletModel, hotCryptoItemsPublisher: hotCryptoItemsPublisher)
+            coordinator?.openBuy(userWalletModel: userWalletModel)
         } else {
             openBanking()
         }
@@ -194,7 +191,7 @@ extension BuyActionButtonViewModel {
             confirmCallback: { [weak self] in
                 guard let self else { return }
 
-                coordinator?.openBuy(userWalletModel: userWalletModel, hotCryptoItemsPublisher: hotCryptoItemsPublisher)
+                coordinator?.openBuy(userWalletModel: userWalletModel)
             },
             declineCallback: { [weak self] in
                 self?.coordinator?.openP2PTutorial()

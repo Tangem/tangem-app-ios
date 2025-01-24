@@ -268,7 +268,7 @@ extension CommonTangemApiService: TangemApiService {
 
     // MARK: - Action Buttons
 
-    func fetchHotCrypto(requestModel: HotCryptoDTO.Request) async throws -> HotCryptoDTO.Response {
+    func loadHotCrypto(requestModel: HotCryptoDTO.Request) async throws -> HotCryptoDTO.Response {
         try await request(for: .hotCrypto(requestModel))
     }
 

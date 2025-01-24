@@ -127,7 +127,7 @@ class FakeTangemApiService: TangemApiService {
         throw "Not implemented"
     }
 
-    func fetchHotCrypto(requestModel: HotCryptoDTO.Request) async throws -> HotCryptoDTO.Response {
+    func loadHotCrypto(requestModel: HotCryptoDTO.Request) async throws -> HotCryptoDTO.Response {
         throw "Not implemented"
     }
 

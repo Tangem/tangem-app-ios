@@ -22,7 +22,7 @@ struct ActionButtonsTokenSelectItemView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            TokenIcon(tokenIconInfo: viewModel.model.tokenIconInfo, size: iconSize)
+            TokenIcon(tokenIconInfo: viewModel.tokenIconInfo, size: iconSize)
                 .saturation(viewModel.isDisabled ? 0 : 1)
 
             infoView
@@ -43,10 +43,10 @@ struct ActionButtonsTokenSelectItemView: View {
 
     private var topInfoView: some View {
         HStack(spacing: .zero) {
-            Text(viewModel.model.infoProvider.tokenItem.name)
+            Text(viewModel.tokenName)
                 .style(
                     Fonts.Bold.subheadline,
-                    color: viewModel.model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1
+                    color: viewModel.getDisabledTextColor(for: .tokenName)
                 )
 
             Spacer(minLength: 4)
@@ -54,7 +54,7 @@ struct ActionButtonsTokenSelectItemView: View {
             LoadableTextView(
                 state: viewModel.fiatBalanceState,
                 font: Fonts.Bold.subheadline,
-                textColor: viewModel.model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1,
+                textColor: viewModel.getDisabledTextColor(for: .fiatBalance),
                 loaderSize: .init(width: 40, height: 12),
                 isSensitiveText: true
             )
@@ -63,7 +63,7 @@ struct ActionButtonsTokenSelectItemView: View {
 
     private var bottomInfoView: some View {
         HStack(spacing: .zero) {
-            Text(viewModel.model.infoProvider.tokenItem.currencySymbol)
+            Text(viewModel.currencySymbol)
                 .style(
                     Fonts.Regular.caption1,
                     color: Colors.Text.tertiary
@@ -74,7 +74,7 @@ struct ActionButtonsTokenSelectItemView: View {
             LoadableTextView(
                 state: viewModel.balanceState,
                 font: Fonts.Regular.caption1,
-                textColor: viewModel.model.isDisabled ? Colors.Text.disabled : Colors.Text.tertiary,
+                textColor: viewModel.getDisabledTextColor(for: .balance),
                 loaderSize: .init(width: 40, height: 12),
                 isSensitiveText: true
             )

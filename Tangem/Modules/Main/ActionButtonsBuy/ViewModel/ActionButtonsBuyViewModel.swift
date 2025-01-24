@@ -19,10 +19,13 @@ final class ActionButtonsBuyViewModel: ObservableObject {
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
+    @Injected(\.hotCryptoService)
+    private var hotCryptoService: HotCryptoService
+
     // MARK: - Published properties
 
     @Published var alert: AlertBinder?
-    @Published private(set) var hotCryptoItems: [HotCryptoDataItem] = []
+    @Published private(set) var hotCryptoItems: [HotCryptoToken] = []
 
     // MARK: - Child viewModel
 
@@ -44,18 +47,15 @@ final class ActionButtonsBuyViewModel: ObservableObject {
         return reason
     }
 
-    private let hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>
     private let userWalletModel: UserWalletModel
 
     init(
         tokenSelectorViewModel: ActionButtonsTokenSelectorViewModel,
         coordinator: some ActionButtonsBuyRoutable,
-        hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>,
         userWalletModel: some UserWalletModel
     ) {
         self.tokenSelectorViewModel = tokenSelectorViewModel
         self.coordinator = coordinator
-        self.hotCryptoItemsPublisher = hotCryptoItemsPublisher
         self.userWalletModel = userWalletModel
 
         bind()
@@ -71,7 +71,7 @@ final class ActionButtonsBuyViewModel: ObservableObject {
         case .didTapToken(let token):
             handleTokenTap(token)
         case .didTapHotCrypto(let token):
-            coordinator?.openAddToPortfolio(.init(token: token, walletName: userWalletModel.name))
+            coordinator?.openAddToPortfolio(.init(token: token, userWalletName: userWalletModel.name))
         case .addToPortfolio(let token):
             addTokenToPortfolio(token)
         }
@@ -103,7 +103,7 @@ extension ActionButtonsBuyViewModel {
             }
             .store(in: &bag)
 
-        hotCryptoItemsPublisher
+        hotCryptoService.hotCryptoItemsPublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
             .sink { viewModel, hotTokens in
@@ -116,12 +116,12 @@ extension ActionButtonsBuyViewModel {
 // MARK: - Hot crypto
 
 extension ActionButtonsBuyViewModel {
-    func updateHotTokens(_ hotTokens: [HotCryptoDataItem]) {
+    func updateHotTokens(_ hotTokens: [HotCryptoToken]) {
         let walletModelNetworkIds = userWalletModel.walletModelsManager.walletModels.map(\.blockchainNetwork.blockchain.networkId)
         hotCryptoItems = hotTokens.filter { !walletModelNetworkIds.contains($0.networkId) }
     }
 
-    func addTokenToPortfolio(_ token: HotCryptoDataItem) {
+    func addTokenToPortfolio(_ token: HotCryptoToken) {
         if let disabledLocalizedReason {
             alert = AlertBuilder.makeDemoAlert(disabledLocalizedReason)
             return
@@ -211,7 +211,7 @@ extension ActionButtonsBuyViewModel {
         case onAppear
         case close
         case didTapToken(ActionButtonsTokenSelectorItem)
-        case didTapHotCrypto(HotCryptoDataItem)
-        case addToPortfolio(HotCryptoDataItem)
+        case didTapHotCrypto(HotCryptoToken)
+        case addToPortfolio(HotCryptoToken)
     }
 }

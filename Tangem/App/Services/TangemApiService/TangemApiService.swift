@@ -48,7 +48,7 @@ protocol TangemApiService: AnyObject, Initializable {
 
     // MARK: - Action Buttons
 
-    func fetchHotCrypto(requestModel: HotCryptoDTO.Request) async throws -> HotCryptoDTO.Response
+    func loadHotCrypto(requestModel: HotCryptoDTO.Request) async throws -> HotCryptoDTO.Response
 
     // MARK: - BSDK
 

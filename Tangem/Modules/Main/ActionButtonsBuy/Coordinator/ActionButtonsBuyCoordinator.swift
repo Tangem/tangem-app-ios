@@ -44,7 +44,6 @@ final class ActionButtonsBuyCoordinator: CoordinatorObject {
                     tokenSorter: options.tokenSorter
                 ),
                 coordinator: self,
-                hotCryptoItemsPublisher: options.hotCryptoItemsPublisher,
                 userWalletModel: options.userWalletModel
             )
         }
@@ -94,7 +93,6 @@ extension ActionButtonsBuyCoordinator {
 
         struct DefaultActionButtonBuyCoordinatorOptions {
             let userWalletModel: UserWalletModel
-            let hotCryptoItemsPublisher: AnyPublisher<[HotCryptoDataItem], Never>
             let expressTokensListAdapter: ExpressTokensListAdapter
             let tokenSorter: TokenAvailabilitySorter
         }

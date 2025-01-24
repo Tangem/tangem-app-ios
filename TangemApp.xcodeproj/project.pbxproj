@@ -2191,6 +2191,8 @@
 		DC22535928A4FD9C0094F30C /* UserWalletConfigFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC22535828A4FD9C0094F30C /* UserWalletConfigFactory.swift */; };
 		DC22535B28A4FDE90094F30C /* GeneralNotificationEventsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC22535A28A4FDE90094F30C /* GeneralNotificationEventsFactory.swift */; };
 		DC234CC429F12E3D00082063 /* AppStorageCompat.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC234CC329F12E3D00082063 /* AppStorageCompat.swift */; };
+		DC25DDE82D42371000845E4C /* HotCryptoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC25DDE72D42370B00845E4C /* HotCryptoService.swift */; };
+		DC25DDEA2D4239CA00845E4C /* HotCryptoServiceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC25DDE92D4239C200845E4C /* HotCryptoServiceKey.swift */; };
 		DC261C9F292CD3B800875E64 /* GoogleService-Info-Beta.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC261C9C292CD3B800875E64 /* GoogleService-Info-Beta.plist */; };
 		DC261CA0292CD3B800875E64 /* GoogleService-Info-Alpha.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC261C9D292CD3B800875E64 /* GoogleService-Info-Alpha.plist */; };
 		DC261CA1292CD3B800875E64 /* GoogleService-Info-Production.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC261C9E292CD3B800875E64 /* GoogleService-Info-Production.plist */; };
@@ -2367,10 +2369,10 @@
 		DC8B159F2B69616B00DBBE9E /* DismissSafariActionURLHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B159E2B69616B00DBBE9E /* DismissSafariActionURLHelper.swift */; };
 		DC8D72142BB1967D0077F241 /* Analytics+EventLimit.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8D72132BB1967D0077F241 /* Analytics+EventLimit.swift */; };
 		DC9090442D39395900BF7A43 /* HotCryptoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9090432D39395900BF7A43 /* HotCryptoDTO.swift */; };
-		DC9090462D39396E00BF7A43 /* HotCryptoDataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9090452D39396E00BF7A43 /* HotCryptoDataItem.swift */; };
+		DC9090462D39396E00BF7A43 /* HotCryptoToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9090452D39396E00BF7A43 /* HotCryptoToken.swift */; };
 		DC90904B2D393ABC00BF7A43 /* HotCryptoPriceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC90904A2D393ABC00BF7A43 /* HotCryptoPriceService.swift */; };
 		DC9090512D393B2F00BF7A43 /* HotCryptoAddPortfolioBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9090502D393B2F00BF7A43 /* HotCryptoAddPortfolioBottomSheet.swift */; };
-		DC9090532D393D0600BF7A43 /* HotCryptoAddToPortfolioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9090522D393D0600BF7A43 /* HotCryptoAddToPortfolioModel.swift */; };
+		DC9090532D393D0600BF7A43 /* HotCryptoAddPortfolioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9090522D393D0600BF7A43 /* HotCryptoAddPortfolioModel.swift */; };
 		DC939F992C3C0323002D0326 /* CommonXPUBGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC939F952C3C0323002D0326 /* CommonXPUBGenerator.swift */; };
 		DC939F9A2C3C0323002D0326 /* XPUBGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC939F962C3C0323002D0326 /* XPUBGenerator.swift */; };
 		DC939F9B2C3C0323002D0326 /* XPUBGeneratorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC939F972C3C0323002D0326 /* XPUBGeneratorFactory.swift */; };
@@ -5358,6 +5360,8 @@
 		DC22535828A4FD9C0094F30C /* UserWalletConfigFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWalletConfigFactory.swift; sourceTree = "<group>"; };
 		DC22535A28A4FDE90094F30C /* GeneralNotificationEventsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralNotificationEventsFactory.swift; sourceTree = "<group>"; };
 		DC234CC329F12E3D00082063 /* AppStorageCompat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStorageCompat.swift; sourceTree = "<group>"; };
+		DC25DDE72D42370B00845E4C /* HotCryptoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotCryptoService.swift; sourceTree = "<group>"; };
+		DC25DDE92D4239C200845E4C /* HotCryptoServiceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotCryptoServiceKey.swift; sourceTree = "<group>"; };
 		DC261C9C292CD3B800875E64 /* GoogleService-Info-Beta.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info-Beta.plist"; path = "tangem-app-config/ios/GoogleService-Info-Beta.plist"; sourceTree = SOURCE_ROOT; };
 		DC261C9D292CD3B800875E64 /* GoogleService-Info-Alpha.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info-Alpha.plist"; path = "tangem-app-config/ios/GoogleService-Info-Alpha.plist"; sourceTree = SOURCE_ROOT; };
 		DC261C9E292CD3B800875E64 /* GoogleService-Info-Production.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info-Production.plist"; path = "tangem-app-config/ios/GoogleService-Info-Production.plist"; sourceTree = SOURCE_ROOT; };
@@ -5537,10 +5541,10 @@
 		DC8B159E2B69616B00DBBE9E /* DismissSafariActionURLHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissSafariActionURLHelper.swift; sourceTree = "<group>"; };
 		DC8D72132BB1967D0077F241 /* Analytics+EventLimit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+EventLimit.swift"; sourceTree = "<group>"; };
 		DC9090432D39395900BF7A43 /* HotCryptoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotCryptoDTO.swift; sourceTree = "<group>"; };
-		DC9090452D39396E00BF7A43 /* HotCryptoDataItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotCryptoDataItem.swift; sourceTree = "<group>"; };
+		DC9090452D39396E00BF7A43 /* HotCryptoToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotCryptoToken.swift; sourceTree = "<group>"; };
 		DC90904A2D393ABC00BF7A43 /* HotCryptoPriceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotCryptoPriceService.swift; sourceTree = "<group>"; };
 		DC9090502D393B2F00BF7A43 /* HotCryptoAddPortfolioBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotCryptoAddPortfolioBottomSheet.swift; sourceTree = "<group>"; };
-		DC9090522D393D0600BF7A43 /* HotCryptoAddToPortfolioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotCryptoAddToPortfolioModel.swift; sourceTree = "<group>"; };
+		DC9090522D393D0600BF7A43 /* HotCryptoAddPortfolioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotCryptoAddPortfolioModel.swift; sourceTree = "<group>"; };
 		DC939F952C3C0323002D0326 /* CommonXPUBGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonXPUBGenerator.swift; sourceTree = "<group>"; };
 		DC939F962C3C0323002D0326 /* XPUBGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPUBGenerator.swift; sourceTree = "<group>"; };
 		DC939F972C3C0323002D0326 /* XPUBGeneratorFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XPUBGeneratorFactory.swift; sourceTree = "<group>"; };
@@ -12815,6 +12819,7 @@
 		DC0A57DA2822A4DC0031BECC /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				DC25DDE62D4236EF00845E4C /* HotCryptoServices */,
 				DA76BF502CEF966300199317 /* PendingTransactionsManager */,
 				EF2561102CC6A8E000D3C16A /* Onramp */,
 				DA64DAC82C08BE71000CBC1E /* UserWalletNameIndexationHelper */,
@@ -13058,6 +13063,15 @@
 				DC2158732D0308B9007720F8 /* ActionButtonsAnalyticsService.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		DC25DDE62D4236EF00845E4C /* HotCryptoServices */ = {
+			isa = PBXGroup;
+			children = (
+				DC25DDE92D4239C200845E4C /* HotCryptoServiceKey.swift */,
+				DC25DDE72D42370B00845E4C /* HotCryptoService.swift */,
+			);
+			path = HotCryptoServices;
 			sourceTree = "<group>";
 		};
 		DC261CA2292CF53E00875E64 /* Auth */ = {
@@ -13633,7 +13647,7 @@
 		DC9090422D39394C00BF7A43 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				DC9090452D39396E00BF7A43 /* HotCryptoDataItem.swift */,
+				DC9090452D39396E00BF7A43 /* HotCryptoToken.swift */,
 				DC9090432D39395900BF7A43 /* HotCryptoDTO.swift */,
 			);
 			path = Model;
@@ -13677,7 +13691,7 @@
 		DC90904F2D393B2600BF7A43 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				DC9090522D393D0600BF7A43 /* HotCryptoAddToPortfolioModel.swift */,
+				DC9090522D393D0600BF7A43 /* HotCryptoAddPortfolioModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -17127,7 +17141,7 @@
 				B600F4D72C50F73E008E53FE /* MarketsHistoryChartViewModel.swift in Sources */,
 				B67DC1EC2B7C4CB9008ACB0E /* FakeBlockchainDataStorage.swift in Sources */,
 				EF5D83E62B0CAEB100516B5F /* CommonExpressTransactionBuilder.swift in Sources */,
-				DC9090532D393D0600BF7A43 /* HotCryptoAddToPortfolioModel.swift in Sources */,
+				DC9090532D393D0600BF7A43 /* HotCryptoAddPortfolioModel.swift in Sources */,
 				DC43E8682CE67AB400DD7B06 /* WalletPromoBannerViewModel.swift in Sources */,
 				EF95442E2C3C52A400041FCD /* SendStepsManager.swift in Sources */,
 				DC7D3A0929E065E3007BCD23 /* BackupHelper.swift in Sources */,
@@ -17943,7 +17957,7 @@
 				B05449D22CCF8F2D00983C78 /* VisaOnboardingStep.swift in Sources */,
 				DA7444242A27889600F926A9 /* PromotionService.swift in Sources */,
 				EF5F54672C875D8F00B7D1E7 /* StakingDetailsStakeView.swift in Sources */,
-				DC9090462D39396E00BF7A43 /* HotCryptoDataItem.swift in Sources */,
+				DC9090462D39396E00BF7A43 /* HotCryptoToken.swift in Sources */,
 				B097A3642C1067A8003CFD38 /* APIURLValidator.swift in Sources */,
 				B0B657932B690D5400FBC610 /* Int+.swift in Sources */,
 				DC2911B62C623DE300DF53CC /* DemoSendTransactionDispatcher.swift in Sources */,
@@ -17968,6 +17982,7 @@
 				2DB4EADC2C41938E00F9E860 /* MarketsPortfolioTokenItemViewModel.swift in Sources */,
 				DAA5E30328D21369003C0E80 /* BiometryLogoImage.swift in Sources */,
 				2DDFA7952C230E2F00E51F7F /* MarketCapFormatter.swift in Sources */,
+				DC25DDEA2D4239CA00845E4C /* HotCryptoServiceKey.swift in Sources */,
 				EF5D83DF2B0BC4C400516B5F /* ExpressProviderFormatter.swift in Sources */,
 				B074AF872B06778800E9CEA3 /* AnalyticsContextDataProvider.swift in Sources */,
 				EF729B732AF3E86300D80205 /* ExpressProvidersSelectorRoutable.swift in Sources */,
@@ -18376,6 +18391,7 @@
 				5D80ED472550186A0008DEF0 /* View+.swift in Sources */,
 				EF95441F2C3C43B600041FCD /* FeeAnalyticsParameterBuilder.swift in Sources */,
 				B66655762C6ED3F6001E2C68 /* UIView+OverlayContentContainerProgress.swift in Sources */,
+				DC25DDE82D42371000845E4C /* HotCryptoService.swift in Sources */,
 				6563B8B92858B92A009A8A7D /* SupportChatView.swift in Sources */,
 				B0BEE7EF2C4162C300B8FE25 /* MarketsTokenDetailsLinksMapper.swift in Sources */,
 				5D51036927C534A60025EA55 /* JSON.swift in Sources */,

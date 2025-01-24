@@ -6,18 +6,11 @@
 //  Copyright © 2025 Tangem AG. All rights reserved.
 //
 
-import BlockchainSdk
 import SwiftUI
 
-struct HotCryptoAddPortfolioBottomSheet: View {
+struct HotCryptoAddToPortfolioBottomSheet: View {
     let info: HotCryptoAddToPortfolioModel
     let action: () -> Void
-
-    private var tokenNetwork: String {
-        let blockchain = Blockchain.allMainnetCases.first { $0.networkId == info.token.networkId }
-
-        return blockchain?.displayName ?? ""
-    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -25,7 +18,7 @@ struct HotCryptoAddPortfolioBottomSheet: View {
                 .style(Fonts.Bold.body, color: Colors.Text.primary1)
                 .padding(.bottom, 8)
 
-            Text(Localization.hotCryptoAddTokenSubtitle(info.walletName))
+            Text(Localization.hotCryptoAddTokenSubtitle(info.userWalletName))
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 .padding(.bottom, 28)
 
@@ -36,7 +29,7 @@ struct HotCryptoAddPortfolioBottomSheet: View {
                 .style(Fonts.Bold.caption1, color: Colors.Text.primary1)
                 .padding(.bottom, 16)
 
-            Text(tokenNetwork)
+            Text(info.tokenNetworkName)
                 .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                 .padding(.bottom, 16)
 
