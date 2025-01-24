@@ -43,7 +43,7 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
 
                     _ = try await withThrowingTaskGroup(of: (TransactionSendResult, StakeKitTransaction).self) { group in
                         var results = [TransactionSendResult]()
-                        for (index, (transaction, signature)) in zip(transactions, signatures).enumerated() {
+                        for (transaction, signature) in zip(transactions, signatures) {
                             let rawTransaction = try self.prepareDataForSend(
                                 transaction: transaction,
                                 signature: signature
@@ -58,11 +58,11 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                                 try Task.checkCancellation()
                                 return (result, transaction)
                             }
-                            
+
                             if transactions.count > 1, let second {
                                 // Wait for the current task to complete before adding the next one
                                 guard let result = try await group.next() else { continue }
-                                
+
                                 results.append(result.0)
                                 continuation.yield(.init(transaction: result.1, result: result.0))
                                 // temporary code, will be removed as part of transition to transaction status tracking
@@ -113,11 +113,5 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
     @MainActor
     private func addPendingTransaction(_ record: PendingTransactionRecord) {
         wallet.addPendingTransaction(record)
-    }
-}
-
-extension StakeKitTransaction {
-    var requiresWaitingToComplete: Bool {
-        type == .split
     }
 }
