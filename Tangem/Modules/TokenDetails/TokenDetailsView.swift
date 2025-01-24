@@ -11,7 +11,7 @@ import SwiftUI
 struct TokenDetailsView: View {
     @ObservedObject var viewModel: TokenDetailsViewModel
 
-    @StateObject private var scrollState = TokenDetailsScrollState(
+    @StateObject private var scrollOffsetHandler = ScrollViewOffsetHandler.tokenDetails(
         tokenIconSizeSettings: Constants.tokenIconSizeSettings,
         headerTopPadding: Constants.headerTopPadding
     )
@@ -75,7 +75,7 @@ struct TokenDetailsView: View {
             .padding(.top, Constants.headerTopPadding)
             .readContentOffset(
                 inCoordinateSpace: .named(coordinateSpaceName),
-                bindTo: scrollState.contentOffsetSubject.asWriteOnlyBinding(.zero)
+                bindTo: scrollOffsetHandler.contentOffsetSubject.asWriteOnlyBinding(.zero)
             )
         }
         .animation(.default, value: viewModel.bannerNotificationInputs)
@@ -86,7 +86,7 @@ struct TokenDetailsView: View {
         .background(Colors.Background.secondary.edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(.keyboard)
         .onAppear(perform: viewModel.onAppear)
-        .onAppear(perform: scrollState.onViewAppear)
+        .onAppear(perform: scrollOffsetHandler.onViewAppear)
         .alert(item: $viewModel.alert) { $0.alert }
         .actionSheet(item: $viewModel.actionSheet) { $0.sheet }
         .coordinateSpace(name: coordinateSpaceName)
@@ -102,7 +102,7 @@ struct TokenDetailsView: View {
                     ),
                     size: IconViewSizeSettings.tokenDetailsToolbar.iconSize
                 )
-                .opacity(scrollState.toolbarIconOpacity)
+                .opacity(scrollOffsetHandler.state)
             }
 
             ToolbarItem(placement: .navigationBarTrailing) { navbarTrailingButton }

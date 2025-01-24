@@ -14,6 +14,7 @@ import TangemFoundation
 class CommonTokenQuotesRepository {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
 
     private var _quotes: CurrentValueSubject<Quotes, Never> = .init([:])
     private var _prices: CurrentValueSubject<[PriceItem: Decimal], Never> = .init([:])
@@ -23,6 +24,9 @@ class CommonTokenQuotesRepository {
 
     init() {
         bind()
+
+        let cachedQuotes: Quotes? = try? storage.value(for: .cachedQuotes)
+        _quotes.send(cachedQuotes ?? [:])
     }
 }
 
@@ -52,10 +56,10 @@ extension CommonTokenQuotesRepository: TokenQuotesRepository {
         return quote
     }
 
-    func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never> {
+    func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: TokenQuote], Never> {
         log("Request loading quotes for ids: \(currencyIds)")
 
-        let outputPublisher = PassthroughSubject<[String: Decimal], Never>()
+        let outputPublisher = PassthroughSubject<[String: TokenQuote], Never>()
         let item = QueueItem(ids: currencyIds, didLoadPublisher: outputPublisher)
         loadingQueue.send(item)
 
@@ -94,6 +98,7 @@ extension CommonTokenQuotesRepository: TokenQuotesRepositoryUpdater {
             }
 
             _quotes.send(current)
+            try? storage.store(value: current, for: .cachedQuotes)
         }
     }
 }
@@ -133,7 +138,7 @@ private extension CommonTokenQuotesRepository {
                 let (queueItems, loadedRates) = items
                 // Send the event that quotes for currencyIds have been loaded
                 queueItems.forEach { queueItem in
-                    let results: [String: Decimal] = queueItem.ids.reduce(into: [:]) {
+                    let results: [String: TokenQuote] = queueItem.ids.reduce(into: [:]) {
                         $0[$1] = loadedRates[$1]
                     }
 
@@ -175,7 +180,7 @@ private extension CommonTokenQuotesRepository {
             .store(in: &bag)
     }
 
-    func loadAndSaveQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never> {
+    func loadAndSaveQuotes(currencyIds: [String]) -> AnyPublisher<[String: TokenQuote], Never> {
         log("Start loading quotes for ids: \(currencyIds)")
 
         let currencyCode = AppSettings.shared.selectedCurrencyCode
@@ -193,10 +198,13 @@ private extension CommonTokenQuotesRepository {
             .loadQuotes(requestModel: request)
             .map { [weak self] quotes in
                 self?.log("Finish loading quotes for ids: \(currencyIds)")
-                self?.saveQuotes(quotes, currencyCode: currencyCode)
-                return quotes.reduce(into: [:]) { $0[$1.id] = $1.price }
+                let quotes = quotes.compactMap {
+                    self?.mapToTokenQuote(quote: $0, currencyCode: currencyCode)
+                }
+                self?.saveQuotes(quotes)
+                return quotes.reduce(into: [:]) { $0[$1.currencyId] = $1 }
             }
-            .catch { [weak self] error -> AnyPublisher<[String: Decimal], Never> in
+            .catch { [weak self] error -> AnyPublisher<[String: TokenQuote], Never> in
                 self?.log("Loading quotes catch error")
                 AppLog.shared.error(error: error, params: [:])
                 return Just([:]).eraseToAnyPublisher()
@@ -204,19 +212,15 @@ private extension CommonTokenQuotesRepository {
             .eraseToAnyPublisher()
     }
 
-    func saveQuotes(_ quotes: [Quote], currencyCode: String) {
-        let quotes = quotes.map { quote in
-            TokenQuote(
-                currencyId: quote.id,
-                price: quote.price,
-                priceChange24h: quote.priceChange,
-                priceChange7d: quote.priceChange7d,
-                priceChange30d: quote.priceChange30d,
-                currencyCode: currencyCode
-            )
-        }
-
-        saveQuotes(quotes)
+    func mapToTokenQuote(quote: Quote, currencyCode: String) -> TokenQuote {
+        TokenQuote(
+            currencyId: quote.id,
+            price: quote.price,
+            priceChange24h: quote.priceChange,
+            priceChange7d: quote.priceChange7d,
+            priceChange30d: quote.priceChange30d,
+            currencyCode: currencyCode
+        )
     }
 
     func clearRepository() {
@@ -232,7 +236,7 @@ private extension CommonTokenQuotesRepository {
 extension CommonTokenQuotesRepository {
     struct QueueItem {
         let ids: [String]
-        let didLoadPublisher: PassthroughSubject<[String: Decimal], Never>
+        let didLoadPublisher: PassthroughSubject<[String: TokenQuote], Never>
     }
 
     struct PriceItem: Hashable {

@@ -39,13 +39,14 @@ struct CommonExpressAnalyticsLogger: ExpressAnalyticsLogger {
         )
     }
 
-    func logExpressAPIError(_ error: ExpressAPIError, provider: ExpressProvider) {
+    func logExpressAPIError(_ error: ExpressAPIError, provider: ExpressProvider, paymentMethod: OnrampPaymentMethod) {
         Analytics.log(
             event: .onrampErrors,
             params: [
                 .token: tokenItem.currencySymbol,
                 .provider: provider.name,
                 .errorCode: error.errorCode.rawValue.description,
+                .paymentMethod: paymentMethod.name,
             ]
         )
     }

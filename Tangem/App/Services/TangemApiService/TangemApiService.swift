@@ -9,9 +9,10 @@
 import Foundation
 import Combine
 
-protocol TangemApiService: AnyObject, Initializable {
-    // TODO: Refactor https://tangem.atlassian.net/browse/IOS-6869
-    var geoIpRegionCode: String { get }
+protocol TangemApiService: AnyObject {
+    // MARK: - Geo
+
+    func loadGeo() -> AnyPublisher<String, Error>
 
     // MARK: - Coins and quotes
 

@@ -67,7 +67,7 @@ class FakeTokenQuotesRepository: TokenQuotesRepository, TokenQuotesRepositoryUpd
         )
     }
 
-    func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: Decimal], Never> {
+    func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: TokenQuote], Never> {
         Just([:]).eraseToAnyPublisher()
     }
 

@@ -13,7 +13,7 @@ class CommonOnrampProviderManager {
 
     private let pairItem: OnrampPairRequestItem
     private let expressProvider: ExpressProvider
-    private let paymentMethodId: String
+    private let paymentMethod: OnrampPaymentMethod
     private let apiProvider: ExpressAPIProvider
     private let analyticsLogger: ExpressAnalyticsLogger
     private let logger: Logger
@@ -26,7 +26,7 @@ class CommonOnrampProviderManager {
     init(
         pairItem: OnrampPairRequestItem,
         expressProvider: ExpressProvider,
-        paymentMethodId: String,
+        paymentMethod: OnrampPaymentMethod,
         apiProvider: ExpressAPIProvider,
         analyticsLogger: ExpressAnalyticsLogger,
         logger: Logger,
@@ -34,7 +34,7 @@ class CommonOnrampProviderManager {
     ) {
         self.pairItem = pairItem
         self.expressProvider = expressProvider
-        self.paymentMethodId = paymentMethodId
+        self.paymentMethod = paymentMethod
         self.apiProvider = apiProvider
         self.analyticsLogger = analyticsLogger
         self.logger = logger
@@ -82,7 +82,7 @@ private extension CommonOnrampProviderManager {
             let formatted = formatAmount(amount: amount)
             update(state: .restriction(.tooBigAmount(amount, formatted: formatted)))
         } catch let error as ExpressAPIError {
-            analyticsLogger.logExpressAPIError(error, provider: expressProvider)
+            analyticsLogger.logExpressAPIError(error, provider: expressProvider, paymentMethod: paymentMethod)
             update(state: .failed(error: error))
         } catch {
             analyticsLogger.logAppError(error, provider: expressProvider)
@@ -103,7 +103,7 @@ private extension CommonOnrampProviderManager {
 
         return OnrampQuotesRequestItem(
             pairItem: pairItem,
-            paymentMethod: .init(id: paymentMethodId),
+            paymentMethod: .init(id: paymentMethod.id),
             providerInfo: .init(id: expressProvider.id),
             amount: amount
         )
@@ -161,7 +161,7 @@ extension CommonOnrampProviderManager: CustomStringConvertible {
     public var description: String {
         objectDescription(self, userInfo: [
             "provider": expressProvider.name,
-            "payment": paymentMethodId,
+            "payment": paymentMethod.id,
             "state": state,
         ])
     }

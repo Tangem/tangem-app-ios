@@ -12,7 +12,7 @@ enum Feature: String, Hashable, CaseIterable {
     case disableFirmwareVersionLimit
     case learnToEarn
     case onramp
-    case visa
+    case visa // TODO: Remove all API mocks and menu presenter from VisaOnboardingViewModel when removing this toggle
 
     var name: String {
         switch self {

@@ -11,7 +11,7 @@ import Combine
 import BlockchainSdk
 
 class TokenWithoutDerivationInfoProvider: TokenItemInfoProvider {
-    let id: Int
+    let id: WalletModelId
     let tokenItem: TokenItem
 
     let hasPendingTransactions: Bool = false
@@ -25,7 +25,7 @@ class TokenWithoutDerivationInfoProvider: TokenItemInfoProvider {
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { .just(output: ()) }
     var isStakedPublisher: AnyPublisher<Bool, Never> { .just(output: false) }
 
-    init(id: Int, tokenItem: TokenItem) {
+    init(id: WalletModelId, tokenItem: TokenItem) {
         self.id = id
         self.tokenItem = tokenItem
     }

@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftUI
+import TangemUIUtils
 
 struct CustomTextField: UIViewRepresentable {
     class Coordinator: NSObject, UITextFieldDelegate {
@@ -130,6 +131,7 @@ struct CustomTextField: UIViewRepresentable {
     var handleKeyboard: Bool = false
     var actionButton: String?
     var keyboard: UIKeyboardType = .default
+    var autocapitalizationType: UITextAutocapitalizationType?
     var clearButtonMode: UITextField.ViewMode = .never
     var textColor: UIColor = .tangemGrayDark4
     var font: UIFont = .systemFont(ofSize: 16.0)
@@ -143,10 +145,7 @@ struct CustomTextField: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<CustomTextField>) -> UITextField {
         let textField = CustomUITextField(frame: .zero)
         textField.onPaste = onPaste
-        textField.isSecureTextEntry = isSecured
         textField.clearsOnBeginEditing = clearsOnBeginEditing
-        textField.autocapitalizationType = .none
-        textField.autocorrectionType = .no
         textField.keyboardType = keyboard
         textField.font = font
         textField.textColor = textColor
@@ -156,6 +155,15 @@ struct CustomTextField: UIViewRepresentable {
         textField.setContentHuggingPriority(.defaultLow, for: .horizontal)
         textField.setContentHuggingPriority(.required, for: .vertical)
         textField.clearButtonMode = clearButtonMode
+
+        // Security hardening settings
+        let configurator = UITextInputSecurityHardeningConfigurator(isSecured: isSecured)
+        configurator.configure(textField)
+
+        if let autocapitalizationType {
+            textField.autocapitalizationType = autocapitalizationType
+        }
+
         var toolbarItems = [UIBarButtonItem]()
         if handleKeyboard {
             toolbarItems = [
@@ -231,6 +239,16 @@ struct CustomTextField: UIViewRepresentable {
         }
     }
 }
+
+// MARK: - Setupable
+
+extension CustomTextField: Setupable {
+    func setAutocapitalizationType(_ autocapitalizationType: UITextAutocapitalizationType) -> Self {
+        map { $0.autocapitalizationType = autocapitalizationType }
+    }
+}
+
+// MARK: - Auxiliary types
 
 private class CustomUITextField: UITextField {
     var onPaste: () -> Void = {}
