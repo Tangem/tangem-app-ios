@@ -11,10 +11,14 @@ import Combine
 import BlockchainSdk
 
 class FakeTangemApiService: TangemApiService {
-    var geoIpRegionCode: String
+    private let geoIpRegionCode: String
 
     init(geoIpRegionCode: String = "us") {
         self.geoIpRegionCode = geoIpRegionCode
+    }
+
+    func loadGeo() -> AnyPublisher<String, any Error> {
+        return .justWithError(output: geoIpRegionCode)
     }
 
     func loadCoins(requestModel: CoinsList.Request) -> AnyPublisher<[CoinModel], Error> {
@@ -101,8 +105,6 @@ class FakeTangemApiService: TangemApiService {
 
     func setAuthData(_ authData: TangemApiTarget.AuthData) {}
 
-    func initialize() {}
-
     func loadCoinsList(requestModel: MarketsDTO.General.Request) async throws -> MarketsDTO.General.Response {
         throw "Not implemented"
     }
@@ -127,8 +129,16 @@ class FakeTangemApiService: TangemApiService {
         throw "Not implemented"
     }
 
-    func cachedTokenExchangesListDetails(requestModel: MarketsDTO.ExchangesRequest) -> MarketsDTO.ExchangesResponse? {
-        nil
+    func getSeedNotifyStatus(userWalletId: String) async throws -> SeedNotifyDTO {
+        throw "Not implemented"
+    }
+
+    func setSeedNotifyStatus(userWalletId: String, status: SeedNotifyStatus) async throws {
+        throw "Not implemented"
+    }
+
+    func setWalletInitialized(userWalletId: String) async throws {
+        throw "Not implemented"
     }
 }
 

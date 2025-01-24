@@ -10,8 +10,6 @@ import Combine
 import SwiftUI
 import BlockchainSdk
 
-typealias WalletModelId = Int
-
 protocol TokenItemContextActionsProvider: AnyObject {
     func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection]
 }
@@ -23,8 +21,8 @@ protocol TokenItemContextActionDelegate: AnyObject {
 final class TokenItemViewModel: ObservableObject, Identifiable {
     let id: WalletModelId
 
-    @Published var balanceCrypto: LoadableTextView.State = .loading
-    @Published var balanceFiat: LoadableTextView.State = .loading
+    @Published var balanceCrypto: LoadableTokenBalanceView.State = .loading()
+    @Published var balanceFiat: LoadableTokenBalanceView.State = .loading()
     @Published var priceChangeState: TokenPriceChangeView.State = .loading
     @Published var tokenPrice: LoadableTextView.State = .loading
     @Published var hasPendingTransactions: Bool = false
@@ -68,7 +66,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     private weak var contextActionsDelegate: TokenItemContextActionDelegate?
 
     init(
-        id: Int,
+        id: WalletModelId,
         tokenIcon: TokenIconInfo,
         isTestnetToken: Bool,
         infoProvider: TokenItemInfoProvider,
@@ -153,8 +151,8 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     }
 
     private func updateBalances() {
-        balanceCrypto = .loaded(text: infoProvider.balance)
-        balanceFiat = .loaded(text: infoProvider.fiatBalance)
+        balanceCrypto = .loaded(text: .string(infoProvider.balance))
+        balanceFiat = .loaded(text: .string(infoProvider.fiatBalance))
     }
 
     private func updatePriceChange() {

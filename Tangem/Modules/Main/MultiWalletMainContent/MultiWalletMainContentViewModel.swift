@@ -367,7 +367,7 @@ extension MultiWalletMainContentViewModel {
                 return
             }
 
-            tokenRouter.openBuyCryptoIfPossible(walletModel: walletModel)
+            tokenRouter.openBuy(walletModel: walletModel)
         }
     }
 
@@ -411,6 +411,15 @@ extension MultiWalletMainContentViewModel: NotificationTapDelegate {
             rateAppController.openAppStoreReview()
         case .support:
             openSupport()
+        case .seedSupportYes:
+            error = AlertBuilder.makeSeedNotifyAlert(message: Localization.warningSeedphraseIssueAnswerYes) { [weak self] in
+                self?.openURL(TangemBlogUrlBuilder().url(post: .seedNotify))
+                self?.userWalletNotificationManager.dismissNotification(with: id)
+            }
+        case .seedSupportNo:
+            error = AlertBuilder.makeSeedNotifyAlert(message: Localization.warningSeedphraseIssueAnswerNo) { [weak self] in
+                self?.userWalletNotificationManager.dismissNotification(with: id)
+            }
         default:
             break
         }

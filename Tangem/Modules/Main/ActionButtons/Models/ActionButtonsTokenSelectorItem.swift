@@ -9,13 +9,12 @@
 import BlockchainSdk
 
 struct ActionButtonsTokenSelectorItem: Identifiable, Equatable {
-    let id: Int
+    let id: String
     let tokenIconInfo: TokenIconInfo
     let name: String
     let symbol: String
-    let balance: String
-    let fiatBalance: String
+    let balance: LoadableTokenBalanceView.State
+    let fiatBalance: LoadableTokenBalanceView.State
     let isDisabled: Bool
-    let isLoading: Bool
     let walletModel: WalletModel
 }

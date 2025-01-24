@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct ReceiveBottomSheetView: View {
     @ObservedObject var viewModel: ReceiveBottomSheetViewModel
@@ -59,7 +60,10 @@ struct ReceiveBottomSheetView: View {
                             style: .plain,
                             severity: .info,
                             settings: .init(
-                                event: ReceiveNotificationEvent(currencySymbol: viewModel.currencySymbol),
+                                event: ReceiveNotificationEvent(
+                                    currencySymbol: viewModel.currencySymbol,
+                                    networkName: viewModel.networkName
+                                ),
                                 dismissAction: nil
                             )
                         )

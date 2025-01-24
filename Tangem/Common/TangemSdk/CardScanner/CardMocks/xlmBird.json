@@ -1,7 +1,7 @@
 {
     "isAccessCodeSet" : false,
     "linkedTerminalStatus" : "none",
-    "cardPublicKey" : "04F1CDEE71100B81322CA82A61E760A235325A721059F92DC613F41B5E9C9571B06E34FF39EF8775825B168B19C0259EA141E89DB3A335162DCB1CDE0E994143C6",
+    "cardPublicKey" : "0000",
     "settings" : {
         "maxWalletsCount" : 1,
         "isRemovingUserCodesAllowed" : true,
@@ -29,7 +29,7 @@
     ],
     "issuer" : {
         "name" : "TANGEM",
-        "publicKey" : "048196AA4B410AC44A3B9CCE18E7BE226AEA070ACC83A9CF67540FAC49AF25129F6A538A28AD6341358E3C4F9963064F7E365372A651D374E5C23CDD37FD099BF2"
+        "publicKey" : "0000"
     },
     "firmwareVersion" : {
         "minor" : 5,
@@ -43,7 +43,7 @@
     "manufacturer" : {
         "name" : "TANGEM",
         "manufactureDate" : "2020-03-12",
-        "signature" : "5D001070E4C660CDC19F4B779147F866B7476FD1EB86DD13BF13D1E602B6869A56A24E6B1FED9F629537CE10112D139B107A2FFF2DF25F7E3CA87F4938E74A58"
+        "signature" : "0000"
     },
     "attestation" : {
         "cardKeyAttestation" : "verified",
@@ -51,7 +51,7 @@
         "firmwareAttestation" : "skipped",
         "cardUniquenessAttestation" : "skipped"
     },
-    "cardId" : "CB43000000002950",
+    "cardId" : "CB00000000000000",
     "wallets" : [
         {
             "totalSignedHashes" : 19,

@@ -16,10 +16,41 @@ class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransaction
     private let mapper = PendingExpressTransactionAnalyticsStatusMapper()
     private var trackedStatuses: ThreadSafeContainer<[PendingTransactionId: Set<Analytics.ParameterValue>]> = .init([:])
 
-    func trackStatusForTransaction(
-        branch: ExpressBranch,
-        transactionId: PendingTransactionId,
+    func trackStatusForSwapTransaction(
+        transactionId: String,
         tokenSymbol: String,
+        status: PendingExpressTransactionStatus,
+        provider: ExpressPendingTransactionRecord.Provider
+    ) {
+        log(
+            event: .tokenSwapStatus,
+            params: [.token: tokenSymbol],
+            transactionId: transactionId,
+            status: status,
+            provider: provider
+        )
+    }
+
+    func trackStatusForOnrampTransaction(
+        transactionId: String,
+        tokenSymbol: String,
+        currencySymbol: String,
+        status: PendingExpressTransactionStatus,
+        provider: ExpressPendingTransactionRecord.Provider
+    ) {
+        log(
+            event: .onrampOnrampStatus,
+            params: [.token: tokenSymbol, .currency: currencySymbol],
+            transactionId: transactionId,
+            status: status,
+            provider: provider
+        )
+    }
+
+    private func log(
+        event: Analytics.Event,
+        params: [Analytics.ParameterKey: String],
+        transactionId: PendingTransactionId,
         status: PendingExpressTransactionStatus,
         provider: ExpressPendingTransactionRecord.Provider
     ) {
@@ -29,21 +60,13 @@ class CommonPendingExpressTransactionAnalyticsTracker: PendingExpressTransaction
             return
         }
 
-        let params: [Analytics.ParameterKey: String] = [
-            .token: tokenSymbol,
-            .status: statusToTrack.rawValue,
-            .provider: provider.name,
-        ]
-
-        switch branch {
-        case .swap:
-            Analytics.log(event: .tokenSwapStatus, params: params)
-        case .onramp:
-            Analytics.log(event: .onrampOnrampStatus, params: params)
-        }
+        var params = params
+        params[.status] = statusToTrack.rawValue
+        params[.provider] = provider.name
 
         trackedStatusesSet.insert(statusToTrack)
-        trackedStatuses.mutate { $0[transactionId] = trackedStatusesSet }
+
+        Analytics.log(event: event, params: params)
     }
 }
 

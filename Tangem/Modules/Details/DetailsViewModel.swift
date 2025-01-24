@@ -317,11 +317,7 @@ private extension DetailsViewModel {
             case .onboarding(let input):
                 coordinator?.openOnboardingModal(with: input)
             case .error(let error):
-                if let userWalletRepositoryError = error as? UserWalletRepositoryError {
-                    alert = userWalletRepositoryError.alertBinder
-                } else {
-                    alert = error.alertBinder
-                }
+                alert = error.alertBinder
             case .success, .partial:
                 coordinator?.dismiss()
             }

@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftUI
+import TangemUI
 
 struct CircleCheckmarkIcon: View {
     let isSelected: Bool

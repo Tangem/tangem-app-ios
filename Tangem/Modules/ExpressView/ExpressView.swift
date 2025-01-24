@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct ExpressView: View {
     @ObservedObject private var viewModel: ExpressViewModel

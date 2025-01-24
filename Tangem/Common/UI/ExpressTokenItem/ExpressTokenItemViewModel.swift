@@ -9,7 +9,7 @@
 import Foundation
 
 struct ExpressTokenItemViewModel: Identifiable {
-    let id: Int
+    let id: String
     let tokenIconInfo: TokenIconInfo
     let name: String
     let symbol: String
@@ -19,7 +19,7 @@ struct ExpressTokenItemViewModel: Identifiable {
     let itemDidTap: () -> Void
 
     init(
-        id: Int,
+        id: String,
         tokenIconInfo: TokenIconInfo,
         name: String,
         symbol: String,

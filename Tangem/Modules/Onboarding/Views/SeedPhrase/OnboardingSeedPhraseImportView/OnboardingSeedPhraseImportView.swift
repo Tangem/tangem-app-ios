@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct OnboardingSeedPhraseImportView: View {
     @ObservedObject var viewModel: OnboardingSeedPhraseImportViewModel
@@ -26,6 +27,7 @@ struct OnboardingSeedPhraseImportView: View {
                             inputProcessor: viewModel.inputProcessor,
                             shouldBecomeFirstResponderAtStart: true
                         )
+                        .screenCaptureProtection()
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
                         .background(Colors.Field.primary)
@@ -107,9 +109,12 @@ struct OnboardingSeedPhraseImportView: View {
                 isResponder: $viewModel.isPassphraseInputResponder,
                 actionButtonTapped: .constant(true),
                 handleKeyboard: true,
+                keyboard: .asciiCapable,
                 clearButtonMode: .whileEditing,
                 placeholder: Localization.sendOptionalField
             )
+            .setAutocapitalizationType(.none)
+            .screenCaptureProtection()
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)

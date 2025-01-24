@@ -56,7 +56,7 @@ final class SingleTokenNotificationManager {
                 self?.setupNoAccountNotification(with: message)
             case .loading, .created:
                 break
-            case .idle, .noDerivation:
+            case .loaded, .noDerivation:
                 guard stakingState != .loading else { return } // fixes issue with staking notification animated re-appear
                 self?.setupLoadedStateNotifications()
             }
@@ -97,6 +97,11 @@ final class SingleTokenNotificationManager {
            walletModel.tokenItem.isToken,
            walletModel.tokenItem.networkId != Blockchain.polygon(testnet: false).networkId {
             events.append(.maticMigration)
+        }
+
+        /// We need display alert for user with Kaspa token is beta feature
+        if walletModel.blockchainNetwork.blockchain == .kaspa(testnet: false), walletModel.tokenItem.isToken {
+            events.append(.kaspaTokensBeta)
         }
 
         if let sendingRestrictions = walletModel.sendingRestrictions {
@@ -269,7 +274,8 @@ final class SingleTokenNotificationManager {
             return .incompleteKaspaTokenTransaction(
                 revealTransaction: .init(
                     formattedValue: configurationData.formattedValue,
-                    currencySymbol: configurationData.currencySymbol
+                    currencySymbol: configurationData.currencySymbol,
+                    blockchainName: blockchain.displayName
                 ) { [weak walletModel] in
                     walletModel?.assetRequirementsManager?.discardRequirements(for: asset)
                 }
@@ -328,6 +334,8 @@ extension SingleTokenNotificationManager: NotificationManager {
         if let event = notification.settings.event as? TokenNotificationEvent {
             switch event {
             case .hasUnfulfilledRequirements(.incompleteKaspaTokenTransaction(let revealTransaction)):
+                Analytics.log(event: .tokenButtonRevealCancel, params: event.analyticsParams)
+
                 interactionDelegate?.confirmDiscardingUnfulfilledAssetRequirements(
                     with: .incompleteKaspaTokenTransaction(revealTransaction: revealTransaction),
                     confirmationAction: { [weak self] in

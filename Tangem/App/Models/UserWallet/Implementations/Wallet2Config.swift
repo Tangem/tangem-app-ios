@@ -250,6 +250,16 @@ extension Wallet2Config: UserWalletConfig {
         // Neiro on ETH
         case "AF98":
             return cardsCount == 2 ? Assets.Cards.neiroDouble : Assets.Cards.neiroTriple
+        // Winter 2
+        case "AF85", "AF86", "AF87", "AF990011", "AF990012", "AF990013":
+            return cardsCount == 2 ? Assets.Cards.winter2Double : Assets.Cards.winter2Triple
+        // USA
+        case "AF91":
+            return cardsCount == 2 ? Assets.Cards.usaDouble : Assets.Cards.usaTriple
+        // Gets Mine
+        case "BB000008":
+            return cardsCount == 2 ? Assets.Cards.getsmineDouble : Assets.Cards.getsmineTriple
+
         // Tangem Wallet 2.0
         default:
 
@@ -355,12 +365,12 @@ extension Wallet2Config: UserWalletConfig {
         }
     }
 
-    func makeWalletModelsFactory() -> WalletModelsFactory {
+    func makeWalletModelsFactory(userWalletId: UserWalletId) -> WalletModelsFactory {
         if isDemo {
-            return DemoWalletModelsFactory(config: self)
+            return DemoWalletModelsFactory(config: self, userWalletId: userWalletId)
         }
 
-        return CommonWalletModelsFactory(config: self)
+        return CommonWalletModelsFactory(config: self, userWalletId: userWalletId)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

@@ -38,6 +38,10 @@ class ReceiveBottomSheetViewModel: ObservableObject, Identifiable {
         tokenItem.currencySymbol
     }
 
+    var networkName: String {
+        tokenItem.networkName
+    }
+
     init(tokenItem: TokenItem, addressInfos: [ReceiveAddressInfo], hasMemo: Bool) {
         self.tokenItem = tokenItem
         iconURL = tokenItem.id != nil ? IconURLBuilder().tokenIconURL(id: tokenItem.id!) : nil

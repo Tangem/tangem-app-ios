@@ -9,9 +9,10 @@
 import Foundation
 import Combine
 
-protocol TangemApiService: AnyObject, Initializable {
-    // TODO: Refactor https://tangem.atlassian.net/browse/IOS-6869
-    var geoIpRegionCode: String { get }
+protocol TangemApiService: AnyObject {
+    // MARK: - Geo
+
+    func loadGeo() -> AnyPublisher<String, Error>
 
     // MARK: - Coins and quotes
 
@@ -73,6 +74,12 @@ protocol TangemApiService: AnyObject, Initializable {
     func awardOldUser(walletId: String, address: String, programName: String) async throws -> PromotionAwardResult
     @discardableResult
     func resetAwardForCurrentWallet(cardId: String) async throws -> PromotionAwardResetResult
+
+    // MARK: - Seed Notify
+
+    func getSeedNotifyStatus(userWalletId: String) async throws -> SeedNotifyDTO
+    func setSeedNotifyStatus(userWalletId: String, status: SeedNotifyStatus) async throws
+    func setWalletInitialized(userWalletId: String) async throws
 
     // MARK: - Configs
 

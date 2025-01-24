@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "tangem_pay_wc.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -56,7 +56,6 @@ extension WalletConnectV2SignTypedDataHandler: WalletConnectMessageHandler {
         let hash = typedData.signHash
 
         let signedHash = try await signer.sign(data: hash, using: walletModel)
-        AppLog.shared.debug("[WC 2.0] Type data \(hash.hexString) signed: \(signedHash)")
         return .response(AnyCodable(signedHash))
     }
 }

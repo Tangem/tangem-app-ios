@@ -13,6 +13,7 @@ enum Feature: String, Hashable, CaseIterable {
     case learnToEarn
     case onramp
     case actionButtons
+    case visa // TODO: Remove all API mocks and menu presenter from VisaOnboardingViewModel when removing this toggle
 
     var name: String {
         switch self {
@@ -20,6 +21,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .learnToEarn: return "Learn to Earn"
         case .onramp: return "Onramp"
         case .actionButtons: return "Action buttons"
+        case .visa: return "Visa"
         }
     }
 
@@ -29,6 +31,7 @@ enum Feature: String, Hashable, CaseIterable {
         case .learnToEarn: return .unspecified
         case .onramp: return .unspecified
         case .actionButtons: return .version("5.19")
+        case .visa: return .unspecified
         }
     }
 }

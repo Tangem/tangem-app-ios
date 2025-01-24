@@ -600,7 +600,7 @@ extension OnrampModel: OnrampNotificationManagerInput {
 
     func refreshError() {
         if case .failure = _currency.value {
-            TangemFoundation.runTask(in: self) {
+            mainTask {
                 if let country = $0.onrampRepository.preferenceCountry,
                    let currency = $0.onrampRepository.preferenceCurrency {
                     await $0.updateProvidersThroughCountryAvailabilityChecking(country: country, currency: currency)

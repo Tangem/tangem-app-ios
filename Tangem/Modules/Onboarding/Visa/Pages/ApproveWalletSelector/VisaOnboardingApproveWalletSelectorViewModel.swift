@@ -7,13 +7,22 @@
 //
 
 import Combine
+import TangemFoundation
+import TangemVisa
 
-protocol VisaOnboardingApproveWalletSelectorDelegate: AnyObject {
+protocol VisaOnboardingRemoteStateProvider: AnyObject {
+    func loadCurrentRemoteState() async throws -> VisaCardActivationRemoteState
+}
+
+protocol VisaOnboardingApproveWalletSelectorDelegate: VisaOnboardingAlertPresenter {
     func useExternalWallet()
     func useTangemWallet()
+    @MainActor
+    func proceedFromCurrentRemoteState() async
 }
 
 final class VisaOnboardingApproveWalletSelectorViewModel: ObservableObject {
+    @Published private(set) var isLoadingRemoteState: Bool = false
     @Published private(set) var selectedOption: VisaOnboardingApproveWalletSelectorItemView.Option = .tangemWallet
 
     let instructionNotificationInput: NotificationViewInput = .init(
@@ -22,9 +31,14 @@ final class VisaOnboardingApproveWalletSelectorViewModel: ObservableObject {
         settings: .init(event: VisaNotificationEvent.onboardingAccountActivationInfo, dismissAction: nil)
     )
 
+    private weak var remoteStateProvider: VisaOnboardingRemoteStateProvider?
     private weak var delegate: VisaOnboardingApproveWalletSelectorDelegate?
 
-    init(delegate: VisaOnboardingApproveWalletSelectorDelegate) {
+    init(
+        remoteStateProvider: VisaOnboardingRemoteStateProvider?,
+        delegate: VisaOnboardingApproveWalletSelectorDelegate?
+    ) {
+        self.remoteStateProvider = remoteStateProvider
         self.delegate = delegate
     }
 
@@ -38,6 +52,23 @@ final class VisaOnboardingApproveWalletSelectorViewModel: ObservableObject {
             delegate?.useTangemWallet()
         case .otherWallet:
             delegate?.useExternalWallet()
+        }
+    }
+
+    private func navigateToExternalWalletConnectionIfNeeded() {
+        isLoadingRemoteState = true
+        runTask(in: self, isDetached: false) { viewModel in
+            do {
+                let currentRemoteState = try await viewModel.remoteStateProvider?.loadCurrentRemoteState()
+                if currentRemoteState == .customerWalletSignatureRequired {
+                    viewModel.delegate?.useExternalWallet()
+                } else {
+                    await viewModel.delegate?.proceedFromCurrentRemoteState()
+                }
+            } catch {
+                AppLog.shared.debug("Failed to load current remote state on Approve Wallet Selector: \(error)")
+                await viewModel.delegate?.showContactSupportAlert(for: error)
+            }
         }
     }
 }

@@ -26,9 +26,6 @@ class CommonTangemApiService {
     ])
 
     private var bag: Set<AnyCancellable> = []
-
-    private let fallbackRegionCode = Locale.current.regionCode?.lowercased() ?? ""
-    private var _geoIpRegionCode: String?
     private var authData: TangemApiTarget.AuthData?
 
     private let coinsQueue = DispatchQueue(label: "coins_request_queue", qos: .default)
@@ -49,24 +46,19 @@ class CommonTangemApiService {
         let target = TangemApiTarget(type: type, authData: authData)
         return try await provider.asyncRequest(target).mapAPIResponse(decoder: decoder)
     }
-
-    private func cachedResponse<T: Decodable>(
-        for type: TangemApiTarget.TargetType,
-        decoder: JSONDecoder = .init()
-    ) -> T? {
-        let target = TangemApiTarget(type: type, authData: authData)
-        guard let cachedURLResponse = provider.cachedResponse(for: target) else { return nil }
-
-        let moyaResponse = Response(statusCode: 200, data: cachedURLResponse.data)
-        return try? moyaResponse.mapAPIResponse(decoder: decoder)
-    }
 }
 
 // MARK: - TangemApiService
 
 extension CommonTangemApiService: TangemApiService {
-    var geoIpRegionCode: String {
-        return _geoIpRegionCode ?? fallbackRegionCode
+    func loadGeo() -> AnyPublisher<String, any Error> {
+        provider
+            .requestPublisher(TangemApiTarget(type: .geo, authData: authData))
+            .filterSuccessfulStatusAndRedirectCodes()
+            .map(GeoResponse.self)
+            .map(\.code)
+            .eraseError()
+            .eraseToAnyPublisher()
     }
 
     func loadTokens(for key: String) -> AnyPublisher<UserTokenList?, TangemAPIError> {
@@ -277,26 +269,21 @@ extension CommonTangemApiService: TangemApiService {
         return try await request(for: .tokenExchangesList(requestModel), decoder: decoder)
     }
 
-    func cachedTokenExchangesListDetails(requestModel: MarketsDTO.ExchangesRequest) -> MarketsDTO.ExchangesResponse? {
-        cachedResponse(for: .tokenExchangesList(requestModel), decoder: decoder)
+    func getSeedNotifyStatus(userWalletId: String) async throws -> SeedNotifyDTO {
+        return try await request(for: .seedNotifyGetStatus(userWalletId: userWalletId), decoder: decoder)
+    }
+
+    func setSeedNotifyStatus(userWalletId: String, status: SeedNotifyStatus) async throws {
+        let target = TangemApiTarget(type: .seedNotifySetStatus(userWalletId: userWalletId, status: status), authData: authData)
+        _ = try await provider.asyncRequest(target)
+    }
+
+    func setWalletInitialized(userWalletId: String) async throws {
+        let target = TangemApiTarget(type: .walletInitialized(userWalletId: userWalletId), authData: authData)
+        _ = try await provider.asyncRequest(target)
     }
 
     // MARK: - Init
-
-    func initialize() {
-        provider
-            .requestPublisher(TangemApiTarget(type: .geo, authData: authData))
-            .filterSuccessfulStatusAndRedirectCodes()
-            .map(GeoResponse.self)
-            .map(\.code)
-            .eraseToOptional()
-            .replaceError(with: fallbackRegionCode)
-            .subscribe(on: DispatchQueue.global())
-            .assign(to: \._geoIpRegionCode, on: self, ownership: .weak)
-            .store(in: &bag)
-
-        AppLog.shared.debug("CommonTangemApiService initialized")
-    }
 
     func setAuthData(_ authData: TangemApiTarget.AuthData) {
         self.authData = authData
