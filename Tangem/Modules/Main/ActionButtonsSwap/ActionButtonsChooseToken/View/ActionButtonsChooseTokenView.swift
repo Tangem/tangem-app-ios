@@ -95,7 +95,7 @@ struct ActionButtonsChooseTokenView: View {
                     field: .destination,
                     selectedToken: .constant(
                         .init(
-                            id: 0,
+                            id: 0.description,
                             tokenIconInfo: .init(
                                 name: "",
                                 blockchainIconName: "",
@@ -105,10 +105,9 @@ struct ActionButtonsChooseTokenView: View {
                             ),
                             name: "Ethereum",
                             symbol: "ETH",
-                            balance: "1 ETH",
-                            fiatBalance: "88000$",
+                            balance: .loaded(text: .string("1 ETH")),
+                            fiatBalance: .loaded(text: .string("88000$")),
                             isDisabled: false,
-                            isLoading: false,
                             walletModel: .mockETH
                         )
                     )

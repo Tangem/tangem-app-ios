@@ -13,13 +13,6 @@ struct LockedWalletMainContentView: View {
 
     var body: some View {
         VStack(spacing: 14) {
-            if let actionButtonsViewModel = viewModel.actionButtonsViewModel {
-                ActionButtonsView(viewModel: actionButtonsViewModel)
-                    .disabled(true)
-            }
-
-            NotificationView(input: viewModel.lockedNotificationInput)
-
             if viewModel.isMultiWallet {
                 multiWalletContent
             } else {
@@ -41,6 +34,13 @@ struct LockedWalletMainContentView: View {
 
     private var multiWalletContent: some View {
         VStack(spacing: 14) {
+            if let actionButtonsViewModel = viewModel.actionButtonsViewModel {
+                ActionButtonsView(viewModel: actionButtonsViewModel)
+                    .disabled(true)
+            }
+
+            NotificationView(input: viewModel.lockedNotificationInput)
+
             VStack(alignment: .leading, spacing: 0) {
                 Text(Localization.mainTokens)
                     .style(Fonts.Bold.footnote, color: Colors.Text.tertiary)
@@ -83,6 +83,8 @@ struct LockedWalletMainContentView: View {
     @ViewBuilder
     private var singleWalletContent: some View {
         ScrollableButtonsView(itemsHorizontalOffset: 14, buttonsInfo: viewModel.singleWalletButtonsInfo)
+
+        NotificationView(input: viewModel.lockedNotificationInput)
 
         VStack(spacing: 0) {
             HStack(spacing: 4) {

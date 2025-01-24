@@ -25,7 +25,7 @@ struct OnboardingAccessCodeView: View {
             NavigationBar(
                 title: "",
                 settings: .init(backgroundColor: .clear, height: navbarHeight),
-                leftItems: {
+                leftButtons: {
                     BackButton(
                         height: navbarHeight,
                         isVisible: viewModel.state.isBackButtonVisible,
@@ -34,7 +34,7 @@ struct OnboardingAccessCodeView: View {
                         viewModel.backButtonAction()
                     }
                 },
-                rightItems: {}
+                rightButtons: {}
             )
 
             content

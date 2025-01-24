@@ -196,8 +196,8 @@ extension GenericDemoConfig: UserWalletConfig {
         }
     }
 
-    func makeWalletModelsFactory() -> WalletModelsFactory {
-        return DemoWalletModelsFactory(config: self)
+    func makeWalletModelsFactory(userWalletId: UserWalletId) -> WalletModelsFactory {
+        return DemoWalletModelsFactory(config: self, userWalletId: userWalletId)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {
