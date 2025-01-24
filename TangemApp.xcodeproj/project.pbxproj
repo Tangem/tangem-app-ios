@@ -3331,8 +3331,6 @@
 		2D92E6562D0C2088008FDECF /* SolanaDummyNetworkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolanaDummyNetworkRouter.swift; sourceTree = "<group>"; };
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumAmountRestrictable.swift; sourceTree = "<group>"; };
-		2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
-		2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnAccountModel.swift; sourceTree = "<group>"; };
 		2DB200612D34F57700E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
 		2DB200652D380C9A00E499A3 /* Fact0rnWalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnWalletManager.swift; sourceTree = "<group>"; };
 		2DB3614A2C14FBAB00BB1D38 /* SegmentedPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPickerView.swift; sourceTree = "<group>"; };
@@ -6721,15 +6719,6 @@
 				2DC46B9F2C945C4400749F7C /* BasicTooltipView.swift */,
 			);
 			path = Tooltip;
-			sourceTree = "<group>";
-		};
-		2DB2005F2D34F2D400E499A3 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */,
-				2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		2DB200622D34F57700E499A3 /* Network */ = {
@@ -13746,6 +13735,7 @@
 				DC283ABA2CCA61AB0043F7D2 /* Coordinator */,
 				DC283AB32CCA607D0043F7D2 /* ViewModel */,
 				DC283AB22CCA60760043F7D2 /* View */,
+				DC7C45652CF8B33B00747589 /* NotificationManager */,
 			);
 			path = ActionButtons;
 			sourceTree = "<group>";
@@ -13953,7 +13943,6 @@
 		DCFEFE5B2CF5B52F002DFE58 /* ActionButtonsSwap */ = {
 			isa = PBXGroup;
 			children = (
-				DC7C45652CF8B33B00747589 /* NotificationManager */,
 				DCFEFE512CF08A12002DFE58 /* ViewModel */,
 				DCFEFE482CF081D5002DFE58 /* Coordinator */,
 				DCFEFE452CF080DC002DFE58 /* Service */,
