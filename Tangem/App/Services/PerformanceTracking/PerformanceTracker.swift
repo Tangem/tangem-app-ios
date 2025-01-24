@@ -26,7 +26,7 @@ enum PerformanceTracker {
 
     static func endTracking(token: PerformanceMetricToken?, with result: PerformanceTracker.Result = .unspecified) {
         prepareTraceForEndTracking(token?.trace, with: result)
-        token?.trace?.stop()
+        token?.stop()
     }
 
     private static func prepareTraceForStartTracking(_ trace: Trace?, using metric: PerformanceTracker.Metric) {
@@ -53,9 +53,21 @@ enum PerformanceTracker {
 /// An opaque token to use with `PerformanceTracker.endTracking(token:)` method.
 final class PerformanceMetricToken {
     fileprivate let trace: Trace?
+    private var isStopped = false
 
     fileprivate init(trace: Trace?) {
         self.trace = trace
+    }
+
+    deinit {
+        if !isStopped, let trace {
+            AppLog.shared.error("The trace '\(trace.name)' is still running; it must be stopped by calling 'PerformanceTracker.endTracking(token:)'")
+        }
+    }
+
+    fileprivate func stop() {
+        trace?.stop()
+        isStopped = true
     }
 }
 
