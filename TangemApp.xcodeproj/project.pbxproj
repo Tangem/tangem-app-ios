@@ -3344,8 +3344,6 @@
 		2D92E6562D0C2088008FDECF /* SolanaDummyNetworkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolanaDummyNetworkRouter.swift; sourceTree = "<group>"; };
 		2DA8AB112A433BDB00C75D85 /* Analytics+BlockchainExceptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+BlockchainExceptionHandler.swift"; sourceTree = "<group>"; };
 		2DAB6B6E2CE28E8500B4A10C /* MinimumAmountRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimumAmountRestrictable.swift; sourceTree = "<group>"; };
-		2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
-		2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnAccountModel.swift; sourceTree = "<group>"; };
 		2DB200612D34F57700E499A3 /* Fact0rnNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnNetworkProvider.swift; sourceTree = "<group>"; };
 		2DB200652D380C9A00E499A3 /* Fact0rnWalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fact0rnWalletManager.swift; sourceTree = "<group>"; };
 		2DB2006E2D3D75AD00E499A3 /* AlephiumAddressService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlephiumAddressService.swift; sourceTree = "<group>"; };
@@ -6747,15 +6745,6 @@
 				2DC46B9F2C945C4400749F7C /* BasicTooltipView.swift */,
 			);
 			path = Tooltip;
-			sourceTree = "<group>";
-		};
-		2DB2005F2D34F2D400E499A3 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				2DB2005D2D31332A00E499A3 /* Fact0rnAccountModel.swift */,
-				2DB200592D3068A300E499A3 /* Fact0rnNetworkProvider.swift */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		2DB200622D34F57700E499A3 /* Network */ = {
