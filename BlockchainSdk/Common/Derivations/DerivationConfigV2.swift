@@ -138,7 +138,7 @@ struct DerivationConfigV2: DerivationConfig {
         case .clore:
             return "m/44'/1313'/0'/0/0"
         case .fact0rn:
-            return "m/44'/42069'/0'/0/0"
+            return "m/84'/42069'/0'/0/0"
         }
     }
 }
