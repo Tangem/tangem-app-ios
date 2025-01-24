@@ -132,7 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tangem/firebase-ios-sdk.git",
       "state" : {
-        "revision" : "9e8cdf53770777927c221322829111ae349cbc94"
+        "revision" : "36b7a2a3ea363584b0744c5677a1dff4a8cd9eed",
+        "version" : "11.7.0-tangem1"
       }
     },
     {

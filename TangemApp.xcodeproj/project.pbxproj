@@ -25860,8 +25860,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/firebase-ios-sdk.git";
 			requirement = {
-				kind = revision;
-				revision = 9e8cdf53770777927c221322829111ae349cbc94;
+				kind = exactVersion;
+				version = "11.7.0-tangem1";
 			};
 		};
 		B62D343B2CBC4FD000C2460E /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
