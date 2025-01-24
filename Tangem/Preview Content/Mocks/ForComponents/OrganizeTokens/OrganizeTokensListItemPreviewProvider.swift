@@ -728,7 +728,7 @@ struct OrganizeTokensListItemPreviewProvider {
 private extension OrganizeTokensListItemViewModel.Identifier {
     static func random() -> Self {
         return .init(
-            walletModelId: .random(in: 0 ..< Int.max),
+            walletModelId: Int.random(in: 0 ..< Int.max).description,
             inGroupedSection: .random()
         )
     }

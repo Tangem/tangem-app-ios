@@ -10,8 +10,6 @@ import Combine
 import SwiftUI
 import BlockchainSdk
 
-typealias WalletModelId = Int
-
 protocol TokenItemContextActionsProvider: AnyObject {
     func buildContextActions(for tokenItemViewModel: TokenItemViewModel) -> [TokenContextActionsSection]
 }
@@ -68,7 +66,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     private weak var contextActionsDelegate: TokenItemContextActionDelegate?
 
     init(
-        id: Int,
+        id: WalletModelId,
         tokenIcon: TokenIconInfo,
         isTestnetToken: Bool,
         infoProvider: TokenItemInfoProvider,

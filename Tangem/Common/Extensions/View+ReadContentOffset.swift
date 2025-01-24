@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 extension View {
     /// 1. Assign stable coordinate space to the scroll view itself.

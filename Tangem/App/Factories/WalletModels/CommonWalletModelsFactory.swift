@@ -13,9 +13,11 @@ import TangemStaking
 
 struct CommonWalletModelsFactory {
     private let config: UserWalletConfig
+    private let userWalletId: UserWalletId
 
-    init(config: UserWalletConfig) {
+    init(config: UserWalletConfig, userWalletId: UserWalletId) {
         self.config = config
+        self.userWalletId = userWalletId
     }
 
     private func isDerivationDefault(blockchain: Blockchain, derivationPath: DerivationPath?) -> Bool {
@@ -92,6 +94,7 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
         let isMainCoinCustom = !isDerivationDefault(blockchain: currentBlockchain, derivationPath: currentDerivation)
         let blockchainNetwork = BlockchainNetwork(currentBlockchain, derivationPath: currentDerivation)
         let sendAvailabilityProvider = TransactionSendAvailabilityProvider(isSendingSupportedByCard: config.hasFeature(.send))
+        let tokenBalancesRepository = CommonTokenBalancesRepository(userWalletId: userWalletId)
 
         if types.contains(.coin) {
             let tokenItem: TokenItem = .blockchain(blockchainNetwork)
@@ -111,7 +114,8 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                 amountType: .coin,
                 shouldPerformHealthCheck: shouldPerformHealthCheck,
                 isCustom: isMainCoinCustom,
-                sendAvailabilityProvider: sendAvailabilityProvider
+                sendAvailabilityProvider: sendAvailabilityProvider,
+                tokenBalancesRepository: tokenBalancesRepository
             )
             models.append(mainCoinModel)
         }
@@ -137,7 +141,8 @@ extension CommonWalletModelsFactory: WalletModelsFactory {
                     amountType: amountType,
                     shouldPerformHealthCheck: shouldPerformHealthCheck,
                     isCustom: isTokenCustom,
-                    sendAvailabilityProvider: sendAvailabilityProvider
+                    sendAvailabilityProvider: sendAvailabilityProvider,
+                    tokenBalancesRepository: tokenBalancesRepository
                 )
                 models.append(tokenModel)
             }

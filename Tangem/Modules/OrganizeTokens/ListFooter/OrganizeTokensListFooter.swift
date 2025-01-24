@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct OrganizeTokensListFooter: View {
     let viewModel: OrganizeTokensViewModel

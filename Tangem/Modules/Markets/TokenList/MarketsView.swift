@@ -9,6 +9,7 @@
 import SwiftUI
 import Combine
 import BlockchainSdk
+import TangemUI
 
 struct MarketsView: View {
     @ObservedObject var viewModel: MarketsViewModel

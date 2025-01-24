@@ -9,14 +9,15 @@
 import Foundation
 import JWTDecode
 
-protocol CardActivationOrderProvider: AnyObject {
+protocol CardActivationOrderProvider {
     func provideActivationOrderForSign() async throws -> CardActivationOrder
     func cancelOrderLoading()
 }
 
 struct CardActivationOrder {
     let activationOrder: String
-    let dataToSign: Data
+    let dataToSignByCard: Data
+    let dataToSignByWallet: Data
 }
 
 final class CommonCardActivationOrderProvider {
@@ -64,7 +65,11 @@ extension CommonCardActivationOrderProvider: CardActivationOrderProvider {
         if random % 2 == 0 {
             throw "Not implemented"
         } else {
-            return .init(activationOrder: "Activation order to sign", dataToSign: Data())
+            return .init(
+                activationOrder: "Activation order to sign",
+                dataToSignByCard: Data(),
+                dataToSignByWallet: Data()
+            )
         }
     }
 
