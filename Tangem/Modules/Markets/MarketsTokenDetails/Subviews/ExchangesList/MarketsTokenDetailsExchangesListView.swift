@@ -51,7 +51,6 @@ struct MarketsTokenDetailsExchangesListView: View {
             VStack(spacing: 0) {
                 if viewModel.isMarketsSheetStyle {
                     MarketsNavigationBar(
-                        isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
                         title: navigationBarTitle,
                         onBackButtonAction: viewModel.onBackButtonAction
                     )

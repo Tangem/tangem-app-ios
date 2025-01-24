@@ -76,23 +76,55 @@ struct SupportButton: View {
     }
 }
 
-struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
+struct DefaultNavigationBarTitle: View {
     struct Settings {
-        struct Title {
-            var font: Font = .system(size: 17, weight: .medium)
-            var color: Color = Colors.Old.tangemGrayDark6
-            var lineLimit: Int? = nil // Default system value
-            var minimumScaleFactor: CGFloat = 1 // Default system value
+        let font: Font
+        let color: Color
+        let lineLimit: Int?
+        let minimumScaleFactor: CGFloat
+
+        init(
+            font: Font = .system(size: 17, weight: .medium),
+            color: Color = Colors.Old.tangemGrayDark6,
+            lineLimit: Int? = nil, // Default system value
+            minimumScaleFactor: CGFloat = 1 // Default system value
+        ) {
+            self.font = font
+            self.color = color
+            self.lineLimit = lineLimit
+            self.minimumScaleFactor = minimumScaleFactor
         }
 
-        let title: Title
+        static var `default` = Settings()
+    }
+
+    let title: String
+    let settings: Settings
+
+    init(_ title: String, settings: Settings = .default) {
+        self.title = title
+        self.settings = settings
+    }
+
+    var body: some View {
+        Text(title)
+            .style(settings.font, color: settings.color)
+            .lineLimit(settings.lineLimit)
+            .multilineTextAlignment(.center)
+            .minimumScaleFactor(settings.minimumScaleFactor)
+    }
+}
+
+struct NavigationBar<Title: View, LeftButtons: View, RightButtons: View>: View {
+    struct Settings {
+        let title: DefaultNavigationBarTitle.Settings
         let backgroundColor: Color
         let horizontalPadding: CGFloat
         let height: CGFloat
         let alignment: Alignment
 
         init(
-            title: Title = .init(),
+            title: DefaultNavigationBarTitle.Settings = .default,
             backgroundColor: Color = Colors.Old.tangemBgGray,
             horizontalPadding: CGFloat = 0,
             height: CGFloat = 44,
@@ -106,29 +138,30 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
         }
     }
 
-    private let title: String
     private let settings: Settings
-    private let leftButtons: LeftButtons
-    private let rightButtons: RightButtons
+
+    private let title: () -> Title
+    private let leftButtons: () -> LeftButtons
+    private let rightButtons: () -> RightButtons
 
     @State private var titleHorizontalPadding: CGFloat = 0.0
 
     init(
-        title: String,
         settings: Settings = .init(),
-        @ViewBuilder leftItems: () -> LeftButtons,
-        @ViewBuilder rightItems: () -> RightButtons
+        @ViewBuilder titleView: @escaping () -> Title,
+        @ViewBuilder leftButtons: @escaping () -> LeftButtons,
+        @ViewBuilder rightButtons: @escaping () -> RightButtons
     ) {
-        self.title = title
         self.settings = settings
-        leftButtons = leftItems()
-        rightButtons = rightItems()
+        title = titleView
+        self.leftButtons = leftButtons
+        self.rightButtons = rightButtons
     }
 
     var body: some View {
         ZStack {
             HStack(spacing: 0.0) {
-                leftButtons
+                leftButtons()
                     .readGeometry(\.size.width) { newValue in
                         if newValue > titleHorizontalPadding {
                             titleHorizontalPadding = newValue
@@ -137,7 +170,7 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
 
                 Spacer()
 
-                rightButtons
+                rightButtons()
                     .readGeometry(\.size.width) { newValue in
                         if newValue > titleHorizontalPadding {
                             titleHorizontalPadding = newValue
@@ -149,11 +182,7 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
                 FixedSpacer.horizontal(titleHorizontalPadding)
                     .layoutPriority(1)
 
-                Text(title)
-                    .style(settings.title.font, color: settings.title.color)
-                    .lineLimit(settings.title.lineLimit)
-                    .multilineTextAlignment(.center)
-                    .minimumScaleFactor(settings.title.minimumScaleFactor)
+                title()
 
                 FixedSpacer.horizontal(titleHorizontalPadding)
                     .layoutPriority(1)
@@ -165,68 +194,118 @@ struct NavigationBar<LeftButtons: View, RightButtons: View>: View {
     }
 }
 
-extension NavigationBar where LeftButtons == EmptyView, RightButtons == EmptyView {
-    init(title: String, settings: Settings = .init()) {
-        self.title = title
+extension NavigationBar where Title == DefaultNavigationBarTitle {
+    init(
+        title: String,
+        settings: Settings = .init(),
+        @ViewBuilder leftButtons: @escaping () -> LeftButtons,
+        @ViewBuilder rightButtons: @escaping () -> RightButtons
+    ) {
+        self.title = {
+            DefaultNavigationBarTitle(
+                title,
+                settings: settings.title
+            )
+        }
         self.settings = settings
-        leftButtons = EmptyView()
-        rightButtons = EmptyView()
+        self.rightButtons = rightButtons
+        self.leftButtons = leftButtons
     }
 }
 
 extension NavigationBar where LeftButtons == EmptyView {
     init(
-        title: String,
         settings: Settings = .init(),
-        @ViewBuilder rightButtons: () -> RightButtons
+        @ViewBuilder titleView: @escaping () -> Title,
+        @ViewBuilder rightButtons: @escaping () -> RightButtons
     ) {
-        leftButtons = EmptyView()
-        self.rightButtons = rightButtons()
-        self.title = title
-        self.settings = settings
+        self.init(
+            settings: settings,
+            titleView: titleView,
+            leftButtons: { EmptyView() },
+            rightButtons: rightButtons
+        )
     }
 }
 
 extension NavigationBar where RightButtons == EmptyView {
     init(
-        title: String,
         settings: Settings = .init(),
-        @ViewBuilder leftButtons: () -> LeftButtons
+        @ViewBuilder titleView: @escaping () -> Title,
+        @ViewBuilder leftButtons: @escaping () -> LeftButtons
     ) {
-        rightButtons = EmptyView()
-        self.leftButtons = leftButtons()
-        self.title = title
-        self.settings = settings
+        self.init(
+            settings: settings,
+            titleView: titleView,
+            leftButtons: leftButtons,
+            rightButtons: { EmptyView() }
+        )
     }
 }
 
-extension NavigationBar where LeftButtons == ArrowBack, RightButtons == EmptyView {
+extension NavigationBar where Title == DefaultNavigationBarTitle, LeftButtons == EmptyView {
+    init(
+        title: String,
+        settings: Settings = .init(),
+        @ViewBuilder rightButtons: @escaping () -> RightButtons
+    ) {
+        self.init(
+            title: title,
+            settings: settings,
+            leftButtons: { EmptyView() },
+            rightButtons: rightButtons
+        )
+    }
+}
+
+extension NavigationBar where Title == DefaultNavigationBarTitle, RightButtons == EmptyView {
+    init(
+        title: String,
+        settings: Settings = .init(),
+        @ViewBuilder leftButtons: @escaping () -> LeftButtons
+    ) {
+        self.init(
+            title: title,
+            settings: settings,
+            leftButtons: leftButtons,
+            rightButtons: { EmptyView() }
+        )
+    }
+}
+
+extension NavigationBar where Title == DefaultNavigationBarTitle, LeftButtons == EmptyView, RightButtons == EmptyView {
+    init(
+        title: String,
+        settings: Settings = .init()
+    ) {
+        self.init(
+            title: title,
+            settings: settings,
+            leftButtons: { EmptyView() },
+            rightButtons: { EmptyView() }
+        )
+    }
+}
+
+extension NavigationBar where LeftButtons == ArrowBack, RightButtons == EmptyView, Title == DefaultNavigationBarTitle {
     init(
         title: String,
         settings: Settings = .init(),
         backAction: @escaping () -> Void
     ) {
-        leftButtons = ArrowBack(action: {
-            backAction()
-        }, height: settings.height)
-        rightButtons = EmptyView()
-        self.title = title
-        self.settings = settings
-    }
-}
-
-extension NavigationBar where LeftButtons == ArrowBack, RightButtons == EmptyView {
-    init(
-        title: String,
-        settings: Settings = .init(),
-        presentationMode: Binding<PresentationMode>
-    ) {
-        leftButtons = ArrowBack(action: {
-            presentationMode.wrappedValue.dismiss()
-        }, height: settings.height)
-        rightButtons = EmptyView()
-        self.title = title
-        self.settings = settings
+        self.init(
+            title: title,
+            settings: settings,
+            leftButtons: {
+                ArrowBack(
+                    action: {
+                        backAction()
+                    },
+                    height: settings.height
+                )
+            },
+            rightButtons: { EmptyView() }
+        )
     }
 }
 
