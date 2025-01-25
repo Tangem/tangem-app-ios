@@ -11,6 +11,10 @@ import FirebasePerformance
 
 enum PerformanceTracker {
     static func startTracking(metric: PerformanceTracker.Metric) -> PerformanceMetricToken? {
+        if AppEnvironment.current.isDebug {
+            return nil
+        }
+
         let traceName: String
 
         switch metric {
@@ -25,6 +29,10 @@ enum PerformanceTracker {
     }
 
     static func endTracking(token: PerformanceMetricToken?, with result: PerformanceTracker.Result = .unspecified) {
+        if AppEnvironment.current.isDebug {
+            return
+        }
+
         prepareTraceForEndTracking(token?.trace, with: result)
         token?.stop()
     }
