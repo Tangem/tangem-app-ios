@@ -11,6 +11,7 @@ import Combine
 import FirebaseCore
 import BlockchainSdk
 import TangemStaking
+import TangemLogger
 
 class ServicesManager {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
@@ -26,13 +27,8 @@ class ServicesManager {
     }
 
     func initialize() {
-        AppLog.shared.configure()
-
-        let initialLaunches = AppSettings.shared.numberOfLaunches
-        let currentLaunches = initialLaunches + 1
-        AppSettings.shared.numberOfLaunches = currentLaunches
-
-        AppLog.shared.logAppLaunch(currentLaunches)
+        TangemLoggerConfigurator().initialize()
+        let initialLaunches = recordAppLaunch()
 
         if initialLaunches == 0 {
             userWalletRepository.initialClean()
@@ -69,6 +65,19 @@ class ServicesManager {
 
     private func configureBlockchainSdkExceptionHandler() {
         ExceptionHandler.shared.append(output: Analytics.BlockchainExceptionHandler())
+    }
+
+    private func recordAppLaunch() -> Int {
+        let initialLaunches = AppSettings.shared.numberOfLaunches
+        let currentLaunches = initialLaunches + 1
+        AppSettings.shared.numberOfLaunches = currentLaunches
+
+        let sessionMessage = "New session. Session id: \(AppConstants.sessionId)"
+        let launchNumberMessage = "Current launch number: \(currentLaunches)"
+        let deviceInfoMessage = "\(DeviceInfoProvider.Subject.allCases.map { $0.description }.joined(separator: ", "))"
+        Logger.info(.app, sessionMessage, launchNumberMessage, deviceInfoMessage)
+
+        return initialLaunches
     }
 }
 

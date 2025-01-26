@@ -11,48 +11,13 @@ import TangemSdk
 import TangemLogger
 import protocol TangemVisa.VisaLogger
 
-struct TangemSdkOSLogger: TangemSdkLogger {
-    func log(_ message: String, level: Log.Level) {
-        let prefix = level.prefix.isEmpty ? level.emoji : "\(level.emoji):\(level.prefix)"
-
-        Logger.debug(.tangemSDK, "\(prefix) \(message)")
-    }
-}
-
 class AppLog {
     static let shared = AppLog()
-
     let fileLogger = FileLogger()
-
     private init() {}
-
-    var sdkLogConfig: Log.Config {
-        var loggers: [TangemSdkLogger] = [ /* fileLogger */ ]
-
-        if AppEnvironment.current.isDebug {
-            loggers.append(TangemSdkOSLogger())
-        }
-
-        return .custom(
-            logLevel: [.warning, .error, .command, .debug, .nfc, .session, .network],
-            loggers: loggers
-        )
-    }
-
-    func configure() {
-        Log.config = sdkLogConfig
-        fileLogger.removeLogFileIfNeeded()
-    }
 
     func debug<T>(_ message: @autoclosure () -> T) {
         TangemLogger.Logger.debug(.custom("Common"), message())
-    }
-
-    func logAppLaunch(_ currentLaunch: Int) {
-        let sessionMessage = "New session. Session id: \(AppConstants.sessionId)"
-        let launchNumberMessage = "Current launch number: \(currentLaunch)"
-        let deviceInfoMessage = "\(DeviceInfoProvider.Subject.allCases.map { $0.description }.joined(separator: ", "))"
-        Logger.info(.app, sessionMessage, launchNumberMessage, deviceInfoMessage)
     }
 }
 

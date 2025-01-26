@@ -14,7 +14,7 @@ struct TangemSdkConfigFactory {
     func makeDefaultConfig() -> Config {
         var config = Config()
         config.filter.allowedCardTypes = [.release, .sdk]
-        config.logConfig = AppLog.shared.sdkLogConfig
+        config.logConfig = TangemLoggerConfigurator().tangemSDKLogConfig
         config.filter.batchIdFilter = .deny([
             "0027", // TODO: tangem tags
             "0030",
