@@ -9,6 +9,7 @@
 import Foundation
 import BackgroundTasks
 import TangemFoundation
+import TangemLogger
 
 /// - Warning: Read-write access to all `@AppStorageCompat` or stored properties
 /// must be synchronized (e.g. by using `runOnMain(_:)` helper).
@@ -71,7 +72,10 @@ final class PolkadotAccountHealthBackgroundTaskManager {
 
         do {
             try BGTaskScheduler.shared.submit(taskRequest)
-            AppLog.shared.debugDetailed("Scheduled background task (BackgroundTasks) with identifier '\(identifier)'")
+            Logger.info(
+                .polkadot,
+                "Scheduled background task (BackgroundTasks) with identifier '\(identifier)'"
+            )
         } catch {
             let message = "Can't submit background task (BackgroundTasks) with identifier '\(identifier)'"
             assertionFailure(message)
@@ -83,7 +87,10 @@ final class PolkadotAccountHealthBackgroundTaskManager {
         let identifier = backgroundTaskIdentifier
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
         pendingAccountsForBackgroundTask.removeAll()
-        AppLog.shared.debugDetailed("Cancelled background task (BackgroundTasks) with identifier '\(identifier)'")
+        Logger.info(
+            .polkadot,
+            "Cancelled background task (BackgroundTasks) with identifier '\(identifier)'"
+        )
     }
 
     func cancelBackgroundTaskForAccount(_ account: String) {
@@ -91,13 +98,19 @@ final class PolkadotAccountHealthBackgroundTaskManager {
     }
 
     private func handleBackgroundTask(_ backgroundTask: BGProcessingTask) {
-        AppLog.shared.debugDetailed("Processing background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)'")
+        Logger.info(
+            .polkadot,
+            "Processing background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)'"
+        )
 
         let accounts = pendingAccountsForBackgroundTask.toSet()
         pendingAccountsForBackgroundTask.removeAll()
 
         backgroundTask.expirationHandler = { [weak self] in
-            AppLog.shared.debugDetailed("Background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)' has expired'")
+            Logger.info(
+                .polkadot,
+                "Background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)' has expired'"
+            )
             self?.onResourcesCleanup?()
             backgroundTask.setTaskCompleted(success: false)
         }

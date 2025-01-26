@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import TangemLogger
 
 final class MarketsViewNavigationControllerConfigurator: NSObject, ObservableObject {
     private var cornerRadius: CGFloat = .zero
@@ -36,7 +37,7 @@ extension MarketsViewNavigationControllerConfigurator: UINavigationControllerDel
         }
 
         if !viewController.isViewLoaded {
-            AppLog.shared.debugDetailed("Configurator will force load the root view of the view controller \(viewController)")
+            Logger.info(.app, "Configurator will force load the root view of the view controller \(viewController)")
         }
 
         // Applying rounded corners in SwiftUI still leaves a white background underneath, so we're left with UIKit
