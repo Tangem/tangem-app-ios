@@ -68,6 +68,11 @@ private extension Localization {
   static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
     let format = {{param.bundle|default:"BundleToken.bundle"}}.localizedString(forKey: key, value: nil, table: table)
 
+    // Workaround for numerals
+    if format == "%#@format@" || format == "%li of %#@total_wallets@" {
+        return String(format: format, locale: Locale.current, arguments: args)
+    }
+
     // Workaround for https://github.com/SwiftGen/SwiftGen/issues/859
     let regex = try! NSRegularExpression(pattern: "(?<!%)%(?!%|d|i|u|f|@|[0-9])")
     let range = NSRange(location: 0, length: format.utf16.count)
