@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUIUtils
 
 struct CustomPasswordTextField: View {
     let placeholder: String
@@ -57,8 +58,10 @@ private extension CustomPasswordTextField {
                 onCommit: onCommit
             )
             .focused($focusedField, equals: .secure)
-            .textContentType(.oneTimeCode)
-            .keyboardType(.asciiCapable)
+            .keyboardType(.default)
+            .writingToolsBehaviorDisabled()
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
             .onAppear(perform: onAppear)
         }
 
