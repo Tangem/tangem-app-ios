@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import CryptoKit
+import LocalAuthentication
 import TangemSdk
 
 class CommonUserWalletRepository: UserWalletRepository {
@@ -17,6 +18,7 @@ class CommonUserWalletRepository: UserWalletRepository {
     @Injected(\.failedScanTracker) var failedCardScanTracker: FailedScanTrackable
     @Injected(\.analyticsContext) var analyticsContext: AnalyticsContext
     @Injected(\.pushNotificationsInteractor) private var pushNotificationsInteractor: PushNotificationsInteractor
+    @Injected(\.visaRefreshTokenRepository) private var visaRefreshTokenRepository: VisaRefreshTokenRepository
 
     var isLocked: Bool {
         let hasUnlockedModels = models.contains(where: { !$0.isUserWalletLocked })
@@ -292,6 +294,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         models.removeAll { $0.userWalletId == userWalletId }
 
         encryptionKeyStorage.delete(userWalletId)
+        try? visaRefreshTokenRepository.deleteToken(cardId: userWallet.card.cardId)
 
         if AppSettings.shared.saveAccessCodes {
             do {
@@ -338,6 +341,7 @@ class CommonUserWalletRepository: UserWalletRepository {
         let otherUserWallets = models.filter { $0.userWalletId != selectedUserWalletId }
 
         clearUserWalletStorage()
+        clearVisaRefreshTokenRepository(except: selectedModel)
         discardSensitiveData(except: selectedModel)
 
         sendEvent(.deleted(userWalletIds: otherUserWallets.map { $0.userWalletId }))
@@ -371,6 +375,20 @@ class CommonUserWalletRepository: UserWalletRepository {
         encryptionKeyStorage.clear()
     }
 
+    private func clearVisaRefreshTokenRepository(except userWalletModelToKeep: UserWalletModel? = nil) {
+        var pairToKeep: (refreshToken: String, cardId: String)?
+        if let userWalletModelToKeep,
+           let cardId = userWalletModelToKeep.userWallet?.card.cardId,
+           let refreshToken = visaRefreshTokenRepository.getToken(forCardId: cardId) {
+            pairToKeep = (refreshToken, cardId)
+        }
+
+        visaRefreshTokenRepository.clear()
+        if let pairToKeep {
+            try? visaRefreshTokenRepository.save(refreshToken: pairToKeep.refreshToken, cardId: pairToKeep.cardId)
+        }
+    }
+
     private func discardSensitiveData(except userWalletModelToKeep: UserWalletModel? = nil) {
         encryptionKeyByUserWalletId = [:]
 
@@ -388,38 +406,54 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     private func unlockWithBiometry(completion: @escaping (UserWalletRepositoryResult?) -> Void) {
-        encryptionKeyStorage.fetch { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self else { return }
+        BiometricsUtil.requestAccess(localizedReason: Localization.biometryTouchIdReason) { [weak self] unlockResult in
+            guard let self else { return }
 
-                switch result {
-                case .failure(let error):
-                    completion(.error(error))
-                case .success(let keys):
-                    if keys.isEmpty {
-                        // clean to prevent double tap
-                        AccessCodeRepository().clear()
-                        completion(.error(UserWalletRepositoryError.biometricsChanged))
-                        return
-                    }
+            switch unlockResult {
+            case .failure(let error):
+                completion(.error(error))
+            case .success(let context):
+                unlockStoragesWithBiometryContext(context, completion: completion)
+            }
+        }
+    }
 
-                    self.encryptionKeyByUserWalletId = keys
-                    self.loadModels()
-                    self.initializeServicesForSelectedModel()
+    private func unlockStoragesWithBiometryContext(
+        _ context: LAContext,
+        completion: @escaping (UserWalletRepositoryResult?) -> Void
+    ) {
+        visaRefreshTokenRepository.fetch(using: context)
 
-                    self.sendEvent(.biometryUnlocked)
+        DispatchQueue.main.async {
+            do {
+                let keys = try self.encryptionKeyStorage.fetch(context: context)
 
-                    if let selectedModel = self.selectedModel { // TODO: WTF?
-                        let savedUserWallets = self.savedUserWallets(withSensitiveData: false)
-                        if keys.count == savedUserWallets.count {
-                            completion(.success(selectedModel))
-                        } else {
-                            completion(.partial(selectedModel, UserWalletRepositoryError.biometricsChanged))
-                        }
-                    } else {
-                        completion(nil) // TODO: throw error?
-                    }
+                if keys.isEmpty {
+                    // clean to prevent double tap
+                    AccessCodeRepository().clear()
+                    completion(.error(UserWalletRepositoryError.biometricsChanged))
+                    return
                 }
+
+                self.encryptionKeyByUserWalletId = keys
+                self.loadModels()
+                self.initializeServicesForSelectedModel()
+
+                self.sendEvent(.biometryUnlocked)
+
+                if let selectedModel = self.selectedModel { // TODO: WTF?
+                    let savedUserWallets = self.savedUserWallets(withSensitiveData: false)
+                    if keys.count == savedUserWallets.count {
+                        completion(.success(selectedModel))
+                    } else {
+                        completion(.partial(selectedModel, UserWalletRepositoryError.biometricsChanged))
+                    }
+                } else {
+                    completion(nil) // TODO: throw error?
+                }
+            } catch {
+                AppLog.shared.error(error)
+                completion(.error(error))
             }
         }
     }
