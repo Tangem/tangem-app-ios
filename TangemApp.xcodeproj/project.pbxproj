@@ -1726,6 +1726,7 @@
 		B63146A02CDEA64F00EA4D76 /* MarketsTokenDetailsSecurityScoreRatingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B631469F2CDEA64F00EA4D76 /* MarketsTokenDetailsSecurityScoreRatingHelper.swift */; };
 		B6323E382C61D38F00C1CE60 /* MarketsTokenDetailsDateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6323E372C61D38F00C1CE60 /* MarketsTokenDetailsDateHelper.swift */; };
 		B6323E3A2C61D8FD00C1CE60 /* MarketsTokenDetailsPriceInfoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6323E392C61D8FD00C1CE60 /* MarketsTokenDetailsPriceInfoHelper.swift */; };
+		B6334BD22D47B3F000E012A2 /* SomeTestLib in Frameworks */ = {isa = PBXBuildFile; productRef = B6334BD12D47B3F000E012A2 /* SomeTestLib */; };
 		B63442612AFE90A700C87481 /* CardsInfoPagerSwipeDiscoveryAnimationTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63442602AFE90A700C87481 /* CardsInfoPagerSwipeDiscoveryAnimationTrigger.swift */; };
 		B6364F882ACEE9AC00D615B5 /* EmptyMainFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6364F872ACEE9AC00D615B5 /* EmptyMainFooterView.swift */; };
 		B63B63BA2A44012D00A7CECF /* OrganizeTokensListHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63B63B92A44012D00A7CECF /* OrganizeTokensListHeader.swift */; };
@@ -1886,7 +1887,6 @@
 		B6B1CCCA2C460BB9006C1B44 /* UIPanGestureRecognizer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B1CCC92C460BB9006C1B44 /* UIPanGestureRecognizer+.swift */; };
 		B6B7B6052CDAC6F500479729 /* MarketsTokenDetailsSecurityScoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B7B6042CDAC6F500479729 /* MarketsTokenDetailsSecurityScoreViewModel.swift */; };
 		B6B7D4E22CED637000567C4B /* SingleTokenNotificationManagerInteractionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B7D4E12CED637000567C4B /* SingleTokenNotificationManagerInteractionDelegate.swift */; };
-		B6C0274E2D4727A600765C6B /* SomeTestLib in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0274D2D4727A600765C6B /* SomeTestLib */; };
 		B6C0D3E12CBDC2E3001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3E02CBDC2E3001113ED /* TangemModules */; };
 		B6C0D3F42CBDC543001113ED /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3F32CBDC543001113ED /* Moya */; };
 		B6C0D3F62CBDC552001113ED /* BinanceChain in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3F52CBDC552001113ED /* BinanceChain */; };
@@ -6246,7 +6246,7 @@
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
 				B62C24892CF48327003377F1 /* FirebaseCrashlytics in Frameworks */,
 				B62C24872CF48327003377F1 /* FirebaseAnalytics in Frameworks */,
-				B6C0274E2D4727A600765C6B /* SomeTestLib in Frameworks */,
+				B6334BD22D47B3F000E012A2 /* SomeTestLib in Frameworks */,
 				5DAC0888251391D900B73E8B /* CoreNFC.framework in Frameworks */,
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
 				B6DDDE782CF39158008DEA94 /* CombineExt in Frameworks */,
@@ -16301,7 +16301,7 @@
 				B62C248A2CF48327003377F1 /* FirebaseMessaging */,
 				B69FC9082CF67D9300A5C51D /* GDPerformanceView-Swift */,
 				B64404402D3FE77300195004 /* FirebasePerformance */,
-				B6C0274D2D4727A600765C6B /* SomeTestLib */,
+				B6334BD12D47B3F000E012A2 /* SomeTestLib */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -16674,7 +16674,7 @@
 				B6DDDE7F2CF39C69008DEA94 /* XCRemoteSwiftPackageReference "analytics-connector-ios" */,
 				B62C24852CF48327003377F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				B69FC9072CF67D9300A5C51D /* XCRemoteSwiftPackageReference "GDPerformanceView-Swift" */,
-				B6C0274C2D4727A600765C6B /* XCRemoteSwiftPackageReference "test" */,
+				B6334BD02D47B3F000E012A2 /* XCRemoteSwiftPackageReference "test" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -25900,6 +25900,14 @@
 				minimumVersion = 0.6.7;
 			};
 		};
+		B6334BD02D47B3F000E012A2 /* XCRemoteSwiftPackageReference "test" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/m3g0byt3/test.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 		B67E38B72CC7147600D660EB /* XCRemoteSwiftPackageReference "tangem-sdk-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Tangem/tangem-sdk-ios.git";
@@ -25962,14 +25970,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.1.1;
-			};
-		};
-		B6C0274C2D4727A600765C6B /* XCRemoteSwiftPackageReference "test" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/m3g0byt3/test.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
 			};
 		};
 		B6C0D3EA2CBDC3E0001113ED /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */ = {
@@ -26185,6 +26185,11 @@
 			package = B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */;
 			productName = TangemWalletCoreBinariesWrapper;
 		};
+		B6334BD12D47B3F000E012A2 /* SomeTestLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6334BD02D47B3F000E012A2 /* XCRemoteSwiftPackageReference "test" */;
+			productName = SomeTestLib;
+		};
 		B63BAA6B2B7410AE00DA26C9 /* TangemWalletCoreBinariesWrapper */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B6F525902B6C05210079ADD1 /* XCRemoteSwiftPackageReference "wallet-core-binaries-ios" */;
@@ -26290,11 +26295,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B69FC9072CF67D9300A5C51D /* XCRemoteSwiftPackageReference "GDPerformanceView-Swift" */;
 			productName = "GDPerformanceView-Swift";
-		};
-		B6C0274D2D4727A600765C6B /* SomeTestLib */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B6C0274C2D4727A600765C6B /* XCRemoteSwiftPackageReference "test" */;
-			productName = SomeTestLib;
 		};
 		B6C0D3E02CBDC2E3001113ED /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;

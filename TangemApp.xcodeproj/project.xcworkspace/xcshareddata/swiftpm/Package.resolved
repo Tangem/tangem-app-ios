@@ -608,8 +608,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/m3g0byt3/test.git",
       "state" : {
-        "revision" : "f3b1252c0c0247d66ef94d7afa4147fe360f6a91",
-        "version" : "2.0.0"
+        "revision" : "4797ea7645deaf4a02ffa505b3b29fd7ca47467f",
+        "version" : "3.0.0"
+      }
+    },
+    {
+      "identity" : "test2",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/m3g0byt3/test2.git",
+      "state" : {
+        "revision" : "789a1388d1ea3526535dc66671aeb9cdbfb13053",
+        "version" : "1.0.0"
       }
     },
     {
