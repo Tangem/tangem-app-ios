@@ -66,9 +66,15 @@ class SolanaNetworkService {
         .eraseToAnyPublisher()
     }
 
-    func sendRaw(base64serializedTransaction: String) -> AnyPublisher<TransactionID, Error> {
-        solanaSdk.api.sendTransaction(serializedTransaction: base64serializedTransaction)
-            .eraseToAnyPublisher()
+    func sendRaw(
+        base64serializedTransaction: String,
+        startSendingTimestamp: Date
+    ) -> AnyPublisher<TransactionID, Error> {
+        solanaSdk.api.sendTransaction(
+            serializedTransaction: base64serializedTransaction,
+            startSendingTimestamp: startSendingTimestamp
+        )
+        .eraseToAnyPublisher()
     }
 
     func sendSplToken(amount: UInt64, computeUnitLimit: UInt32?, computeUnitPrice: UInt64?, sourceTokenAddress: String, destinationAddress: String, token: Token, tokenProgramId: PublicKey, signer: SolanaTransactionSigner) -> AnyPublisher<TransactionID, Error> {

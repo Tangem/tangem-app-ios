@@ -41,6 +41,7 @@ extension StakeKitDTO {
             let status: Status
             let type: TransactionType
             let hash: String?
+            let createdAt: Date?
             let signedTransaction: String?
             let unsignedTransaction: String?
             let stepIndex: Int
