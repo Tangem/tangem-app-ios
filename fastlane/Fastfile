@@ -132,7 +132,7 @@ lane :check_bsdk_example_buildable do |options|
   xcodebuild(
     project: PROJECT_NAME,
     scheme: BSDK_EXAMPLE_SCHEME,
-    xcargs: "-allowProvisioningUpdates",
+    xcargs: "-allowProvisioningUpdates -disableAutomaticPackageResolution -onlyUsePackageVersionsFromResolvedFile",
     analyze: true
   )
 end
@@ -440,7 +440,8 @@ private_lane :build do |options|
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     build_app(
       project: PROJECT_NAME,
-      xcargs: "-allowProvisioningUpdates",
+      xcargs: "-allowProvisioningUpdates -disableAutomaticPackageResolution -onlyUsePackageVersionsFromResolvedFile",
+      disable_package_automatic_updates: true,  # Probably redundant because of `disableAutomaticPackageResolution` xcarg, but won't harm
       output_directory: options[:path],
       output_name: options[:filename],
       scheme: options[:scheme],
@@ -487,7 +488,8 @@ end
 private_lane :archive_app do |options|
   build_app(
     project: PROJECT_NAME,
-    xcargs: "-allowProvisioningUpdates",
+    xcargs: "-allowProvisioningUpdates -disableAutomaticPackageResolution -onlyUsePackageVersionsFromResolvedFile",
+    disable_package_automatic_updates: true,  # Probably redundant because of `disableAutomaticPackageResolution` xcarg, but won't harm
     output_directory: options[:path],
     output_name: options[:filename],
     scheme: options[:scheme],
@@ -503,7 +505,8 @@ end
 private_lane :create_ipa do |options|
   build_app(
     project: PROJECT_NAME,
-    xcargs: "-allowProvisioningUpdates",
+    xcargs: "-allowProvisioningUpdates -disableAutomaticPackageResolution -onlyUsePackageVersionsFromResolvedFile",
+    disable_package_automatic_updates: true,  # Probably redundant because of `disableAutomaticPackageResolution` xcarg, but won't harm
     output_directory: options[:path],
     output_name: options[:filename],
     scheme: options[:scheme],
