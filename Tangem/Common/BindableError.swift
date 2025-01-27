@@ -21,8 +21,6 @@ extension TangemSdkError: BindableError {
     var binder: AlertBinder {
         switch self {
         case .cardVerificationFailed:
-            Analytics.log(.errorOfflineAttestationFailed)
-
             return AlertBinder(alert: Alert(
                 title: Text(Localization.securityAlertTitle),
                 message: Text(TangemSdkError.cardVerificationFailed.localizedDescription),

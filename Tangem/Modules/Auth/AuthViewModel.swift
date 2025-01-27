@@ -67,7 +67,6 @@ final class AuthViewModel: ObservableObject {
         Analytics.beginLoggingCardScan(source: .auth)
 
         userWalletRepository.unlock(with: .card(userWalletId: nil, scanner: CardScannerFactory().makeDefaultScanner())) { [weak self] result in
-
             self?.didFinishUnlocking(result)
         }
     }
@@ -104,11 +103,12 @@ final class AuthViewModel: ObservableObject {
         case .onboarding(let input):
             openOnboarding(with: input)
         case .error(let error):
-            if case .userCancelled = error as? TangemSdkError {
-                break
-            } else {
-                self.error = error.alertBinder
+            if error.isCancellationError {
+                return
             }
+
+            Analytics.tryLogCardVerificationError(error, source: .signIn)
+            self.error = error.alertBinder
         case .success(let model), .partial(let model, _):
             openMain(with: model)
         }
