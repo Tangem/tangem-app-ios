@@ -18,7 +18,8 @@ extension WalletModel {
         amountType: .coin,
         shouldPerformHealthCheck: false,
         isCustom: false,
-        sendAvailabilityProvider: TransactionSendAvailabilityProvider(isSendingSupportedByCard: true)
+        sendAvailabilityProvider: TransactionSendAvailabilityProvider(isSendingSupportedByCard: true),
+        tokenBalancesRepository: TokenBalancesRepositoryMock()
     )
 }
 

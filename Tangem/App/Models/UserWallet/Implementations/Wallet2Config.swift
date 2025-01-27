@@ -365,12 +365,12 @@ extension Wallet2Config: UserWalletConfig {
         }
     }
 
-    func makeWalletModelsFactory() -> WalletModelsFactory {
+    func makeWalletModelsFactory(userWalletId: UserWalletId) -> WalletModelsFactory {
         if isDemo {
-            return DemoWalletModelsFactory(config: self)
+            return DemoWalletModelsFactory(config: self, userWalletId: userWalletId)
         }
 
-        return CommonWalletModelsFactory(config: self)
+        return CommonWalletModelsFactory(config: self, userWalletId: userWalletId)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

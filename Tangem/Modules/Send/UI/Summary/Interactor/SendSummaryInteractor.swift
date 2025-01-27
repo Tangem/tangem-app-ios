@@ -12,6 +12,7 @@ import BlockchainSdk
 
 protocol SendSummaryInteractor: AnyObject {
     var transactionDescription: AnyPublisher<String?, Never> { get }
+    var isNotificationButtonIsLoading: AnyPublisher<Bool, Never> { get }
 }
 
 class CommonSendSummaryInteractor {
@@ -47,5 +48,14 @@ extension CommonSendSummaryInteractor: SendSummaryInteractor {
                 }
             }
             .eraseToAnyPublisher()
+    }
+
+    var isNotificationButtonIsLoading: AnyPublisher<Bool, Never> {
+        guard let input else {
+            assertionFailure("SendFeeInput is not found")
+            return Empty().eraseToAnyPublisher()
+        }
+
+        return input.isNotificationButtonIsLoading
     }
 }
