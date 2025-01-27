@@ -38,7 +38,7 @@ class FakeTokenItemInfoProvider: ObservableObject {
         }
     }
 
-    func modelTapped(with id: Int) {
+    func modelTapped(with id: WalletModelId) {
         guard let tappedWalletManager = walletModels.first(where: { $0.id == id }) else {
             return
         }

@@ -18,9 +18,9 @@ class VisaCardScanHandler {
     private let visaUtilities = VisaUtilities()
 
     init() {
-        let builder = VisaAPIServiceBuilder()
+        let builder = VisaAPIServiceBuilder(mockedAPI: FeatureStorage.instance.isVisaAPIMocksEnabled)
         authorizationService = builder.buildAuthorizationService(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
-        cardActivationStateProvider = builder.buildCardActivationStatusService(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
+        cardActivationStateProvider = builder.buildCardActivationRemoteStateService(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
     }
 
     deinit {

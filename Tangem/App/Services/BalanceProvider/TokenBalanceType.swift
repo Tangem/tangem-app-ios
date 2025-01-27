@@ -39,7 +39,7 @@ extension TokenBalanceType {
         case .empty: nil
         case .loading(let cached): cached
         case .failure(let cached): cached
-        case .loaded(let value): nil
+        case .loaded: nil
         }
     }
 
@@ -64,9 +64,9 @@ extension TokenBalanceType: CustomStringConvertible {
     var description: String {
         switch self {
         case .empty(let reason): "Empty \(reason)"
-        case .loading(let cached): "Loading cached: \(String(describing: cached))"
+        case .loading(let cached): "Loading with cached: \(String(describing: cached))"
         case .failure(let cached): "Failure cached: \(String(describing: cached))"
-        case .loaded(let balance): "Loaded: \(balance)"
+        case .loaded: "Loaded"
         }
     }
 }
@@ -85,8 +85,12 @@ extension TokenBalanceType {
         case noAccount(message: String)
     }
 
-    struct Cached: Hashable {
+    struct Cached: Hashable, CustomStringConvertible {
         let balance: Decimal
         let date: Date
+
+        var description: String {
+            "Cached balance on date: \(date.formatted())"
+        }
     }
 }

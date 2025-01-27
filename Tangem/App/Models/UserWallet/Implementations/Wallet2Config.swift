@@ -259,6 +259,36 @@ extension Wallet2Config: UserWalletConfig {
         // Gets Mine
         case "BB000008":
             return cardsCount == 2 ? Assets.Cards.getsmineDouble : Assets.Cards.getsmineTriple
+        // ChangeNow
+        case "BB000013":
+            return cardsCount == 2 ? Assets.Cards.changeNowDouble : Assets.Cards.changeNowTriple
+        // Sin City
+        case "BB000010":
+            return cardsCount == 2 ? Assets.Cards.sinCityDouble : Assets.Cards.sinCityTriple
+        // Rizo
+        case "BB000012":
+            return cardsCount == 2 ? Assets.Cards.rizoDouble : Assets.Cards.rizoTriple
+        // Kroak
+        case "BB000011":
+            return cardsCount == 2 ? Assets.Cards.kroakDouble : Assets.Cards.kroakTriple
+        // Kango
+        case "BB000006":
+            return cardsCount == 2 ? Assets.Cards.kangoDouble : Assets.Cards.kangoTriple
+        // Wild Goat
+        case "BB000001":
+            return cardsCount == 2 ? Assets.Cards.wildGoatDouble : Assets.Cards.wildGoatTriple
+        // Passim Pay
+        case "BB000007":
+            return cardsCount == 2 ? Assets.Cards.passimPayDouble : Assets.Cards.passimPayTriple
+        // VNISH
+        case "BB000005":
+            return cardsCount == 2 ? Assets.Cards.vnishDouble : Assets.Cards.vnishTriple
+        // Cash Club Gold
+        case "BB000004":
+            return cardsCount == 2 ? Assets.Cards.cashClubGoldDouble : Assets.Cards.cashClubGoldTriple
+        // HODL (dreams come true)
+        case "BB000009":
+            return cardsCount == 2 ? Assets.Cards.hodlDouble : Assets.Cards.hodlTriple
 
         // Tangem Wallet 2.0
         default:
@@ -365,12 +395,12 @@ extension Wallet2Config: UserWalletConfig {
         }
     }
 
-    func makeWalletModelsFactory() -> WalletModelsFactory {
+    func makeWalletModelsFactory(userWalletId: UserWalletId) -> WalletModelsFactory {
         if isDemo {
-            return DemoWalletModelsFactory(config: self)
+            return DemoWalletModelsFactory(config: self, userWalletId: userWalletId)
         }
 
-        return CommonWalletModelsFactory(config: self)
+        return CommonWalletModelsFactory(config: self, userWalletId: userWalletId)
     }
 
     func makeAnyWalletManagerFactory() throws -> AnyWalletManagerFactory {

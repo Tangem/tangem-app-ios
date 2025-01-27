@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct MarketsTokenDetailsExchangesListView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsExchangesListViewModel
@@ -39,6 +40,7 @@ struct MarketsTokenDetailsExchangesListView: View {
             .animation(.default, value: viewModel.exchangesList)
             .ignoresSafeArea(.container, edges: .top) // Without it, the content won't go into the safe area top zone on over-scroll
             .readGeometry(\.safeAreaInsets, bindTo: $safeArea)
+            .onAppear(perform: viewModel.loadExchangesList)
     }
 
     @ViewBuilder
@@ -50,7 +52,6 @@ struct MarketsTokenDetailsExchangesListView: View {
             VStack(spacing: 0) {
                 if viewModel.isMarketsSheetStyle {
                     MarketsNavigationBar(
-                        isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
                         title: navigationBarTitle,
                         onBackButtonAction: viewModel.onBackButtonAction
                     )
@@ -122,7 +123,7 @@ struct MarketsTokenDetailsExchangesListView: View {
     @ViewBuilder
     private var scrollContent: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
                 Color.clear
                     .frame(height: headerHeight)
 

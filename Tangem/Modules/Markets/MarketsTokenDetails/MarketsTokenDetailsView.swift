@@ -8,6 +8,7 @@
 
 import SwiftUI
 import UIKit
+import TangemUI
 
 struct MarketsTokenDetailsView: View {
     @ObservedObject var viewModel: MarketsTokenDetailsViewModel
@@ -17,6 +18,11 @@ struct MarketsTokenDetailsView: View {
 
     @State private var headerHeight: CGFloat = .zero
     @State private var isListContentObscured = false
+
+    @StateObject private var scrollOffsetHandler = ScrollViewOffsetHandler.marketTokenDetails(
+        initialState: MarketsNavigationBarTitle.State(priceOpacity: nil, titleOffset: 0),
+        labelOffset: Constants.scrollViewContentTopInset + Constants.scrollViewVerticalPadding
+    )
 
     private var isDarkColorScheme: Bool { colorScheme == .dark }
 
@@ -35,10 +41,7 @@ struct MarketsTokenDetailsView: View {
     private let scrollViewFrameCoordinateSpaceName = UUID()
 
     var body: some View {
-        rootView
-            .if(!viewModel.isMarketsSheetStyle) { view in
-                view.navigationTitle(viewModel.tokenName)
-            }
+        rootViewWithTitle
             .onOverlayContentStateChange { [weak viewModel] state in
                 viewModel?.onOverlayContentStateChange(state)
             }
@@ -49,6 +52,21 @@ struct MarketsTokenDetailsView: View {
                 backgroundColor
                     .ignoresSafeArea(edges: .vertical)
             }
+            .onAppear(perform: scrollOffsetHandler.onViewAppear)
+    }
+
+    @ViewBuilder
+    private var rootViewWithTitle: some View {
+        if !viewModel.isMarketsSheetStyle {
+            rootView
+                .toolbar(content: {
+                    ToolbarItem(placement: .principal) {
+                        navigationBarTitle
+                    }
+                })
+        } else {
+            rootView
+        }
     }
 
     @ViewBuilder
@@ -56,15 +74,16 @@ struct MarketsTokenDetailsView: View {
         ZStack {
             scrollView
 
-            navigationBar
+            if viewModel.isMarketsSheetStyle {
+                navigationBar
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
     }
 
     private var navigationBar: some View {
         MarketsNavigationBar(
-            isMarketsSheetStyle: viewModel.isMarketsSheetStyle,
-            title: viewModel.tokenName,
+            titleView: { navigationBarTitle },
             onBackButtonAction: viewModel.onBackButtonTap
         )
         .background(
@@ -79,10 +98,23 @@ struct MarketsTokenDetailsView: View {
         .infinityFrame(axis: .vertical, alignment: .top)
     }
 
+    private var navigationBarTitle: some View {
+        MarketsNavigationBarTitle(
+            tokenName: viewModel.tokenName,
+            price: viewModel.price,
+            state: viewModel.overlayContentHidingProgress > 0
+                ? scrollOffsetHandler.state
+                : MarketsNavigationBarTitle.State(
+                    priceOpacity: 1,
+                    titleOffset: ScrollViewOffsetHandler.MarketsTokenDetailsConstants.maxTitleOffset
+                )
+        )
+    }
+
     @ViewBuilder
     private var scrollView: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .center, spacing: 16) {
+            VStack(alignment: .center, spacing: Constants.scrollViewVerticalPadding) {
                 // Using plain old overlay + dummy `Color.clear` spacer in the scroll view due to the buggy
                 // `safeAreaInset(edge:alignment:spacing:content:)` iOS 15+ API which has both layout and touch-handling issues
                 Color.clear
@@ -114,11 +146,11 @@ struct MarketsTokenDetailsView: View {
                     .transition(.opacity)
             }
             .padding(.top, Constants.scrollViewContentTopInset)
-            .if(viewModel.isMarketsSheetStyle) { view in
-                view
-                    .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
-                        isListContentObscured = contentOffset.y > Constants.scrollViewContentTopInset
-                    }
+            .readContentOffset(inCoordinateSpace: .named(scrollViewFrameCoordinateSpaceName)) { contentOffset in
+                scrollOffsetHandler.contentOffsetSubject.send(contentOffset)
+                if viewModel.isMarketsSheetStyle {
+                    isListContentObscured = contentOffset.y > Constants.scrollViewContentTopInset
+                }
             }
         }
         .opacity(viewModel.overlayContentHidingProgress)
@@ -318,6 +350,7 @@ private extension MarketsTokenDetailsView {
     enum Constants {
         static let chartHeight: CGFloat = 200.0
         static let scrollViewContentTopInset = 14.0
+        static let scrollViewVerticalPadding = 16.0
         static let blockHorizontalPadding: CGFloat = 16.0
         static let priceLabelSizeMeasureText = "1234.0"
     }

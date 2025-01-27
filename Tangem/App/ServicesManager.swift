@@ -14,7 +14,6 @@ import TangemStaking
 
 class ServicesManager {
     @Injected(\.exchangeService) private var exchangeService: ExchangeService
-    @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
     @Injected(\.accountHealthChecker) private var accountHealthChecker: AccountHealthChecker
     @Injected(\.apiListProvider) private var apiListProvider: APIListProvider
@@ -48,7 +47,6 @@ class ServicesManager {
         configureBlockchainSdkExceptionHandler()
 
         exchangeService.initialize()
-        tangemApiService.initialize()
         accountHealthChecker.initialize()
         apiListProvider.initialize()
         pushNotificationsInteractor.initialize()

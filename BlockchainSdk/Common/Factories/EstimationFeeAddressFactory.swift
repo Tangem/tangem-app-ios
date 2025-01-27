@@ -42,7 +42,7 @@ struct EstimationFeeAddressFactory {
         case .bitcoin:
             return "bc1qkrc5kmpq546wr2xk0errg58yw9jjq7thvhdk5k"
         case .litecoin:
-            return "MSqjXH6toL4kHqsRo3mWaWMkhmiH9GQxLR"
+            return "LeAXZ4WKNy8zeybFkD6scFpBSmCPmENUEW"
         case .bitcoinCash:
             return "bitcoincash:qrn96yyxa93t6sqmehvls6746qafkcsuku6zmd9460"
         case .dogecoin:
@@ -58,7 +58,8 @@ struct EstimationFeeAddressFactory {
              .areon, .playa3ullGames, .pulsechain, .aurora, .manta,
              .zkSync, .moonbeam, .polygonZkEVM, .moonriver, .mantle,
              .flare, .taraxa, .base, .blast, .cyber, .energyWebEVM,
-             .core, .canxium, .chiliz, .xodex, .odysseyChain, .bitrock:
+             .core, .canxium, .chiliz, .xodex, .odysseyChain, .bitrock,
+             .apeChain:
             return "0x52bb4012854f808CF9BAbd855e44E506dAf6C077"
         case .ethereumClassic:
             return "0xc49722a6f4Fe5A1347710dEAAa1fafF4c275689b"

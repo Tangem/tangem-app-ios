@@ -56,6 +56,4 @@ enum AppConstants {
     static let feeExplanationTangemBlogURL = URL(string: "https://tangem.com/en/blog/post/what-is-a-transaction-fee-and-why-do-we-need-it/")!
 
     static let tosURL = URL(string: "https://tangem.com/tangem_tos.html")!
-
-    static let howToBuyURL = URL(string: "https://tangem.com/howtobuy.html")!
 }

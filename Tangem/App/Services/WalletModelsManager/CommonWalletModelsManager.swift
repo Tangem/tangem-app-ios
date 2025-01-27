@@ -22,6 +22,9 @@ class CommonWalletModelsManager {
     private var bag = Set<AnyCancellable>()
     private var updateAllSubscription: AnyCancellable?
 
+    /// An update is tracked only once per lifecycle of this manager.
+    private var shouldTrackWalletModelsUpdate = true
+
     init(
         walletManagersRepository: WalletManagersRepository,
         walletModelsFactory: WalletModelsFactory
@@ -46,8 +49,8 @@ class CommonWalletModelsManager {
         let existingWalletModelIds = Set(walletModels.map { $0.walletModelId })
 
         let newWalletModelIds = Set(walletManagers.flatMap { network, walletManager in
-            let mainId = WalletModel.Id(blockchainNetwork: network, amountType: .coin)
-            let tokenIds = walletManager.cardTokens.map { WalletModel.Id(blockchainNetwork: network, amountType: .token(value: $0)) }
+            let mainId = WalletModel.Id(tokenItem: .blockchain(network))
+            let tokenIds = walletManager.cardTokens.map { WalletModel.Id(tokenItem: .token($0, network)) }
             return [mainId] + tokenIds
         })
 
@@ -69,26 +72,46 @@ class CommonWalletModelsManager {
             walletModelIdsToDelete.contains($0.walletModelId)
         }
 
-        let dataToAdd = Dictionary(grouping: walletModelIdsToAdd, by: { $0.blockchainNetwork })
+        let dataToAdd = Dictionary(grouping: walletModelIdsToAdd, by: { $0.tokenItem.blockchainNetwork })
 
         let walletModelsToAdd: [WalletModel] = dataToAdd.flatMap {
             if let walletManager = walletManagers[$0.key] {
-                let types = $0.value.map { $0.amountType }
+                let types = $0.value.map { $0.tokenItem.amountType }
                 return walletModelsFactory.makeWalletModels(for: types, walletManager: walletManager)
             }
 
             return []
         }
 
-        walletModelsToAdd.forEach {
-            $0.update(silent: false)
-        }
+        updateWalletModelsWithPerformanceTrackingIfNeeded(walletModels: walletModelsToAdd)
 
         existingWalletModels.append(contentsOf: walletModelsToAdd)
 
         log(walletModels: existingWalletModels)
 
         _walletModels.send(existingWalletModels)
+    }
+
+    private func updateWalletModelsWithPerformanceTrackingIfNeeded(walletModels: [WalletModel]) {
+        var token: PerformanceMetricToken?
+
+        if shouldTrackWalletModelsUpdate, walletModels.isNotEmpty {
+            shouldTrackWalletModelsUpdate = false
+            token = PerformanceTracker.startTracking(metric: .totalBalanceLoaded(tokensCount: walletModels.count))
+        }
+
+        var subscription: AnyCancellable?
+        subscription = walletModels
+            .map { $0.update(silent: false) }
+            .combineLatest()
+            .sink { states in
+                if states.contains(where: \.isBlockchainUnreachable) {
+                    PerformanceTracker.endTracking(token: token, with: .failure)
+                } else {
+                    PerformanceTracker.endTracking(token: token, with: .success)
+                }
+                withExtendedLifetime(subscription) {}
+            }
     }
 }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 import SwiftUI
-import TangemUIKitUtils
+import TangemUIUtils
 
 struct CustomTextField: UIViewRepresentable {
     class Coordinator: NSObject, UITextFieldDelegate {

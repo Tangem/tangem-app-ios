@@ -71,7 +71,7 @@ struct ExpressTokenItemView: View {
 struct ExpressTokenItemView_Previews: PreviewProvider {
     static let viewModels = [
         ExpressTokenItemViewModel(
-            id: "Bitcoin".hashValue,
+            id: "Bitcoin",
             tokenIconInfo: TokenIconInfo(
                 name: "",
                 blockchainIconName: "bitcoin",
@@ -86,7 +86,7 @@ struct ExpressTokenItemView_Previews: PreviewProvider {
             isDisable: false,
             itemDidTap: {}
         ), ExpressTokenItemViewModel(
-            id: "Ethereum".hashValue,
+            id: "Ethereum",
             tokenIconInfo: TokenIconInfo(
                 name: "",
                 blockchainIconName: "ethereum",
@@ -101,7 +101,7 @@ struct ExpressTokenItemView_Previews: PreviewProvider {
             isDisable: false,
             itemDidTap: {}
         ), ExpressTokenItemViewModel(
-            id: "Tether".hashValue,
+            id: "Tether",
             tokenIconInfo: TokenIconInfo(
                 name: "",
                 blockchainIconName: "ethereum",

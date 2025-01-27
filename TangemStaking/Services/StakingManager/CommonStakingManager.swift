@@ -133,6 +133,10 @@ extension CommonStakingManager: StakingManager {
         }
     }
 
+    func transactionDetails(id: String) async throws -> StakingTransactionInfo {
+        try await execute(try await provider.transaction(id: id))
+    }
+
     func transactionDidSent(action: StakingAction) {
         runTask(in: self) {
             await $0.updateState(loadActions: true)
@@ -319,15 +323,27 @@ private extension CommonStakingManager {
         // Otherwise we may get the 404 error
         try await Task.sleep(nanoseconds: Constants.delay)
 
-        let transactions = try await action.transactions.asyncMap { transaction in
-            try await execute(try await provider.patchTransaction(id: transaction.id))
+        let transactions = try await withThrowingTaskGroup(of: StakingTransactionInfo.self) { group in
+            action.transactions.forEach { transaction in
+                group.addTask {
+                    try Task.checkCancellation()
+                    return try await self.execute(try await self.provider.patchTransaction(id: transaction.id))
+                }
+            }
+
+            var transactions = [StakingTransactionInfo]()
+            for try await transaction in group {
+                transactions.append(transaction)
+            }
+
+            return transactions
         }
 
         return mapToStakingTransactionAction(
             actionID: action.id,
             amount: action.amount,
             validator: request.validator,
-            transactions: transactions
+            transactions: transactions.sorted(by: \.stepIndex)
         )
     }
 
@@ -342,10 +358,19 @@ private extension CommonStakingManager {
             let action = try await getPendingTransactionAction(request: request)
             return action
         case .withdraw(let passthroughs), .claimUnstaked(let passthroughs):
-            let actions = try await passthroughs.asyncMap { passthrough in
-                let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
-                let action = try await getPendingTransactionAction(request: request)
-                return action
+            let actions = try await withThrowingTaskGroup(of: StakingTransactionAction.self) { group in
+                for passthrough in passthroughs {
+                    let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
+                    group.addTask {
+                        try await self.getPendingTransactionAction(request: request)
+                    }
+                }
+
+                var actions = [StakingTransactionAction]()
+                for try await action in group {
+                    actions.append(action)
+                }
+                return actions
             }
 
             return mapToStakingTransactionAction(

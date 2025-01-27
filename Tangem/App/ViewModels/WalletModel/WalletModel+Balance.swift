@@ -172,17 +172,36 @@ extension WalletModel {
     struct BalanceFormatted: Hashable {
         let crypto, fiat: String
     }
+}
 
-    // Don't use yet
-    // TODO: https://tangem.atlassian.net/browse/IOS-8906
+// MARK: - Rate
+
+extension WalletModel {
     enum Rate: Hashable {
-        case cached(TokenBalanceType.Cached)
-        case actual(Decimal)
+        case custom
+        case loading(cached: TokenQuote?)
+        case failure(cached: TokenQuote?)
+        case loaded(TokenQuote)
 
-        var value: Decimal {
+        var isLoading: Bool {
             switch self {
-            case .cached(let value): value.balance
-            case .actual(let value): value
+            case .loading: true
+            case .custom, .failure, .loaded: false
+            }
+        }
+
+        var cached: TokenQuote? {
+            switch self {
+            case .custom, .loaded: nil
+            case .loading(let cached), .failure(let cached): cached
+            }
+        }
+
+        var quote: TokenQuote? {
+            switch self {
+            case .custom: nil
+            case .loading(let cached), .failure(let cached): cached
+            case .loaded(let quote): quote
             }
         }
     }

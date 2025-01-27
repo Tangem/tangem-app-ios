@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "Недостаточно ADA";
 "common_accept" = "Принять";
 "common_access_denied" = "Доступ запрещен";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Все";
 "common_allow" = "Разрешить";
 "common_analytics" = "Аналитика";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "Безлимитно";
 "home_button_order" = "Купить";
 "home_button_scan" = "Сканировать";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Эта информация была сгенерирована ИИ.\nНажмите здесь, если обнаружили ошибку.";
 "initial_message_change_access_code_body" = "Чтобы изменить код доступа, приложите карту или кольцо как показано выше и не убирайте до окончания операции";
 "initial_message_change_passcode_body" = "Чтобы изменить пароль, приложите карту как показано выше и не убирайте до окончания операции";
