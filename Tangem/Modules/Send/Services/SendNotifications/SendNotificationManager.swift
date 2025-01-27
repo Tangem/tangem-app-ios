@@ -49,6 +49,7 @@ class CommonSendNotificationManager {
 private extension CommonSendNotificationManager {
     func bind(input: SendNotificationManagerInput) {
         input.feeValues
+            .filter { !$0.contains { $0.value.isLoading } }
             .withWeakCaptureOf(self)
             .sink { manager, feeValues in
                 manager.updateNetworkFeeUnreachable(errors: feeValues.compactMap(\.value.error))

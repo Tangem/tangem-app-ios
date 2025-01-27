@@ -149,6 +149,7 @@ struct SupportedBlockchains {
             .odysseyChain(testnet: false),
             .bitrock(testnet: false),
             .fact0rn,
+            .apeChain(testnet: false),
         ]
     }
 
@@ -207,6 +208,7 @@ struct SupportedBlockchains {
             .core(testnet: true),
             .odysseyChain(testnet: true),
             .bitrock(testnet: true),
+            .apeChain(testnet: true),
         ]
     }
 

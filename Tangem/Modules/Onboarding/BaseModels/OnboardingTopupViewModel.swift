@@ -129,7 +129,7 @@ extension OnboardingTopupViewModel {
         guard let url = buyCryptoURL else { return }
 
         Analytics.log(.buttonBuyCrypto)
-        coordinator?.openCryptoShop(at: url) { [weak self] in
+        coordinator?.openBrowser(at: url) { [weak self] _ in
             self?.updateCardBalance()
         }
     }

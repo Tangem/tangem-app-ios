@@ -291,6 +291,12 @@ extension SendModel: SendSummaryInput, SendSummaryOutput {
         _transaction.map { $0?.value != nil }.eraseToAnyPublisher()
     }
 
+    var isNotificationButtonIsLoading: AnyPublisher<Bool, Never> {
+        _selectedFee
+            .map { $0.value.isLoading }
+            .eraseToAnyPublisher()
+    }
+
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
         _transaction.map { transaction -> SendSummaryTransactionData? in
             transaction?.value.map {
