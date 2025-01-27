@@ -441,6 +441,7 @@ private_lane :build do |options|
     build_app(
       project: PROJECT_NAME,
       xcargs: "-allowProvisioningUpdates",
+      disable_package_automatic_updates: true,
       output_directory: options[:path],
       output_name: options[:filename],
       scheme: options[:scheme],
@@ -488,6 +489,7 @@ private_lane :archive_app do |options|
   build_app(
     project: PROJECT_NAME,
     xcargs: "-allowProvisioningUpdates",
+    disable_package_automatic_updates: true,
     output_directory: options[:path],
     output_name: options[:filename],
     scheme: options[:scheme],
@@ -504,6 +506,7 @@ private_lane :create_ipa do |options|
   build_app(
     project: PROJECT_NAME,
     xcargs: "-allowProvisioningUpdates",
+    disable_package_automatic_updates: true,
     output_directory: options[:path],
     output_name: options[:filename],
     scheme: options[:scheme],
