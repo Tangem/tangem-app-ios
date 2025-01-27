@@ -1963,6 +1963,7 @@
 		B6FFC31F2CC70E1D00F4400E /* BitcoinCore in Frameworks */ = {isa = PBXBuildFile; productRef = B6FFC31E2CC70E1D00F4400E /* BitcoinCore */; };
 		C21707172D395292000AC361 /* BitrockExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21707162D395290000AC361 /* BitrockExternalLinkProvider.swift */; };
 		C27A0EEE2D3648D400AC2336 /* OdysseyChainExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27A0EED2D3648D100AC2336 /* OdysseyChainExternalLinkProvider.swift */; };
+		C287C61D2D410D640068B899 /* ApeChainExternalLinkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C287C61C2D410D620068B899 /* ApeChainExternalLinkProvider.swift */; };
 		DA070DE22ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE02ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift */; };
 		DA070DE32ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE12ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift */; };
 		DA070DE52ADD4F6600F7C0E4 /* SprinklrConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA070DE42ADD4F6500F7C0E4 /* SprinklrConfig.swift */; };
@@ -5147,6 +5148,7 @@
 		B6FFADEB2C5D6DAE00B43A56 /* LineChartViewUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartViewUtility.swift; sourceTree = "<group>"; };
 		C21707162D395290000AC361 /* BitrockExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitrockExternalLinkProvider.swift; sourceTree = "<group>"; };
 		C27A0EED2D3648D100AC2336 /* OdysseyChainExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OdysseyChainExternalLinkProvider.swift; sourceTree = "<group>"; };
+		C287C61C2D410D620068B899 /* ApeChainExternalLinkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApeChainExternalLinkProvider.swift; sourceTree = "<group>"; };
 		DA070DE02ADD4F0F00F7C0E4 /* SprinklrSupportChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatView.swift; sourceTree = "<group>"; };
 		DA070DE12ADD4F0F00F7C0E4 /* SprinklrSupportChatViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrSupportChatViewModel.swift; sourceTree = "<group>"; };
 		DA070DE42ADD4F6500F7C0E4 /* SprinklrConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SprinklrConfig.swift; sourceTree = "<group>"; };
@@ -10086,6 +10088,7 @@
 		B62D3CFE2CBC79D900C2460E /* OtherChains */ = {
 			isa = PBXGroup;
 			children = (
+				C287C61C2D410D620068B899 /* ApeChainExternalLinkProvider.swift */,
 				C27A0EED2D3648D100AC2336 /* OdysseyChainExternalLinkProvider.swift */,
 				C21707162D395290000AC361 /* BitrockExternalLinkProvider.swift */,
 				DC77F2562CD63813001B2929 /* CanxiumExternalLinkProvider.swift */,
@@ -19020,6 +19023,7 @@
 				B62D40752CBC79DA00C2460E /* DashMainNetworkParams.swift in Sources */,
 				B62D402A2CBC79DA00C2460E /* BitcoinNetworkService.swift in Sources */,
 				B62D412B2CBC79DA00C2460E /* MantleWalletAssembly.swift in Sources */,
+				C287C61D2D410D640068B899 /* ApeChainExternalLinkProvider.swift in Sources */,
 				B62D41AA2CBC79DA00C2460E /* SuiWalletAssembly.swift in Sources */,
 				B62D3F9A2CBC79DA00C2460E /* AlgorandRequest.swift in Sources */,
 				B62D40602CBC79DA00C2460E /* ChiaNetworkService.swift in Sources */,
