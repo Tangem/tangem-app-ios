@@ -5778,6 +5778,9 @@
 		EF407E6D2C04D81100366733 /* Period.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Period.swift; sourceTree = "<group>"; };
 		EF40C1102CF5EA2D007EF710 /* ExpressProvidersList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressProvidersList.swift; sourceTree = "<group>"; };
 		EF4193792C2DE0CB006A30A5 /* SendAmount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendAmount.swift; sourceTree = "<group>"; };
+		EF41A3C72D37FE3000FA7020 /* CommonTokenBalancesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTokenBalancesStorage.swift; sourceTree = "<group>"; };
+        EF41A3C92D38006D00FA7020 /* TokenBalancesRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBalancesRepositoryMock.swift; sourceTree = "<group>"; };
+		EF41A3CB2D38089B00FA7020 /* TokenBalancesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBalancesStorage.swift; sourceTree = "<group>"; };
 		EF41A3D02D3E576F00FA7020 /* LanguageCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageCode.swift; sourceTree = "<group>"; };
 		EF42D77B2D1D65D90065AFD1 /* AvailableTokenBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailableTokenBalanceProvider.swift; sourceTree = "<group>"; };
 		EF42D77C2D1D65D90065AFD1 /* TotalTokenBalanceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalTokenBalanceProvider.swift; sourceTree = "<group>"; };

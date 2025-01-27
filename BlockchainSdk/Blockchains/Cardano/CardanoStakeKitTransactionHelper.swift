@@ -132,17 +132,32 @@ struct CardanoTransactionBody {
             poolKeyHash = Data(poolKeyHashArray)
         }
     }
+    
+    struct StakeDeregistrationLegacy {
+        init?(cbor: CBOR) {
+            guard case .array(let certInfo) = cbor,
+                  certInfo.count == 2 /* cert_index, stake_credential */ else {
+                return nil
+            }
+        }
+    }
+    
+    struct StakeDeregistrationConway {
+        init?(cbor: CBOR) {
+
+        }
+    }
 
     enum Certificate {
         case stakeRegistrationLegacy
-        case stakeDeregistrationLegacy
+        case stakeDeregistrationLegacy(StakeDeregistrationLegacy)
         case stakeDelegation(StakeDelegation)
         case poolRegistration
         case poolRetirement
         case genesisKeyDelegation
         case moveInstantaneousRewardsCert
         case stakeRegistrationConway
-        case stakeDeregistrationConway
+        case stakeDeregistrationConway(StakeDeregistrationConway)
         case voteDelegation
         case stakeAndVoteDelegation
         case stakeRegistrationAndDelegation
@@ -287,8 +302,7 @@ private extension CardanoTransactionBody {
         }
 
         return certs.compactMap { certCBOR -> CardanoTransactionBody.Certificate? in
-            guard case .array(let certInfo) = certCBOR,
-                  certInfo.count == 3 /* cert_index, stake_credential, pool_keyhash */ else {
+            guard case .array(let certInfo) = certCBOR else {
                 return nil
             }
 
@@ -297,6 +311,14 @@ private extension CardanoTransactionBody {
             switch index {
             case CardanoTransactionBody.Certificate.Index.stakeDelegation.rawValue:
                 return CardanoTransactionBody.StakeDelegation(cbor: certCBOR).flatMap { .stakeDelegation($0) }
+            case CardanoTransactionBody.Certificate.Index.stakeDeregistrationLegacy.rawValue:
+                return CardanoTransactionBody.StakeDeregistrationLegacy(cbor: certCBOR).flatMap {
+                    .stakeDeregistrationLegacy($0)
+                }
+            case CardanoTransactionBody.Certificate.Index.stakeDeregistrationConway.rawValue:
+                return CardanoTransactionBody.StakeDeregistrationConway(cbor: certCBOR).flatMap {
+                    .stakeDeregistrationConway($0)
+                }
             default:
                 return nil // not implemented
             }
