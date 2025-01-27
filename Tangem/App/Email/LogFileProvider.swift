@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TangemLogger
 
 protocol LogFileProvider {
     var fileName: String { get }
@@ -16,5 +17,18 @@ protocol LogFileProvider {
 
 enum LogFilesNames {
     static let infoLogs = "infoLogs.txt"
-    static let scanLogs = "scanLogs.txt"
+}
+
+struct OSLogFileProvider: LogFileProvider {
+    var fileName: String {
+        OSLogFileParser.logFile.lastPathComponent
+    }
+
+    var logData: Data? {
+        try? Data(contentsOf: OSLogFileParser.logFile)
+    }
+
+    func prepareLogFile() -> URL {
+        OSLogFileParser.logFile
+    }
 }

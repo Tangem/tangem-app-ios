@@ -326,7 +326,6 @@
 		B020A51726F1DD9E00D38596 /* OnboardingTopupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020A51626F1DD9E00D38596 /* OnboardingTopupViewModel.swift */; };
 		B020A51926F1DDA700D38596 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020A51826F1DDA700D38596 /* OnboardingViewModel.swift */; };
 		B020FFB425DE7F9300EF422C /* DataCollectors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020FFB325DE7F9300EF422C /* DataCollectors.swift */; };
-		B020FFBE25DE895E00EF422C /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020FFBD25DE895E00EF422C /* FileLogger.swift */; };
 		B021F6C92CFF33DC0026078C /* VisaOnboardingActivationWalletSelectorItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B021F6C82CFF33DC0026078C /* VisaOnboardingActivationWalletSelectorItemView.swift */; };
 		B02275D72701D9FB004C752B /* PreparePrimaryCardTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02275D62701D9FB004C752B /* PreparePrimaryCardTask.swift */; };
 		B022DB3D26C24D13006F18B4 /* ConfettiGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B022DB3C26C24D13006F18B4 /* ConfettiGenerator.swift */; };
@@ -3585,7 +3584,6 @@
 		B020A51626F1DD9E00D38596 /* OnboardingTopupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTopupViewModel.swift; sourceTree = "<group>"; };
 		B020A51826F1DDA700D38596 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		B020FFB325DE7F9300EF422C /* DataCollectors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectors.swift; sourceTree = "<group>"; };
-		B020FFBD25DE895E00EF422C /* FileLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
 		B021F6C82CFF33DC0026078C /* VisaOnboardingActivationWalletSelectorItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaOnboardingActivationWalletSelectorItemView.swift; sourceTree = "<group>"; };
 		B02275D62701D9FB004C752B /* PreparePrimaryCardTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreparePrimaryCardTask.swift; sourceTree = "<group>"; };
 		B022D30F253746C900D934D7 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -8164,7 +8162,6 @@
 				DC4020F02CB039DB00002902 /* RingUtil.swift */,
 				B0F62C5425DE4F6B005C8BA0 /* DeviceInfoProvider.swift */,
 				B0F79C692689AC56008C9B30 /* FileEncryptionUtility.swift */,
-				B020FFBD25DE895E00EF422C /* FileLogger.swift */,
 				B036626A2B63D77D0064E073 /* ISO4217CodeConverter.swift */,
 				B00D714F258A1B6C00A9442C /* JsonUtils.swift */,
 				DA6C752329225F9B0070EEFD /* MinimizedAppTimer.swift */,
@@ -17993,7 +17990,6 @@
 				B0CB73B72A82324200D530BA /* TokenWithoutDerivationInfoProvider.swift in Sources */,
 				EF9CA60E2D42405B009549E2 /* LogsViewModel.swift in Sources */,
 				0AC9EFF72CAE857C005F868F /* StakingSingleActionModel.swift in Sources */,
-				B020FFBE25DE895E00EF422C /* FileLogger.swift in Sources */,
 				DC0DE7812D48005800492A0B /* Analytics+CardVerificationErrorSource.swift in Sources */,
 				B058D2372A79668D008E79D2 /* TokenQuotesRepositoryMock.swift in Sources */,
 				EF914D502A604627001F00B2 /* QuotesMapper.swift in Sources */,

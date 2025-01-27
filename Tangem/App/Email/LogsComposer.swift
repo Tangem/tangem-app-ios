@@ -16,12 +16,8 @@ class LogsComposer {
     }
 
     convenience init(infoProvider: LogFileProvider) {
-        let providers = [infoProvider, AppLog.shared.fileLogger]
+        let providers = [infoProvider, OSLogFileProvider()]
         self.init(providers: providers)
-    }
-
-    convenience init() {
-        self.init(providers: [AppLog.shared.fileLogger])
     }
 
     func getLogFiles() -> [URL] {
