@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "ADA insuficiente";
 "common_accept" = "Aceptar";
 "common_access_denied" = "Acceso denegado";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Todos";
 "common_allow" = "Autorizar";
 "common_analytics" = "Analítica";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "Ilimitado";
 "home_button_order" = "Pedir Tangem";
 "home_button_scan" = "Escanee";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Esta información fue generada con IA.\nPulse aquí si encuentra algún error.";
 "initial_message_change_access_code_body" = "Para cambiar el código de acceso coloque la tarjeta o el anillo como se muestra arriba y no lo retire hasta el fin de la operación";
 "initial_message_change_passcode_body" = "Toque para cambiar la contraseña";
@@ -623,7 +627,7 @@
 "reset_card_with_backup_to_factory_message" = "El restablecimiento de fábrica eliminará completamente la billetera de la tarjeta seleccionada. No podrá restaurar la billetera actual ni usar la tarjeta para recuperar el código de acceso.";
 "reset_card_without_backup_to_factory_message" = "El reseteo a valores de fábrica eliminará completamente la billetera de la tarjeta/anillo seleccionado y lo eliminará de la app. No podrá restaurar la billetera actual.";
 "ring_promo_text" = "Si tienes un Anillo Tangem, ¡3 swaps sin comisión en Changelly hasta el 15/11!";
-"ring_promo_title" = "¡Intercambia con 0%% de comisión!";
+"ring_promo_title" = "¡Intercambia con 0% de comisión!";
 "russian_bank_card_warning_subtitle" = "¿Tiene una tarjeta bancaria de otro país y un permiso de residencia o registro fuera de la Federación Rusa?";
 "russian_bank_card_warning_title" = "Las tarjetas bancarias rusas no se aceptan actualmente";
 "save_user_wallet_agreement_access_description" = "Inicie sesión en la app y comprueba su saldo sin escanear la tarjeta o el anillo";
@@ -970,7 +974,7 @@
 "wallet_marketprice_block_update_time" = "últimas 24h";
 "wallet_network_group_title" = "%@ red";
 "wallet_notification_address_copied" = "La dirección se copió correctamente";
-"wallet_promo_banner_button_title" = "Consíguelo ahora con un 10 %% de descuento";
+"wallet_promo_banner_button_title" = "Consíguelo ahora con un 10 % de descuento";
 "wallet_promo_banner_description" = "Accede a más de 13 000 criptomonedas. Compra, vende, intercambia y realiza staking con un solo toque.\nVincula hasta tres tarjetas para hacer copias de seguridad.";
 "wallet_promo_banner_title" = "Descubre Tangem Wallet";
 "wallet_settings_title" = "Ajustes de la wallet";
@@ -1052,7 +1056,7 @@
 "warning_solana_rent_fee_message" = "La red Solana cobra un alquiler de %1$@ cada %2$@ días. Las cuentas que no pueden pagar el alquiler son eliminadas de la red. Deposite en su cuenta más de 2 para usarla de forma gratuita.";
 "warning_some_networks_unreachable_message" = "Deslice hacia abajo para refrescar o inténtelo de nuevo más tarde.";
 "warning_some_networks_unreachable_title" = "Algunas redes no están disponibles";
-"warning_some_token_balances_not_updated" = "Some token balances could not updated";
+"warning_some_token_balances_not_updated" = "Some token balances could not be updated";
 "warning_system_deprecation_title" = "Actualización del sistema requerida";
 "warning_system_deprecation_with_date_message" = "El soporte para tu versión del sistema operativo finalizará el %@. Para recibir futuras actualizaciones de la app, deba actualizarlo a la última versión.";
 "warning_system_update_message" = "Tangem recomienda instalar la última actualización de iOS para un funcionamiento estable y seguro";
