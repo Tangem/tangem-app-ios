@@ -10,6 +10,11 @@ import SwiftUI
 
 public struct Shimmer: ViewModifier {
     @State var isInitialState: Bool = true
+    private let duration: CGFloat
+
+    init(duration: CGFloat = 1) {
+        self.duration = duration
+    }
 
     public func body(content: Content) -> some View {
         content
@@ -20,7 +25,7 @@ public struct Shimmer: ViewModifier {
                     endPoint: isInitialState ? .init(x: 0, y: 0) : .init(x: 1.5, y: 1.5)
                 )
             }
-            .animation(.linear(duration: 1.5).repeatForever(autoreverses: false), value: isInitialState)
+            .animation(.linear(duration: duration).repeatForever(autoreverses: false), value: isInitialState)
             .onAppear {
                 isInitialState = false
             }

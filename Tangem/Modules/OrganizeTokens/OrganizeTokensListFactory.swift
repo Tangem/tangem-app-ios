@@ -109,7 +109,7 @@ struct OrganizeTokensListFactory {
             return OrganizeTokensListItemViewModel(
                 id: identifier,
                 tokenIcon: tokenIcon,
-                balance: .noData,
+                balance: .empty,
                 hasDerivation: false,
                 isTestnet: isTestnet,
                 isNetworkUnreachable: false,
@@ -126,7 +126,7 @@ struct OrganizeTokensListFactory {
         return OrganizeTokensListItemViewModel(
             id: identifier,
             tokenIcon: tokenIcon,
-            balance: .noData,
+            balance: .empty,
             hasDerivation: false,
             isTestnet: isTestnet,
             isNetworkUnreachable: false,
@@ -148,17 +148,8 @@ struct OrganizeTokensListFactory {
         )
     }
 
-    private func fiatBalance(for walletModel: WalletModel) -> LoadableTextView.State {
-        guard walletModel.rate.quote != nil else { return .noData }
-
-        let state = TokenItemViewState(walletModel: walletModel)
-        switch state {
-        case .notLoaded, .loaded, .noAccount, .noDerivation:
-            return .loaded(text: walletModel.allBalanceFormatted.fiat)
-        case .loading:
-            return .loading
-        case .networkError:
-            return .noData
-        }
+    private func fiatBalance(for walletModel: WalletModel) -> LoadableTokenBalanceView.State {
+        LoadableTokenBalanceViewStateBuilder()
+            .build(type: walletModel.fiatTotalTokenBalanceProvider.formattedBalanceType, icon: .trailing)
     }
 }

@@ -85,7 +85,8 @@ final class ExpressViewModel: ObservableObject {
     }
 
     func userDidTapMaxAmount() {
-        guard let sourceBalance = interactor.getSender().balanceValue else {
+        let provider = interactor.getSender().availableBalanceProvider
+        guard let sourceBalance = provider.balanceType.value else {
             return
         }
 

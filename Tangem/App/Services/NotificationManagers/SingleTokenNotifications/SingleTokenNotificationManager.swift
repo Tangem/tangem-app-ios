@@ -41,27 +41,26 @@ final class SingleTokenNotificationManager {
     private func bind() {
         bag = []
 
-        Publishers.CombineLatest(
-            walletModel.walletDidChangePublisher,
-            walletModel.stakingManagerStatePublisher
-        )
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] walletState, stakingState in
-            self?.notificationsUpdateTask?.cancel()
+        walletModel.totalTokenBalanceProvider
+            .balanceTypePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                self?.notificationsUpdateTask?.cancel()
 
-            switch walletState {
-            case .failed:
-                self?.setupNetworkUnreachable()
-            case .noAccount(let message, _):
-                self?.setupNoAccountNotification(with: message)
-            case .loading, .created:
-                break
-            case .loaded, .noDerivation:
-                guard stakingState != .loading else { return } // fixes issue with staking notification animated re-appear
-                self?.setupLoadedStateNotifications()
+                switch state {
+                case .failure(.none):
+                    self?.setupNetworkUnreachable()
+                case .failure(.some(let cached)):
+                    self?.setupNetworkNotUpdated(lastUpdatedDate: cached.date)
+                case .empty(.noAccount(let message)):
+                    self?.setupNoAccountNotification(with: message)
+                case .loaded:
+                    self?.setupLoadedStateNotifications()
+                case .loading, .empty:
+                    break
+                }
             }
-        }
-        .store(in: &bag)
+            .store(in: &bag)
     }
 
     private func setupLoadedStateNotifications() {
@@ -176,6 +175,14 @@ final class SingleTokenNotificationManager {
                     ),
                 ])
         }
+    }
+
+    private func setupNetworkNotUpdated(lastUpdatedDate: Date) {
+        notificationInputsSubject.send([
+            NotificationsFactory().buildNotificationInput(
+                for: TokenNotificationEvent.networkNotUpdated(lastUpdatedDate: lastUpdatedDate)
+            ),
+        ])
     }
 
     private func setupNoAccountNotification(with message: String) {

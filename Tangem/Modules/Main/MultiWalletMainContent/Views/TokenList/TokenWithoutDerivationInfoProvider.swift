@@ -13,15 +13,14 @@ import BlockchainSdk
 class TokenWithoutDerivationInfoProvider: TokenItemInfoProvider {
     let id: WalletModelId
     let tokenItem: TokenItem
-
     let hasPendingTransactions: Bool = false
-    let balance: String = Localization.walletBalanceMissingDerivation
-    let fiatBalance: String = BalanceFormatter.defaultEmptyBalanceString
     var isZeroBalanceValue: Bool { true }
-    var quote: TokenQuote? { nil }
+    var balance: TokenBalanceType { .empty(.noDerivation) }
 
-    var tokenItemState: TokenItemViewState = .noDerivation
-    var tokenItemStatePublisher: AnyPublisher<TokenItemViewState, Never> { .just(output: tokenItemState) }
+    var quotePublisher: AnyPublisher<TokenQuote?, Never> { .just(output: .none) }
+    var balancePublisher: AnyPublisher<TokenBalanceType, Never> { .just(output: balance) }
+    var balanceTypePublisher: AnyPublisher<FormattedTokenBalanceType, Never> { .just(output: .loaded("-")) }
+    var fiatBalanceTypePublisher: AnyPublisher<FormattedTokenBalanceType, Never> { .just(output: .loaded("-")) }
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { .just(output: ()) }
     var isStakedPublisher: AnyPublisher<Bool, Never> { .just(output: false) }
 
