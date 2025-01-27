@@ -1886,6 +1886,7 @@
 		B6B1CCCA2C460BB9006C1B44 /* UIPanGestureRecognizer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B1CCC92C460BB9006C1B44 /* UIPanGestureRecognizer+.swift */; };
 		B6B7B6052CDAC6F500479729 /* MarketsTokenDetailsSecurityScoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B7B6042CDAC6F500479729 /* MarketsTokenDetailsSecurityScoreViewModel.swift */; };
 		B6B7D4E22CED637000567C4B /* SingleTokenNotificationManagerInteractionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B7D4E12CED637000567C4B /* SingleTokenNotificationManagerInteractionDelegate.swift */; };
+		B6C0274E2D4727A600765C6B /* SomeTestLib in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0274D2D4727A600765C6B /* SomeTestLib */; };
 		B6C0D3E12CBDC2E3001113ED /* TangemModules in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3E02CBDC2E3001113ED /* TangemModules */; };
 		B6C0D3F42CBDC543001113ED /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3F32CBDC543001113ED /* Moya */; };
 		B6C0D3F62CBDC552001113ED /* BinanceChain in Frameworks */ = {isa = PBXBuildFile; productRef = B6C0D3F52CBDC552001113ED /* BinanceChain */; };
@@ -6245,6 +6246,7 @@
 				B6F625302C85E1A600DEF098 /* DGCharts in Frameworks */,
 				B62C24892CF48327003377F1 /* FirebaseCrashlytics in Frameworks */,
 				B62C24872CF48327003377F1 /* FirebaseAnalytics in Frameworks */,
+				B6C0274E2D4727A600765C6B /* SomeTestLib in Frameworks */,
 				5DAC0888251391D900B73E8B /* CoreNFC.framework in Frameworks */,
 				B099338A2B5517EC00240CDB /* TangemVisa.framework in Frameworks */,
 				B6DDDE782CF39158008DEA94 /* CombineExt in Frameworks */,
@@ -16299,6 +16301,7 @@
 				B62C248A2CF48327003377F1 /* FirebaseMessaging */,
 				B69FC9082CF67D9300A5C51D /* GDPerformanceView-Swift */,
 				B64404402D3FE77300195004 /* FirebasePerformance */,
+				B6C0274D2D4727A600765C6B /* SomeTestLib */,
 			);
 			productName = "Tangem Tap";
 			productReference = 5D3F77C224BF56D800E8695B /* Tangem.app */;
@@ -16671,6 +16674,7 @@
 				B6DDDE7F2CF39C69008DEA94 /* XCRemoteSwiftPackageReference "analytics-connector-ios" */,
 				B62C24852CF48327003377F1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				B69FC9072CF67D9300A5C51D /* XCRemoteSwiftPackageReference "GDPerformanceView-Swift" */,
+				B6C0274C2D4727A600765C6B /* XCRemoteSwiftPackageReference "test" */,
 			);
 			productRefGroup = 5D3F77C324BF56D800E8695B /* Products */;
 			projectDirPath = "";
@@ -25960,6 +25964,14 @@
 				minimumVersion = 2.1.1;
 			};
 		};
+		B6C0274C2D4727A600765C6B /* XCRemoteSwiftPackageReference "test" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/m3g0byt3/test.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		B6C0D3EA2CBDC3E0001113ED /* XCRemoteSwiftPackageReference "SwiftBinanceChain" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tangem/SwiftBinanceChain.git";
@@ -26278,6 +26290,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B69FC9072CF67D9300A5C51D /* XCRemoteSwiftPackageReference "GDPerformanceView-Swift" */;
 			productName = "GDPerformanceView-Swift";
+		};
+		B6C0274D2D4727A600765C6B /* SomeTestLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6C0274C2D4727A600765C6B /* XCRemoteSwiftPackageReference "test" */;
+			productName = SomeTestLib;
 		};
 		B6C0D3E02CBDC2E3001113ED /* TangemModules */ = {
 			isa = XCSwiftPackageProductDependency;

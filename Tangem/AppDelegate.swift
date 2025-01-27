@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SomeTestLib
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -26,6 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = UIColor.textAccent
 
         servicesManager.initialize()
+        print(SomeEnum.default)
+
         return true
     }
 
