@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct FanStackCalculatorSettings {
     let cardsSize: CGSize

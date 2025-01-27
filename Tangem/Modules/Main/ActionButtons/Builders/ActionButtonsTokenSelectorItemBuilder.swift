@@ -15,10 +15,9 @@ struct ActionButtonsTokenSelectorItemBuilder: TokenSelectorItemBuilder {
             tokenIconInfo: tokenIconInfo,
             name: walletModel.tokenItem.name,
             symbol: walletModel.tokenItem.currencySymbol,
-            balance: walletModel.balance,
-            fiatBalance: walletModel.fiatBalance,
+            balance: walletModel.state.isLoading ? .loading() : .loaded(text: walletModel.balance),
+            fiatBalance: walletModel.state.isLoading ? .loading() : .loaded(text: walletModel.fiatBalance),
             isDisabled: isDisabled,
-            isLoading: walletModel.state.isLoading,
             walletModel: walletModel
         )
     }

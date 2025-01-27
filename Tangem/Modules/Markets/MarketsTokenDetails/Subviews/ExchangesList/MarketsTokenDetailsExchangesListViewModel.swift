@@ -46,8 +46,6 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
         self.onBackButtonAction = onBackButtonAction
 
         super.init(overlayContentProgressInitialValue: 1.0)
-
-        loadExchangesList()
     }
 
     func reloadExchangesList() {
@@ -62,7 +60,7 @@ class MarketsTokenDetailsExchangesListViewModel: MarketsBaseViewModel {
     }
 }
 
-private extension MarketsTokenDetailsExchangesListViewModel {
+extension MarketsTokenDetailsExchangesListViewModel {
     func loadExchangesList() {
         guard loadingCancellable == nil else {
             return
@@ -88,7 +86,9 @@ private extension MarketsTokenDetailsExchangesListViewModel {
             }
         }.eraseToAnyCancellable()
     }
+}
 
+private extension MarketsTokenDetailsExchangesListViewModel {
     @MainActor
     func handleLoadResult(_ result: Result<[MarketsTokenDetailsExchangeItemInfo], Error>) async {
         lastLoadAttemptDate = Date()

@@ -44,37 +44,19 @@ final class MultiWalletNotificationManager {
                 }
 
                 guard !unreachableNetworks.isEmpty else {
-                    self?.removeSomeNetworksUnreachable()
+                    self?.show(event: .none)
                     return
                 }
 
-                self?.setupSomeNetworksUnreachable(unreachableNetworks)
+                self?.show(event: .someNetworksUnreachable(
+                    currencySymbols: unreachableNetworks.map(\.tokenItem.currencySymbol)
+                ))
             }
     }
 
-    private func removeSomeNetworksUnreachable() {
-        notificationInputsSubject.value.removeAll {
-            guard let event = $0.settings.event as? TokenNotificationEvent else {
-                return false
-            }
-            switch event {
-            case .someNetworksUnreachable: return true
-            default: return false
-            }
-        }
-    }
-
-    private func setupSomeNetworksUnreachable(_ unreachableNetworks: [WalletModel]) {
-        let factory = NotificationsFactory()
-        notificationInputsSubject.send(
-            [
-                factory.buildNotificationInput(
-                    for: TokenNotificationEvent.someNetworksUnreachable(
-                        currencySymbols: unreachableNetworks.map(\.tokenItem.currencySymbol)
-                    )
-                ),
-            ]
-        )
+    private func show(event: MultiWalletNotificationEvent?) {
+        let input = event.map { NotificationsFactory().buildNotificationInput(for: $0) }
+        notificationInputsSubject.value = input.map { [$0] } ?? []
     }
 }
 

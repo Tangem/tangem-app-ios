@@ -161,6 +161,10 @@ extension CommonSendFeeInteractor: SendFeeInteractor {
             return
         }
 
+        if _fees.value.error != nil {
+            _fees.send(.loading)
+        }
+
         provider
             .getFee(amount: amount, destination: destination)
             .mapToResult()

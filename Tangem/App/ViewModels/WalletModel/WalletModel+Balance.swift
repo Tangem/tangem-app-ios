@@ -173,3 +173,36 @@ extension WalletModel {
         let crypto, fiat: String
     }
 }
+
+// MARK: - Rate
+
+extension WalletModel {
+    enum Rate: Hashable {
+        case custom
+        case loading(cached: TokenQuote?)
+        case failure(cached: TokenQuote?)
+        case loaded(TokenQuote)
+
+        var isLoading: Bool {
+            switch self {
+            case .loading: true
+            case .custom, .failure, .loaded: false
+            }
+        }
+
+        var cached: TokenQuote? {
+            switch self {
+            case .custom, .loaded: nil
+            case .loading(let cached), .failure(let cached): cached
+            }
+        }
+
+        var quote: TokenQuote? {
+            switch self {
+            case .custom: nil
+            case .loading(let cached), .failure(let cached): cached
+            case .loaded(let quote): quote
+            }
+        }
+    }
+}

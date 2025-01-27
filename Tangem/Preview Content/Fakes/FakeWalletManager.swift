@@ -33,7 +33,8 @@ class FakeWalletManager: WalletManager {
             config: Wallet2Config(
                 card: CardDTO(card: CardMock.wallet.card),
                 isDemo: false
-            )
+            ),
+            userWalletId: UserWalletId(value: Data())
         ).makeWalletModels(from: self)
 
         bind()

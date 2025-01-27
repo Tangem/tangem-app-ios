@@ -15,12 +15,11 @@ import TangemVisa
 protocol VisaOnboardingAlertPresenter: AnyObject {
     @MainActor
     func showAlert(_ alert: AlertBinder) async
+    @MainActor
+    func showContactSupportAlert(for error: Error) async
 }
 
-protocol VisaOnboardingRoutable: OnboardingRoutable {
-    func closeOnboarding()
-    func openMail(with dataCollector: EmailDataCollector, recipient: String, emailType: EmailType)
-}
+protocol VisaOnboardingRoutable: OnboardingRoutable, OnboardingBrowserRoutable {}
 
 class VisaOnboardingViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
@@ -55,8 +54,9 @@ class VisaOnboardingViewModel: ObservableObject {
     )
 
     lazy var accessCodeSetupViewModel = VisaOnboardingAccessCodeSetupViewModel(accessCodeValidator: visaActivationManager, delegate: self)
-    lazy var walletSelectorViewModel = VisaOnboardingApproveWalletSelectorViewModel(delegate: self)
+    lazy var walletSelectorViewModel = VisaOnboardingApproveWalletSelectorViewModel(remoteStateProvider: self, delegate: self)
     var tangemWalletApproveViewModel: VisaOnboardingTangemWalletDeployApproveViewModel?
+    var walletConnectViewModel: VisaOnboardingWalletConnectViewModel?
     lazy var inProgressViewModel: VisaOnboardingInProgressViewModel? = VisaOnboardingViewModelsBuilder().buildInProgressModel(
         activationRemoteState: visaActivationManager.activationRemoteState,
         delegate: self
@@ -133,6 +133,9 @@ class VisaOnboardingViewModel: ObservableObject {
 
             goToStep(.welcome)
         case .approveUsingTangemWallet:
+            goToStep(.selectWalletForApprove)
+        case .approveUsingWalletConnect:
+            walletConnectViewModel?.cancelStatusUpdates()
             goToStep(.selectWalletForApprove)
         case .success:
             break
@@ -212,7 +215,7 @@ private extension VisaOnboardingViewModel {
             }
         case .accessCode:
             goToStep(.selectWalletForApprove)
-        case .selectWalletForApprove, .approveUsingTangemWallet:
+        case .selectWalletForApprove, .approveUsingTangemWallet, .approveUsingWalletConnect:
             break
         case .issuerProcessingInProgress, .saveUserWallet, .pushNotifications:
             guard
@@ -269,7 +272,7 @@ extension VisaOnboardingViewModel: VisaOnboardingInProgressDelegate {
     }
 
     @MainActor
-    func proceedFromInProgress() async {
+    func proceedFromCurrentRemoteState() async {
         switch visaActivationManager.activationRemoteState {
         case .activated:
             goToNextStep()
@@ -293,6 +296,10 @@ extension VisaOnboardingViewModel: VisaOnboardingInProgressDelegate {
         case .waitingPinCode:
             goToStep(.pinSelection)
         }
+    }
+
+    func openBrowser(at url: URL, onSuccess: @escaping (URL) -> Void) {
+        coordinator?.openBrowser(at: url, onSuccess: onSuccess)
     }
 }
 
@@ -367,6 +374,28 @@ extension VisaOnboardingViewModel: VisaOnboardingAccessCodeSetupDelegate {
         self.alert = alert
     }
 
+    @MainActor
+    func showContactSupportAlert(for error: Error) async {
+        let alert = AlertBuilder.makeAlert(
+            title: Localization.commonError,
+            message: "Failed to during activation process. Error: \(error.localizedDescription)",
+            primaryButton: .default(
+                Text(Localization.detailsRowTitleContactToSupport),
+                action: { [weak self] in
+                    self?.openSupport()
+                }
+            ),
+            secondaryButton: .destructive(
+                Text("Cancel Activation"),
+                action: { [weak self] in
+                    self?.closeOnboarding()
+                }
+            )
+        )
+
+        await showAlert(alert)
+    }
+
     func useSelectedCode(accessCode: String) async throws {
         try visaActivationManager.saveAccessCode(accessCode: accessCode)
         let activationResponse = try await visaActivationManager.startActivation()
@@ -425,12 +454,18 @@ private extension VisaOnboardingViewModel {
     }
 }
 
-// MARK: - ApproveWalletSelectorDelegate
+// MARK: - ApproveWalletSelector protocols
+
+extension VisaOnboardingViewModel: VisaOnboardingRemoteStateProvider {
+    func loadCurrentRemoteState() async throws -> VisaCardActivationRemoteState {
+        try await visaActivationManager.refreshActivationRemoteState()
+    }
+}
 
 extension VisaOnboardingViewModel: VisaOnboardingApproveWalletSelectorDelegate {
     func useExternalWallet() {
-        // TODO: IOS-8574
-        alert = "TODO: IOS-8574".alertBinder
+        walletConnectViewModel = .init(delegate: self)
+        goToStep(.approveUsingWalletConnect)
     }
 
     func useTangemWallet() {
@@ -463,10 +498,12 @@ extension VisaOnboardingViewModel: VisaOnboardingTangemWalletApproveDataProvider
     }
 }
 
+// MARK: - PinSelectionDelegate
+
 extension VisaOnboardingViewModel: OnboardingPinSelectionDelegate {
     func useSelectedPin(pinCode: String) async throws {
         try await visaActivationManager.setPINCode(pinCode)
-        await proceedFromInProgress()
+        await proceedFromCurrentRemoteState()
     }
 }
 
@@ -513,7 +550,7 @@ private extension VisaOnboardingViewModel {
 
 // MARK: Development menu
 
-// TODO: Remove along side with Feature toggle
+// TODO: IOS-8843 Remove along side with Feature toggle
 
 extension VisaOnboardingViewModel: VisaMockMenuPresenter {
     func modalFromTop(_ vc: UIViewController) {

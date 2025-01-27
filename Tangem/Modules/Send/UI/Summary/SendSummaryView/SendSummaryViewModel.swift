@@ -38,6 +38,7 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
 
     @Published var showHint = false
     @Published var notificationInputs: [NotificationViewInput] = []
+    @Published var notificationButtonIsLoading = false
 
     @Published var transactionDescription: String?
     @Published var transactionDescriptionIsVisible: Bool = false
@@ -175,6 +176,12 @@ class SendSummaryViewModel: ObservableObject, Identifiable {
             .transactionDescription
             .receive(on: DispatchQueue.main)
             .assign(to: \.transactionDescription, on: self, ownership: .weak)
+            .store(in: &bag)
+
+        interactor
+            .isNotificationButtonIsLoading
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.notificationButtonIsLoading, on: self, ownership: .weak)
             .store(in: &bag)
 
         notificationManager

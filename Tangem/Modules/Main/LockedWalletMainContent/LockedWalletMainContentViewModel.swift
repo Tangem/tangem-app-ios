@@ -63,7 +63,7 @@ class LockedWalletMainContentViewModel: ObservableObject {
 
         contextData = userWalletModel.getAnalyticsContextData()
 
-        if FeatureProvider.isAvailable(.actionButtons), isMultiWallet {
+        if isMultiWallet {
             actionButtonsViewModel = makeActionButtonsViewModel()
         }
 

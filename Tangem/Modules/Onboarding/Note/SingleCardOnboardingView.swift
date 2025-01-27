@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct SingleCardOnboardingView: View {
     @ObservedObject var viewModel: SingleCardOnboardingViewModel
@@ -66,7 +67,7 @@ struct SingleCardOnboardingView: View {
                                 title: .init(font: .system(size: 17, weight: .semibold)),
                                 backgroundColor: .clear
                             ),
-                            leftItems: {
+                            leftButtons: {
                                 BackButton(
                                     height: viewModel.navbarSize.height,
                                     isVisible: viewModel.isBackButtonVisible,
@@ -76,7 +77,7 @@ struct SingleCardOnboardingView: View {
                                     viewModel.backButtonAction()
                                 }
                             },
-                            rightItems: {
+                            rightButtons: {
                                 SupportButton(
                                     height: viewModel.navbarSize.height,
                                     isVisible: viewModel.isSupportButtonVisible,
