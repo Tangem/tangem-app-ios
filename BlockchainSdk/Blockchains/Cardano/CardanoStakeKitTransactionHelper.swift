@@ -10,8 +10,6 @@ import Foundation
 import WalletCore
 import SwiftCBOR
 
-// import PotentCBOR
-
 struct CardanoStakeKitTransactionHelper {
     private let transactionBuilder: CardanoTransactionBuilder
 
@@ -95,8 +93,17 @@ struct CardanoTransactionBody {
         }
     }
 
-    struct Credential {
+    struct Credential: Hashable {
         let keyHash: Data
+    }
+
+    struct RewardAddress: Hashable {
+        let network: UInt8
+        let credential: Credential
+
+        init?(cbor: CBOR) {
+            nil
+        }
     }
 
     struct StakeDelegation {
@@ -132,19 +139,66 @@ struct CardanoTransactionBody {
             poolKeyHash = Data(poolKeyHashArray)
         }
     }
-    
+
     struct StakeDeregistrationLegacy {
+        let credential: Credential
+
         init?(cbor: CBOR) {
             guard case .array(let certInfo) = cbor,
                   certInfo.count == 2 /* cert_index, stake_credential */ else {
                 return nil
             }
+
+            guard case .array(let credentials) = certInfo[1],
+                  credentials.count == 2 else { // credential type, byte array
+                return nil
+            }
+
+            guard case .unsignedInt(let credentialType) = credentials[0],
+                  credentialType == 0 else { // 0 - key hash, 1 - script hash
+                return nil
+            }
+
+            guard case .byteString(let keyHashArray) = credentials[1],
+                  keyHashArray.count == 28 else { // 28 bytes ed key
+                return nil
+            }
+
+            credential = Credential(keyHash: Data(keyHashArray))
         }
     }
-    
-    struct StakeDeregistrationConway {
-        init?(cbor: CBOR) {
 
+    struct StakeDeregistrationConway {
+        let credential: Credential
+        let coin: UInt64
+
+        init?(cbor: CBOR) {
+            guard case .array(let certInfo) = cbor,
+                  certInfo.count == 2 /* cert_index, stake_credential, coin */ else {
+                return nil
+            }
+
+            guard case .array(let credentials) = certInfo[1],
+                  credentials.count == 2 else { // credential type, byte array
+                return nil
+            }
+
+            guard case .unsignedInt(let credentialType) = credentials[0],
+                  credentialType == 0 else { // 0 - key hash, 1 - script hash
+                return nil
+            }
+
+            guard case .byteString(let keyHashArray) = credentials[1],
+                  keyHashArray.count == 28 else { // 28 bytes ed key
+                return nil
+            }
+
+            guard case .unsignedInt(let coinAmount) = credentials[2] else {
+                return nil
+            }
+
+            credential = Credential(keyHash: Data(keyHashArray))
+            coin = coinAmount
         }
     }
 
@@ -210,7 +264,7 @@ struct CardanoTransactionBody {
     let totalCollateral: String?
     let updateProposal: String?
     let voters: [String: String]?
-    let withdrawals: String?
+    let withdrawals: [RewardAddress: UInt64]?
     let witnesses: [String]?
 }
 
@@ -228,6 +282,7 @@ private extension CardanoTransactionBody {
         var outputs: [Output]?
         var fee: Decimal?
         var certificates: [Certificate]?
+        var withdrawals: [RewardAddress: UInt64]?
 
         for (key, element) in map {
             guard case .unsignedInt(let uInt) = key else {
@@ -239,6 +294,7 @@ private extension CardanoTransactionBody {
             case 1: outputs = Self.parseOutputs(element)
             case 2: fee = Self.parseFee(element)
             case 4: certificates = Self.parseCerts(element)
+            case 5: withdrawals = Self.parseWithdrawals(element)
             default: continue
             }
         }
@@ -264,7 +320,7 @@ private extension CardanoTransactionBody {
             totalCollateral: nil,
             updateProposal: nil,
             voters: nil,
-            withdrawals: nil,
+            withdrawals: withdrawals,
             witnesses: nil
         )
     }
@@ -323,5 +379,13 @@ private extension CardanoTransactionBody {
                 return nil // not implemented
             }
         }
+    }
+
+    private static func parseWithdrawals(_ cbor: CBOR) -> [RewardAddress: UInt64]? {
+        guard case .tagged(let tag, let cbor) = cbor, tag.rawValue == 258, case .array(let certs) = cbor else {
+            return nil
+        }
+
+        return nil
     }
 }

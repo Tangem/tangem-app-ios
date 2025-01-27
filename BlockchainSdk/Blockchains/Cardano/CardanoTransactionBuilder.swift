@@ -253,11 +253,11 @@ private extension CardanoTransactionBuilder {
 
             for certificate in transaction.body.certificates {
                 switch certificate {
-                case .stakeDelegation(let stakeDelegation):
+                case .stakeRegistrationLegacy, .stakeRegistrationConway:
                     // Register staking key, 2 ADA desposit
                     $0.registerStakingKey.stakingAddress = stakingAddress
                     $0.registerStakingKey.depositAmount = 2000000
-                    
+                case .stakeDelegation(let stakeDelegation):
                     // Delegate
                     $0.delegate.depositAmount = 0
                     $0.delegate.stakingAddress = stakingAddress
@@ -265,7 +265,7 @@ private extension CardanoTransactionBuilder {
                 case .stakeDeregistrationLegacy, .stakeDeregistrationConway:
                     // Withdraw available amount
                     $0.withdraw.stakingAddress = stakingAddress
-                    $0.withdraw.withdrawAmount = 3468
+                    $0.withdraw.withdrawAmount = transaction.body.withdrawals.flatMap { $0.values.reduce(0, +) } ?? 0
                 default: continue
                 }
             }
