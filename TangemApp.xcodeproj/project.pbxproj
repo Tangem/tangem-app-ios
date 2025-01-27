@@ -591,6 +591,7 @@
 		B0A1BC152C296B6E00DECCFD /* MarketsTokenDetailsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1BC142C296B6E00DECCFD /* MarketsTokenDetailsCoordinator.swift */; };
 		B0A1BC172C296B7800DECCFD /* MarketsTokenDetailsCoordinatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1BC162C296B7800DECCFD /* MarketsTokenDetailsCoordinatorView.swift */; };
 		B0A1BC192C296B9F00DECCFD /* MarketsTokenDetailsRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1BC182C296B9F00DECCFD /* MarketsTokenDetailsRoutable.swift */; };
+		B0A1D1502D47C6D0006D7044 /* OnboardingUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A1D14F2D47C6D0006D7044 /* OnboardingUtils.swift */; };
 		B0A2B3E925D6B5BD0001EEB4 /* TokenBalanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A2B3E825D6B5BD0001EEB4 /* TokenBalanceViewModel.swift */; };
 		B0A359AA2CE6FCA10001499E /* VisaAccessTokenHandlerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A359A92CE6FCA10001499E /* VisaAccessTokenHandlerError.swift */; };
 		B0A359AC2CE6FD7B0001499E /* AuthorizationServiceBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A359AB2CE6FD7B0001499E /* AuthorizationServiceBuilder.swift */; };
@@ -3821,6 +3822,7 @@
 		B0A1BC142C296B6E00DECCFD /* MarketsTokenDetailsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsCoordinator.swift; sourceTree = "<group>"; };
 		B0A1BC162C296B7800DECCFD /* MarketsTokenDetailsCoordinatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsCoordinatorView.swift; sourceTree = "<group>"; };
 		B0A1BC182C296B9F00DECCFD /* MarketsTokenDetailsRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketsTokenDetailsRoutable.swift; sourceTree = "<group>"; };
+		B0A1D14F2D47C6D0006D7044 /* OnboardingUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUtils.swift; sourceTree = "<group>"; };
 		B0A2B3E825D6B5BD0001EEB4 /* TokenBalanceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBalanceViewModel.swift; sourceTree = "<group>"; };
 		B0A359A92CE6FCA10001499E /* VisaAccessTokenHandlerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaAccessTokenHandlerError.swift; sourceTree = "<group>"; };
 		B0A359AB2CE6FD7B0001499E /* AuthorizationServiceBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationServiceBuilder.swift; sourceTree = "<group>"; };
@@ -7863,6 +7865,7 @@
 				B0C4F77226F08CB50086D815 /* OnboardingCardFrameCalculator.swift */,
 				B0C4F77426F08CDE0086D815 /* OnboardingProgressStateIndicatable.swift */,
 				B6D274E72C38318900FEFCDC /* OnboardingLayoutConstants.swift */,
+				B0A1D14F2D47C6D0006D7044 /* OnboardingUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -18554,6 +18557,7 @@
 				0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */,
 				B008E13A29802157006E0E31 /* WebSocketError.swift in Sources */,
 				DC2AB6DE2C08CF8F0050796C /* WelcomeOnboardingStep.swift in Sources */,
+				B0A1D1502D47C6D0006D7044 /* OnboardingUtils.swift in Sources */,
 				B6654ACC2B5EB73200249008 /* CommonRateAppController.swift in Sources */,
 				5D51037127C5360E0025EA55 /* ABIType.swift in Sources */,
 				DCBC94512993FE9A0050BC35 /* Analytics+AnalyticsSystem.swift in Sources */,

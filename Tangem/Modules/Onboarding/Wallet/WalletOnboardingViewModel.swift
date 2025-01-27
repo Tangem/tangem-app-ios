@@ -822,7 +822,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             return
         }
 
-        AccessCodeSaveUtility().trySaveAccessCode(accessCode: accessCode, cardIds: cardIds)
+        AccessCodeSaveUtility().trySave(accessCode: accessCode, cardIds: cardIds)
     }
 
     private func previewGoToNextStepDelayed(_ delay: TimeInterval = 2) {

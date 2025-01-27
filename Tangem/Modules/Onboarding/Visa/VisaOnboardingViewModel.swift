@@ -307,27 +307,8 @@ extension VisaOnboardingViewModel: VisaOnboardingInProgressDelegate {
 
 extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
     func didAgreeToSaveUserWallets() {
-        BiometricsUtil.requestAccess(localizedReason: Localization.biometryTouchIdReason) { [weak self] result in
-            let biometryAccessGranted: Bool
-            switch result {
-            case .failure(let error):
-                if error.isUserCancelled {
-                    return
-                }
-
-                AppLog.shared.error(error)
-
-                biometryAccessGranted = false
-                self?.didAskToSaveUserWallets(agreed: false)
-            case .success:
-                biometryAccessGranted = true
-                self?.didAskToSaveUserWallets(agreed: true)
-            }
-
-            Analytics.log(.allowBiometricID, params: [
-                .state: Analytics.ParameterValue.toggleState(for: biometryAccessGranted),
-            ])
-
+        OnboardingUtils().requestBiometrics { [weak self] agreed in
+            self?.didAskToSaveUserWallets(agreed: agreed)
             self?.goToNextStep()
         }
     }
@@ -338,12 +319,7 @@ extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
     }
 
     func didAskToSaveUserWallets(agreed: Bool) {
-        AppSettings.shared.askedToSaveUserWallets = true
-
-        AppSettings.shared.saveUserWallets = agreed
-        AppSettings.shared.saveAccessCodes = agreed
-
-        Analytics.log(.onboardingEnableBiometric, params: [.state: Analytics.ParameterValue.toggleState(for: agreed)])
+        OnboardingUtils().processSaveUserWalletRequestResult(agreed: agreed)
         trySaveAccessCode()
     }
 
@@ -353,7 +329,7 @@ extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
         }
 
         let accessCode = accessCodeSetupViewModel.accessCode
-        AccessCodeSaveUtility().trySaveAccessCode(accessCode: accessCode, cardIds: [cardId])
+        AccessCodeSaveUtility().trySave(accessCode: accessCode, cardIds: [cardId])
     }
 }
 

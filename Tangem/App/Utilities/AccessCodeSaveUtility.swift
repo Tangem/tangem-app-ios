@@ -10,7 +10,7 @@ import Foundation
 import TangemSdk
 
 struct AccessCodeSaveUtility {
-    func trySaveAccessCode(accessCode: String, cardIds: [String]) {
+    func trySave(accessCode: String, cardIds: [String]) {
         guard AppSettings.shared.saveAccessCodes else {
             return
         }
