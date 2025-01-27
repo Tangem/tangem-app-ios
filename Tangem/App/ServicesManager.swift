@@ -50,11 +50,6 @@ class ServicesManager {
         MailZipFileManager.shared.cleanZipData()
     }
 
-    private var desc: String {
-        assertionFailure("12312451")
-        return "12312451"
-    }
-
     private func configureFirebase() {
         let plistName = "GoogleService-Info-\(AppEnvironment.current.rawValue.capitalizingFirstLetter())"
 

@@ -29,7 +29,7 @@ actor WebSocketConnection {
 
     func send(_ message: URLSessionWebSocketTask.Message) async throws {
         let webSocketTask = try await setupWebSocketTask()
-        log("Send: \(message)")
+        BlockchainSDKLogger.info(self, "Send: \(message)")
 
         // Send a message
         try await webSocketTask.send(message: message)
@@ -46,7 +46,7 @@ actor WebSocketConnection {
 
         // Get a message from the last response
         let response = try await webSocket.receive()
-        log("Receive: \(response)")
+        BlockchainSDKLogger.info(self, "Receive: \(response)")
 
         let data = try mapToData(from: response)
         return data
@@ -85,11 +85,11 @@ private extension WebSocketConnection {
 
         switch ping {
         case .message(_, let message):
-            log("Send ping: \(message)")
+            BlockchainSDKLogger.info(self, "Send ping: \(message)")
             try await webSocket.send(message: message)
 
         case .plain:
-            log("Send plain ping")
+            BlockchainSDKLogger.info(self, "Send plain ping")
             try await webSocket.sendPing()
         }
 
@@ -99,16 +99,16 @@ private extension WebSocketConnection {
     func setupWebSocketTask() async throws -> URLSessionWebSocketTaskWrapper {
         if let _sessionWebSocketTask {
             let socket = try await _sessionWebSocketTask.value
-            log("Return existed \(socket)")
+            BlockchainSDKLogger.info(self, "Return existed \(socket)")
             return socket
         }
 
         let connectingTask = Task {
             let socket = URLSessionWebSocketTaskWrapper(url: url)
 
-            log("\(socket) start connect")
+            BlockchainSDKLogger.info(self, "\(socket) start connect")
             try await socket.connect()
-            log("\(socket) did open")
+            BlockchainSDKLogger.info(self, "\(socket) did open")
 
             return socket
         }
@@ -139,10 +139,6 @@ private extension WebSocketConnection {
         timeoutTask?.cancel()
         _sessionWebSocketTask?.cancel()
         _sessionWebSocketTask = nil
-    }
-
-    nonisolated func log(_ args: Any) {
-        print("\(self) [\(args)]")
     }
 }
 

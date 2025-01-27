@@ -48,7 +48,7 @@ struct VisaApprovePairSearchUtility {
                     tangemSdk: config.makeTangemSdk()
                 )
             } catch {
-                print("Failed to find wallet. Error: \(error)")
+                AppLog.error("Failed to find wallet", error: error)
             }
         }
 

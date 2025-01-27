@@ -2718,6 +2718,7 @@
 		EF6CCBED2C91D7DF0002D2B4 /* StakingSendAlertBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6CCBEC2C91D7DE0002D2B4 /* StakingSendAlertBuilder.swift */; };
 		EF6ECA5C2D48215600415F23 /* StakingLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6ECA5B2D48215500415F23 /* StakingLogger.swift */; };
 		EF6ECA602D4821CB00415F23 /* ExpressLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6ECA5F2D4821C500415F23 /* ExpressLogger.swift */; };
+		EF6ECA622D482F3D00415F23 /* BlockchainSDKLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6ECA612D482F3500415F23 /* BlockchainSDKLogger.swift */; };
 		EF6EDD7E296C0D40001B21A3 /* CommonIncomingActionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6EDD7C296C0D40001B21A3 /* CommonIncomingActionManager.swift */; };
 		EF6EDD7F296C0D40001B21A3 /* IncomingActionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6EDD7D296C0D40001B21A3 /* IncomingActionManager.swift */; };
 		EF6EDD81296C0D61001B21A3 /* OrderedWeakObjectsCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6EDD80296C0D61001B21A3 /* OrderedWeakObjectsCollection.swift */; };
@@ -5957,6 +5958,7 @@
 		EF6CCBEC2C91D7DE0002D2B4 /* StakingSendAlertBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSendAlertBuilder.swift; sourceTree = "<group>"; };
 		EF6ECA5B2D48215500415F23 /* StakingLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingLogger.swift; sourceTree = "<group>"; };
 		EF6ECA5F2D4821C500415F23 /* ExpressLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressLogger.swift; sourceTree = "<group>"; };
+		EF6ECA612D482F3500415F23 /* BlockchainSDKLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainSDKLogger.swift; sourceTree = "<group>"; };
 		EF6EDD7C296C0D40001B21A3 /* CommonIncomingActionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonIncomingActionManager.swift; sourceTree = "<group>"; };
 		EF6EDD7D296C0D40001B21A3 /* IncomingActionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncomingActionManager.swift; sourceTree = "<group>"; };
 		EF6EDD80296C0D61001B21A3 /* OrderedWeakObjectsCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedWeakObjectsCollection.swift; sourceTree = "<group>"; };
@@ -12213,6 +12215,7 @@
 		B68E1F662CBC44060043E598 /* BlockchainSdk */ = {
 			isa = PBXGroup;
 			children = (
+				EF6ECA612D482F3500415F23 /* BlockchainSDKLogger.swift */,
 				B64A681F2CBD4B660048ABD0 /* Resources */,
 				B62D3EA92CBC79D900C2460E /* Blockchains */,
 				B62D3F742CBC79D900C2460E /* Common */,
@@ -19830,6 +19833,7 @@
 				B62D40192CBC79DA00C2460E /* OP_NIP.swift in Sources */,
 				B62D419C2CBC79DA00C2460E /* StellarWalletManager.swift in Sources */,
 				B62D422E2CBC79DB00C2460E /* BlockBookUTXOProvider.swift in Sources */,
+				EF6ECA622D482F3D00415F23 /* BlockchainSDKLogger.swift in Sources */,
 				B62D41EF2CBC79DB00C2460E /* VeChainNetworkResult.AccountInfo.swift in Sources */,
 				B62D41832CBC79DA00C2460E /* RavencoinWalletAssembly.swift in Sources */,
 				B62D404D2CBC79DA00C2460E /* CardanoNetworkService.swift in Sources */,

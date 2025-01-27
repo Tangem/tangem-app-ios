@@ -80,7 +80,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     }
 
     deinit {
-        print("TokenDetailsViewModel deinit")
+        AppLog.debug("TokenDetailsViewModel deinit")
     }
 
     func onAppear() {

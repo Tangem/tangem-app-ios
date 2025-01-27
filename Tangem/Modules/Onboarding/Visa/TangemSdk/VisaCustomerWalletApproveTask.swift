@@ -27,7 +27,7 @@ class VisaCustomerWalletApproveTask: CardSessionRunnable {
     }
 
     deinit {
-        print("Deinit VisaCustomerWalletApproveTask")
+        AppLog.debug("Deinit VisaCustomerWalletApproveTask")
     }
 
     func run(in session: CardSession, completion: @escaping TaskResult) {
