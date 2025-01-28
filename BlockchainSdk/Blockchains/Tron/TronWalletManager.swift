@@ -9,7 +9,6 @@
 import Foundation
 import Combine
 import TangemSdk
-import TangemFoundation
 
 class TronWalletManager: BaseManager, WalletManager {
     var networkService: TronNetworkService!
@@ -221,7 +220,7 @@ class TronWalletManager: BaseManager, WalletManager {
 
             return unmarshalledSignature
         } catch {
-            Log.error(error)
+            BlockchainSDKLogger.error(error: error)
             return Data()
         }
     }

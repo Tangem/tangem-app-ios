@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TangemSdk
 import SolanaSwift
 
 struct SolanaApiLoggerUtil: NetworkingRouterSwitchApiLogger {
@@ -16,6 +15,6 @@ struct SolanaApiLoggerUtil: NetworkingRouterSwitchApiLogger {
     }
 
     func handle(error message: String) {
-        Log.error(message)
+        BlockchainSDKLogger.error(error: message)
     }
 }

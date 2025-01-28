@@ -64,8 +64,7 @@ final class SimpleAccountCreator: AccountCreator {
                         throw WalletError.failedToParseNetworkResponse()
                     }
 
-                    Log.debug("\(#fileID): got network response with code \(response.statusCode): \(data.utf8String ?? "")")
-
+                    BlockchainSDKLogger.info("Got network response with code \(response.statusCode): \(data.utf8String ?? "")")
                     return try JSONDecoder().decode(CreateAccountResult.self, from: data)
                 }
                 .tryMap { createAccount in

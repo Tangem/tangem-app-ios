@@ -65,7 +65,7 @@ class BitcoinTransactionBuilder {
             )
             return hashes
         } catch {
-            Log.error(error)
+            BlockchainSDKLogger.error(error: error)
             return nil
         }
     }
@@ -87,7 +87,7 @@ class BitcoinTransactionBuilder {
                 sequence: sequence
             )
         } catch {
-            Log.error(error)
+            BlockchainSDKLogger.error(error: error)
             return nil
         }
     }

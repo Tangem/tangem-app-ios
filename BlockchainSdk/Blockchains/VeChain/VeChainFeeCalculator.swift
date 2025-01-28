@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TangemSdk
 
 struct VeChainFeeCalculator {
     private let isTestnet: Bool
@@ -76,7 +75,7 @@ struct VeChainFeeCalculator {
         default:
             let message = "VeChainFeeCalculator: unknown 'gasPriceCoefficient' value '\(gasPriceCoefficient)' received"
             assertionFailure(message)
-            Log.error(message)
+            BlockchainSDKLogger.error(error: message)
             return nil
         }
     }

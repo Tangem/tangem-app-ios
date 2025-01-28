@@ -8,7 +8,6 @@
 
 import Foundation
 import Hedera
-import TangemSdk
 
 final class HederaAddressService: AddressService {
     private let isTestnet: Bool
@@ -20,7 +19,7 @@ final class HederaAddressService: AddressService {
     }
 
     func makeAddress(for publicKey: Wallet.PublicKey, with addressType: AddressType) throws -> Address {
-        Log.warning(
+        BlockchainSDKLogger.warning(
             """
             Address for the Hedera blockchain (Testnet: \(isTestnet)) is requested but can't be provided. \
             Obtain actual address using `Wallet.address`

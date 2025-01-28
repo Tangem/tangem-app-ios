@@ -8,7 +8,6 @@
 
 import Foundation
 import Combine
-import TangemSdk
 import struct Hedera.AccountId
 
 final class HederaWalletManager: BaseManager {
@@ -220,7 +219,7 @@ final class HederaWalletManager: BaseManager {
         let maskedPublicKey = maskedPublicKey
 
         if let accountId = wallet.address.nilIfEmpty {
-            Log.debug("\(#fileID): Hedera account ID for public key \(maskedPublicKey) obtained from the Wallet")
+            BlockchainSDKLogger.error(error: "Hedera account ID for public key \(maskedPublicKey) obtained from the Wallet")
             return Just.justWithError(output: accountId)
         }
 
@@ -228,7 +227,7 @@ final class HederaWalletManager: BaseManager {
             .withWeakCaptureOf(self)
             .handleEvents(receiveOutput: { walletManager, accountId in
                 walletManager.updateWalletAddress(accountId: accountId)
-                Log.debug("\(#fileID): Hedera account ID for public key \(maskedPublicKey) saved to the Wallet")
+                BlockchainSDKLogger.info("Hedera account ID for public key \(maskedPublicKey) saved to the Wallet")
             })
             .map(\.1)
             .eraseToAnyPublisher()
@@ -261,7 +260,7 @@ final class HederaWalletManager: BaseManager {
                 // is always fetched using `nilIfEmpty` helper
                 await walletManager.dataStorage.store(key: accountIdStorageKey, value: "")
                 await walletManager.dataStorage.store(key: resetVersionStorageKey, value: Constants.accountIdResetVersion)
-                Log.debug("\(#fileID): Hedera account ID for public key \(maskedPublicKey) was reset")
+                BlockchainSDKLogger.info("Hedera account ID for public key \(maskedPublicKey) was reset")
             }
             .mapToVoid()
             .replaceEmpty(with: ()) // Continue the reactive stream normally even if the `.filter` statement above returns false
@@ -280,7 +279,7 @@ final class HederaWalletManager: BaseManager {
             .withWeakCaptureOf(self)
             .flatMap { walletManager, accountId in
                 if let accountId = accountId?.nilIfEmpty {
-                    Log.debug("\(#fileID): Hedera account ID for public key \(maskedPublicKey) obtained from the data storage")
+                    BlockchainSDKLogger.error(error: "Hedera account ID for public key \(maskedPublicKey) obtained from the data storage")
                     return Just.justWithError(output: accountId)
                 }
 
@@ -289,7 +288,7 @@ final class HederaWalletManager: BaseManager {
                     .withWeakCaptureOf(walletManager)
                     .asyncMap { walletManager, accountId in
                         await walletManager.dataStorage.store(key: storageKey, value: accountId)
-                        Log.debug("\(#fileID): Hedera account ID for public key \(maskedPublicKey) saved to the data storage")
+                        BlockchainSDKLogger.error(error: "Hedera account ID for public key \(maskedPublicKey) saved to the data storage")
                         return accountId
                     }
                     .eraseToAnyPublisher()
@@ -307,12 +306,12 @@ final class HederaWalletManager: BaseManager {
             .map(\.accountId)
             .handleEvents(
                 receiveOutput: { _ in
-                    Log.debug("\(#fileID): Hedera account ID for public key \(maskedPublicKey) obtained from the mirror node")
+                    BlockchainSDKLogger.info("Hedera account ID for public key \(maskedPublicKey) obtained from the mirror node")
                 },
                 receiveFailure: { error in
-                    Log.error(
+                    BlockchainSDKLogger.error(error:
                         """
-                        \(#fileID): Failed to obtain Hedera account ID for public key \(maskedPublicKey) \
+                        Failed to obtain Hedera account ID for public key \(maskedPublicKey) \
                         from the mirror node due to error: \(error.localizedDescription)
                         """
                     )
@@ -348,12 +347,12 @@ final class HederaWalletManager: BaseManager {
             }
             .handleEvents(
                 receiveOutput: { _ in
-                    Log.debug("\(#fileID): Hedera account ID for public key \(maskedPublicKey) obtained by creating account")
+                    BlockchainSDKLogger.info("Hedera account ID for public key \(maskedPublicKey) obtained by creating account")
                 },
                 receiveFailure: { error in
-                    Log.error(
+                    BlockchainSDKLogger.error(error:
                         """
-                        \(#fileID): Failed to obtain Hedera account ID for public key \(maskedPublicKey) \
+                        Failed to obtain Hedera account ID for public key \(maskedPublicKey) \
                         by creating account due to error: \(error.localizedDescription)
                         """
                     )

@@ -129,7 +129,7 @@ class EthereumTransactionBuilder {
         let preSigningOutput = try TxCompilerPreSigningOutput(serializedData: preImageHashes)
 
         if preSigningOutput.error != .ok {
-            Log.debug("EthereumPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
+            BlockchainSDKLogger.error("EthereumPreSigningOutput has a error", error: preSigningOutput.errorMessage)
             throw EthereumTransactionBuilderError.walletCoreError(message: preSigningOutput.errorMessage)
         }
 
@@ -175,7 +175,7 @@ class EthereumTransactionBuilder {
         let output = try EthereumSigningOutput(serializedData: compileWithSignatures)
 
         if output.error != .ok {
-            Log.debug("EthereumSigningOutput has a error: \(output.errorMessage)")
+            BlockchainSDKLogger.error("EthereumSigningOutput has a error", error: output.errorMessage)
             throw EthereumTransactionBuilderError.walletCoreError(message: output.errorMessage)
         }
 

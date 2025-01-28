@@ -11,8 +11,6 @@ import CryptoKit
 import WalletCore
 import TonSwift
 import BigInt
-import TangemFoundation
-import TangemSdk
 
 /// Transaction builder for TON wallet
 final class TONTransactionBuilder {
@@ -53,7 +51,7 @@ final class TONTransactionBuilder {
         let preSigningOutput = try TxCompilerPreSigningOutput(serializedData: preImageHashes)
 
         guard preSigningOutput.error == .ok, !preSigningOutput.data.isEmpty else {
-            Log.debug("TONPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
+            BlockchainSDKLogger.error(error: "TONPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
             throw NSError()
         }
 
@@ -82,7 +80,7 @@ final class TONTransactionBuilder {
         let signingOutput = try TheOpenNetworkSigningOutput(serializedData: compiledTransaction)
 
         guard signingOutput.error == .ok, !signingOutput.encoded.isEmpty else {
-            Log.debug("TONSigningOutput has a error: \(signingOutput.errorMessage)")
+            BlockchainSDKLogger.error(error: "TONSigningOutput has a error: \(signingOutput.errorMessage)")
             throw WalletError.failedToBuildTx
         }
 
@@ -116,7 +114,7 @@ final class TONTransactionBuilder {
             )
         case .token(let token):
             guard let jettonWalletAddress else {
-                Log.error("Wallet address must be set for jetton trasaction")
+                BlockchainSDKLogger.error(error: "Wallet address must be set for jetton trasaction")
                 throw WalletError.failedToBuildTx
             }
 

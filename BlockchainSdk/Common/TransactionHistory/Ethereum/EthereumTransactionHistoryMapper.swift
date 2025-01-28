@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TangemSdk
 
 final class EthereumTransactionHistoryMapper {
     private let blockchain: Blockchain
@@ -37,7 +36,7 @@ extension EthereumTransactionHistoryMapper: TransactionHistoryMapper {
         return try transactions
             .reduce(into: []) { partialResult, transaction in
                 guard let feeValue = Decimal(stringValue: transaction.fees) else {
-                    Log.log("Transaction \(transaction) doesn't contain a required information")
+                    BlockchainSDKLogger.error(error: "Transaction \(transaction) doesn't contain a required information")
                     return
                 }
 
@@ -111,24 +110,24 @@ private extension EthereumTransactionHistoryMapper {
         walletAddress: String
     ) -> TransactionInfo? {
         guard let vin = transaction.compat.vin.first, let sourceAddress = vin.addresses.first else {
-            Log.log("Source information in transaction \(transaction) not found")
+            BlockchainSDKLogger.error(error: "Source information in transaction \(transaction) not found")
             return nil
         }
 
         guard let vout = transaction.compat.vout.first, let destinationAddress = vout.addresses.first else {
-            Log.log("Destination information in transaction \(transaction) not found")
+            BlockchainSDKLogger.error(error: "Destination information in transaction \(transaction) not found")
             return nil
         }
 
         guard
             sourceAddress.caseInsensitiveEquals(to: walletAddress) || destinationAddress.caseInsensitiveEquals(to: walletAddress)
         else {
-            Log.log("Unrelated transaction \(transaction) received")
+            BlockchainSDKLogger.error(error: "Unrelated transaction \(transaction) received")
             return nil
         }
 
         guard let transactionValue = Decimal(stringValue: transaction.value) else {
-            Log.log("Transaction with invalid value \(transaction) received")
+            BlockchainSDKLogger.error(error: "Transaction with invalid value \(transaction) received")
             return nil
         }
 
@@ -196,7 +195,7 @@ private extension EthereumTransactionHistoryMapper {
 
             partialResult += transfers.compactMap { transfer in
                 guard let value = Decimal(stringValue: transfer.value) else {
-                    Log.log("Token transfer \(transfer) with invalid value received")
+                    BlockchainSDKLogger.error(error: "Token transfer \(transfer) with invalid value received")
                     return nil
                 }
 

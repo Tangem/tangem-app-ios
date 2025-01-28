@@ -98,8 +98,6 @@ class BlockchainSdkExampleViewModel: ObservableObject {
     init() {
         var config = Config()
         config.logConfig = .verbose
-        // initialize at start to handle all logs
-        Log.config = config.logConfig
         config.attestationMode = .offline
 
         sdk = TangemSdk(config: config)
@@ -122,7 +120,7 @@ class BlockchainSdkExampleViewModel: ObservableObject {
             do {
                 cardWallets = try JSONDecoder().decode([Card.Wallet].self, from: walletsData)
             } catch {
-                Log.error(error)
+                BlockchainSDKLogger.error(error: error)
             }
         }
 
@@ -149,7 +147,7 @@ class BlockchainSdkExampleViewModel: ObservableObject {
         sdk.scanCard { [weak self] result in
             switch result {
             case .failure(let error):
-                Log.error(error)
+                BlockchainSDKLogger.error(error: error)
             case .success(let card):
                 self?.card = card
             }
@@ -199,7 +197,7 @@ class BlockchainSdkExampleViewModel: ObservableObject {
                 guard let self else { return }
                 switch $0 {
                 case .failure(let error):
-                    Log.error(error)
+                    BlockchainSDKLogger.error(error: error)
                     feeDescriptions = [error.localizedDescription]
                 case .finished:
                     break
@@ -239,7 +237,7 @@ class BlockchainSdkExampleViewModel: ObservableObject {
                     return walletManager
                         .send(transaction, signer: signer)
                         .mapError {
-                            Log.error("sendTxError = \($0.localizedDescription)")
+                            BlockchainSDKLogger.error(error: "sendTxError = \($0.localizedDescription)")
                             return $0.error
                         }
                         .eraseToAnyPublisher()
@@ -252,7 +250,7 @@ class BlockchainSdkExampleViewModel: ObservableObject {
             .sink { [weak self] in
                 switch $0 {
                 case .failure(let error):
-                    Log.error(error)
+                    BlockchainSDKLogger.error(error: error)
                     self?.transactionResult = error.localizedDescription
                 case .finished:
                     self?.transactionResult = "OK"
@@ -357,7 +355,7 @@ class BlockchainSdkExampleViewModel: ObservableObject {
                     let encodeCardWalletData = try JSONEncoder().encode(card.wallets)
                     UserDefaults.standard.set(encodeCardWalletData, forKey: walletsKey)
                 } catch {
-                    Log.error(error)
+                    BlockchainSDKLogger.error(error: error)
                 }
 
                 cardWallets = card.wallets
@@ -390,7 +388,7 @@ class BlockchainSdkExampleViewModel: ObservableObject {
 
             blockchain = newBlockchain
         } catch {
-            Log.error(error)
+            BlockchainSDKLogger.error(error: error)
         }
     }
 
@@ -427,7 +425,7 @@ class BlockchainSdkExampleViewModel: ObservableObject {
             }
             updateBalance()
         } catch {
-            Log.error(error)
+            BlockchainSDKLogger.error(error: error)
         }
     }
 
@@ -438,7 +436,7 @@ class BlockchainSdkExampleViewModel: ObservableObject {
             .sink { [weak self] state in
                 switch state {
                 case .failed(let error):
-                    Log.error(error)
+                    BlockchainSDKLogger.error(error: error)
                     self?.balance = error.localizedDescription
                 case .initial, .loaded, .loading:
                     var balances: [String] = []

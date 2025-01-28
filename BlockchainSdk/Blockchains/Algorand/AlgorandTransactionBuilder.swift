@@ -44,7 +44,7 @@ final class AlgorandTransactionBuilder {
         let preSigningOutput = try TxCompilerPreSigningOutput(serializedData: preImageHashes)
 
         guard preSigningOutput.error == .ok, !preSigningOutput.data.isEmpty else {
-            Log.debug("AlgorandPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
+            BlockchainSDKLogger.error("AlgorandPreSigningOutput has a error", error: preSigningOutput.errorMessage)
             throw WalletError.failedToBuildTx
         }
 
@@ -69,7 +69,7 @@ final class AlgorandTransactionBuilder {
         let signingOutput = try AlgorandSigningOutput(serializedData: compiledTransaction)
 
         guard signingOutput.error == .ok, !signingOutput.encoded.isEmpty else {
-            Log.debug("AlgorandSigningOutput has a error: \(signingOutput.errorMessage)")
+            BlockchainSDKLogger.error("AlgorandSigningOutput has a error", error: signingOutput.errorMessage)
             throw WalletError.failedToBuildTx
         }
 

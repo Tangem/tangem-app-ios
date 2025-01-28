@@ -956,7 +956,7 @@ public extension Blockchain {
 public extension Blockchain {
     func derivationPath(for style: DerivationStyle) -> DerivationPath? {
         guard curve.supportsDerivation else {
-            Log.debug("Wrong attempt to get a `DerivationPath` for a unsupported derivation curve")
+            BlockchainSDKLogger.error(error: "Wrong attempt to get a `DerivationPath` for a unsupported derivation curve")
             return nil
         }
 

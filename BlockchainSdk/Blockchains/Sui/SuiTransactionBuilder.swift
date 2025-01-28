@@ -8,8 +8,6 @@
 
 import Foundation
 import WalletCore
-import TangemSdk
-import TangemFoundation
 
 class SuiTransactionBuilder {
     private let walletAddress: String
@@ -66,7 +64,7 @@ class SuiTransactionBuilder {
         let preSigningOutput = try TxCompilerPreSigningOutput(serializedData: preImageHashes)
 
         guard preSigningOutput.error == .ok else {
-            Log.debug("SuiPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
+            BlockchainSDKLogger.error(error: "SuiPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
             throw WalletError.failedToBuildTx
         }
 

@@ -8,7 +8,6 @@
 
 import Foundation
 import BlockchainSdk
-import class TangemSdk.Log
 
 struct UserDefaultsBlockchainDataStorage {
     private let suiteName: String?
@@ -29,7 +28,7 @@ extension UserDefaultsBlockchainDataStorage: BlockchainDataStorage {
             }
 
             guard let value = try? JSONDecoder().decode(BlockchainData.self, from: data) else {
-                Log.warning("\(#fileID): Unable to deserialize stored value for key '\(key)'")
+                AppLog.warning("Unable to deserialize stored value for key '\(key)'")
                 return nil
             }
 
@@ -46,7 +45,7 @@ extension UserDefaultsBlockchainDataStorage: BlockchainDataStorage {
             }
 
             guard let data = try? JSONEncoder().encode(value) else {
-                Log.warning("\(#fileID): Unable to serialize given value of type '\(BlockchainData.self)' for key '\(key)'")
+                AppLog.warning("Unable to serialize given value of type '\(BlockchainData.self)' for key '\(key)'")
                 return
             }
 

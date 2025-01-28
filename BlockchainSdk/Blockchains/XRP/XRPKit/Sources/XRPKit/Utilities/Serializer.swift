@@ -8,7 +8,6 @@
 //
 
 import Foundation
-import TangemSdk
 
 private struct Definitions {
     var TYPES: [String: Int]
@@ -77,7 +76,7 @@ class Serializer {
                 definitions = Definitions(dict: jsonResult)
             }
         } catch {
-            Log.error(error)
+            BlockchainSDKLogger.error(error: error)
         }
     }
 

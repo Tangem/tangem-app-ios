@@ -10,8 +10,6 @@ import Foundation
 import Moya
 import Combine
 import BitcoinCore
-import TangemSdk
-import TangemFoundation
 
 class BlockcypherNetworkProvider: BitcoinNetworkProvider {
     var supportsTransactionPush: Bool { false }
@@ -64,7 +62,7 @@ class BlockcypherNetworkProvider: BitcoinNetworkProvider {
                 }
 
                 if uncBalance / endpoint.blockchain.decimalValue != pendingTxRefs.reduce(0, { $0 + $1.value }) {
-                    Log.debug("Unconfirmed balance and pending tx refs sum is not equal")
+                    BlockchainSDKLogger.error(error: "Unconfirmed balance and pending tx refs sum is not equal")
                 }
                 let btcResponse = BitcoinResponse(balance: satoshiBalance, hasUnconfirmed: !pendingTxRefs.isEmpty, pendingTxRefs: pendingTxRefs, unspentOutputs: utxo)
                 return btcResponse

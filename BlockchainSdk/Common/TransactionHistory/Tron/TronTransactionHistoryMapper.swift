@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TangemSdk
 
 final class TronTransactionHistoryMapper {
     private let blockchain: Blockchain
@@ -54,12 +53,12 @@ final class TronTransactionHistoryMapper {
         guard
             sourceAddress.caseInsensitiveEquals(to: walletAddress) || destinationAddress.caseInsensitiveEquals(to: walletAddress)
         else {
-            Log.log("Unrelated transaction \(transaction) received")
+            BlockchainSDKLogger.error(error: "Unrelated transaction \(transaction) received")
             return nil
         }
 
         guard let transactionValue = Decimal(string: transaction.value) else {
-            Log.log("Transaction with invalid value \(transaction) received")
+            BlockchainSDKLogger.error(error: "Transaction with invalid value \(transaction) received")
             return nil
         }
 
@@ -118,7 +117,7 @@ final class TronTransactionHistoryMapper {
                     let rawValue = transfer.value,
                     let value = Decimal(string: rawValue)
                 else {
-                    Log.log("Token transfer \(transfer) with invalid value received")
+                    BlockchainSDKLogger.error(error: "Token transfer \(transfer) with invalid value received")
                     return nil
                 }
 
@@ -261,7 +260,7 @@ extension TronTransactionHistoryMapper: TransactionHistoryMapper {
                     let destinationAddress = transaction.toAddress,
                     let fees = Decimal(stringValue: transaction.fees)
                 else {
-                    Log.log("Transaction \(transaction) doesn't contain a required information")
+                    BlockchainSDKLogger.error(error: "Transaction \(transaction) doesn't contain a required information")
                     return
                 }
 

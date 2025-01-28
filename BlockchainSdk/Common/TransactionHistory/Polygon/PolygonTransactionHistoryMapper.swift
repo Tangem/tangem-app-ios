@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TangemSdk
 
 final class PolygonTransactionHistoryMapper {
     private let blockchain: Blockchain
@@ -41,7 +40,7 @@ final class PolygonTransactionHistoryMapper {
             let gasUsed = Decimal(stringValue: transaction.gasUsed),
             let gasPrice = Decimal(stringValue: transaction.gasPrice)
         else {
-            Log.log("Transaction with missed/invalid fee \(transaction) received")
+            BlockchainSDKLogger.error(error: "Transaction with missed/invalid fee \(transaction) received")
             return Fee(.zeroCoin(for: blockchain))
         }
 
@@ -138,12 +137,12 @@ extension PolygonTransactionHistoryMapper: TransactionHistoryMapper {
             let destinationAddress = transaction.to
 
             guard sourceAddress.caseInsensitiveEquals(to: walletAddress) || destinationAddress.caseInsensitiveEquals(to: walletAddress) else {
-                Log.log("Unrelated transaction \(transaction) received")
+                BlockchainSDKLogger.error(error: "Unrelated transaction \(transaction) received")
                 return nil
             }
 
             guard let transactionAmount = mapAmount(from: transaction, amountType: amountType) else {
-                Log.log("Transaction with invalid value \(transaction) received")
+                BlockchainSDKLogger.error(error: "Transaction with invalid value \(transaction) received")
                 return nil
             }
 
@@ -164,7 +163,7 @@ extension PolygonTransactionHistoryMapper: TransactionHistoryMapper {
             )
 
             guard let timeStamp = TimeInterval(transaction.timeStamp) else {
-                Log.log("Transaction with invalid timeStamp \(transaction) received")
+                BlockchainSDKLogger.error(error: "Transaction with invalid timeStamp \(transaction) received")
                 return nil
             }
 

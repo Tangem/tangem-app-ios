@@ -8,8 +8,6 @@
 
 import Foundation
 import BigInt
-import TangemFoundation
-import TangemSdk
 
 public enum EthereumUtils {
     public static func parseEthereumDecimal(_ string: String, decimalsCount: Int) -> Decimal? {
@@ -18,7 +16,7 @@ public enum EthereumUtils {
         }
 
         guard decimalsCount <= Int(Int16.max) else {
-            Log.debug("\(#fileID): Unable to parse Ethereum decimal value from string '\(string)'; Can't represent the value of \(decimalsCount) as Int16")
+            BlockchainSDKLogger.error(error: "Unable to parse Ethereum decimal value from string '\(string)'; Can't represent the value of \(decimalsCount) as Int16")
             return nil
         }
 

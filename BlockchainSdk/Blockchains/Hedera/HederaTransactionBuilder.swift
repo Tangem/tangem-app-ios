@@ -113,13 +113,13 @@ final class HederaTransactionBuilder {
     private func makeTransactionId(accountId: Hedera.AccountId, validStartDate: UnixTimestamp) throws -> Hedera.TransactionId {
         let (validStartDateNSec, multiplicationOverflow) = UInt64(validStartDate.seconds).multipliedReportingOverflow(by: NSEC_PER_SEC)
         if multiplicationOverflow {
-            Log.debug("\(#fileID): Unable to create tx id due to multiplication overflow of '\(validStartDate)'")
+            BlockchainSDKLogger.error(error: "Unable to create tx id due to multiplication overflow of '\(validStartDate)'")
             throw WalletError.failedToBuildTx
         }
 
         let (unixTimestampNSec, addingOverflow) = validStartDateNSec.addingReportingOverflow(UInt64(validStartDate.nanoseconds))
         if addingOverflow {
-            Log.debug("\(#fileID): Unable to create tx id due to adding overflow of '\(validStartDate)'")
+            BlockchainSDKLogger.error(error: "Unable to create tx id due to adding overflow of '\(validStartDate)'")
             throw WalletError.failedToBuildTx
         }
 
@@ -157,7 +157,7 @@ final class HederaTransactionBuilder {
         let nodeAccountIds = transaction.nodeAccountIds?.toSet() ?? []
         let transactionId = transaction.transactionId?.toString() ?? "unknown"
         let networkNodes = client.network.filter { nodeAccountIds.contains($0.value) }
-        Log.debug("\(#fileID): Constructed tx '\(transactionId)' with the following network nodes: \(networkNodes)")
+        BlockchainSDKLogger.info("Constructed tx '\(transactionId)' with the following network nodes: \(networkNodes)")
     }
 }
 

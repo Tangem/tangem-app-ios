@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import TangemSdk
 
 public protocol StakeKitTransactionSender {
     /// Return stream with tx which was sent one by one
@@ -100,7 +99,7 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                     continuation.finish()
 
                 } catch {
-                    Log.log("\(self) catch \(error) when sent staking transaction")
+                    BlockchainSDKLogger.error("Staking transaction sent", error: error)
                     continuation.finish(throwing: error)
                 }
             }

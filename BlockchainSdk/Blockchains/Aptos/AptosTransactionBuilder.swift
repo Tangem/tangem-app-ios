@@ -8,7 +8,6 @@
 
 import Foundation
 import WalletCore
-import TangemSdk
 import TangemFoundation
 
 final class AptosTransactionBuilder {
@@ -56,7 +55,7 @@ final class AptosTransactionBuilder {
         let preSigningOutput = try TxCompilerPreSigningOutput(serializedData: preImageHashes)
 
         guard preSigningOutput.error == .ok, !preSigningOutput.data.isEmpty else {
-            Log.debug("AptosPreSigningOutput has a error: \(preSigningOutput.errorMessage)")
+            BlockchainSDKLogger.error("AptosPreSigningOutput has a error", error: preSigningOutput.errorMessage)
             throw WalletError.failedToBuildTx
         }
 
@@ -81,7 +80,7 @@ final class AptosTransactionBuilder {
         let signingOutput = try AptosSigningOutput(serializedData: compiledTransaction)
 
         guard signingOutput.error == .ok, signingOutput.hasAuthenticator else {
-            Log.debug("AptosSigningOutput has a error")
+            BlockchainSDKLogger.error(error: "AptosSigningOutput has a error")
             throw WalletError.failedToBuildTx
         }
 
