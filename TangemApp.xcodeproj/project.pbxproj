@@ -2410,7 +2410,6 @@
 		DC9A4A302AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */; };
 		DCA21D942BA1C77A000A3C1A /* ValidationMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */; };
 		DCA54D8F2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */; };
-		DCAB5800295EE820005D0F4A /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAB57FF295EE820005D0F4A /* AppLog.swift */; };
 		DCB385182D240AE100105DD4 /* SeedNotifyDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB385172D240ADB00105DD4 /* SeedNotifyDTO.swift */; };
 		DCB616E52CB39AE100BE4481 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E42CB39AE100BE4481 /* WalletConnect */; };
 		DCB616E72CB3A63800BE4481 /* ReownWalletKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCB616E62CB3A63800BE4481 /* ReownWalletKit */; };
@@ -2590,7 +2589,6 @@
 		EF3CC86E2CE4BF4C006A9FBD /* OnrampAmountCompactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3CC86D2CE4BF4C006A9FBD /* OnrampAmountCompactViewModel.swift */; };
 		EF3EC523289AB2DE0071BA7F /* TangemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3EC522289AB2DE0071BA7F /* TangemProvider.swift */; };
 		EF407E352C04AF6F00366733 /* TangemStakingFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF407E342C04AF6F00366733 /* TangemStakingFactory.swift */; };
-		EF407E382C04B09A00366733 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF407E372C04B09A00366733 /* Logger.swift */; };
 		EF407E5D2C04D64B00366733 /* StakingAPIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF407E5C2C04D64B00366733 /* StakingAPIProvider.swift */; };
 		EF407E5F2C04D65B00366733 /* CommonStakingAPIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF407E5E2C04D65B00366733 /* CommonStakingAPIProvider.swift */; };
 		EF407E622C04D67400366733 /* StakeKitMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF407E612C04D67400366733 /* StakeKitMapper.swift */; };
@@ -2824,8 +2822,6 @@
 		EF9E2A0F2B4F0CD100418559 /* CommonExpressProviderManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29C82B4F0CCE00418559 /* CommonExpressProviderManagerFactory.swift */; };
 		EF9E2A102B4F0CD100418559 /* CommonExpressAPIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29CA2B4F0CCE00418559 /* CommonExpressAPIProvider.swift */; };
 		EF9E2A112B4F0CD100418559 /* ExpressAPIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29CB2B4F0CCE00418559 /* ExpressAPIProvider.swift */; };
-		EF9E2A122B4F0CD100418559 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29CD2B4F0CCE00418559 /* Logger.swift */; };
-		EF9E2A132B4F0CD100418559 /* CommonLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29CE2B4F0CCE00418559 /* CommonLogger.swift */; };
 		EF9E2A152B4F0CD100418559 /* ExpressAPIMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29D32B4F0CCE00418559 /* ExpressAPIMapper.swift */; };
 		EF9E2A162B4F0CD100418559 /* ExpressDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29D62B4F0CCE00418559 /* ExpressDTO.swift */; };
 		EF9E2A172B4F0CD100418559 /* ExpressAuthorizationPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9E29D72B4F0CCE00418559 /* ExpressAuthorizationPlugin.swift */; };
@@ -5631,7 +5627,6 @@
 		DC9A4A2F2AB4AE320031C7C2 /* UserCodeRecoveringCardInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeRecoveringCardInteractor.swift; sourceTree = "<group>"; };
 		DCA21D932BA1C77A000A3C1A /* ValidationMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationMode.swift; sourceTree = "<group>"; };
 		DCA54D8E2C05E0BA00FBF99F /* PriceChangeFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceChangeFormatterTests.swift; sourceTree = "<group>"; };
-		DCAB57FF295EE820005D0F4A /* AppLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLog.swift; sourceTree = "<group>"; };
 		DCB385172D240ADB00105DD4 /* SeedNotifyDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedNotifyDTO.swift; sourceTree = "<group>"; };
 		DCBAF6982A4AEEDD0029480A /* AnyWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyWalletManagerFactory.swift; sourceTree = "<group>"; };
 		DCBAF69A2A4AEF3C0029480A /* HDWalletManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDWalletManagerFactory.swift; sourceTree = "<group>"; };
@@ -5821,7 +5816,6 @@
 		EF3CC86D2CE4BF4C006A9FBD /* OnrampAmountCompactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampAmountCompactViewModel.swift; sourceTree = "<group>"; };
 		EF3EC522289AB2DE0071BA7F /* TangemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemProvider.swift; sourceTree = "<group>"; };
 		EF407E342C04AF6F00366733 /* TangemStakingFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemStakingFactory.swift; sourceTree = "<group>"; };
-		EF407E372C04B09A00366733 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		EF407E5C2C04D64B00366733 /* StakingAPIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAPIProvider.swift; sourceTree = "<group>"; };
 		EF407E5E2C04D65B00366733 /* CommonStakingAPIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStakingAPIProvider.swift; sourceTree = "<group>"; };
 		EF407E612C04D67400366733 /* StakeKitMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakeKitMapper.swift; sourceTree = "<group>"; };
@@ -6065,8 +6059,6 @@
 		EF9E29C82B4F0CCE00418559 /* CommonExpressProviderManagerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonExpressProviderManagerFactory.swift; sourceTree = "<group>"; };
 		EF9E29CA2B4F0CCE00418559 /* CommonExpressAPIProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonExpressAPIProvider.swift; sourceTree = "<group>"; };
 		EF9E29CB2B4F0CCE00418559 /* ExpressAPIProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressAPIProvider.swift; sourceTree = "<group>"; };
-		EF9E29CD2B4F0CCE00418559 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		EF9E29CE2B4F0CCE00418559 /* CommonLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonLogger.swift; sourceTree = "<group>"; };
 		EF9E29D32B4F0CCE00418559 /* ExpressAPIMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressAPIMapper.swift; sourceTree = "<group>"; };
 		EF9E29D62B4F0CCE00418559 /* ExpressDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressDTO.swift; sourceTree = "<group>"; };
 		EF9E29D72B4F0CCE00418559 /* ExpressAuthorizationPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressAuthorizationPlugin.swift; sourceTree = "<group>"; };
@@ -14565,14 +14557,6 @@
 			path = Factory;
 			sourceTree = "<group>";
 		};
-		EF407E362C04B08F00366733 /* Interfaces */ = {
-			isa = PBXGroup;
-			children = (
-				EF407E372C04B09A00366733 /* Logger.swift */,
-			);
-			path = Interfaces;
-			sourceTree = "<group>";
-		};
 		EF407E5B2C04D64300366733 /* StakingAPIProvider */ = {
 			isa = PBXGroup;
 			children = (
@@ -15666,7 +15650,6 @@
 				EF9E29C42B4F0CCE00418559 /* ExpressManagerMapper */,
 				EF9E29C62B4F0CCE00418559 /* ExpressProviderManagerFactory */,
 				EF9E29C92B4F0CCE00418559 /* ExpressAPIProvider */,
-				EF9E29CC2B4F0CCE00418559 /* Logger */,
 				EF9E29D22B4F0CCE00418559 /* ExpressAPIMapper */,
 				EF9E29D42B4F0CCE00418559 /* ExpressAPIService */,
 			);
@@ -15697,15 +15680,6 @@
 				EF9E29CB2B4F0CCE00418559 /* ExpressAPIProvider.swift */,
 			);
 			path = ExpressAPIProvider;
-			sourceTree = "<group>";
-		};
-		EF9E29CC2B4F0CCE00418559 /* Logger */ = {
-			isa = PBXGroup;
-			children = (
-				EF9E29CD2B4F0CCE00418559 /* Logger.swift */,
-				EF9E29CE2B4F0CCE00418559 /* CommonLogger.swift */,
-			);
-			path = Logger;
 			sourceTree = "<group>";
 		};
 		EF9E29D22B4F0CCE00418559 /* ExpressAPIMapper */ = {
@@ -16465,7 +16439,6 @@
 				EF6ECA5B2D48215500415F23 /* StakingLogger.swift */,
 				EF536B812CAFD2C500FDC3E7 /* StakingConstants.swift */,
 				EF407E332C04AF5C00366733 /* Factory */,
-				EF407E362C04B08F00366733 /* Interfaces */,
 				EFBC5C6F2C00A74100B662E0 /* Models */,
 				EFBC5C722C00A74100B662E0 /* Services */,
 				EFEE238A2BFF62D50099917E /* TangemStaking.h */,
@@ -18624,7 +18597,6 @@
 				B0A2B3E925D6B5BD0001EEB4 /* TokenBalanceViewModel.swift in Sources */,
 				EF6CCBEB2C91D7C70002D2B4 /* CommonSendAlertBuilder.swift in Sources */,
 				DAC53CFB27BE63830027147D /* CurrenciesStoryPage.swift in Sources */,
-				DCAB5800295EE820005D0F4A /* AppLog.swift in Sources */,
 				DC0A5856282E3E220031BECC /* ServicesManager.swift in Sources */,
 				B06C94CC2A3B70E000D17E85 /* TokenActionListBuilder.swift in Sources */,
 				B0EA18AF2C465DC60023B72A /* View+DescriptionBottomSheet.swift in Sources */,
@@ -20104,7 +20076,6 @@
 				EF9E2A222B4F0CD100418559 /* ExpressTransactionData.swift in Sources */,
 				EF13996C2CBCFD1700AC9E2B /* OnrampQuote.swift in Sources */,
 				EF9CE9FD2D19B9800011BF4C /* ExpressFee.swift in Sources */,
-				EF9E2A132B4F0CD100418559 /* CommonLogger.swift in Sources */,
 				EF9E2A2F2B4F0CD100418559 /* AllowanceProvider.swift in Sources */,
 				EF49C0632CAD85A00062AF06 /* OnrampCountry.swift in Sources */,
 				EF9E2A112B4F0CD100418559 /* ExpressAPIProvider.swift in Sources */,
@@ -20127,7 +20098,6 @@
 				EF9E2A162B4F0CD100418559 /* ExpressDTO.swift in Sources */,
 				EF9E2A0D2B4F0CD100418559 /* ExpressManagerMapper.swift in Sources */,
 				EF25610E2CC69ECF00D3C16A /* OnrampStorage.swift in Sources */,
-				EF9E2A122B4F0CD100418559 /* Logger.swift in Sources */,
 				EFC990172CD3CC9C0098B7C8 /* ExpressBranch.swift in Sources */,
 				EF9E2A2C2B4F0CD100418559 /* TangemExpressFactory.swift in Sources */,
 				EF8BE6BD2CCA994F001FBA2B /* OnrampRedirectDataRequestItem.swift in Sources */,
@@ -20179,7 +20149,6 @@
 				0A3BF9692C6CDAD900163492 /* AdditionalAddresses.swift in Sources */,
 				EFBC5C752C00A74100B662E0 /* StakingAPIService.swift in Sources */,
 				EFBC5C902C00B8B800B662E0 /* StakeKitDTO+Yield.swift in Sources */,
-				EF407E382C04B09A00366733 /* Logger.swift in Sources */,
 				EF8DBCEA2C061B0E009072CF /* CommonStakingManager.swift in Sources */,
 				EF7A25F42C9092960089A4A4 /* PendingActionRequest.swift in Sources */,
 				EF407E682C04D7E700366733 /* RewardClaimingType.swift in Sources */,
