@@ -60,7 +60,7 @@ class CardOperationViewModel: ObservableObject {
                 }
             }
         case .failure(let error):
-            if case .userCancelled = error.toTangemSdkError() {
+            if error.isCancellationError {
                 return
             }
 

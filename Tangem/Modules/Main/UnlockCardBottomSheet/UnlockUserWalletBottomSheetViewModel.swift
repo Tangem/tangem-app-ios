@@ -57,6 +57,11 @@ class UnlockUserWalletBottomSheetViewModel: ObservableObject, Identifiable {
                 case .success(let unlockedModel):
                     self?.delegate?.userWalletUnlocked(unlockedModel)
                 case .error(let error), .partial(_, let error):
+                    if error.isCancellationError {
+                        return
+                    }
+
+                    Analytics.tryLogCardVerificationError(error, source: .signIn)
                     self?.error = error.alertBinder
                 case .troubleshooting:
                     Analytics.log(.cantScanTheCard, params: [.source: .main])

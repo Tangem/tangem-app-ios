@@ -300,6 +300,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
             .occuredError
             .receive(on: DispatchQueue.main)
             .sink { [weak self] error in
+                Analytics.tryLogCardVerificationError(error, source: .onboarding)
                 self?.alert = error.alertBinder
             }
             .store(in: &bag)

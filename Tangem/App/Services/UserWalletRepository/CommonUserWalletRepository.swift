@@ -120,7 +120,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                 sendEvent(.scan(isScanning: false))
 
                 switch error.toTangemSdkError() {
-                case .cardVerificationFailed:
+                case .cardVerificationFailed: // has it's own support button
                     return Just(UserWalletRepositoryResult.error(error))
                 default:
                     failedCardScanTracker.recordFailure()
@@ -128,7 +128,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                         return Just(UserWalletRepositoryResult.troubleshooting)
                     }
 
-                    return Just(nil)
+                    return Just(UserWalletRepositoryResult.error(error))
                 }
             }
             .handleEvents(receiveCompletion: { _ in

@@ -192,8 +192,6 @@ extension Analytics {
 
         case onboardingSeedScreenCapture = "[Onboarding / Seed Phrase] Screen Capture"
 
-        case onboardingOfflineAttestationFailed = "[Onboarding] Offline Attestation Failed"
-
         // MARK: Express
 
         case tokenSwapStatus = "[Token] Swap Status"
@@ -262,6 +260,8 @@ extension Analytics {
         case cantScanTheCard = "[Errors] Cant Scan The Card"
         case cantScanTheCardButtonBlog = "[Errors] Cant Scan The Card - Button Blog"
         case cantScanTheCardTryAgainButton = "[Errors] Cant Scan The Card - Try Again Button"
+
+        case errorOfflineAttestationFailed = "[Error] Offline Attestation Failed"
 
         // MARK: - Promo
 

@@ -87,6 +87,14 @@ class Analytics {
         Analytics.log(event: event, params: params)
     }
 
+    static func tryLogCardVerificationError(_ error: Error, source: Analytics.CardVerificationErrorSource) {
+        guard case .cardVerificationFailed = error.toTangemSdkError() else {
+            return
+        }
+
+        Analytics.log(.errorOfflineAttestationFailed, params: [.source: source.parameterValue])
+    }
+
     // MARK: - Common
 
     static func log(_ event: Event, params: [ParameterKey: ParameterValue] = [:], limit: Analytics.EventLimit = .unlimited) {

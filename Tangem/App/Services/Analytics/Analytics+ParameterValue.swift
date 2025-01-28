@@ -50,6 +50,7 @@ extension Analytics {
         case sell = "Sell"
         case swap = "Swap"
         case send = "Send"
+        case backup = "Backup"
 
         case transactionSourceApprove = "Approve"
         case transactionSourceWalletConnect = "WalletConnect"
