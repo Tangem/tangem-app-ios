@@ -20,11 +20,6 @@ class WalletModel {
 
     private(set) lazy var walletModelId: WalletModel.Id = .init(tokenItem: tokenItem)
 
-    /// Listen for fiat and balance changes. This publisher will not be called if the is nothing changed. Use `update(silent:)` for waiting for update
-    var walletDidChangePublisher: AnyPublisher<WalletModel.State, Never> {
-        _walletDidChangePublisher.eraseToAnyPublisher()
-    }
-
     var state: State {
         _state.value
     }
@@ -207,14 +202,22 @@ class WalletModel {
     private var bag = Set<AnyCancellable>()
     private var updatePublisher: PassthroughSubject<State, Never>?
     private var updateQueue = DispatchQueue(label: "walletModel_update_queue")
-    private var _walletDidChangePublisher: CurrentValueSubject<State, Never> = .init(.created)
-    private var _state: CurrentValueSubject<State, Never> = .init(.created)
+
+    private let _state: CurrentValueSubject<State, Never> = .init(.created)
     private lazy var _rate: CurrentValueSubject<Rate, Never> = .init(.loading(cached: quotesRepository.quote(for: tokenItem)))
 
-    private var _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
+    private let _localPendingTransactionSubject: PassthroughSubject<Void, Never> = .init()
+    private lazy var formatter = BalanceFormatter()
 
-    let converter = BalanceConverter()
-    let formatter = BalanceFormatter()
+    // MARK: - Balance providers
+
+    lazy var availableBalanceProvider = makeAvailableBalanceProvider()
+    lazy var stakingBalanceProvider = makeStakingBalanceProvider()
+    lazy var totalTokenBalanceProvider = makeTotalTokenBalanceProvider()
+
+    lazy var fiatAvailableBalanceProvider = makeFiatAvailableBalanceProvider()
+    lazy var fiatStakingBalanceProvider = makeFiatStakingBalanceProvider()
+    lazy var fiatTotalTokenBalanceProvider = makeFiatTotalTokenBalanceProvider()
 
     deinit {
         AppLog.shared.debug("🗑 \(self) deinit")
@@ -262,24 +265,6 @@ class WalletModel {
                 self?.updateQuote(quote: quote)
             }
             .store(in: &bag)
-
-        let filteredRate = _rate.filter { !$0.isLoading }.removeDuplicates()
-
-        if let stakingManager {
-            _state
-                .removeDuplicates()
-                .combineLatest(filteredRate, walletManager.walletPublisher, stakingManager.statePublisher)
-                .map { $0.0 }
-                .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
-                .store(in: &bag)
-        } else {
-            _state
-                .removeDuplicates()
-                .combineLatest(filteredRate, walletManager.walletPublisher)
-                .map { $0.0 }
-                .assign(to: \._walletDidChangePublisher.value, on: self, ownership: .weak)
-                .store(in: &bag)
-        }
     }
 
     private func performHealthCheckIfNeeded(shouldPerform: Bool) {
@@ -496,6 +481,38 @@ extension WalletModel {
                 walletModel.updateAfterSendingTransaction()
             })
             .mapToVoid()
+    }
+}
+
+// MARK: - Balance Provider
+
+extension WalletModel {
+    func makeAvailableBalanceProvider() -> TokenBalanceProvider {
+        AvailableTokenBalanceProvider(walletModel: self, tokenBalancesRepository: tokenBalancesRepository)
+    }
+
+    func makeStakingBalanceProvider() -> TokenBalanceProvider {
+        StakingTokenBalanceProvider(walletModel: self, tokenBalancesRepository: tokenBalancesRepository)
+    }
+
+    func makeTotalTokenBalanceProvider() -> TokenBalanceProvider {
+        TotalTokenBalanceProvider(
+            walletModel: self,
+            availableBalanceProvider: availableBalanceProvider,
+            stakingBalanceProvider: stakingBalanceProvider
+        )
+    }
+
+    func makeFiatAvailableBalanceProvider() -> TokenBalanceProvider {
+        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: availableBalanceProvider)
+    }
+
+    func makeFiatStakingBalanceProvider() -> TokenBalanceProvider {
+        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: stakingBalanceProvider)
+    }
+
+    func makeFiatTotalTokenBalanceProvider() -> TokenBalanceProvider {
+        FiatTokenBalanceProvider(walletModel: self, cryptoBalanceProvider: totalTokenBalanceProvider)
     }
 }
 

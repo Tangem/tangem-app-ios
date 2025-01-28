@@ -58,20 +58,37 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                 do {
                     let rawTransactions = try await buildRawTransactions(from: transactions, signer: signer)
 
-                    for (transaction, rawTransaction) in zip(transactions, rawTransactions) {
-                        try Task.checkCancellation()
-                        do {
-                            let result: TransactionSendResult = try await broadcast(transaction: transaction, rawTransaction: rawTransaction)
-                            try Task.checkCancellation()
-                            continuation.yield(.init(transaction: transaction, result: result))
-                        } catch {
-                            throw StakeKitTransactionSendError(transaction: transaction, error: error)
+                    _ = try await withThrowingTaskGroup(of: (TransactionSendResult, StakeKitTransaction).self) { group in
+                        var results = [TransactionSendResult]()
+                        for (transaction, rawTransaction) in zip(transactions, rawTransactions) {
+
+
+                            group.addTask {
+                                try Task.checkCancellation()
+                                let result: TransactionSendResult = try await self.broadcast(
+                                    transaction: transaction,
+                                    rawTransaction: rawTransaction
+                                )
+                                try Task.checkCancellation()
+                                return (result, transaction)
+                            }
+
+                            if transactions.count > 1, let second {
+                                // Wait for the current task to complete before adding the next one
+                                guard let result = try await group.next() else { continue }
+
+                                results.append(result.0)
+                                continuation.yield(.init(transaction: result.1, result: result.0))
+                                // temporary code, will be removed as part of transition to transaction status tracking
+                                let delay = result.1.type == .split ? 20 : second
+                                try await Task.sleep(nanoseconds: delay * NSEC_PER_SEC)
+                            }
                         }
 
-                        if transactions.count > 1, let second {
-                            Log.log("\(self) start \(second) second delay between the transactions sending")
-                            try await Task.sleep(nanoseconds: second * NSEC_PER_SEC)
+                        for try await result in group where !results.contains(result.0) {
+                            continuation.yield(.init(transaction: result.1, result: result.0))
                         }
+                        return []
                     }
 
                     continuation.finish()
