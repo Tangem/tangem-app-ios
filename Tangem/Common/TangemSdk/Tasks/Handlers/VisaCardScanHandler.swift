@@ -16,13 +16,15 @@ class VisaCardScanHandler {
 
     typealias CompletionHandler = CompletionResult<DefaultWalletData>
     private let authorizationService: VisaAuthorizationService
-    private let cardActivationStateProvider: VisaCardActivationRemoteStateService
+    private let cardActivationStateProvider: VisaCardActivationStatusService
     private let visaUtilities = VisaUtilities()
 
     init() {
-        let builder = VisaAPIServiceBuilder(mockedAPI: FeatureStorage.instance.isVisaAPIMocksEnabled)
-        authorizationService = builder.buildAuthorizationService(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
-        cardActivationStateProvider = builder.buildCardActivationRemoteStateService(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
+        authorizationService = VisaAPIServiceBuilder(mockedAPI: FeatureStorage.instance.isVisaAPIMocksEnabled)
+            .buildAuthorizationService(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
+
+        cardActivationStateProvider = VisaCardActivationStatusServiceBuilder(isMockedAPIEnabled: FeatureStorage.instance.isVisaAPIMocksEnabled)
+            .build(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
     }
 
     deinit {
@@ -39,7 +41,7 @@ class VisaCardScanHandler {
         let mandatoryCurve = visaUtilities.mandatoryCurve
         guard let wallet = card.wallets.first(where: { $0.curve == mandatoryCurve }) else {
             let activationInput = VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey, isAccessCodeSet: card.isAccessCodeSet)
-            let activationStatus = VisaCardActivationStatus.notStartedActivation(activationInput: activationInput)
+            let activationStatus = VisaCardActivationLocalState.notStartedActivation(activationInput: activationInput)
             completion(.success(.visa(activationStatus)))
             return
         }
@@ -48,7 +50,7 @@ class VisaCardScanHandler {
     }
 
     private func deriveKey(wallet: Card.Wallet, in session: CardSession, completion: @escaping CompletionHandler) {
-        guard let derivationPath = visaUtilities.visaCardDerivationPath else {
+        guard let derivationPath = visaUtilities.visaDefaultDerivationPath else {
             log("Failed to create derivation path while first scan")
             completion(.failure(.underlying(error: HandlerError.failedToCreateDerivationPath)))
             return
@@ -90,7 +92,7 @@ class VisaCardScanHandler {
             return
         }
 
-        guard let derivationPath = visaUtilities.visaCardDerivationPath else {
+        guard let derivationPath = visaUtilities.visaDefaultDerivationPath else {
             log("Failed to create derivation path while handling wallet authorization")
             completion(.failure(.underlying(error: HandlerError.failedToCreateDerivationPath)))
             return
@@ -107,10 +109,10 @@ class VisaCardScanHandler {
 
         do {
             log("Requesting challenge for wallet authorization")
-            // Will be changed later after backend implementation
+            let walletAddress = try visaUtilities.makeAddress(seedKey: wallet.publicKey, extendedKey: extendedPublicKey)
             let challengeResponse = try await authorizationService.getWalletAuthorizationChallenge(
                 cardId: card.cardId,
-                walletPublicKey: extendedPublicKey.publicKey.hexString
+                walletAddress: walletAddress.value
             )
 
             let signedChallengeResponse = try await signChallengeWithWallet(
@@ -134,7 +136,11 @@ class VisaCardScanHandler {
                 completion(.success(.visa(.activated(authTokens: authorizationTokensResponse))))
             } else {
                 log("Failed to get Access token for Wallet public key authoziation. Authorizing using Card Pub key")
-                await handleCardAuthorization(session: session, completion: completion)
+                await handleCardAuthorization(
+                    walletAddress: walletAddress.value,
+                    session: session,
+                    completion: completion
+                )
             }
         } catch let error as TangemSdkError {
             log("Error during Wallet authorization process. Tangem Sdk Error: \(error)")
@@ -145,7 +151,11 @@ class VisaCardScanHandler {
         }
     }
 
-    private func handleCardAuthorization(session: CardSession, completion: @escaping CompletionHandler) async {
+    private func handleCardAuthorization(
+        walletAddress: String,
+        session: CardSession,
+        completion: @escaping CompletionHandler
+    ) async {
         log("Started handling visa card scan async")
         guard let card = session.environment.card else {
             log("Failed to find card in session environment")
@@ -170,9 +180,13 @@ class VisaCardScanHandler {
             )
             log("Authorization tokens response: \(authorizationTokensResponse)")
 
-            let activationRemoteState = try await cardActivationStateProvider.loadCardActivationRemoteState(authorizationTokens: authorizationTokensResponse)
+            let cardActivationStatus = try await cardActivationStateProvider.getCardActivationStatus(
+                authorizationTokens: authorizationTokensResponse,
+                cardId: card.cardId,
+                cardPublicKey: card.cardPublicKey.hexString
+            )
 
-            switch activationRemoteState {
+            switch cardActivationStatus.activationRemoteState {
             case .blockedForActivation:
                 throw VisaActivationError.blockedForActivation
             case .activated:
@@ -181,11 +195,16 @@ class VisaCardScanHandler {
                 break
             }
 
-            let activationInput = VisaCardActivationInput(cardId: card.cardId, cardPublicKey: card.cardPublicKey, isAccessCodeSet: card.isAccessCodeSet)
+            let activationInput = VisaCardActivationInput(
+                cardId: card.cardId,
+                cardPublicKey: card.cardPublicKey,
+                isAccessCodeSet: card.isAccessCodeSet,
+                walletAddress: walletAddress
+            )
             let visaWalletData = DefaultWalletData.visa(.activationStarted(
                 activationInput: activationInput,
                 authTokens: authorizationTokensResponse,
-                activationRemoteState: activationRemoteState
+                activationStatus: cardActivationStatus
             ))
             completion(.success(visaWalletData))
         } catch let error as TangemSdkError {

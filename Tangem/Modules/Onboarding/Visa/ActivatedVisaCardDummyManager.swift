@@ -15,7 +15,7 @@ class ActivatedVisaCardDummyManager: VisaActivationManager {
 
     var isAccessCodeSet: Bool { true }
     var isContinuingActivation: Bool { true }
-    var activationStatus: TangemVisa.VisaCardActivationStatus {
+    var activationLocalState: TangemVisa.VisaCardActivationLocalState {
         .activated(authTokens: .init(accessToken: "", refreshToken: ""))
     }
 
@@ -38,6 +38,12 @@ class ActivatedVisaCardDummyManager: VisaActivationManager {
     func refreshActivationRemoteState() async throws (TangemVisa.VisaActivationError) -> TangemVisa.VisaCardActivationRemoteState {
         .activated
     }
+
+    func getCustomerWalletApproveHash() async throws (TangemVisa.VisaActivationError) -> Data {
+        return Data()
+    }
+
+    func sendSignedCustomerWalletApprove(_ signedData: Data) async throws (TangemVisa.VisaActivationError) {}
 
     func setPINCode(_ pinCode: String) async throws (TangemVisa.VisaActivationError) {}
 }

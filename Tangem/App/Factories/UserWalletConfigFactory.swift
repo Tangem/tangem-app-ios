@@ -56,8 +56,8 @@ struct UserWalletConfigFactory {
             }
 
             return LegacyConfig(card: cardInfo.card, walletData: walletData)
-        case .visa(let activationStatus):
-            return VisaConfig(card: cardInfo.card, activationStatus: activationStatus)
+        case .visa(let activationLocalState):
+            return VisaConfig(card: cardInfo.card, activationLocalState: activationLocalState)
         }
     }
 }

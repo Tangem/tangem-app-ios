@@ -7,26 +7,27 @@
 //
 
 import Foundation
+import TangemSdk
 
 protocol VisaOTPRepository: AnyObject {
     func hasSavedOTP(cardId: String) -> Bool
-    func getOTP(cardId: String) -> Data?
-    func saveOTP(_ otp: Data, cardId: String)
+    func getOTP(cardId: String) -> GenerateOTPResponse?
+    func saveOTP(_ otp: GenerateOTPResponse, cardId: String)
     func removeOTP(cardId: String)
 }
 
 final class CommonVisaOTPRepository: VisaOTPRepository {
-    private var otpDict = [String: Data]()
+    private var otpDict = [String: GenerateOTPResponse]()
 
     func hasSavedOTP(cardId: String) -> Bool {
         return getOTP(cardId: cardId) != nil
     }
 
-    func getOTP(cardId: String) -> Data? {
+    func getOTP(cardId: String) -> GenerateOTPResponse? {
         return otpDict[cardId]
     }
 
-    func saveOTP(_ otp: Data, cardId: String) {
+    func saveOTP(_ otp: GenerateOTPResponse, cardId: String) {
         otpDict[cardId] = otp
     }
 

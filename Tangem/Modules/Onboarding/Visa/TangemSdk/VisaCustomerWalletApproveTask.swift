@@ -57,7 +57,7 @@ private extension VisaCustomerWalletApproveTask {
             return
         }
 
-        guard let derivationPath = visaUtilities.visaDefaultDerivationPath(style: derivationStyle) else {
+        guard let derivationPath = visaUtilities.visaDerivationPath(style: derivationStyle) else {
             completion(.failure(.underlying(error: "Failed to generate derivation path with provided derivation style")))
             return
         }

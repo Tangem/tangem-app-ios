@@ -68,7 +68,6 @@ struct VisaOnboardingWelcomeView: View {
     VisaOnboardingWelcomeView(viewModel: .init(
         activationState: .newActivation,
         isAccessCodeSet: false,
-        userName: "World",
         imagePublisher: Just(nil),
         delegate: nil
     ))

@@ -15,11 +15,11 @@ protocol CustomerInfoManagementService {
 
 class CommonCustomerInfoManagementService {
     typealias CIMAPIService = APIService<CustomerInfoManagementAPITarget, VisaAPIError>
-    private let authorizationTokenHandler: AuthorizationTokenHandler
+    private let authorizationTokenHandler: AuthorizationTokensHandler
     private let apiService: CIMAPIService
 
     init(
-        authorizationTokenHandler: AuthorizationTokenHandler,
+        authorizationTokenHandler: AuthorizationTokensHandler,
         apiService: CIMAPIService
     ) {
         self.authorizationTokenHandler = authorizationTokenHandler

@@ -11,37 +11,45 @@ import TangemSdk
 
 public struct SignedActivationOrder {
     public let cardSignedOrder: Card
-    public let order: CardActivationOrder
-    public let signedOrderByCard: Data
-    public let cardAttestationSalt: Data
+    public let order: VisaCardAcceptanceOrderInfo
     public let signedOrderByWallet: Data
 }
 
 class SignActivationOrderTask: CardSessionRunnable {
     typealias CompletionHandler = CompletionResult<SignedActivationOrder>
 
-    private let orderToSign: CardActivationOrder
+    private let orderToSign: VisaCardAcceptanceOrderInfo
     private let isTestnet: Bool
+    private let visaUtilities: VisaUtilities
 
-    init(orderToSign: CardActivationOrder, isTestnet: Bool = false) {
+    init(orderToSign: VisaCardAcceptanceOrderInfo, isTestnet: Bool = false) {
         self.orderToSign = orderToSign
         self.isTestnet = isTestnet
+        visaUtilities = VisaUtilities(isTestnet: isTestnet)
     }
 
     func run(in session: CardSession, completion: @escaping CompletionHandler) {
-        signOrderWithCard(in: session, completion: completion)
+        deriveKey(in: session, completion: completion)
     }
 
-    private func signOrderWithCard(in session: CardSession, completion: @escaping CompletionHandler) {
-        let task = AttestCardKeyCommand(challenge: orderToSign.dataToSignByCard)
-        task.run(in: session) { result in
+    private func deriveKey(in session: CardSession, completion: @escaping CompletionHandler) {
+        guard
+            let wallet = session.environment.card?.wallets.first(where: { $0.curve == visaUtilities.mandatoryCurve })
+        else {
+            completion(.failure(.underlying(error: VisaActivationError.missingWallet)))
+            return
+        }
+
+        guard let derivationPath = visaUtilities.visaDefaultDerivationPath else {
+            completion(.failure(.underlying(error: VisaActivationError.missingDerivationPath)))
+            return
+        }
+
+        let derivationTask = DeriveWalletPublicKeyTask(walletPublicKey: wallet.publicKey, derivationPath: derivationPath)
+        derivationTask.run(in: session) { result in
             switch result {
-            case .success(let attestResponse):
-                self.signOrderWithWallet(
-                    in: session,
-                    signedOrderByCard: attestResponse,
-                    completion: completion
-                )
+            case .success:
+                self.signOrderWithWallet(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -50,7 +58,6 @@ class SignActivationOrderTask: CardSessionRunnable {
 
     private func signOrderWithWallet(
         in session: CardSession,
-        signedOrderByCard: AttestCardKeyResponse,
         completion: @escaping CompletionHandler
     ) {
         guard let card = session.environment.card else {
@@ -58,19 +65,21 @@ class SignActivationOrderTask: CardSessionRunnable {
             return
         }
 
-        let visaUtilities = VisaUtilities(isTestnet: isTestnet)
-        guard let derivationPath = visaUtilities.visaCardDerivationPath else {
+        guard let derivationPath = visaUtilities.visaDefaultDerivationPath else {
             completion(.failure(.underlying(error: VisaActivationError.missingDerivationPath)))
             return
         }
 
-        guard let wallet = card.wallets.first(where: { $0.curve == visaUtilities.mandatoryCurve }) else {
+        guard
+            let wallet = card.wallets.first(where: { $0.curve == visaUtilities.mandatoryCurve }),
+            wallet.derivedKeys[derivationPath] != nil
+        else {
             completion(.failure(.underlying(error: VisaActivationError.missingWallet)))
             return
         }
 
         let signHashCommand = SignHashCommand(
-            hash: orderToSign.dataToSignByWallet,
+            hash: orderToSign.hashToSignByWallet,
             walletPublicKey: wallet.publicKey,
             derivationPath: derivationPath
         )
@@ -80,8 +89,6 @@ class SignActivationOrderTask: CardSessionRunnable {
                 completion(.success(SignedActivationOrder(
                     cardSignedOrder: card,
                     order: self.orderToSign,
-                    signedOrderByCard: signedOrderByCard.cardSignature,
-                    cardAttestationSalt: signedOrderByCard.salt,
                     signedOrderByWallet: signResponse.signature
                 )))
             case .failure(let error):

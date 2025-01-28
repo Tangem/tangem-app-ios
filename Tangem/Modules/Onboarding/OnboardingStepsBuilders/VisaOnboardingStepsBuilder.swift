@@ -14,7 +14,7 @@ struct VisaOnboardingStepsBuilder {
     private let cardId: String
     private let isPushNotificationsAvailable: Bool
     private let isAccessCodeSet: Bool
-    private let activationStatus: VisaCardActivationStatus
+    private let activationLocalState: VisaCardActivationLocalState
 
     private var otherSteps: [VisaOnboardingStep] {
         var steps: [VisaOnboardingStep] = []
@@ -40,16 +40,20 @@ struct VisaOnboardingStepsBuilder {
         ]
     }
 
+    private var pinSelectionSteps: [VisaOnboardingStep] {
+        [.pinSelection, .issuerProcessingInProgress]
+    }
+
     init(
         cardId: String,
         isPushNotificationsAvailable: Bool,
         isAccessCodeSet: Bool,
-        activationStatus: VisaCardActivationStatus
+        activationLocalState: VisaCardActivationLocalState
     ) {
         self.cardId = cardId
         self.isPushNotificationsAvailable = isPushNotificationsAvailable
         self.isAccessCodeSet = isAccessCodeSet
-        self.activationStatus = activationStatus
+        self.activationLocalState = activationLocalState
     }
 
     private func buildSteps(for state: VisaCardActivationRemoteState) -> [VisaOnboardingStep] {
@@ -67,9 +71,9 @@ struct VisaOnboardingStepsBuilder {
             steps.append(contentsOf: approveSteps)
             fallthrough
         case .paymentAccountDeploying:
-            steps.append(contentsOf: [.paymentAccountDeployInProgress, .pinSelection, .issuerProcessingInProgress])
+            steps.append(contentsOf: [.paymentAccountDeployInProgress] + pinSelectionSteps)
         case .waitingPinCode:
-            steps.append(contentsOf: [.pinSelection, .issuerProcessingInProgress])
+            steps.append(contentsOf: pinSelectionSteps)
         case .waitingForActivationFinishing:
             steps.append(.issuerProcessingInProgress)
         case .activated, .blockedForActivation:
@@ -85,11 +89,16 @@ extension VisaOnboardingStepsBuilder: OnboardingStepsBuilder {
     func buildOnboardingSteps() -> OnboardingSteps {
         var steps = [VisaOnboardingStep]()
 
-        switch activationStatus {
-        case .activationStarted(_, _, let activationRemoteState):
-            steps.append(contentsOf: buildSteps(for: activationRemoteState))
+        switch activationLocalState {
+        case .activationStarted(_, _, let activationStatus):
+            steps.append(contentsOf: buildSteps(for: activationStatus.activationRemoteState))
         case .notStartedActivation:
-            steps.append(contentsOf: [.welcome, .accessCode] + approveSteps)
+            steps.append(
+                contentsOf: [.welcome, .accessCode]
+                    + approveSteps
+                    + [.paymentAccountDeployInProgress]
+                    + pinSelectionSteps
+            )
 
         case .activated:
             return .visa(otherSteps)

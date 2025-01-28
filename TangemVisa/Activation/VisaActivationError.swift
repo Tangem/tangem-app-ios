@@ -13,7 +13,7 @@ public enum VisaActivationError: LocalizedError {
     case missingAccessCode
     case missingAccessToken
     case missingActiveCardSession
-    case missingCustomerId
+    case missingCustomerInformationInAccessToken
     case wrongCard
     case missingOrderDataToSign
     case missingWallet
@@ -25,6 +25,9 @@ public enum VisaActivationError: LocalizedError {
     case blockedForActivation
     case invalidActivationState
     case missingDerivationPath
+    case missingActivationStatusInfo
+    case missingWalletAddressInInput
+    case missingActivationInput
     case underlyingError(Error)
 
     public var errorDescription: String? {
@@ -33,7 +36,7 @@ public enum VisaActivationError: LocalizedError {
         case .missingAccessCode: return "Missing access code"
         case .missingAccessToken: return "Missing access token. Please authorize with your Visa card"
         case .missingActiveCardSession: return "Failed to find active NFC session"
-        case .missingCustomerId: return "Missing essential data for Visa Activation. Contact to support"
+        case .missingCustomerInformationInAccessToken: return "Missing essential data for Visa Activation. Contact to support"
         case .wrongCard: return "Wrong card tapped"
         case .missingOrderDataToSign: return "Failed to find order for account activation"
         case .missingWallet: return "Failed to find wallet on card"
@@ -45,6 +48,9 @@ public enum VisaActivationError: LocalizedError {
         case .blockedForActivation: return "This card cannot be activated. Please contact support for more information."
         case .invalidActivationState: return "Invalid activation state. Please close activation proccess and scan card again"
         case .missingDerivationPath: return "Something went wrong. Please contact support"
+        case .missingActivationStatusInfo: return "Missing activation status info. Please contact support"
+        case .missingWalletAddressInInput: return "Missing wallet address in input. Please contact support"
+        case .missingActivationInput: return "Missing activation input. Please contact support"
         case .underlyingError(let error):
             return "Underlying Visa Activation Error: \(error.localizedDescription)"
         }
