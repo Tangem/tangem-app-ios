@@ -9,7 +9,7 @@
 import Foundation
 
 extension WalletModel {
-    enum State: Hashable {
+    enum State: Hashable, CustomStringConvertible {
         case created
         case loaded(Decimal)
         case loading
@@ -25,27 +25,9 @@ extension WalletModel {
             }
         }
 
-        var isSuccessfullyLoaded: Bool {
-            switch self {
-            case .loaded, .noAccount:
-                return true
-            default:
-                return false
-            }
-        }
-
         var isBlockchainUnreachable: Bool {
             switch self {
             case .failed:
-                return true
-            default:
-                return false
-            }
-        }
-
-        var isNoAccount: Bool {
-            switch self {
-            case .noAccount:
                 return true
             default:
                 return false
@@ -69,6 +51,16 @@ extension WalletModel {
                 return localizedDescription
             default:
                 return nil
+            }
+        }
+
+        var description: String {
+            switch self {
+            case .created: "Created"
+            case .loaded: "Loaded"
+            case .loading: "Loading"
+            case .noAccount(let message, _): "No account \(message)"
+            case .failed(let error): "Failed \(error)"
             }
         }
 
