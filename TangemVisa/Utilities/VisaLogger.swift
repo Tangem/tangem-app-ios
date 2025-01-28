@@ -9,18 +9,20 @@
 import Foundation
 import TangemLogger
 
+public let VisaLogger = Logger(category: .visa)
+
 struct InternalLogger {
     func error(error: Error) {
-        Logger.error(.visa, error)
+        VisaLogger.error(error: error)
     }
 
     func debug<T>(subsystem: Subsystem, _ message: @autoclosure () -> T) {
-        Logger.error(.visa, subsystem, message())
+        VisaLogger.info(subsystem, message())
     }
 }
 
 extension InternalLogger {
-    enum Subsystem: String {
+    enum Subsystem: String, CustomStringConvertible {
         case bridgeInteractorBuilder = "[Visa] [Bridge Interactor Builder]:\n"
         case bridgeInteractor = "[Visa] [Bridge Interactor]:\n"
         case apiService = "[Visa] [API Service]\n"
