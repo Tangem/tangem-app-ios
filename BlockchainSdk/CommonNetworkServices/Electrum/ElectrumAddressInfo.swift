@@ -10,6 +10,7 @@ import Foundation
 
 struct ElectrumAddressInfo {
     let balance: Decimal
+    let unconfirmed: Decimal
     let outputs: [ElectrumUTXO]
 }
 

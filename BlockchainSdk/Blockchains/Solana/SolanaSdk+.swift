@@ -155,6 +155,7 @@ extension Api {
 
     func sendTransaction(
         serializedTransaction: String,
+        startSendingTimestamp: Date = Date(),
         configs: RequestConfiguration = RequestConfiguration(encoding: "base64", maxRetries: 12)!
     ) -> AnyPublisher<TransactionID, Error> {
         Deferred {
@@ -164,7 +165,11 @@ extension Api {
                     return
                 }
 
-                sendTransaction(serializedTransaction: serializedTransaction, configs: configs, startSendingTimestamp: Date()) {
+                sendTransaction(
+                    serializedTransaction: serializedTransaction,
+                    configs: configs,
+                    startSendingTimestamp: startSendingTimestamp
+                ) {
                     switch $0 {
                     case .failure(let error):
                         promise(.failure(error))

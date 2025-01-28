@@ -25,7 +25,7 @@ class StakingDependenciesFactory {
 
         return TangemStakingFactory().makeStakingAPIProvider(
             credential: StakingAPICredential(apiKey: keysManager.stakeKitKey),
-            configuration: .defaultConfiguration,
+            configuration: .stakingConfiguration,
             plugins: plugins
         )
     }

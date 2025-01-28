@@ -89,8 +89,8 @@ class FakeUserWalletModel: UserWalletModel, ObservableObject {
         _updatePublisher.send(())
     }
 
-    var totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never> {
-        .just(output: .loading)
+    var totalBalancePublisher: AnyPublisher<TotalBalanceState, Never> {
+        .just(output: .loading(cached: .none))
     }
 
     func validate() -> Bool {

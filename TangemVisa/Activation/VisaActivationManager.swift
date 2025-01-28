@@ -22,7 +22,7 @@ public protocol VisaActivationManager: VisaAccessCodeValidator {
     func resetAccessCode()
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
 
-    func startActivation() async throws (VisaActivationError)
+    func startActivation() async throws (VisaActivationError) -> CardActivationResponse
     func refreshActivationRemoteState() async throws (VisaActivationError) -> VisaCardActivationRemoteState
 
     func setPINCode(_ pinCode: String) async throws (VisaActivationError)
@@ -136,7 +136,7 @@ extension CommonVisaActivationManager: VisaActivationManager {
         authorizationTokenHandler.setupRefreshTokenSaver(refreshTokenSaver)
     }
 
-    func startActivation() async throws (VisaActivationError) {
+    func startActivation() async throws (VisaActivationError) -> CardActivationResponse {
         switch activationStatus {
         case .activated:
             throw .alreadyActivated
@@ -145,13 +145,13 @@ extension CommonVisaActivationManager: VisaActivationManager {
                 throw .invalidActivationState
             }
 
-            try await continueActivation(activationInput: activationInput, authorizationTokens: authorizationTokens)
+            return try await continueActivation(activationInput: activationInput, authorizationTokens: authorizationTokens)
         case .notStartedActivation(let activationInput):
             guard let selectedAccessCode else {
                 throw .missingAccessCode
             }
 
-            try await startFullActivationFlow(activationInput: activationInput, withAccessCode: selectedAccessCode)
+            return try await startFullActivationFlow(activationInput: activationInput, withAccessCode: selectedAccessCode)
         case .blocked:
             throw .blockedForActivation
         }
@@ -168,6 +168,7 @@ extension CommonVisaActivationManager: VisaActivationManager {
 
         let loadedState: VisaCardActivationRemoteState
         do {
+            // TODO: IOS-8777 Will be removed during BFF integration tests
             try await Task.sleep(seconds: 3)
             loadedState = try await cardActivationRemoteStateService.loadCardActivationRemoteState(authorizationTokens: authorizationTokens)
         } catch {
@@ -176,6 +177,10 @@ extension CommonVisaActivationManager: VisaActivationManager {
 
         guard loadedState != activationRemoteState else {
             return loadedState
+        }
+
+        if case .activated = loadedState {
+            try await saveActivatedCardRefreshToken()
         }
 
         updateActivationStatus(
@@ -247,7 +252,7 @@ private extension CommonVisaActivationManager {
     func startFullActivationFlow(
         activationInput: VisaCardActivationInput,
         withAccessCode accessCode: String
-    ) async throws (VisaActivationError) {
+    ) async throws (VisaActivationError) -> CardActivationResponse {
         do {
             var authorizationChallenge: String?
             if await !authorizationTokenHandler.containsAccessToken {
@@ -296,6 +301,7 @@ private extension CommonVisaActivationManager {
             )
 
             try await handleCardActivation(using: activationResponse)
+            return activationResponse
         } catch {
             log("Failed to activate card. Generic error: \(error)")
             throw .underlyingError(error)
@@ -305,16 +311,16 @@ private extension CommonVisaActivationManager {
     func continueActivation(
         activationInput: VisaCardActivationInput,
         authorizationTokens: VisaAuthorizationTokens
-    ) async throws (VisaActivationError) {
+    ) async throws (VisaActivationError) -> CardActivationResponse {
         do {
             if activationInput.isAccessCodeSet {
-                try await signActivationOrder(activationInput: activationInput)
+                return try await signActivationOrder(activationInput: activationInput)
             } else {
                 guard let selectedAccessCode else {
                     throw VisaActivationError.missingAccessCode
                 }
 
-                try await startFullActivationFlow(activationInput: activationInput, withAccessCode: selectedAccessCode)
+                return try await startFullActivationFlow(activationInput: activationInput, withAccessCode: selectedAccessCode)
             }
         } catch let activationError as VisaActivationError {
             throw activationError
@@ -323,7 +329,7 @@ private extension CommonVisaActivationManager {
         }
     }
 
-    func signActivationOrder(activationInput: VisaCardActivationInput) async throws {
+    func signActivationOrder(activationInput: VisaCardActivationInput) async throws -> CardActivationResponse {
         let activationOrder = try await cardActivationOrderProvider.provideActivationOrderForSign()
 
         let signTask = SignActivationOrderTask(orderToSign: activationOrder)
@@ -351,7 +357,9 @@ private extension CommonVisaActivationManager {
             otp = Data()
         }
 
-        try await handleCardActivation(using: .init(signedActivationOrder: signedActivationOrder, rootOTP: otp))
+        let activationResponse = CardActivationResponse(signedActivationOrder: signedActivationOrder, rootOTP: otp)
+        try await handleCardActivation(using: activationResponse)
+        return activationResponse
     }
 
     func handleCardActivation(using activationResponse: CardActivationResponse) async throws {
@@ -359,6 +367,15 @@ private extension CommonVisaActivationManager {
         // TODO: IOS-8576
         // TODO: Remove after backend integration
         targetApproveAddress = "0x9F65354e595284956599F2892fA4A4a87653D6E6"
+    }
+
+    func saveActivatedCardRefreshToken() async throws (VisaActivationError) {
+        do {
+            try await authorizationTokenHandler.forceRefreshToken()
+        } catch {
+            log("Failed to retreive activated card refresh token. Error: \(error)")
+            throw .underlyingError(error)
+        }
     }
 }
 

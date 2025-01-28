@@ -52,7 +52,8 @@ struct DerivationConfigV1: DerivationConfig {
              .blast,
              .canxium,
              .chiliz,
-             .xodex:
+             .xodex,
+             .apeChain:
             return "m/44'/60'/0'/0/0"
         case .ethereumClassic:
             return "m/44'/61'/0'/0/0"
@@ -151,7 +152,7 @@ struct DerivationConfigV1: DerivationConfig {
         case .clore:
             return "m/44'/1313'/0'/0/0"
         case .fact0rn:
-            return "m/44'/42069'/0'/0/0"
+            return "m/84'/42069'/0'/0/0"
         case .odysseyChain:
             return "m/44'/695'/0'/0/0"
         case .bitrock:

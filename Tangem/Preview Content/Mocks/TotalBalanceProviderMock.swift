@@ -9,7 +9,7 @@
 import Combine
 
 struct TotalBalanceProviderMock: TotalBalanceProviding {
-    var totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never> {
+    var totalBalancePublisher: AnyPublisher<TotalBalanceState, Never> {
         Empty().eraseToAnyPublisher()
     }
 }

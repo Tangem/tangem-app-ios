@@ -9,17 +9,11 @@
 import Foundation
 import Combine
 
-protocol SingleWalletMainHeaderSubtitleDataSource: AnyObject {
-    var walletDidChangePublisher: AnyPublisher<WalletModel.State, Never> { get }
-    var balance: String { get }
-}
-
 class SingleWalletMainHeaderSubtitleProvider: MainHeaderSubtitleProvider {
-    private weak var dataSource: SingleWalletMainHeaderSubtitleDataSource?
-
     private let subject: CurrentValueSubject<MainHeaderSubtitleInfo, Never> = .init(.empty)
     private let isLoadingSubject: CurrentValueSubject<Bool, Never>
     private let isUserWalletLocked: Bool
+    private let balanceProvider: TokenBalanceProvider?
 
     private var stateUpdateSubscription: AnyCancellable?
 
@@ -33,9 +27,10 @@ class SingleWalletMainHeaderSubtitleProvider: MainHeaderSubtitleProvider {
 
     var containsSensitiveInfo: Bool { true }
 
-    init(isUserWalletLocked: Bool, dataSource: SingleWalletMainHeaderSubtitleDataSource?) {
+    init(isUserWalletLocked: Bool, balanceProvider: TokenBalanceProvider?) {
         self.isUserWalletLocked = isUserWalletLocked
-        self.dataSource = dataSource
+        self.balanceProvider = balanceProvider
+
         isLoadingSubject = .init(!isUserWalletLocked)
 
         initialSetup()
@@ -50,32 +45,31 @@ class SingleWalletMainHeaderSubtitleProvider: MainHeaderSubtitleProvider {
     }
 
     private func bind() {
-        stateUpdateSubscription = dataSource?.walletDidChangePublisher
+        stateUpdateSubscription = balanceProvider?
+            .formattedBalanceTypePublisher
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] newState in
-                guard let self else { return }
-
-                if newState == .created || newState == .loading {
-                    return
-                }
-
-                isLoadingSubject.send(false)
-
-                switch newState {
-                case .failed:
-                    formatErrorMessage()
-                case .loaded, .noAccount:
-                    formatBalanceMessage()
-                case .created, .loading, .noDerivation:
-                    break
-                }
+            .sink(receiveValue: { [weak self] type in
+                self?.setupBalance(type: type)
             })
     }
 
-    private func formatBalanceMessage() {
-        guard let dataSource else { return }
+    private func setupBalance(type: FormattedTokenBalanceType) {
+        switch type {
+        case .loading:
+            break
+        case .failure(.empty):
+            formatErrorMessage()
+            isLoadingSubject.send(false)
+        case .failure(.cache(let cached)):
+            formatBalanceMessage(balance: cached.balance)
+            isLoadingSubject.send(false)
+        case .loaded(let balance):
+            formatBalanceMessage(balance: balance)
+            isLoadingSubject.send(false)
+        }
+    }
 
-        let balance = dataSource.balance
+    private func formatBalanceMessage(balance: String) {
         subject.send(.init(messages: [balance], formattingOption: .default))
     }
 
@@ -87,5 +81,3 @@ class SingleWalletMainHeaderSubtitleProvider: MainHeaderSubtitleProvider {
         subject.send(.init(messages: [Localization.commonLocked], formattingOption: .default))
     }
 }
-
-extension WalletModel: SingleWalletMainHeaderSubtitleDataSource {}
