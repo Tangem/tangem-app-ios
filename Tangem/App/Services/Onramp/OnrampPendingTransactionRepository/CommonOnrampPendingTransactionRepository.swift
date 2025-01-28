@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import TangemExpress
 
 class CommonOnrampPendingTransactionRepository {
     @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
@@ -24,7 +25,7 @@ class CommonOnrampPendingTransactionRepository {
         do {
             pendingTransactionSubject.value = try storage.value(for: .pendingOnrampTransactions) ?? []
         } catch {
-            AppLog.error("Couldn't get the onramp transactions list from the storage", error: error)
+            ExpressLogger.error("Couldn't get the onramp transactions list from the storage", error: error)
         }
     }
 
@@ -41,7 +42,7 @@ class CommonOnrampPendingTransactionRepository {
         do {
             try storage.store(value: pendingTransactionSubject.value, for: .pendingOnrampTransactions)
         } catch {
-            AppLog.error("Failed to save changes in storage.", error: error)
+            ExpressLogger.error("Failed to save changes in storage.", error: error)
         }
     }
 }

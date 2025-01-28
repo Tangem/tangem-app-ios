@@ -74,6 +74,7 @@ struct MailView: UIViewControllerRepresentable {
 
         vc.setMessageBody(messageBody, isHTML: false)
 
+        #if DEBUG
         let logFiles = viewModel.logsComposer.getLogFiles()
 
         logFiles.forEach { originalURL in
@@ -87,6 +88,7 @@ struct MailView: UIViewControllerRepresentable {
                 attachCSVData(at: originalURL, to: vc)
             }
         }
+        #endif
 
         return vc
     }

@@ -200,6 +200,10 @@ private extension CommonTokenItemsRepository {
     }
 }
 
+extension CommonTokenItemsRepository: CustomStringConvertible {
+    var description: String { objectDescription(self) }
+}
+
 // MARK: - Legacy storage
 
 /// Same as `StorageEntry`.

@@ -196,17 +196,16 @@ private extension CommonTokenQuotesRepository {
 
         return tangemApiService
             .loadQuotes(requestModel: request)
-            .withWeakCaptureOf(self)
-            .map { repository, quotes in
-                AppLog.info(repository, "Finish loading quotes for ids: \(currencyIds)")
+            .map { [weak self] quotes in
+                AppLog.info(self, "Finish loading quotes for ids: \(currencyIds)")
                 let quotes = quotes.compactMap {
-                    repository.mapToTokenQuote(quote: $0, currencyCode: currencyCode)
+                    self?.mapToTokenQuote(quote: $0, currencyCode: currencyCode)
                 }
-                repository.saveQuotes(quotes)
+                self?.saveQuotes(quotes)
                 return quotes.reduce(into: [:]) { $0[$1.currencyId] = $1 }
             }
-            .catch { error -> AnyPublisher<[String: TokenQuote], Never> in
-                AppLog.error("Loading quotes catch error", error: error)
+            .catch { [weak self] error -> AnyPublisher<[String: TokenQuote], Never> in
+                AppLog.error(self, "Loading quotes catch error", error: error)
                 return Just([:]).eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()

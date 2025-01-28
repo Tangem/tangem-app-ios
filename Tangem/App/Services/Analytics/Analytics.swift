@@ -273,11 +273,15 @@ private extension Analytics.Event {
 // MARK: - Error extension
 
 extension Analytics {
-    static func error(error: Error, params: [Analytics.ParameterKey: Analytics.ParameterValue] = [:]) {
+    static func error(error: Error) {
+        self.error(error: error, params: [Analytics.ParameterKey: String]())
+    }
+
+    static func error(error: Error, params: [Analytics.ParameterKey: Analytics.ParameterValue]) {
         self.error(error: error, params: params.mapValues { $0.rawValue })
     }
 
-    static func error(error: Error, params: [Analytics.ParameterKey: String] = [:]) {
+    static func error(error: Error, params: [Analytics.ParameterKey: String]) {
         guard !error.toTangemSdkError().isUserCancelled else {
             return
         }

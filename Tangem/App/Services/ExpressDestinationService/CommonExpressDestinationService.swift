@@ -47,10 +47,10 @@ extension CommonExpressDestinationService: ExpressDestinationService {
             return lastSwappedWallet
         }
 
-        log("Has searchableWalletModels: \(searchableWalletModels.map(\.walletModel.expressCurrency))")
+        ExpressLogger.info(self, "has searchableWalletModels: \(searchableWalletModels.map(\.walletModel.expressCurrency))")
 
         if let lastSwappedWallet = searchableWalletModels.first(where: { isLastTransactionWith(walletModel: $0.walletModel) }) {
-            log("Select lastSwappedWallet: \(lastSwappedWallet.walletModel.expressCurrency)")
+            ExpressLogger.info(self, "Select lastSwappedWallet: \(lastSwappedWallet.walletModel.expressCurrency)")
             return lastSwappedWallet.walletModel
         }
 
@@ -58,7 +58,7 @@ extension CommonExpressDestinationService: ExpressDestinationService {
 
         // If all wallets without balance
         if walletModelsWithPositiveBalance.isEmpty, let first = searchableWalletModels.first {
-            log("Has a zero wallets with positive balance then selected: \(first.walletModel.expressCurrency)")
+            ExpressLogger.info(self, "has a zero wallets with positive balance then selected: \(first.walletModel.expressCurrency)")
             return first.walletModel
         }
 
@@ -69,11 +69,11 @@ extension CommonExpressDestinationService: ExpressDestinationService {
 
         // Start searching destination with available providers
         if let maxBalanceWallet = sortedWallets.first {
-            log("Select maxBalanceWallet: \(maxBalanceWallet.walletModel.expressCurrency)")
+            ExpressLogger.info(self, "selected maxBalanceWallet: \(maxBalanceWallet.walletModel.expressCurrency)")
             return maxBalanceWallet.walletModel
         }
 
-        AppLog.info(self, "couldn't find acceptable wallet")
+        ExpressLogger.info(self, "couldn't find acceptable wallet")
         throw ExpressDestinationServiceError.destinationNotFound
     }
 }
@@ -86,10 +86,6 @@ private extension CommonExpressDestinationService {
         let lastCurrency = transactions.last?.destinationTokenTxInfo.tokenItem.expressCurrency
 
         return walletModel.expressCurrency == lastCurrency
-    }
-
-    func log(_ message: String) {
-        AppLog.shared.debug("[Express] \(self) \(message)")
     }
 }
 

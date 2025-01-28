@@ -596,12 +596,12 @@ extension CommonUserWalletRepository {
             selectedUserWalletId = UserWalletId(value: savedSelectedUserWalletId)
         }
 
-        AppLog.debug(self)
+        AppLog.info(self)
     }
 
     func initialClean() {
         // Removing UserWallet-related data from Keychain
-        AppLog.debug(self)
+        AppLog.info(self)
         clearUserWalletStorage()
     }
 }

@@ -9,7 +9,6 @@
 import Foundation
 import Combine
 import Moya
-import TangemLogger
 import TangemNetworkUtils
 
 @available(iOS 13.0, *)
@@ -42,7 +41,7 @@ extension MultiNetworkProvider {
                 guard let self = self else { return .anyFail(error: error) }
 
                 if let moyaError = error as? MoyaError, case .statusCode(let resp) = moyaError {
-                    NetworkLogger.error("Message: \(String(data: resp.data, encoding: .utf8) ?? "")", error: moyaError)
+                    NetworkLogger.error("Message: \(String(describing: String(data: resp.data, encoding: .utf8)))", error: moyaError)
                 } else {
                     NetworkLogger.error(error: error)
                 }

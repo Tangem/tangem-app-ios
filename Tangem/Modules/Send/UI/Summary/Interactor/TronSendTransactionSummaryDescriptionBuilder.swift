@@ -8,7 +8,6 @@
 
 import Foundation
 import BlockchainSdk
-import TangemSdk
 
 struct TronSendTransactionSummaryDescriptionBuilder {
     private let tokenItem: TokenItem
@@ -29,7 +28,7 @@ extension TronSendTransactionSummaryDescriptionBuilder: SendTransactionSummaryDe
         }
 
         guard let feeParameters = fee.parameters as? TronFeeParameters else {
-            Log.error("Fee paramenters must be set for TronSendTransactionSummaryDescriptionBuilder")
+            AppLog.error(error: "Fee parameters must be set for TronSendTransactionSummaryDescriptionBuilder")
             return nil
         }
 

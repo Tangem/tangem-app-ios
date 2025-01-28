@@ -101,9 +101,7 @@ class TokensListDataLoader {
                 canFetchMore = false
             }
 
-            AppLog.info(
-                "Loaded new items for manage tokens list. New total tokens count: \(self.items.count + items.count)"
-            )
+            AppLog.info("Loaded new items for manage tokens list. New total tokens count: \(self.items.count + items.count)")
 
             self.items.append(contentsOf: items)
         } catch {

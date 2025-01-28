@@ -36,6 +36,7 @@ struct BlockchainNetwork: Codable, Hashable, Equatable {
             return [derivationPath, extendedPath]
         } catch {
             AppLog.error(error: error)
+            Analytics.error(error: error)
             return [derivationPath]
         }
     }
