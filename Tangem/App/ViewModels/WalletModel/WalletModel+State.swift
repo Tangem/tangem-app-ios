@@ -15,7 +15,6 @@ extension WalletModel {
         case loading
         case noAccount(message: String, amountToCreate: Decimal)
         case failed(error: String)
-        case noDerivation
 
         var isLoading: Bool {
             switch self {
@@ -75,7 +74,7 @@ extension WalletModel {
 
         fileprivate var canCreateOrPurgeWallet: Bool {
             switch self {
-            case .failed, .loading, .created, .noDerivation:
+            case .failed, .loading, .created:
                 return false
             case .noAccount, .loaded:
                 return true

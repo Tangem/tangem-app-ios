@@ -14,7 +14,7 @@ struct ActiveStakingViewData {
 
     enum BalanceState {
         case loadingError
-        case balance(WalletModel.BalanceFormatted, action: () -> Void)
+        case balance(BalanceFormatted, action: () -> Void)
     }
 
     enum RewardsState {

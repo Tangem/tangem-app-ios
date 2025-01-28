@@ -12,10 +12,12 @@ import Combine
 /// Just simple available to use (e.g. send) balance
 struct AvailableTokenBalanceProvider {
     private let walletModel: WalletModel
+    private let tokenBalancesRepository: TokenBalancesRepository
     private let balanceFormatter = BalanceFormatter()
 
-    init(walletModel: WalletModel) {
+    init(walletModel: WalletModel, tokenBalancesRepository: TokenBalancesRepository) {
         self.walletModel = walletModel
+        self.tokenBalancesRepository = tokenBalancesRepository
     }
 }
 
@@ -46,6 +48,20 @@ extension AvailableTokenBalanceProvider: TokenBalanceProvider {
 // MARK: - Private
 
 private extension AvailableTokenBalanceProvider {
+    func storeBalance(balance: Decimal) {
+        tokenBalancesRepository.store(
+            balance: .init(balance: balance, date: .now),
+            for: walletModel,
+            type: .available
+        )
+    }
+
+    func cachedBalance() -> TokenBalanceType.Cached? {
+        tokenBalancesRepository.balance(walletModel: walletModel, type: .available).map {
+            .init(balance: $0.balance, date: $0.date)
+        }
+    }
+
     func mapToTokenBalance(state: WalletModel.State) -> TokenBalanceType {
         // The `binance` always has zero balance
         if case .binance = walletModel.tokenItem.blockchain {
@@ -55,16 +71,15 @@ private extension AvailableTokenBalanceProvider {
         switch state {
         case .created:
             return .empty(.noData)
-        case .noDerivation:
-            return .empty(.noDerivation)
         case .loading:
-            return .loading(nil)
+            return .loading(cachedBalance())
         case .loaded(let balance):
+            storeBalance(balance: balance)
             return .loaded(balance)
         case .noAccount(let message, _):
             return .empty(.noAccount(message: message))
         case .failed:
-            return .failure(nil)
+            return .failure(cachedBalance())
         }
     }
 

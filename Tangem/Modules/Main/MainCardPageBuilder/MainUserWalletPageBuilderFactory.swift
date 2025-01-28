@@ -92,7 +92,7 @@ struct CommonMainUserWalletPageBuilderFactory: MainUserWalletPageBuilderFactory 
                 preservesLastSortedOrderOnSwitchToDragAndDrop: false
             )
             let multiWalletNotificationManager = MultiWalletNotificationManager(
-                walletModelsManager: model.walletModelsManager,
+                totalBalanceProvider: model,
                 contextDataProvider: model
             )
 

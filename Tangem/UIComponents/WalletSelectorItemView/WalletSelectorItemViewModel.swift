@@ -14,14 +14,14 @@ class WalletSelectorItemViewModel: ObservableObject, Identifiable {
     @Published var name: String = ""
     @Published var icon: LoadingValue<CardImageResult> = .loading
     @Published var cardsCount: String
-    @Published var balanceState: LoadableTextView.State = .initialized
+    @Published var balanceState: LoadableTokenBalanceView.State = .loading()
     @Published var isSelected: Bool = false
 
     let userWalletId: UserWalletId
     let isUserWalletLocked: Bool
 
     private let userWalletNamePublisher: AnyPublisher<String, Never>
-    private let totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never>
+    private let totalBalancePublisher: AnyPublisher<TotalBalanceState, Never>
     private let cardImagePublisher: AnyPublisher<CardImageResult, Never>
 
     private var onTapWallet: ((UserWalletId) -> Void)?
@@ -37,7 +37,7 @@ class WalletSelectorItemViewModel: ObservableObject, Identifiable {
         cardsCount: Int,
         isUserWalletLocked: Bool,
         userWalletNamePublisher: AnyPublisher<String, Never>,
-        totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never>,
+        totalBalancePublisher: AnyPublisher<TotalBalanceState, Never>,
         cardImagePublisher: AnyPublisher<CardImageResult, Never>,
         isSelected: Bool,
         didTapWallet: ((UserWalletId) -> Void)?
@@ -74,28 +74,17 @@ class WalletSelectorItemViewModel: ObservableObject, Identifiable {
         totalBalancePublisher
             .receive(on: DispatchQueue.main)
             .withWeakCaptureOf(self)
-            .sink { viewModel, result in
-                guard !viewModel.isUserWalletLocked else {
-                    viewModel.balanceState = .loaded(text: Localization.commonLocked)
-                    return
-                }
-
-                switch result {
-                case .loading:
-                    viewModel.balanceState = .loading
-                case .loaded(let totalBalance):
-                    guard totalBalance.allTokensBalancesIncluded else {
-                        viewModel.balanceState = .loaded(text: BalanceFormatter.defaultEmptyBalanceString)
-                        return
-                    }
-
-                    let formatted = viewModel.balanceFormatter.formatFiatBalance(totalBalance.balance)
-                    viewModel.balanceState = .loaded(text: formatted)
-                case .failedToLoad:
-                    viewModel.balanceState = .loaded(text: Localization.commonUnreachable)
-                }
-            }
+            .sink { $0.setupBalanceState(state: $1) }
             .store(in: &bag)
+    }
+
+    private func setupBalanceState(state: TotalBalanceState) {
+        guard !isUserWalletLocked else {
+            balanceState = .loaded(text: Localization.commonLocked)
+            return
+        }
+
+        balanceState = LoadableTokenBalanceViewStateBuilder().buildTotalBalance(state: state)
     }
 
     func onTapAction() {

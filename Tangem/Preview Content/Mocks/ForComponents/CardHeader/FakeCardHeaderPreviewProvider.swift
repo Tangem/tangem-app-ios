@@ -23,17 +23,12 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
                 let fourthValue: Decimal? = nil
                 switch provider.balance {
                 case .loading:
-                    provider.balance = .loaded(TotalBalance(
-                        balance: firstValue,
-                        currencyCode: "USD",
-                        hasError: false,
-                        allTokensBalancesIncluded: true
-                    ))
+                    provider.balance = .loaded(balance: firstValue)
+                case .empty:
+                    provider.balance = .loaded(balance: firstValue)
                 case .loaded(let total):
                     let newValue: Decimal?
-                    switch total.balance {
-                    case .none:
-                        newValue = firstValue
+                    switch total {
                     case firstValue:
                         newValue = secondValue
                     case secondValue:
@@ -43,14 +38,9 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
                     default:
                         newValue = firstValue
                     }
-                    provider.balance = .loaded(TotalBalance(
-                        balance: newValue,
-                        currencyCode: "USD",
-                        hasError: false,
-                        allTokensBalancesIncluded: true
-                    ))
-                case .failedToLoad:
-                    provider.balance = .loading
+                    provider.balance = newValue.map { .loaded(balance: $0) } ?? .empty
+                case .failed:
+                    provider.balance = .loading(cached: .none)
                 }
             }
         ),
@@ -60,14 +50,9 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
                 provider.walletModel.updateWalletName(provider.walletModel.userWalletName == "Wallet Hannah" ? "Wallet Jane" : "Wallet Hannah")
                 switch provider.balance {
                 case .loading:
-                    provider.balance = .loaded(TotalBalance(
-                        balance: 92324.2133654889,
-                        currencyCode: "EUR",
-                        hasError: false,
-                        allTokensBalancesIncluded: true
-                    ))
-                case .loaded, .failedToLoad:
-                    provider.balance = .loading
+                    provider.balance = .loaded(balance: 92324.2133654889)
+                case .empty, .loaded, .failed:
+                    provider.balance = .loading(cached: .none)
                 }
             }
         ),
@@ -76,14 +61,9 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
             tapAction: { provider in
                 switch provider.balance {
                 case .loading:
-                    provider.balance = .loaded(TotalBalance(
-                        balance: 4567575476468896456534878754.2114313,
-                        currencyCode: "USD",
-                        hasError: false,
-                        allTokensBalancesIncluded: true
-                    ))
-                case .loaded, .failedToLoad:
-                    provider.balance = .loading
+                    provider.balance = .loaded(balance: 4567575476468896456534878754.2114313)
+                case .empty, .loaded, .failed:
+                    provider.balance = .loading(cached: .none)
                 }
             }
         ),
@@ -92,14 +72,9 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
             tapAction: { provider in
                 switch provider.balance {
                 case .loading:
-                    provider.balance = .loaded(TotalBalance(
-                        balance: 4567575476468896456532344878754.2114313,
-                        currencyCode: "USD",
-                        hasError: false,
-                        allTokensBalancesIncluded: true
-                    ))
-                case .loaded, .failedToLoad:
-                    provider.balance = .loading
+                    provider.balance = .loaded(balance: 4567575476468896456532344878754.2114313)
+                case .empty, .loaded, .failed:
+                    provider.balance = .loading(cached: .none)
                 }
             }
         ),
@@ -128,7 +103,7 @@ final class FakeCardHeaderPreviewProvider: ObservableObject {
 
 extension FakeCardHeaderPreviewProvider {
     final class CardInfoProvider: TotalBalanceProviding {
-        @Published var balance: LoadingValue<TotalBalance> = .loading
+        @Published var balance: TotalBalanceState = .loading(cached: .none)
 
         let walletModel: FakeUserWalletModel
         let headerSubtitleProvider: MainHeaderSubtitleProvider
@@ -137,11 +112,12 @@ extension FakeCardHeaderPreviewProvider {
 
         init(walletModel: FakeUserWalletModel, tapAction: @escaping (CardInfoProvider) -> Void) {
             self.walletModel = walletModel
-            headerSubtitleProvider = CommonMainHeaderProviderFactory().makeHeaderSubtitleProvider(for: walletModel, isMultiWallet: walletModel.config.hasFeature(.multiCurrency))
+            headerSubtitleProvider = CommonMainHeaderProviderFactory()
+                .makeHeaderSubtitleProvider(for: walletModel, isMultiWallet: walletModel.config.hasFeature(.multiCurrency))
             self.tapAction = tapAction
         }
 
-        var totalBalancePublisher: AnyPublisher<LoadingValue<TotalBalance>, Never> {
+        var totalBalancePublisher: AnyPublisher<TotalBalanceState, Never> {
             $balance.eraseToAnyPublisher()
         }
     }

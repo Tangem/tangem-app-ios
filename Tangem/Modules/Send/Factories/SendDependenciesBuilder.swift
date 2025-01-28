@@ -72,26 +72,26 @@ struct SendDependenciesBuilder {
     func maxAmount(for amount: SendAmount?, actionType: SendFlowActionType) -> Decimal {
         switch actionType {
         case .unstake: amount?.crypto ?? 0
-        default: walletModel.balanceValue ?? 0
+        default: walletModel.availableBalanceProvider.balanceType.value ?? 0
         }
     }
 
     func formattedBalance(for amount: SendAmount?, actionType: SendFlowActionType) -> String {
-        let balanceFormatted: WalletModel.BalanceFormatted
+        let balanceFormatted: BalanceFormatted
         switch actionType {
         case .unstake:
-            let balance = WalletModel.Balance(
-                crypto: amount?.crypto,
-                fiat: amount?.fiat
-            )
-            let cryptoFormatted = walletModel.formatter.formatCryptoBalance(
-                balance.crypto,
+            let formatter = BalanceFormatter()
+            let cryptoFormatted = formatter.formatCryptoBalance(
+                amount?.crypto,
                 currencyCode: walletModel.tokenItem.currencySymbol
             )
-            let fiatFormatted = walletModel.formatter.formatFiatBalance(balance.fiat)
-            balanceFormatted = WalletModel.BalanceFormatted(crypto: cryptoFormatted, fiat: fiatFormatted)
+            let fiatFormatted = formatter.formatFiatBalance(amount?.fiat)
+            balanceFormatted = .init(crypto: cryptoFormatted, fiat: fiatFormatted)
         default:
-            balanceFormatted = walletModel.availableBalanceFormatted
+            balanceFormatted = .init(
+                crypto: walletModel.availableBalanceProvider.formattedBalanceType.value,
+                fiat: walletModel.fiatAvailableBalanceProvider.formattedBalanceType.value
+            )
         }
         return Localization.commonCryptoFiatFormat(balanceFormatted.crypto, balanceFormatted.fiat)
     }
@@ -190,7 +190,8 @@ struct SendDependenciesBuilder {
         let predefinedValues = mapToPredefinedValues(sellParameters: predefinedSellParameters)
 
         return SendModel(
-            walletModel: walletModel,
+            tokenItem: walletModel.tokenItem,
+            balanceProvider: walletModel.availableBalanceProvider,
             transactionDispatcher: transactionDispatcher,
             transactionCreator: walletModel.transactionCreator,
             transactionSigner: userWalletModel.signer,
