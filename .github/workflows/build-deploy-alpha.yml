@@ -8,13 +8,13 @@ on:
         description: >
           Self-hosted runner to run the build. Leave blank (default value) to use the runner selected by GitHub
         options:
-          - ""
+          - ''
           - bamboo
           - builder1
           - builder2
           - builder3
           - builder4
-        default: ""
+        default: ''
       build_description:
         description: >
           Optional additional info about the build
