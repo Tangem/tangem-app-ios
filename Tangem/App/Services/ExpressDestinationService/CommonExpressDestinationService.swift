@@ -39,18 +39,14 @@ extension CommonExpressDestinationService: ExpressDestinationService {
 
             return isNotSource && isAvailable && isNotCustom && hasPair
         }
-
-        AppLog.info(self, "has searchableWalletModels: \(searchableWalletModels.map { ($0.expressCurrency, $0.fiatBalance) })")
-
-        if let lastSwappedWallet = searchableWalletModels.first(where: { isLastTransactionWith(walletModel: $0) }) {
-            AppLog.info(self, "selected lastSwappedWallet: \(lastSwappedWallet.expressCurrency)")
-            return lastSwappedWallet
+        .map { walletModel -> (walletModel: WalletModel, fiatBalance: Decimal?) in
+            (walletModel: walletModel, fiatBalance: walletModel.fiatAvailableBalanceProvider.balanceType.value)
         }
 
         ExpressLogger.info(self, "has searchableWalletModels: \(searchableWalletModels.map(\.walletModel.expressCurrency))")
 
         if let lastSwappedWallet = searchableWalletModels.first(where: { isLastTransactionWith(walletModel: $0.walletModel) }) {
-            ExpressLogger.info(self, "Select lastSwappedWallet: \(lastSwappedWallet.walletModel.expressCurrency)")
+            ExpressLogger.info(self, "select lastSwappedWallet: \(lastSwappedWallet.walletModel.expressCurrency)")
             return lastSwappedWallet.walletModel
         }
 

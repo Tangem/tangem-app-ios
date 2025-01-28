@@ -19,7 +19,7 @@ struct OnboardingUtils {
                     return
                 }
 
-                AppLog.shared.error(error)
+                AppLog.error(error: error)
 
                 biometryAccessGranted = false
             case .success:
