@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "Недостаточно ADA";
 "common_accept" = "Принять";
 "common_access_denied" = "Доступ запрещен";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Все";
 "common_allow" = "Разрешить";
 "common_analytics" = "Аналитика";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "Безлимитно";
 "home_button_order" = "Купить";
 "home_button_scan" = "Сканировать";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Эта информация была сгенерирована ИИ.\nНажмите здесь, если обнаружили ошибку.";
 "initial_message_change_access_code_body" = "Чтобы изменить код доступа, приложите карту или кольцо как показано выше и не убирайте до окончания операции";
 "initial_message_change_passcode_body" = "Чтобы изменить пароль, приложите карту как показано выше и не убирайте до окончания операции";
@@ -1052,7 +1056,7 @@
 "warning_solana_rent_fee_message" = "Сеть Solana взимает арендную плату в размере %1$@ каждые 2 дня. Аккаунты, которые не могут позволить себе арендную плату, удаляются из сети. Пополните свой счет более чем на %2$@, чтобы не платить арендную плату.";
 "warning_some_networks_unreachable_message" = "Свайпните вниз для обновления или попробуйте позже.";
 "warning_some_networks_unreachable_title" = "Некоторые сети недоступны";
-"warning_some_token_balances_not_updated" = "Some token balances could not updated";
+"warning_some_token_balances_not_updated" = "Some token balances could not be updated";
 "warning_system_deprecation_title" = "Требуется обновление системы";
 "warning_system_deprecation_with_date_message" = "Поддержка вашей версии операционной системы завершится %@. Для получения последующих обновлений приложения, необходимо обновить ее до последней версии.";
 "warning_system_update_message" = "Tangem рекомендует установить последнее обновление iOS для стабильной и безопасной работы";
