@@ -349,6 +349,7 @@ lane :update_translations do |options|
     replace_breaks: true,
     add_newline_eof: true,
     use_original: true,
+    escape_percent: true,
     languages: languages,
     export_sort: "a_z",
     export_empty_as: "base"
