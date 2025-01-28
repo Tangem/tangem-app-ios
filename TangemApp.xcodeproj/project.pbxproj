@@ -2764,6 +2764,8 @@
 		EF842DEB2AFA58C5006E472E /* ExpressTokensListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DE62AFA58C5006E472E /* ExpressTokensListViewModel.swift */; };
 		EF842DEC2AFA58C5006E472E /* ExpressTokensListRoutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DE72AFA58C5006E472E /* ExpressTokensListRoutable.swift */; };
 		EF842DEE2AFA6D07006E472E /* ProviderRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF842DED2AFA6D07006E472E /* ProviderRowViewModel.swift */; };
+		EF89FC1C2D492BFD00DF0B73 /* TangemLoggerConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF89FC1A2D492BFD00DF0B73 /* TangemLoggerConfigurator.swift */; };
+		EF89FC1D2D492BFD00DF0B73 /* AppLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF89FC192D492BFD00DF0B73 /* AppLog.swift */; };
 		EF8B59222D358D390052D0D5 /* LoadableTokenBalanceViewStateBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8B59212D358D390052D0D5 /* LoadableTokenBalanceViewStateBuilder.swift */; };
 		EF8BE6B32CCA8800001FBA2B /* OnrampDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6B22CCA87FE001FBA2B /* OnrampDataRepository.swift */; };
 		EF8BE6BB2CCA98CB001FBA2B /* OnrampPairRequestItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BE6BA2CCA98CA001FBA2B /* OnrampPairRequestItem.swift */; };
@@ -6003,6 +6005,8 @@
 		EF842DE62AFA58C5006E472E /* ExpressTokensListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressTokensListViewModel.swift; sourceTree = "<group>"; };
 		EF842DE72AFA58C5006E472E /* ExpressTokensListRoutable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressTokensListRoutable.swift; sourceTree = "<group>"; };
 		EF842DED2AFA6D07006E472E /* ProviderRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderRowViewModel.swift; sourceTree = "<group>"; };
+		EF89FC192D492BFD00DF0B73 /* AppLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLog.swift; sourceTree = "<group>"; };
+		EF89FC1A2D492BFD00DF0B73 /* TangemLoggerConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemLoggerConfigurator.swift; sourceTree = "<group>"; };
 		EF8B59212D358D390052D0D5 /* LoadableTokenBalanceViewStateBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadableTokenBalanceViewStateBuilder.swift; sourceTree = "<group>"; };
 		EF8BE6B22CCA87FE001FBA2B /* OnrampDataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampDataRepository.swift; sourceTree = "<group>"; };
 		EF8BE6BA2CCA98CA001FBA2B /* OnrampPairRequestItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnrampPairRequestItem.swift; sourceTree = "<group>"; };
@@ -12995,6 +12999,7 @@
 			isa = PBXGroup;
 			children = (
 				DC25DDE62D4236EF00845E4C /* HotCryptoServices */,
+				EF89FC1B2D492BFD00DF0B73 /* TangemLogger */,
 				EF41A3CD2D3808AF00FA7020 /* TokenBalancesStorage */,
 				EF5256502D301E5D00ADCA7E /* TokenBalancesRepository */,
 				EF9156162D3E8CAC0037521D /* GeoDefiner */,
@@ -15453,6 +15458,15 @@
 				EF842DE72AFA58C5006E472E /* ExpressTokensListRoutable.swift */,
 			);
 			path = ExpressTokensList;
+			sourceTree = "<group>";
+		};
+		EF89FC1B2D492BFD00DF0B73 /* TangemLogger */ = {
+			isa = PBXGroup;
+			children = (
+				EF89FC192D492BFD00DF0B73 /* AppLog.swift */,
+				EF89FC1A2D492BFD00DF0B73 /* TangemLoggerConfigurator.swift */,
+			);
+			path = TangemLogger;
 			sourceTree = "<group>";
 		};
 		EF8BE6B12CCA87FB001FBA2B /* OnrampDataRepository */ = {
@@ -18570,6 +18584,8 @@
 				B053759126CA3EFA0090FCFC /* CheckmarkSwitch.swift in Sources */,
 				DCDBDA062A27C16C0000EBA2 /* LockedUserWalletModel.swift in Sources */,
 				DC13D04329DF31A60003895C /* WalletOnboardingStepsBuilder.swift in Sources */,
+				EF89FC1C2D492BFD00DF0B73 /* TangemLoggerConfigurator.swift in Sources */,
+				EF89FC1D2D492BFD00DF0B73 /* AppLog.swift in Sources */,
 				B04CD34229122C7D001EA84A /* ReferralRoutable.swift in Sources */,
 				EFD68F262CC2990900693C97 /* OnrampStep.swift in Sources */,
 				DC28916D2CD4B3E900F57F59 /* TokenSelectorItemBuilder.swift in Sources */,
