@@ -148,7 +148,7 @@ public indirect enum Blockchain: Equatable, Hashable {
              .chiliz(let testnet),
              .odysseyChain(let testnet),
              .bitrock(let testnet),
-             .apeChain(let testnet)б
+             .apeChain(let testnet),
              .alephium(let testnet):
             return testnet
         case .litecoin,
