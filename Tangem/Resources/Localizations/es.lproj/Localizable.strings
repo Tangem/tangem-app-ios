@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "ADA insuficiente";
 "common_accept" = "Aceptar";
 "common_access_denied" = "Acceso denegado";
+"common_add_to_portfolio" = "Add to portfolio";
+"common_add_token" = "Add token";
 "common_all" = "Todos";
 "common_allow" = "Autorizar";
 "common_analytics" = "Analítica";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "Ilimitado";
 "home_button_order" = "Pedir Tangem";
 "home_button_scan" = "Escanee";
+"hot_crypto_add_token_subtitle" = "to %@";
+"hot_crypto_token_network" = "In %@";
 "information_generated_with_ai" = "Esta información fue generada con IA.\nPulse aquí si encuentra algún error.";
 "initial_message_change_access_code_body" = "Para cambiar el código de acceso coloque la tarjeta o el anillo como se muestra arriba y no lo retire hasta el fin de la operación";
 "initial_message_change_passcode_body" = "Toque para cambiar la contraseña";
@@ -1052,7 +1056,7 @@
 "warning_solana_rent_fee_message" = "La red Solana cobra un alquiler de %1$@ cada %2$@ días. Las cuentas que no pueden pagar el alquiler son eliminadas de la red. Deposite en su cuenta más de 2 para usarla de forma gratuita.";
 "warning_some_networks_unreachable_message" = "Deslice hacia abajo para refrescar o inténtelo de nuevo más tarde.";
 "warning_some_networks_unreachable_title" = "Algunas redes no están disponibles";
-"warning_some_token_balances_not_updated" = "Some token balances could not updated";
+"warning_some_token_balances_not_updated" = "Some token balances could not be updated";
 "warning_system_deprecation_title" = "Actualización del sistema requerida";
 "warning_system_deprecation_with_date_message" = "El soporte para tu versión del sistema operativo finalizará el %@. Para recibir futuras actualizaciones de la app, deba actualizarlo a la última versión.";
 "warning_system_update_message" = "Tangem recomienda instalar la última actualización de iOS para un funcionamiento estable y seguro";
