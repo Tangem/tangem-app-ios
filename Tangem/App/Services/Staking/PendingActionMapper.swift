@@ -25,8 +25,12 @@ struct PendingActionMapper {
         case .active:
             let unstake = stakingAction(type: .unstake)
 
-            if let restakeAction = balance.actions.first(where: { $0.type == .restake }),
-               validators.filter(\.preferred).count > 1 {
+            if let restakeAction = balance.actions.first(
+                where: {
+                    $0.type == .restake || ($0.type == .stake && balance.item.network == .cardano)
+                }
+            ),
+                validators.filter(\.preferred).count > 1 {
                 let restake = stakingAction(
                     type: .pending(.restake(passthrough: restakeAction.passthrough))
                 )

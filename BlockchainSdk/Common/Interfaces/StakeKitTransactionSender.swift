@@ -61,8 +61,6 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                     _ = try await withThrowingTaskGroup(of: (TransactionSendResult, StakeKitTransaction).self) { group in
                         var results = [TransactionSendResult]()
                         for (transaction, rawTransaction) in zip(transactions, rawTransactions) {
-
-
                             group.addTask {
                                 try Task.checkCancellation()
                                 let result: TransactionSendResult = try await self.broadcast(

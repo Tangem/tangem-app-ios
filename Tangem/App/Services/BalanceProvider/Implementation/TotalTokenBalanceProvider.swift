@@ -74,27 +74,27 @@ private extension TotalTokenBalanceProvider {
 
         // Both is loading and both have a cache -> loading with cache
         case (.loading(.some(let available)), .loading(.some(let staking))):
-            let cached = available.balance + staking.balance
+            let cached = combineBalances(available: available.balance, staked: staking.balance)
             return .loading(.init(balance: cached, date: available.date))
 
         // Available is loading and staking is failure -> loading with cache + loaded
         case (.loading(.some(let available)), .failure(.some(let staking))):
-            let cached = available.balance + staking.balance
+            let cached = combineBalances(available: available.balance, staked: staking.balance)
             return .loading(.init(balance: cached, date: available.date))
 
         // Available is loading and staking is loaded -> loading with cache + loaded
         case (.loading(.some(let available)), .loaded(let staking)):
-            let cached = available.balance + staking
+            let cached = combineBalances(available: available.balance, staked: staking)
             return .loading(.init(balance: cached, date: available.date))
 
         // Available is loaded and staking is loading -> loading with loaded + cache
         case (.loaded(let available), .loading(.some(let staking))):
-            let cached = available + staking.balance
+            let cached = combineBalances(available: available, staked: staking.balance)
             return .loading(.init(balance: cached, date: staking.date))
 
         // Available is loaded and staking is loading -> loading with loaded + cache
         case (.failure(.some(let available)), .loading(.some(let staking))):
-            let cached = available.balance + staking.balance
+            let cached = combineBalances(available: available.balance, staked: staking.balance)
             return .loading(.init(balance: cached, date: available.date))
 
         // There is one of them is loading without cached -> loading without cache
@@ -103,7 +103,7 @@ private extension TotalTokenBalanceProvider {
 
         // Both is failure and both have a cache -> failure with cache
         case (.failure(.some(let available)), .failure(.some(let staking))):
-            let cached = available.balance + staking.balance
+            let cached = combineBalances(available: available.balance, staked: staking.balance)
             return .failure(.init(balance: cached, date: available.date))
 
         // Available is failure and staking is empty -> loading with cache
@@ -111,11 +111,11 @@ private extension TotalTokenBalanceProvider {
             return .failure(.init(balance: available.balance, date: available.date))
 
         case (.failure(.some(let available)), .loaded(let staking)):
-            let cached = available.balance + staking
+            let cached = combineBalances(available: available.balance, staked: staking)
             return .failure(.init(balance: cached, date: available.date))
 
         case (.loaded(let available), .failure(.some(let staking))):
-            let cached = available + staking.balance
+            let cached = combineBalances(available: available, staked: staking.balance)
             return .failure(.init(balance: cached, date: staking.date))
 
         // There is one of them is failure without cached -> show error
@@ -124,7 +124,7 @@ private extension TotalTokenBalanceProvider {
 
         // There is both is loaded -> show loaded with sum
         case (.loaded(let available), .loaded(let staking)):
-            return .loaded(available + staking)
+            return .loaded(combineBalances(available: available, staked: staking))
         }
     }
 
@@ -134,5 +134,12 @@ private extension TotalTokenBalanceProvider {
         })
 
         return builder.mapToFormattedTokenBalanceType(type: type)
+    }
+
+    func combineBalances(available: Decimal, staked: Decimal) -> Decimal {
+        switch walletModel.tokenItem.blockchain {
+        case .cardano: available
+        default: available + staked
+        }
     }
 }
