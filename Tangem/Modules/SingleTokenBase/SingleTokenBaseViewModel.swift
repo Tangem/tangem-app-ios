@@ -275,14 +275,15 @@ extension SingleTokenBaseViewModel {
     }
 
     private func bind() {
-        walletModel.walletDidChangePublisher
+        walletModel.totalTokenBalanceProvider
+            .balanceTypePublisher
             .receive(on: DispatchQueue.main)
             .handleEvents(receiveOutput: { [weak self] _ in
                 self?.updatePendingTransactionView()
             })
             .removeDuplicates()
-            .filter { $0 != .loading }
-            .sink { _ in } receiveValue: { [weak self] newState in
+            .filter { !$0.isLoading }
+            .receiveValue { [weak self] newState in
                 AppLog.shared.debug("Token details receive new wallet model state: \(newState)")
                 self?.updateActionButtons()
             }

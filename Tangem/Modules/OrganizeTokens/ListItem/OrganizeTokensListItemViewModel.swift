@@ -20,7 +20,7 @@ struct OrganizeTokensListItemViewModel: Hashable, Identifiable {
     var hasMonochromeIcon: Bool { isNetworkUnreachable || !hasDerivation || isTestnet }
     var isCustom: Bool { tokenIcon.isCustom }
 
-    let balance: LoadableTextView.State
+    let balance: LoadableTokenBalanceView.State
 
     var errorMessage: String? {
         if !hasDerivation {
@@ -45,7 +45,7 @@ struct OrganizeTokensListItemViewModel: Hashable, Identifiable {
     init(
         id: Identifier,
         tokenIcon: TokenIconInfo,
-        balance: LoadableTextView.State,
+        balance: LoadableTokenBalanceView.State,
         hasDerivation: Bool,
         isTestnet: Bool,
         isNetworkUnreachable: Bool,

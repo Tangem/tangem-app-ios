@@ -12,10 +12,12 @@ import TangemStaking
 
 struct StakingTokenBalanceProvider {
     private let walletModel: WalletModel
+    private let tokenBalancesRepository: TokenBalancesRepository
     private let balanceFormatter = BalanceFormatter()
 
-    init(walletModel: WalletModel) {
+    init(walletModel: WalletModel, tokenBalancesRepository: TokenBalancesRepository) {
         self.walletModel = walletModel
+        self.tokenBalancesRepository = tokenBalancesRepository
     }
 }
 
@@ -46,18 +48,34 @@ extension StakingTokenBalanceProvider: TokenBalanceProvider {
 // MARK: - Private
 
 extension StakingTokenBalanceProvider {
+    func storeBalance(balance: Decimal) {
+        tokenBalancesRepository.store(
+            balance: .init(balance: balance, date: .now),
+            for: walletModel,
+            type: .staked
+        )
+    }
+
+    func cachedBalance() -> TokenBalanceType.Cached? {
+        tokenBalancesRepository.balance(walletModel: walletModel, type: .staked).map {
+            .init(balance: $0.balance, date: $0.date)
+        }
+    }
+
     func mapToTokenBalance(state: StakingManagerState) -> TokenBalanceType {
         switch state {
         case .loading:
-            return .loading(.none)
+            return .loading(cachedBalance())
         case .notEnabled, .temporaryUnavailable:
             return .empty(.noData)
         case .loadingError:
-            return .failure(.none)
+            return .failure(cachedBalance())
         case .availableToStake:
+            storeBalance(balance: .zero)
             return .loaded(.zero)
         case .staked(let balances):
             let balance = balances.balances.blocked().sum()
+            storeBalance(balance: balance)
             return .loaded(balance)
         }
     }

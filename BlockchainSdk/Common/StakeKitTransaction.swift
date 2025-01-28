@@ -9,23 +9,40 @@
 import Foundation
 
 public struct StakeKitTransaction: Hashable {
+    public enum Status: String {
+        case confirmed = "CONFIRMED" // other statuses are not used, add if necessary
+    }
+
+    public enum TransactionType: String {
+        case split = "SPLIT" // other types are not used, add if necessary
+    }
+
     public let id: String
     let amount: Amount
     let fee: Fee
     let unsignedData: String
-    let params: StakeKitTransactionParams?
+    public let type: TransactionType?
+    public let status: Status?
+    public let stepIndex: Int
+    let params: StakeKitTransactionParams
 
     public init(
         id: String,
         amount: Amount,
         fee: Fee,
         unsignedData: String,
-        params: StakeKitTransactionParams? = nil
+        type: TransactionType?,
+        status: Status?,
+        stepIndex: Int,
+        params: StakeKitTransactionParams
     ) {
         self.id = id
         self.amount = amount
         self.fee = fee
         self.unsignedData = unsignedData
+        self.type = type
+        self.status = status
+        self.stepIndex = stepIndex
         self.params = params
     }
 }
@@ -42,8 +59,10 @@ public struct StakeKitTransactionSendError: Error {
 
 public struct StakeKitTransactionParams: Hashable, TransactionParams {
     let validator: String?
+    let solanaBlockhashDate: Date
 
-    public init(validator: String? = nil) {
+    public init(validator: String? = nil, solanaBlockhashDate: Date) {
         self.validator = validator
+        self.solanaBlockhashDate = solanaBlockhashDate
     }
 }

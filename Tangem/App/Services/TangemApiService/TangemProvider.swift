@@ -28,4 +28,11 @@ extension URLSessionConfiguration {
         configuration.timeoutIntervalForResource = 30
         return configuration
     }()
+
+    static let stakingConfiguration: URLSessionConfiguration = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 60
+        configuration.timeoutIntervalForResource = 60
+        return configuration
+    }()
 }
