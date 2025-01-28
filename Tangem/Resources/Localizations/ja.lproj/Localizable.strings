@@ -85,6 +85,8 @@
 "cardano_max_amount_has_token_title" = "ADAが不足しています。";
 "common_accept" = "受け入れる";
 "common_access_denied" = "アクセスが拒否されました";
+"common_add_to_portfolio" = "ポートフォリオに追加";
+"common_add_token" = "トークンを追加";
 "common_all" = "すべて";
 "common_allow" = "許可する";
 "common_analytics" = "アナリティクス";
@@ -333,6 +335,8 @@
 "give_permission_unlimited" = "無制限";
 "home_button_order" = "Tangemを注文";
 "home_button_scan" = "Tangemをスキャン";
+"hot_crypto_add_token_subtitle" = "%@へ";
+"hot_crypto_token_network" = "%@内";
 "information_generated_with_ai" = "この情報はAIで生成されました。 \nエラーが見つかった場合は、ここをタップしてください。";
 "initial_message_change_access_code_body" = "アクセスコードを変更するには、上図のようにカードまたはリングをタップし、操作が終了するまで取り外さないでください。";
 "initial_message_change_passcode_body" = "パスコードを変更するには、上記のようにカードをタップし、操作が終了するまで取り外さないでください。";
@@ -623,7 +627,7 @@
 "reset_card_with_backup_to_factory_message" = "工場出荷時設定にリセットすると、選択したカードやリングからウォレットが完全に削除されます。現在のウォレットを復元したり、カードやリングを使用してアクセスコードを復元することはできません。";
 "reset_card_without_backup_to_factory_message" = "工場出荷時の状態にリセットすると、選択したカードやリングからウォレットが完全に削除され、アプリから削除されます。現在のウォレットを復元することはできません。";
 "ring_promo_text" = "Tangem Ringユーザーは、11/15日までChangelly経由でスワップを3回手数料ゼロで行えます！";
-"ring_promo_title" = "今すぐ手数料0%%でスワップしましょう！";
+"ring_promo_title" = "今すぐ手数料0%% でスワップしましょう！";
 "russian_bank_card_warning_subtitle" = "他の国の銀行カードと、ロシア連邦外での居住許可証または登録をお持ちですか?";
 "russian_bank_card_warning_title" = "ロシアの銀行カードは現在ご利用いただけません";
 "save_user_wallet_agreement_access_description" = "アプリにログインして、カードまたはリングをスキャンせずに残高を確認できます";
@@ -970,7 +974,7 @@
 "wallet_marketprice_block_update_time" = "直近24時間";
 "wallet_network_group_title" = "%@ネットワーク";
 "wallet_notification_address_copied" = "アドレスがクリップボードにコピーされました";
-"wallet_promo_banner_button_title" = "今すぐ10 %%オフで購入";
+"wallet_promo_banner_button_title" = "今すぐ10 %% オフで購入";
 "wallet_promo_banner_description" = "1.3万種類以上の暗号資産にアクセス。ワンタップで買付、売却、スワップ、ステーキングが可能です。\nバックアップ用に最大3枚のカードを連携できます。";
 "wallet_promo_banner_title" = "Tangemウォレットを見る";
 "wallet_settings_title" = "ウォレット設定";
