@@ -98,11 +98,13 @@ struct MailView: UIViewControllerRepresentable {
         context: UIViewControllerRepresentableContext<MailView>
     ) {}
 
+    #if DEBUG
     private func attachCSVData(at url: URL, to viewController: MFMailComposeViewController) {
         if let data = try? Data(contentsOf: url) {
             viewController.addAttachmentData(data, mimeType: "text/csv", fileName: url.lastPathComponent)
         }
     }
+    #endif
 }
 
 private struct MailViewPlaceholder: View {
