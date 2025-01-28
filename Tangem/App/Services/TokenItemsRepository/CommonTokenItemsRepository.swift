@@ -22,7 +22,7 @@ class CommonTokenItemsRepository {
     }
 
     deinit {
-        AppLog.shared.debug("\(#function) \(objectDescription(self))")
+        AppLog.debug(self)
     }
 }
 

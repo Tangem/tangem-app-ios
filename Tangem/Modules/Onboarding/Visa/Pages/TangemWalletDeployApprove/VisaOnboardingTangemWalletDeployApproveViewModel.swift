@@ -100,8 +100,12 @@ final class VisaOnboardingTangemWalletDeployApproveViewModel: ObservableObject {
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[VisaOnboardingApproveViewModel] - \(message())")
+        VisaLogger.info(self, message())
     }
+}
+
+extension VisaOnboardingTangemWalletDeployApproveViewModel: CustomStringConvertible {
+    var description: String { "VisaOnboardingTangemWalletDeployApproveViewModel" }
 }
 
 private extension VisaOnboardingTangemWalletDeployApproveViewModel {

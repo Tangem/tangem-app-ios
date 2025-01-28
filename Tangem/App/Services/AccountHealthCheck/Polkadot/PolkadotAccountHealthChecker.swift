@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import BlockchainSdk
-import TangemLogger
 import TangemFoundation
 
 /// - Warning: Read-write access to all `@AppStorageCompat` or stored properties
@@ -77,7 +76,7 @@ final class PolkadotAccountHealthChecker {
         backgroundTasksManager.cancelAllBackgroundTasks()
 
         for account in currentlyAnalyzedAccounts where healthCheckTasks[account] == nil {
-            Logger.info(.polkadot, "Found an incomplete health check for account '\(account)', restarting health check")
+            AppLog.info("Found an incomplete health check for account '\(account)', restarting health check")
             performAccountCheck(account)
         }
     }
@@ -95,7 +94,7 @@ final class PolkadotAccountHealthChecker {
 
         // This callback is guaranteed to be called on the main queue, so no thread synchronization is required
         let backgroundTask = BackgroundTaskWrapper(taskName: backgroundTaskName) { [weak self] in
-            Logger.info(.polkadot, "Background task (UIKit) has expired while checking account '\(account)'")
+            AppLog.info("Background task (UIKit) has expired while checking account '\(account)'")
 
             guard let self else {
                 return
@@ -112,7 +111,7 @@ final class PolkadotAccountHealthChecker {
 
     // This overload uses given background task (hidden behind `AccountHealthCheckBackgroundTask` interface).
     private func performAccountCheck(_ account: String, backgroundTask: AccountHealthCheckBackgroundTask) {
-        Logger.info(.polkadot, "Starting checking account '\(account)'")
+        AppLog.info("Starting checking account '\(account)'")
 
         currentlyAnalyzedAccounts.insert(account)
         healthCheckTasks[account] = TangemFoundation.runTask(in: self) {
@@ -122,7 +121,7 @@ final class PolkadotAccountHealthChecker {
 
     private func checkAccount(_ account: String, backgroundTask: AccountHealthCheckBackgroundTask) async {
         defer {
-            Logger.info(.polkadot, "Cleaning up after checking account '\(account)'")
+            AppLog.info("Cleaning up after checking account '\(account)'")
             backgroundTask.finish()
             runOnMain { healthCheckTasks[account] = nil }
         }
@@ -145,9 +144,7 @@ final class PolkadotAccountHealthChecker {
         }
 
         runOnMain { currentlyAnalyzedAccounts.remove(account) }
-        Logger.info(
-            .polkadot, "Finished checking account '\(account)' for all issues"
-        )
+        AppLog.info("Finished checking account '\(account)' for all issues")
     }
 
     private func checkAccountForReset(_ account: String) async {
@@ -175,10 +172,9 @@ final class PolkadotAccountHealthChecker {
             }
 
             runOnMain { analyzedForResetAccounts.append(account) }
-            Logger.info(.polkadot, "Finished checking account '\(account)' for reset")
+            AppLog.info("Finished checking account '\(account)' for reset")
         } catch {
-            Logger.info(.polkadot, "Failed to check account '\(account)' for reset due to error: '\(error)'")
-            Analytics.error(error)
+            AppLog.error("Failed to check account '\(account)' for reset due to error:", error: error)
         }
     }
 
@@ -227,10 +223,9 @@ final class PolkadotAccountHealthChecker {
 
             sendAccountHealthMetric(.hasImmortalTransaction(value: foundImmortalTransaction))
             runOnMain { analyzedForImmortalTransactionsAccounts.append(account) }
-            Logger.info(.polkadot, "Finished checking account '\(account)' for immortal transactions")
+            AppLog.info("Finished checking account '\(account)' for immortal transactions")
         } catch {
-            Logger.error(.polkadot, "Failed to check account '\(account)' for immortal transactions due to error: '\(error)'")
-            Analytics.error(error)
+            AppLog.error("Failed to check account '\(account)' for immortal transactions due to error:", error: error)
         }
     }
 
@@ -245,7 +240,7 @@ final class PolkadotAccountHealthChecker {
 
     @MainActor
     private func sendAccountHealthMetric(_ metric: AccountHealthMetric) {
-        Logger.info(.polkadot, "Sending analytics event for metric '\(metric)'")
+        AppLog.info("Sending analytics event for metric '\(metric)'")
         switch metric {
         case .hasBeenReset(let value):
             let value: Analytics.ParameterValue = .affirmativeOrNegative(for: value)

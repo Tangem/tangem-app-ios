@@ -16,7 +16,7 @@ struct CommonOnrampStorage: OnrampStorage {
         do {
             try storage.store(value: preference, for: .onrampPreference)
         } catch {
-            AppLog.shared.debug("[CommonOnrampStorage] Failed to save changes in storage. Reason: \(error)")
+            AppLog.error("Failed to save changes in storage", error: error)
         }
     }
 
@@ -24,7 +24,7 @@ struct CommonOnrampStorage: OnrampStorage {
         do {
             return try storage.value(for: .onrampPreference)
         } catch {
-            AppLog.shared.debug("[CommonOnrampStorage] Couldn't get the staking transactions list from the storage with error \(error)")
+            AppLog.error("Couldn't get the staking transactions list from the storage", error: error)
             return nil
         }
     }

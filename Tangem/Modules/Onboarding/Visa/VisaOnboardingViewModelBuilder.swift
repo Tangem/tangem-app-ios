@@ -38,8 +38,7 @@ struct VisaOnboardingViewModelBuilder {
                 cardId: onboardingInput.primaryCardId,
                 initialActivationStatus: initialActivationStatus,
                 tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
-                urlSessionConfiguration: .defaultConfiguration,
-                logger: AppLog.shared
+                urlSessionConfiguration: .defaultConfiguration
             )
         } else {
             visaActivationManager = ActivatedVisaCardDummyManager()
@@ -55,6 +54,6 @@ struct VisaOnboardingViewModelBuilder {
     }
 
     private func logInvalidInput(_ message: String) {
-        AppLog.shared.debug("[Visa] VisaOnboardingViewModelBuilder - Invalid card input was received while creating onboarding view model. Message: \(message)")
+        VisaLogger.error("Invalid card input was received while creating onboarding view model", error: message)
     }
 }

@@ -202,7 +202,7 @@ final class UserWalletNotificationManager {
         let canCountHashes = config.hasFeature(.signedHashesCounter)
 
         func didFinishCountingHashes() {
-            AppLog.shared.debug("⚠️ Hashes counted")
+            AppLog.info("⚠️ Hashes counted")
         }
 
         guard !AppSettings.shared.validatedSignedHashesCards.contains(userWalletModel.userWalletId.stringValue) else {
@@ -246,7 +246,7 @@ final class UserWalletNotificationManager {
         validatorSubscription = signatureCountValidator.validateSignatureCount(signedHashes: cardSignedHashes)
             .subscribe(on: DispatchQueue.global())
             .handleEvents(receiveCancel: {
-                AppLog.shared.debug("⚠️ Hash counter subscription cancelled")
+                AppLog.info("⚠️ Hash counter subscription cancelled")
             })
             .receive(on: DispatchQueue.main)
             .receiveCompletion { [weak self] completion in

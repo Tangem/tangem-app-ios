@@ -23,7 +23,7 @@ struct AllowanceChecker {
 
         var allowance = try await getAllowance(owner: walletModel.defaultAddress, to: spender, contract: contract)
         allowance /= walletModel.tokenItem.decimalValue
-        AppLog.shared.debug("\(walletModel.tokenItem.name) allowance - \(allowance)")
+        AppLog.info("\(walletModel.tokenItem.name) allowance - \(allowance)")
 
         // If we don't have enough allowance
         guard allowance < amount else {

@@ -66,7 +66,7 @@ class DetailsViewModel: ObservableObject {
     }
 
     deinit {
-        AppLog.shared.debug("DetailsViewModel deinit")
+        AppLog.debug(self)
     }
 
     // MARK: - Private

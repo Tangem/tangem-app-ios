@@ -44,7 +44,7 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[VisaOnboardingWalletConnectViewModel] - \(message())")
+        VisaLogger.info(self, message())
     }
 
     private func setupStatusUpdateTask() {
@@ -83,4 +83,8 @@ class VisaOnboardingWalletConnectViewModel: ObservableObject {
         cancelStatusUpdates()
         await delegate?.proceedFromCurrentRemoteState()
     }
+}
+
+extension VisaOnboardingWalletConnectViewModel: CustomStringConvertible {
+    var description: String { "VisaOnboardingWalletConnectViewModel" }
 }

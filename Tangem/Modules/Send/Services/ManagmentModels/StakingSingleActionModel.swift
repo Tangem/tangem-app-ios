@@ -89,7 +89,7 @@ private extension StakingSingleActionModel {
                 let state = try await model.state()
                 model.update(state: state)
             } catch {
-                Analytics.error(error)
+                AppLog.error(error: error)
                 model.update(state: .networkError(error))
             }
         }

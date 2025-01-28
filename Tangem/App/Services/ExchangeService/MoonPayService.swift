@@ -94,7 +94,7 @@ class MoonPayService {
     private let darkThemeName = "dark"
 
     deinit {
-        AppLog.shared.debug("MoonPay deinit")
+        AppLog.debug(self)
     }
 
     private func makeSignature(for components: URLComponents) -> URLQueryItem {
@@ -252,13 +252,12 @@ extension MoonPayService: ExchangeService {
                 switch result {
                 case .finished: break
                 case .failure(let error):
-                    AppLog.shared.debug("Failed both requests: \(error.localizedDescription)")
+                    AppLog.error("Failed both requests", error: error)
                     self.initializeState = .failed(.networkError)
                 }
             },
             receiveValue: { [weak self] ipOutput, currenciesOutput in
                 guard let self else { return }
-                let decoder = JSONDecoder()
 
                 let (countryCode, stateCode) = handleIPResponse(ipOutput: ipOutput.data)
 
@@ -274,8 +273,7 @@ extension MoonPayService: ExchangeService {
 
                     initializeState = canSellCrypto ? .initialized : .failed(.countryNotSupported)
                 } catch {
-                    AppLog.shared.debug("Failed to load currencies")
-                    Analytics.error(error)
+                    AppLog.error("Failed to load currencies", error: error)
                     initializeState = .failed(.networkError)
                 }
             }
@@ -292,8 +290,7 @@ extension MoonPayService: ExchangeService {
 
             return (decodedResponse.countryCode, decodedResponse.stateCode)
         } catch {
-            AppLog.shared.debug("Failed to check IP address")
-            Analytics.error(error)
+            AppLog.error("Failed to check IP address", error: error)
 
             return ("", "")
         }

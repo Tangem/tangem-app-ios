@@ -247,7 +247,8 @@ class SingleCardOnboardingViewModel: OnboardingTopupViewModel<SingleCardOnboardi
                 // Do nothing
                 break
             case .failure(let error):
-                Analytics.error(error, params: [.action: .createWallet])
+                AppLog.error(error: error)
+                Analytics.error(error: error, params: [.action: .createWallet])
                 alert = error.alertBinder
             }
 

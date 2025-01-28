@@ -292,7 +292,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
 
     func goToStep(_ step: Step) {
         guard let newIndex = steps.firstIndex(of: step) else {
-            AppLog.shared.debug("Failed to find step \(step)")
+            AppLog.error(self, error: "Failed to find step \(step)")
             return
         }
 

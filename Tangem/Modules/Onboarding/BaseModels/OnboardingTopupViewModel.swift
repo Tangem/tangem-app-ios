@@ -63,7 +63,7 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
                 viewModel.updateCardBalanceText(for: walletModel)
                 switch walletModelState {
                 case .noAccount(let message, _):
-                    AppLog.shared.debug(message)
+                    AppLog.info(viewModel, message)
                     fallthrough
                 case .loaded:
                     if shouldGoToNextStep,
@@ -132,5 +132,11 @@ extension OnboardingTopupViewModel {
         coordinator?.openBrowser(at: url) { [weak self] _ in
             self?.updateCardBalance()
         }
+    }
+}
+
+extension OnboardingTopupViewModel: CustomStringConvertible {
+    public var description: String {
+        return "OnboardingTopupViewModel"
     }
 }

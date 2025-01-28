@@ -11,7 +11,6 @@ import Combine
 import TangemFoundation
 import TangemExpress
 import BlockchainSdk
-import TangemLogger
 
 class ExpressInteractor {
     // MARK: - Public
@@ -292,7 +291,7 @@ extension ExpressInteractor {
         let factory = TransactionDispatcherFactory(walletModel: sender, signer: signer)
         let transactionDispatcher = factory.makeSendDispatcher()
         let result = try await transactionDispatcher.send(transaction: .transfer(transaction))
-        Logger.info(.express, "Sent the approve transaction with result: \(result)")
+        AppLog.info("Sent the approve transaction with result: \(result)")
         allowanceProvider.didSendApproveTransaction(for: state.data.spender)
         logApproveTransactionSentAnalyticsEvent(policy: state.policy, signerType: result.signerType)
         updateState(.restriction(.hasPendingApproveTransaction, quote: getState().quote))
@@ -637,7 +636,7 @@ private extension ExpressInteractor {
 
 private extension ExpressInteractor {
     func log<T: CustomStringConvertible>(_ args: T) {
-        Logger.info(.express, self, args)
+        AppLog.info(self, args)
     }
 }
 

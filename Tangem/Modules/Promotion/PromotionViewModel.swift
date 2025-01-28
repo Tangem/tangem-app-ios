@@ -121,7 +121,7 @@ final class PromotionViewModel: ObservableObject {
         case "promotion-buy":
             Analytics.logPromotionEvent(.promoBuy, programName: programName)
         default:
-            AppLog.shared.debug("Unknown analytics event from promotion web view \(event), program name \(programName)")
+            AppLog.warning("Unknown analytics event from promotion web view \(event), program name \(programName)")
         }
     }
 

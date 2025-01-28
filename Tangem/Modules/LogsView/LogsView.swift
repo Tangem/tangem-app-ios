@@ -55,6 +55,7 @@ struct LogsView: View {
 
                 Divider()
             }
+            .infinityFrame()
         case .failure(let failure):
             Text(failure.localizedDescription)
                 .style(Fonts.Regular.subheadline, color: Colors.Text.primary1)

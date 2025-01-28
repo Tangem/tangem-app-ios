@@ -43,7 +43,7 @@ extension Set<Blockchain> {
             return blockchain
         }
 
-        AppLog.shared.debug("⚠️⚠️⚠️ Blockchain with id: \(networkId) isn't contained in supported blockchains")
+        AppLog.error(error: "⚠️⚠️⚠️ Blockchain with id: \(networkId) isn't contained in supported blockchains")
         return nil
     }
 }

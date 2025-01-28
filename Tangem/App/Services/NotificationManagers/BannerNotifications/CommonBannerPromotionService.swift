@@ -29,8 +29,7 @@ extension CommonBannerPromotionService: BannerPromotionService {
                 return .init(bannerPromotion: promotion, timeline: promotionInfo.all.timeline, link: promotionInfo.all.link)
             }
         } catch {
-            AppLog.shared.debug("Check promotions catch error \(error)")
-            Analytics.error(error)
+            AppLog.error("Check promotions catch error", error: error)
         }
 
         return nil

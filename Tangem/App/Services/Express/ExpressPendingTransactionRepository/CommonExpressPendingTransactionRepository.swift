@@ -25,7 +25,7 @@ class CommonExpressPendingTransactionRepository {
         do {
             pendingTransactionSubject.value = try storage.value(for: .pendingExpressTransactions) ?? []
         } catch {
-            log("Couldn't get the express transactions list from the storage with error \(error)")
+            AppLog.error("Couldn't get the express transactions list from the storage", error: error)
         }
     }
 
@@ -42,12 +42,8 @@ class CommonExpressPendingTransactionRepository {
         do {
             try storage.store(value: pendingTransactionSubject.value, for: .pendingExpressTransactions)
         } catch {
-            log("Failed to save changes in storage. Reason: \(error)")
+            AppLog.error("Failed to save changes in storage", error: error)
         }
-    }
-
-    private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[Express Tx Repository] \(message())")
     }
 }
 

@@ -8,6 +8,7 @@
 
 import Foundation
 import TangemExpress
+import TangemFoundation
 
 struct CommonExpressDestinationService {
     @Injected(\.expressAvailabilityProvider) private var expressAvailabilityProvider: ExpressAvailabilityProvider
@@ -38,8 +39,12 @@ extension CommonExpressDestinationService: ExpressDestinationService {
 
             return isNotSource && isAvailable && isNotCustom && hasPair
         }
-        .map { walletModel -> (walletModel: WalletModel, fiatBalance: Decimal?) in
-            (walletModel: walletModel, fiatBalance: walletModel.fiatAvailableBalanceProvider.balanceType.value)
+
+        AppLog.info(self, "has searchableWalletModels: \(searchableWalletModels.map { ($0.expressCurrency, $0.fiatBalance) })")
+
+        if let lastSwappedWallet = searchableWalletModels.first(where: { isLastTransactionWith(walletModel: $0) }) {
+            AppLog.info(self, "selected lastSwappedWallet: \(lastSwappedWallet.expressCurrency)")
+            return lastSwappedWallet
         }
 
         log("Has searchableWalletModels: \(searchableWalletModels.map(\.walletModel.expressCurrency))")
@@ -68,7 +73,7 @@ extension CommonExpressDestinationService: ExpressDestinationService {
             return maxBalanceWallet.walletModel
         }
 
-        log("Couldn't find acceptable wallet")
+        AppLog.info(self, "couldn't find acceptable wallet")
         throw ExpressDestinationServiceError.destinationNotFound
     }
 }

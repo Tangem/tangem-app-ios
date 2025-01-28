@@ -74,25 +74,18 @@ private extension CommonTokenBalancesStorage {
     func loadBalances() {
         do {
             try balances.send(storage.value(for: .cachedBalances) ?? [:])
-            log("Storage load successfully")
+            AppLog.info(self, "Load successfully")
         } catch {
-            log("Storage load error \(error.localizedDescription)")
-            AppLog.shared.error(error)
+            AppLog.error(self, "Load error", error: error)
         }
     }
 
     private func save(balances: Balances) {
         do {
             try storage.store(value: balances, for: .cachedBalances)
-            log("Storage save successfully")
         } catch {
-            log("Storage save error \(error.localizedDescription)")
-            AppLog.shared.error(error)
+            AppLog.error("Storage save error", error: error)
         }
-    }
-
-    func log(_ message: String) {
-        AppLog.shared.debug("[\(self)] \(message)")
     }
 }
 

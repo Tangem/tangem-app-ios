@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import CombineExt
+import TangemFoundation
 
 class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
     @Injected(\.quotesRepository) private var quotesRepository: TokenQuotesRepository
@@ -172,7 +173,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
             do {
                 let baseCurrencyCode = await AppSettings.shared.selectedCurrencyCode
                 let currencyId = viewModel.tokenInfo.id
-                viewModel.log("Attempt to load token markets data for token with id: \(currencyId)")
+                AppLog.info(viewModel, "Attempt to load token markets data for token with id: \(currencyId)")
                 let result = try await viewModel.dataProvider.loadTokenDetails(for: currencyId, baseCurrencyCode: baseCurrencyCode)
                 viewModel.marketsQuotesUpdateHelper.updateQuote(marketToken: result, for: baseCurrencyCode)
                 await viewModel.handleLoadDetailedInfo(.success(result))
@@ -193,7 +194,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
         )
 
         guard let url = URL(string: info.link) else {
-            log("Failed to create link from: \(info.link)")
+            AppLog.error(self, error: "Failed to create link from: \(info.link)")
             return
         }
 
@@ -268,7 +269,7 @@ private extension MarketsTokenDetailsViewModel {
 
             sendBlocksAnalyticsErrors(error)
 
-            log("Failed to load detailed info. Reason: \(error)")
+            AppLog.error(self, "Failed to load detailed info", error: error)
         }
     }
 
@@ -497,9 +498,9 @@ private extension MarketsTokenDetailsViewModel {
 
 // MARK: - Logging
 
-private extension MarketsTokenDetailsViewModel {
-    func log(_ message: @autoclosure () -> String) {
-        AppLog.shared.debug("[MarketsTokenDetailsViewModel] - \(message())")
+extension MarketsTokenDetailsViewModel: CustomStringConvertible {
+    var description: String {
+        objectDescription(self)
     }
 }
 

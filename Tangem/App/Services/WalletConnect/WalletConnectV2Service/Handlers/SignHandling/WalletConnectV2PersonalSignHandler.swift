@@ -44,7 +44,7 @@ struct WalletConnectV2PersonalSignHandler {
             walletModel = try walletModelProvider.getModel(with: targetAddress, blockchainId: blockchainId)
         } catch {
             let stringRepresentation = request.stringRepresentation
-            AppLog.shared.debug("[WC 2.0] Failed to create sign handler. Raised error: \(error)")
+            WCLog.error("Failed to create sign handler", error: error)
             throw WalletConnectV2Error.dataInWrongFormat(stringRepresentation)
         }
 
@@ -74,7 +74,7 @@ extension WalletConnectV2PersonalSignHandler: WalletConnectMessageHandler {
             let signedMessage = try await signer.sign(data: hash, using: walletModel)
             return .response(AnyCodable(signedMessage))
         } catch {
-            AppLog.shared.debug("[WC 2.0] Failed to sign message. \(error)")
+            WCLog.error("Failed to sign message", error: error)
             return .error(.internalError)
         }
     }

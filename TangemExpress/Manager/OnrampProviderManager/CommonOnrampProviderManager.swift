@@ -116,7 +116,7 @@ private extension CommonOnrampProviderManager {
     }
 
     func update(state: OnrampProviderManagerState) {
-        Logger.info(.express, self, "State was updated")
+        ExpressLogger.info(self, "State was updated")
         _state = state
     }
 }

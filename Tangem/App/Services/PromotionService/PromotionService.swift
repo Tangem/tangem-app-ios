@@ -135,8 +135,7 @@ extension PromotionService: PromotionServiceProtocol {
                 try secureStorage.delete(promoCodeStorageKey)
             }
         } catch {
-            Analytics.error(error)
-            Analytics.error("Failed to update promo code")
+            AppLog.error("Failed to update promo code", error: error)
         }
     }
 
@@ -179,8 +178,7 @@ extension PromotionService: PromotionServiceProtocol {
             guard let data = try storage.get(awardedPromotionNamesStorageKey) else { return [] }
             return try JSONDecoder().decode(Set<String>.self, from: data)
         } catch {
-            Analytics.error(error)
-            AppLog.shared.debug("Failed to get awarded promotions")
+            AppLog.error("Failed to get awarded promotions", error: error)
             return []
         }
     }
@@ -196,15 +194,14 @@ extension PromotionService: PromotionServiceProtocol {
             guard let data = try storage.get(finishedPromotionNamesStorageKey) else { return [] }
             return try JSONDecoder().decode(Set<String>.self, from: data)
         } catch {
-            Analytics.error(error)
-            AppLog.shared.debug("Failed to get finished promotions")
+            AppLog.error("Failed to get finished promotions", error: error)
             return []
         }
     }
 
     func resetFinishedPromotions() {
         if AppEnvironment.current.isProduction {
-            AppLog.shared.debug("Trying to reset finished promotions in production. Not allowed")
+            AppLog.error(error: "Trying to reset finished promotions in production. Not allowed")
             fatalError("Trying to reset finished promotions in production. Not allowed")
         }
 
@@ -308,8 +305,7 @@ extension PromotionService {
             let storage = SecureStorage()
             try storage.store(data, forKey: finishedPromotionNamesStorageKey)
         } catch {
-            Analytics.error(error)
-            AppLog.shared.debug("Failed to set finished programs")
+            AppLog.error("Failed to set finished programs", error: error)
         }
     }
 
@@ -335,8 +331,7 @@ extension PromotionService {
             let storage = SecureStorage()
             try storage.store(data, forKey: awardedPromotionNamesStorageKey)
         } catch {
-            Analytics.error(error)
-            AppLog.shared.debug("Failed to set awarded promotions")
+            AppLog.error("Failed to set awarded promotions", error: error)
         }
     }
 }

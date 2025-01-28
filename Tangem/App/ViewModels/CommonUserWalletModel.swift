@@ -106,7 +106,7 @@ class CommonUserWalletModel {
     }
 
     deinit {
-        Log.debug("CommonUserWalletModel deinit 🥳🤟")
+        AppLog.debug(self)
     }
 
     func validate() -> Bool {
@@ -151,7 +151,7 @@ class CommonUserWalletModel {
     }
 
     private func onUpdate() {
-        AppLog.shared.debug("🔄 Updating CommonUserWalletModel with new Card")
+        AppLog.info("Updating with new card")
         config = UserWalletConfigFactory(cardInfo).makeConfig()
         _cardHeaderImagePublisher.send(config.cardHeaderImage)
         _signer = config.tangemSigner

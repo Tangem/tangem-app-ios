@@ -6,10 +6,9 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
-import SwiftUI
 import Combine
-import TangemSdk
 import BlockchainSdk
+import TangemFoundation
 
 class TokensListDataLoader {
     // MARK: Dependencies
@@ -57,7 +56,7 @@ class TokensListDataLoader {
     }
 
     func reset(_ searchText: String?) {
-        log("Reset Tokens loader list tokens")
+        AppLog.info("Reset Tokens loader list tokens")
 
         canFetchMore = true
         items = []
@@ -73,7 +72,7 @@ class TokensListDataLoader {
 
         taskCancellable?.cancel()
 
-        taskCancellable = runTask(in: self) { provider in
+        taskCancellable = TangemFoundation.runTask(in: self) { provider in
             do {
                 let items = try await provider.loadItems(searchText)
                 provider.handle(result: .success(items))
@@ -102,7 +101,9 @@ class TokensListDataLoader {
                 canFetchMore = false
             }
 
-            log("Loaded new items for manage tokens list. New total tokens count: \(self.items.count + items.count)")
+            AppLog.info(
+                "Loaded new items for manage tokens list. New total tokens count: \(self.items.count + items.count)"
+            )
 
             self.items.append(contentsOf: items)
         } catch {
@@ -110,7 +111,7 @@ class TokensListDataLoader {
                 return
             }
 
-            log("Failed to load next page. Error: \(error)")
+            AppLog.error("Failed to load next page", error: error)
         }
     }
 }
@@ -218,9 +219,5 @@ private extension TokensListDataLoader {
                 items: items
             )
         }
-    }
-
-    private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[TokensListDataLoader] - \(message())")
     }
 }

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Combine
+import TangemFoundation
 
 class WebSocket {
     enum ConnectionState: String {
@@ -157,7 +158,7 @@ class WebSocket {
     }
 
     private func log(_ message: String) {
-        AppLog.shared.debug("[WebSocket] ✉️ Message: \(message)")
+        WCLog.info(self, message)
     }
 
     private func receive() {
@@ -372,4 +373,10 @@ class WebSocket {
             invalidate()
         }
     }
+}
+
+// MARK: - CustomStringConvertible
+
+extension WebSocket: CustomStringConvertible {
+    var description: String { TangemFoundation.objectDescription(self) }
 }

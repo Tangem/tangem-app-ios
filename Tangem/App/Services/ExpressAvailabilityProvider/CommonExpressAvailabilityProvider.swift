@@ -93,7 +93,7 @@ private extension CommonExpressAvailabilityProvider {
                 provider.save(states: availabilityStates)
                 provider._state.send(.updated)
             } catch {
-                Analytics.error("Failed to load availability states: \(error)")
+                AppLog.error("Failed to load availability states", error: error)
                 provider._state.send(.failed(error: error))
             }
         }

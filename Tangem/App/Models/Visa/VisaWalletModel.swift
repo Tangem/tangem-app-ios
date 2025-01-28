@@ -75,8 +75,7 @@ class VisaWalletModel {
 
         let apiService = VisaAPIServiceBuilder().buildTransactionHistoryService(
             isTestnet: FeatureStorage.instance.isVisaTestnet,
-            urlSessionConfiguration: .defaultConfiguration,
-            logger: AppLog.shared
+            urlSessionConfiguration: .defaultConfiguration
         )
         let cardPublicKey: String
         if let publicKey = VisaAppUtilities().getPublicKeyData(from: userWalletModel.keysRepository.keys) {
@@ -168,7 +167,7 @@ class VisaWalletModel {
             let apiList = try await apiListProvider.apiListPublisher.async()
             smartContractInteractor = try factory.makeInteractor(for: blockchain, apiInfo: apiList[blockchain.networkId] ?? [])
         } catch {
-            log("Failed to setup bridge. Error: \(error)")
+            VisaLogger.error(self, "Failed to setup bridge", error: error)
             stateSubject.send(.failedToInitialize(.invalidBlockchain))
             return
         }
@@ -183,13 +182,13 @@ class VisaWalletModel {
             let address = try AddressServiceFactory(blockchain: blockchain)
                 .makeAddressService()
                 .makeAddress(for: walletPublicKey, with: .default)
-            let builder = VisaBridgeInteractorBuilder(isTestnet: blockchain.isTestnet, evmSmartContractInteractor: smartContractInteractor, logger: AppLog.shared)
+            let builder = VisaBridgeInteractorBuilder(isTestnet: blockchain.isTestnet, evmSmartContractInteractor: smartContractInteractor)
             let interactor = try await builder.build(for: address.value)
             visaBridgeInteractor = interactor
             tokenItem = .token(interactor.visaToken, .init(blockchain, derivationPath: nil))
             await generalUpdateAsync()
         } catch {
-            log("Failed to create address from provided public key. Error: \(error)")
+            VisaLogger.error(self, "Failed to create address from provided public key", error: error)
             stateSubject.send(.failedToInitialize(.failedToGenerateAddress))
         }
     }
@@ -237,10 +236,6 @@ class VisaWalletModel {
 
     private func reloadHistoryAsync() async {
         await transactionHistoryService.reloadHistory()
-    }
-
-    private func log(_ message: @autoclosure () -> String) {
-        AppLog.shared.debug("\n\n[VisaWalletModel] \(message())\n\n")
     }
 }
 
@@ -291,6 +286,12 @@ extension VisaWalletModel: MainHeaderBalanceProvider {
                 }
             }
             .eraseToAnyPublisher()
+    }
+}
+
+extension VisaWalletModel: CustomStringConvertible {
+    var description: String {
+        objectDescription(self)
     }
 }
 

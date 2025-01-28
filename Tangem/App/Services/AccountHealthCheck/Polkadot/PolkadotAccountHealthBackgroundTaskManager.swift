@@ -9,7 +9,6 @@
 import Foundation
 import BackgroundTasks
 import TangemFoundation
-import TangemLogger
 
 /// - Warning: Read-write access to all `@AppStorageCompat` or stored properties
 /// must be synchronized (e.g. by using `runOnMain(_:)` helper).
@@ -56,7 +55,7 @@ final class PolkadotAccountHealthBackgroundTaskManager {
         if !isRegistered {
             let message = "Can't register background task (BackgroundTasks) with identifier '\(identifier)'"
             assertionFailure(message)
-            Analytics.error(message)
+            AppLog.error(error: message)
         }
     }
 
@@ -72,14 +71,11 @@ final class PolkadotAccountHealthBackgroundTaskManager {
 
         do {
             try BGTaskScheduler.shared.submit(taskRequest)
-            Logger.info(
-                .polkadot,
-                "Scheduled background task (BackgroundTasks) with identifier '\(identifier)'"
-            )
+            AppLog.info("Scheduled background task (BackgroundTasks) with identifier '\(identifier)'")
         } catch {
             let message = "Can't submit background task (BackgroundTasks) with identifier '\(identifier)'"
             assertionFailure(message)
-            Analytics.error(message)
+            AppLog.error(error: message)
         }
     }
 
@@ -87,10 +83,7 @@ final class PolkadotAccountHealthBackgroundTaskManager {
         let identifier = backgroundTaskIdentifier
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
         pendingAccountsForBackgroundTask.removeAll()
-        Logger.info(
-            .polkadot,
-            "Cancelled background task (BackgroundTasks) with identifier '\(identifier)'"
-        )
+        AppLog.info("Cancelled background task (BackgroundTasks) with identifier '\(identifier)'")
     }
 
     func cancelBackgroundTaskForAccount(_ account: String) {
@@ -98,19 +91,13 @@ final class PolkadotAccountHealthBackgroundTaskManager {
     }
 
     private func handleBackgroundTask(_ backgroundTask: BGProcessingTask) {
-        Logger.info(
-            .polkadot,
-            "Processing background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)'"
-        )
+        AppLog.info("Processing background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)'")
 
         let accounts = pendingAccountsForBackgroundTask.toSet()
         pendingAccountsForBackgroundTask.removeAll()
 
         backgroundTask.expirationHandler = { [weak self] in
-            Logger.info(
-                .polkadot,
-                "Background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)' has expired'"
-            )
+            AppLog.info("Background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)' has expired'")
             self?.onResourcesCleanup?()
             backgroundTask.setTaskCompleted(success: false)
         }

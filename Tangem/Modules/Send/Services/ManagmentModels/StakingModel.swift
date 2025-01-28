@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import TangemStaking
 import BlockchainSdk
+import TangemFoundation
 
 protocol StakingModelStateProvider {
     var state: AnyPublisher<StakingModel.State, Never> { get }
@@ -211,8 +212,8 @@ private extension StakingModel {
         )
     }
 
-    func log(_ args: String) {
-        AppLog.shared.debug("[Staking] \(objectDescription(self)) \(args)")
+    func log(_ message: String) {
+        AppLog.info(self, message)
     }
 }
 
@@ -580,5 +581,13 @@ private extension StakingModel {
         case .alternative:
             Analytics.log(.stakingSelectedCurrency, params: [.commonType: .selectedCurrencyApp])
         }
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension StakingModel: CustomStringConvertible {
+    var description: String {
+        TangemFoundation.objectDescription(self)
     }
 }

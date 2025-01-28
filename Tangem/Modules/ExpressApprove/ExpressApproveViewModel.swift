@@ -8,7 +8,6 @@
 
 import Combine
 import TangemExpress
-import TangemLogger
 import UIKit
 import TangemFoundation
 import struct BlockchainSdk.Fee
@@ -153,7 +152,7 @@ private extension ExpressApproveViewModel {
             } catch TransactionDispatcherResult.Error.userCancelled {
                 // Do nothing
             } catch {
-                Logger.error(.express, error)
+                AppLog.error(error: error)
                 await runOnMain {
                     viewModel.errorAlert = .init(title: Localization.commonError, message: error.localizedDescription)
                 }

@@ -254,7 +254,7 @@ private extension SendViewModel {
             } catch _ as CancellationError {
                 // Do nothing
             } catch {
-                Analytics.error(error)
+                AppLog.error(error: error)
                 await runOnMain { viewModel.showAlert(error.alertBinder) }
             }
         }

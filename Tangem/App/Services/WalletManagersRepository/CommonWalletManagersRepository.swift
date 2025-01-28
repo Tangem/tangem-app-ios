@@ -100,10 +100,9 @@ class CommonWalletManagersRepository {
         do {
             return try walletManagerFactory.makeWalletManager(for: entry, keys: keys, apiList: apiList)
         } catch AnyWalletManagerFactoryError.noDerivation {
-            AppLog.shared.debug("‼️ No derivation for \(entry.blockchainNetwork.blockchain.displayName)")
+            AppLog.warning("‼️ No derivation for \(entry.blockchainNetwork.blockchain.displayName)")
         } catch {
-            AppLog.shared.debug("‼️ Failed to create \(entry.blockchainNetwork.blockchain.displayName)")
-            Analytics.error(error)
+            AppLog.error("‼️ Failed to create \(entry.blockchainNetwork.blockchain.displayName)", error: error)
         }
 
         return nil

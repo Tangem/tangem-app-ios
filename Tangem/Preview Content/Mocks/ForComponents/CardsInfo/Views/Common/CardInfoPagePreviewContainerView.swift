@@ -19,10 +19,10 @@ struct CardInfoPagePreviewContainerView: View {
         guard hasPullToRefresh else { return nil }
 
         return { completionHandler in
-            AppLog.shared.debug("Starting pull to refresh at \(CACurrentMediaTime())")
+            AppLog.info("\(self) Starting pull to refresh at \(CACurrentMediaTime())")
             isHorizontalScrollDisabled = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                AppLog.shared.debug("Finishing pull to refresh at \(CACurrentMediaTime())")
+                AppLog.info("\(self) Finishing pull to refresh at \(CACurrentMediaTime())")
                 completionHandler()
                 isHorizontalScrollDisabled = false
             }

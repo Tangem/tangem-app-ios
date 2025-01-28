@@ -31,7 +31,7 @@ final class OrganizeTokensDragAndDropActionsCache {
             do {
                 try action(&sectionsToMutate)
             } catch {
-                Analytics.error(error)
+                AppLog.error(error: error)
                 assertionFailure("Model inconsistency detected: \(error)")
 
                 // Model inconsistency detected, full cache reset is needed

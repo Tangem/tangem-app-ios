@@ -30,7 +30,7 @@ class PreparePrimaryCardTask: CardSessionRunnable {
     }
 
     deinit {
-        AppLog.shared.debug("PreparePrimaryCardTask deinit")
+        AppLog.debug(self)
     }
 
     func run(in session: CardSession, completion: @escaping CompletionResult<PreparePrimaryCardTaskResponse>) {

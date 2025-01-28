@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import Moya
 import TangemLogger
+import TangemNetworkUtils
 
 @available(iOS 13.0, *)
 protocol MultiNetworkProvider: AnyObject, HostProvider {
@@ -41,13 +42,9 @@ extension MultiNetworkProvider {
                 guard let self = self else { return .anyFail(error: error) }
 
                 if let moyaError = error as? MoyaError, case .statusCode(let resp) = moyaError {
-                    Logger.error(
-                        .network,
-                        "Error: \(moyaError)",
-                        "Message: \(String(data: resp.data, encoding: .utf8) ?? "")"
-                    )
+                    NetworkLogger.error("Message: \(String(data: resp.data, encoding: .utf8) ?? "")", error: moyaError)
                 } else {
-                    Logger.error(.network, "Error: \(error)")
+                    NetworkLogger.error(error: error)
                 }
 
                 if case WalletError.noAccount = error {
@@ -63,7 +60,7 @@ extension MultiNetworkProvider {
                 if let nextHost = switchProviderIfNeeded(for: currentHost) {
                     // Send event if api did switched by host value
                     if nextHost != beforeSwitchIfNeededHost {
-                        Logger.info(.network, "Next host: \(nextHost)")
+                        NetworkLogger.info("Next host: \(nextHost)")
 
                         ExceptionHandler.shared.handleAPISwitch(
                             currentHost: currentHost,

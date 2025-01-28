@@ -45,6 +45,7 @@ struct LogRowView: View {
                 }
                 .style(Fonts.Regular.caption2, color: Colors.Text.tertiary)
             }
+            .lineLimit(1)
         }
         .padding(.vertical, 12)
         .background(background)

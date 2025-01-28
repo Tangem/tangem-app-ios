@@ -119,8 +119,12 @@ class VisaOnboardingAccessCodeSetupViewModel: ObservableObject {
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[VisaAccessCodeViewModel] - \(message())")
+        VisaLogger.info(self, message())
     }
+}
+
+extension VisaOnboardingAccessCodeSetupViewModel: CustomStringConvertible {
+    var description: String { "VisaOnboardingAccessCodeSetupViewModel" }
 }
 
 private extension VisaOnboardingAccessCodeSetupViewModel {

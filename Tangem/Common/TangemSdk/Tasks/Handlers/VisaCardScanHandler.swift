@@ -21,10 +21,10 @@ class VisaCardScanHandler {
 
     init() {
         authorizationService = VisaAPIServiceBuilder(mockedAPI: FeatureStorage.instance.isVisaAPIMocksEnabled)
-            .buildAuthorizationService(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
+            .buildAuthorizationService(urlSessionConfiguration: .defaultConfiguration)
 
         cardActivationStateProvider = VisaCardActivationStatusServiceBuilder(isMockedAPIEnabled: FeatureStorage.instance.isVisaAPIMocksEnabled)
-            .build(urlSessionConfiguration: .defaultConfiguration, logger: AppLog.shared)
+            .build(urlSessionConfiguration: .defaultConfiguratio)
     }
 
     deinit {
@@ -251,8 +251,12 @@ class VisaCardScanHandler {
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[Visa Card Scan Handler] \(message())")
+        VisaLogger.info(self, message())
     }
+}
+
+extension VisaCardScanHandler: CustomStringConvertible {
+    var description: String { "VisaCardScanHandler" }
 }
 
 extension VisaCardScanHandler {

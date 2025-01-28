@@ -429,10 +429,6 @@ final class MainViewModel: ObservableObject {
         }
     }
 
-    private func log(_ message: String) {
-        AppLog.shared.debug("[Main V2] \(message)")
-    }
-
     private func openPushNotificationsAuthorizationIfNeeded() {
         if pushNotificationsAvailabilityProvider.isAvailable {
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.pushNotificationAuthorizationRequestDelay) { [weak self] in

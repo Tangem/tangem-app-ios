@@ -48,7 +48,7 @@ extension WebSocket {
         }
 
         func urlSession(_ session: URLSession, taskIsWaitingForConnectivity task: URLSessionTask) {
-            AppLog.shared.debug("[WebSocket] waiting for connectivity...")
+            WCLog.info(self, "waiting for connectivity...")
 
             // Lets not wait forever, since the user might be waiting for the connection to show in the UI.
             // It's better to show an error -if it's a new session- or else let the retry logic do its job

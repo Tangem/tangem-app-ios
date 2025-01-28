@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import TangemLogger
+import TangemFoundation
 
 actor CommonExpressManager {
     // MARK: - Dependencies
@@ -318,6 +319,10 @@ private extension CommonExpressManager {
 
 extension CommonExpressManager {
     func log(_ args: Any) {
-        Logger.info(.express, self, args)
+        ExpressLogger.info(self, args)
     }
+}
+
+extension CommonExpressManager: @preconcurrency CustomStringConvertible {
+    var description: String { objectDescription(self) }
 }

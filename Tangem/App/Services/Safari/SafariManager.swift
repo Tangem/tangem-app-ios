@@ -74,7 +74,7 @@ class CommonSafariManager: NSObject, SafariManager {
         onDismiss: @escaping () -> Void,
         onSuccess: @escaping (URL) -> Void
     ) -> SafariHandle {
-        AppLog.shared.debug("Open URL: \(url)")
+        AppLog.info("Open URL: \(url)")
         let controller = SFSafariViewController(url: url)
         controller.modalPresentationStyle = .pageSheet
         controller.dismissButtonStyle = configuration.dismissButtonStyle.sfDismissButtonStyle

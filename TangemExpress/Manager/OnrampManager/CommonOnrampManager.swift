@@ -216,6 +216,10 @@ private extension CommonOnrampManager {
     }
 
     func log(message: String) {
-        Logger.info(.express, objectDescription(self), "message")
+        ExpressLogger.info(self, message)
     }
+}
+
+extension CommonOnrampManager: @preconcurrency CustomStringConvertible {
+    public var description: String { objectDescription(self) }
 }

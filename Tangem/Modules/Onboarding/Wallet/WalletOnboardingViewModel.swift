@@ -558,8 +558,7 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 self.goToNextStep()
             }
         } catch {
-            AppLog.shared.debug("Failed to set access code to backup service")
-            Analytics.error(error)
+            AppLog.error("Failed to set access code to backup service", error: error)
         }
     }
 
@@ -596,9 +595,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
-                        Analytics.error(error, params: [.action: .readPrimary])
-                        AppLog.shared.debug("Failed to read origin card")
-                        Analytics.error(error)
+                        AppLog.error("Failed to read origin card", error: error)
+                        Analytics.error(error: error, params: [.action: .readPrimary])
                         self?.isMainButtonBusy = false
                     }
                     self?.stepPublisher = nil
@@ -636,7 +634,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                 processPrimaryCardScan()
             case .failure(let error):
                 if !error.toTangemSdkError().isUserCancelled {
-                    Analytics.error(error, params: [.action: .preparePrimary])
+                    AppLog.error(error: error)
+                    Analytics.error(error: error, params: [.action: .preparePrimary])
 
                     if case TangemSdkError.walletAlreadyCreated = error {
                         alert = AlertBuilder.makeAlert(
@@ -798,7 +797,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 if case .failure(let error) = completion {
-                    Analytics.error(error, params: [.action: .proceedBackup])
+                    AppLog.error(error: error)
+                    Analytics.error(error: error, params: [.action: .proceedBackup])
                     let sdkError = error.toTangemSdkError()
                     if !sdkError.isUserCancelled {
                         self?.alert = sdkError.alertBinder
@@ -835,7 +835,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
     }
 
     private func processBackupError(_ error: Error) {
-        Analytics.error(error, params: [.action: .addbackup])
+        AppLog.error(error: error)
+        Analytics.error(error: error, params: [.action: .addbackup])
 
         if let tangemSdkError = error as? TangemSdkError,
            case .backupFailedNotEmptyWallets(let cardId) = tangemSdkError {

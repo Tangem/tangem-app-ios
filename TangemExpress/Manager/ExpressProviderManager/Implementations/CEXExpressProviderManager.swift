@@ -171,6 +171,6 @@ private extension CEXExpressProviderManager {
     }
 
     func log(_ args: Any) {
-        Logger.info(.express, "\(self) \(args)")
+        ExpressLogger.info("\(self) \(args)")
     }
 }

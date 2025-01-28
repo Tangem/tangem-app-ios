@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import BlockchainSdk
+import TangemFoundation
 
 class CommonAPIListProvider {
     @Injected(\.tangemApiService) private var tangemApiService: TangemApiService
@@ -21,7 +22,7 @@ class CommonAPIListProvider {
 
     func initialize() {
         runTask(withTimeout: remoteListRequestTimeout) { [weak self] in
-            self?.log("onTimeout while file load")
+            AppLog.info(self, "onTimeout while file load")
             await self?.loadRemoteList()
         } onTimeout: { [weak self] in
             self?.loadLocalFile()
@@ -32,7 +33,7 @@ class CommonAPIListProvider {
         let startTime = CFAbsoluteTimeGetCurrent()
 
         do {
-            log("Attempting to load API list from server")
+            AppLog.info(self, "Attempting to load API list from server")
 
             let loadedList = try await tangemApiService.loadAPIList()
 
@@ -49,14 +50,14 @@ class CommonAPIListProvider {
 
             await updateAPIListSubject(with: convertedRemoteAPIList)
             let remoteFileParseTime = CFAbsoluteTimeGetCurrent()
-            log("Remote API list loading and parsing time: \(remoteFileParseTime - startTime) seconds")
+            AppLog.info(self, "Remote API list loading and parsing time: \(remoteFileParseTime - startTime) seconds")
         } catch {
             if error is CancellationError || Task.isCancelled {
-                log("Loading API list from server was cancelled. No action required")
+                AppLog.info(self, "Loading API list from server was cancelled. No action required")
                 return
             }
 
-            log("Failed to load API list from server. Error: \(error).\nAttempting to read local API list.")
+            AppLog.error(self, "Failed to load API list from server. Attempting to read local API list.", error: error)
             loadLocalFile()
         }
     }
@@ -67,20 +68,24 @@ class CommonAPIListProvider {
         do {
             apiList = try APIListUtils().parseLocalAPIListJson()
         } catch {
-            log("Failed to parse local file.\nReason: \(error).\nPublishing empty list")
+            AppLog.error(self, "Failed to parse local file. Publishing empty list", error: error)
             apiList = [:]
         }
 
-        runTask(in: self) { await $0.updateAPIListSubject(with: apiList) }
-    }
-
-    private func log<T>(_ message: @autoclosure () -> T, function: String = #function) {
-        AppLog.shared.debug("[CommonAPIListProvider, line: \(function)] - \(message())")
+        TangemFoundation.runTask(in: self) { await $0.updateAPIListSubject(with: apiList) }
     }
 
     @MainActor
     private func updateAPIListSubject(with value: APIList?) {
         apiListSubject.value = value
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension CommonAPIListProvider: CustomStringConvertible {
+    var description: String {
+        TangemFoundation.objectDescription(self)
     }
 }
 

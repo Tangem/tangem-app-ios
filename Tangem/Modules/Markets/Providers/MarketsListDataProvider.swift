@@ -121,7 +121,7 @@ final class MarketsListDataProvider {
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[MarketsListDataProvider] - \(message())")
+        AppLog.info("[MarketsListDataProvider] - \(message())")
     }
 
     private func clearSearchResults() {

@@ -270,8 +270,8 @@ private extension CommonSendNotificationManager {
             case .invalidNumber:
                 hideAllValidationErrorEvent()
             }
-        default:
-            AppLog.shared.debug("Transaction error \(String(describing: error)) will not show to user")
+        case .some(let error):
+            AppLog.error("Transaction error will not show to user", error: error)
             hideAllValidationErrorEvent()
         }
     }

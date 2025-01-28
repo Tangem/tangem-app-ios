@@ -236,7 +236,7 @@ private extension TokenDetailsViewModel {
         walletModel.stakingManagerStatePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
-                AppLog.shared.debug("Token details receive new StakingManager state: \(state)")
+                AppLog.info("Token details receive new StakingManager state: \(state)")
                 self?.updateStaking(state: state)
             }
             .store(in: &bag)

@@ -104,7 +104,7 @@ private extension RestakingModel {
                 let state = try await model.state(amount: model.action.amount, validator: validator)
                 model.update(state: state)
             } catch {
-                Analytics.error(error)
+                AppLog.error(error: error)
                 model.update(state: .networkError(error))
             }
         }

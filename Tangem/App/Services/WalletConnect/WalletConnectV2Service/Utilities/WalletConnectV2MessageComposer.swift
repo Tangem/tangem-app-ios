@@ -29,7 +29,7 @@ struct WalletConnectV2MessageComposer: WalletConnectV2MessageComposable {
 
         var message = Localization.walletConnectRequestSessionStart(proposerName, chains, proposerURL)
         message += "\n\n\(proposerDescription)"
-        AppLog.shared.debug("[WC 2.0] Attempting to establish WalletConnect session for \(proposerName): \nChains: \(allChains)\nMethods: \(allMethods)\nEvents: \(allEvents). Proposer description: \(proposerDescription), url: \(proposerURL)")
+        WCLog.info("Attempting to establish WalletConnect session for \(proposerName): \nChains: \(allChains)\nMethods: \(allMethods)\nEvents: \(allEvents). Proposer description: \(proposerDescription), url: \(proposerURL)")
 
         return message
     }

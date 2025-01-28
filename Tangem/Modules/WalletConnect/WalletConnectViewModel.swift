@@ -37,7 +37,7 @@ class WalletConnectViewModel: ObservableObject {
     }
 
     deinit {
-        AppLog.shared.debug("WalletConnectViewModel deinit")
+        AppLog.debug(self)
     }
 
     func onAppear() {
@@ -136,7 +136,8 @@ class WalletConnectViewModel: ObservableObject {
     private func subscribeToNewSessions() {
         Task {
             for await sessions in await walletConnectService.newSessions {
-                AppLog.shared.debug("Loaded v2 sessions: \(sessions)")
+                WCLog.info("Loaded v2 sessions: \(sessions)")
+
                 await MainActor.run {
                     withAnimation {
                         self.sessions = sessions

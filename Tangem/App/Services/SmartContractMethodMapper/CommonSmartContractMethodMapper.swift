@@ -17,8 +17,7 @@ class CommonSmartContractMethodMapper {
                 return try JsonUtils.readBundleFile(with: "contract_methods", type: DataSource.self)
             }
         } catch {
-            AppLog.shared.debug("Can't map EVM contract methods data source")
-            Analytics.error(error)
+            AppLog.error("Can't map EVM contract methods data source", error: error)
             return [:]
         }
     }()

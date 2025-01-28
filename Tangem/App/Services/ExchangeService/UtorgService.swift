@@ -91,7 +91,7 @@ extension UtorgService: ExchangeService {
     var sellRequestUrl: String { "" }
 
     func canBuy(_ currencySymbol: String, amountType: Amount.AmountType, blockchain: Blockchain) -> Bool {
-        AppLog.shared.debug("[Utorg] Can buy: \(currencySymbol). blockchain: \(blockchain)")
+        AppLog.info("Can buy: \(currencySymbol). blockchain: \(blockchain)")
         return currency(with: currencySymbol, blockchain: blockchain) != nil
     }
 
@@ -140,7 +140,7 @@ extension UtorgService: ExchangeService {
                 initializeState = .initialized
                 try await setSuccessURL()
             } catch {
-                AppLog.shared.debug("[Utorg] Failed to initialize Utorg service. Error: \(error)")
+                AppLog.error("Failed to initialize Utorg service", error: error)
                 initializeState = .failed(.networkError)
             }
         }
@@ -150,12 +150,12 @@ extension UtorgService: ExchangeService {
         let currenciesResponse: UtorgResponse<[UtorgCurrency]> = try await performRequest(for: .currency)
 
         guard let loadedCurrencies = currenciesResponse.data else {
-            AppLog.shared.debug("[Utorg] Failed to load currencies data. Currencies response: \(currenciesResponse)")
+            AppLog.error(error: "Failed to load currencies data. Currencies response: \(currenciesResponse)")
             return
         }
 
         supportedCurrencies = loadedCurrencies.filter { $0.type == .crypto }
-        AppLog.shared.debug("[Utorg] Receive currencies. Currencies count: \(supportedCurrencies.count)")
+        AppLog.info("Receive currencies. Currencies count: \(supportedCurrencies.count)")
     }
 
     /// Ensures that Utorg UI setup properly. This neede to display button "Back to Account" when user finishes buying crypto in WebView
@@ -164,11 +164,11 @@ extension UtorgService: ExchangeService {
         let response: UtorgResponse<UtorgSuccessURLResponse> = try await performRequest(for: .successUrl, with: data)
 
         guard let successURL = response.data else {
-            AppLog.shared.debug("[Utorg] Failed to set SuccessURL. Success URL response: \(response)")
+            AppLog.error(error: "Failed to set SuccessURL. Success URL response: \(response)")
             return
         }
 
-        AppLog.shared.debug("[Utorg] Success url response: \(successURL)")
+        AppLog.info("Success url response: \(successURL)")
     }
 
     private func performRequest<T: Decodable>(for endpoint: UtorgEndpoint, with data: Data? = nil) async throws -> UtorgResponse<T> {
@@ -193,7 +193,7 @@ extension UtorgService: ExchangeService {
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
         config.urlCache = nil
 
-        AppLog.shared.debug("[Utorg] attempting to send request to endpoint: \(endpoint). Request: \(request)")
+        AppLog.info("Attempting to send request to endpoint: \(endpoint). Request: \(request)")
         let (responseData, _) = try await URLSession(configuration: config).upload(for: request, from: data ?? Data())
 
         let decoder = JSONDecoder()

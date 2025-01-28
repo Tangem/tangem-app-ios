@@ -71,12 +71,8 @@ extension CommonStakingManager: StakingManager {
             async let actions = loadActions ? provider.actions(wallet: wallet) : []
             try await updateState(state(balances: balances, yield: yield, actions: actions))
         } catch {
-            analyticsLogger.logError(
-                error,
-                currencySymbol: wallet.item.symbol
-            )
-
-            Logger.error(.staking, error)
+            analyticsLogger.logError(error, currencySymbol: wallet.item.symbol)
+            StakingLogger.error(self, error: error)
             updateState(.loadingError(error.localizedDescription))
         }
     }
@@ -250,7 +246,7 @@ private extension CommonStakingManager {
 
     private func isFullAmountUnstaking(for balances: [StakingBalance], action: PendingAction) -> Bool {
         guard let index = balanceIndexByType(balances: balances, action: action, type: .active) else {
-            Logger.info(.staking, "Couldn't find corresponding staked balance for unstake action")
+            StakingLogger.info("Couldn't find corresponding staked balance for unstake action")
             return false
         }
         let balance = balances[index]
@@ -552,7 +548,7 @@ extension CommonStakingManager: CustomStringConvertible {
     }
 
     private func log(_ args: Any) {
-        Logger.info(.staking, self, args)
+        StakingLogger.info(self, args)
     }
 }
 

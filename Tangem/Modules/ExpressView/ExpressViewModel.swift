@@ -9,9 +9,9 @@
 import Combine
 import TangemExpress
 import UIKit
+import TangemFoundation
 import enum TangemSdk.TangemSdkError
 import struct BlockchainSdk.Fee
-import TangemFoundation
 
 final class ExpressViewModel: ObservableObject {
     // MARK: - ViewState
@@ -724,7 +724,7 @@ extension ExpressViewModel: NotificationTapDelegate {
             openFeeCurrency()
         case .reduceAmountBy(let amount, _):
             guard let value = sendCurrencyViewModel?.decimalNumberTextFieldViewModel.value else {
-                AppLog.shared.debug("[Express] Couldn't find sendDecimalValue")
+                AppLog.info("Couldn't find sendDecimalValue")
                 return
             }
 
@@ -733,7 +733,7 @@ extension ExpressViewModel: NotificationTapDelegate {
             updateSendDecimalValue(to: amount)
         case .leaveAmount(let amount, _):
             guard let balance = try? interactor.getSender().getBalance() else {
-                AppLog.shared.debug("[Express] Couldn't find sender balance")
+                AppLog.info("Couldn't find sender balance")
                 return
             }
 
@@ -812,7 +812,7 @@ private extension ExpressViewModel {
     }
 
     func stopTimer() {
-        AppLog.shared.debug("[Express] Stop timer")
+        AppLog.info("Stop timer")
         refreshDataTimerBag?.cancel()
         refreshDataTimer
             .connect()
@@ -820,11 +820,11 @@ private extension ExpressViewModel {
     }
 
     func startTimer() {
-        AppLog.shared.debug("[Express] Start timer")
+        AppLog.info("Start timer")
         refreshDataTimerBag = refreshDataTimer
             .autoconnect()
             .sink { [weak self] date in
-                AppLog.shared.debug("[Express] Timer call autoupdate")
+                AppLog.info("Timer call autoupdate")
                 self?.interactor.refresh(type: .refreshRates)
             }
     }

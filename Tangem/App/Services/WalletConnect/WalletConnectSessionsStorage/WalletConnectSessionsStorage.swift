@@ -7,6 +7,7 @@
 //
 
 import Combine
+import TangemFoundation
 
 protocol WalletConnectSessionsStorage: Actor {
     var sessions: AsyncStream<[WalletConnectSavedSession]> { get async }
@@ -56,12 +57,8 @@ actor CommonWalletConnectSessionsStorage {
         do {
             try storage.store(value: sessions, for: .allWalletConnectSessions)
         } catch {
-            log("Failed to save session file to disk. Error: \(error)")
+            WCLog.error("Failed to save session file to disk", error: error)
         }
-    }
-
-    private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[WC Sessions Storage] - \(message())")
     }
 }
 
@@ -69,7 +66,7 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
     func save(_ session: WalletConnectSavedSession) {
         allSessions.value.append(session)
         saveCachedSessions()
-        log("Session with topic: \(session.topic) saved to disk.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
+        WCLog.info("Session with topic: \(session.topic) saved to disk.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
     }
 
     func session(with id: Int) -> WalletConnectSavedSession? {
@@ -83,7 +80,7 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
     func remove(_ session: WalletConnectSavedSession) {
         allSessions.value.remove(session)
         saveCachedSessions()
-        log("Session with topic: \(session.topic) was removed from storage.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
+        WCLog.info(self, "Session with topic: \(session.topic) was removed from storage.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
     }
 
     func removeSessions(for userWalletId: String) -> [WalletConnectSavedSession] {
@@ -108,7 +105,11 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
 
         saveSessionsToFile(sessions)
         allSessions.value = sessions
-        log("All sessions for \(userWalletId) was removed. Number of removed sessions: \(removedSessions.count)")
+        WCLog.info(self, "All sessions for \(userWalletId) was removed. Number of removed sessions: \(removedSessions.count)")
         return removedSessions
     }
+}
+
+extension CommonWalletConnectSessionsStorage: @preconcurrency CustomStringConvertible {
+    var description: String { TangemFoundation.objectDescription(self) }
 }

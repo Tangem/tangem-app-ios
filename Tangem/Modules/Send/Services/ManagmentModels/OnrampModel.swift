@@ -394,7 +394,7 @@ private extension OnrampModel {
     }
 
     func log(_ message: String) {
-        AppLog.shared.debug("[\(TangemFoundation.objectDescription(self))] \(message)")
+        AppLog.info(self, message)
     }
 }
 
@@ -634,5 +634,13 @@ extension OnrampModel: NotificationTapDelegate {
         default:
             assertionFailure("Action not supported: \(action)")
         }
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension OnrampModel: CustomStringConvertible {
+    var description: String {
+        TangemFoundation.objectDescription(self)
     }
 }
