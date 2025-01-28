@@ -8,9 +8,10 @@
 
 import Foundation
 import Combine
+import TangemFoundation
 
 protocol MainHeaderBalanceProvider {
-    var balanceProvider: AnyPublisher<LoadingValue<AttributedString>, Never> { get }
+    var balanceProvider: AnyPublisher<LoadableTokenBalanceView.State, Never> { get }
 }
 
 class CommonMainHeaderBalanceProvider {
@@ -18,7 +19,7 @@ class CommonMainHeaderBalanceProvider {
     private let userWalletStateInfoProvider: MainHeaderUserWalletStateInfoProvider
     private let mainBalanceFormatter: MainHeaderBalanceFormatter
 
-    private let headerBalanceSubject = CurrentValueSubject<LoadingValue<AttributedString>, Never>(.loading)
+    private let headerBalanceSubject = CurrentValueSubject<LoadableTokenBalanceView.State, Never>(.loading())
     private var balanceSubscription: AnyCancellable?
 
     init(
@@ -34,42 +35,41 @@ class CommonMainHeaderBalanceProvider {
     }
 
     private func bind() {
-        balanceSubscription = totalBalanceProvider.totalBalancePublisher
-            .sink(receiveValue: { [weak self] newValue in
-                guard let self else {
+        balanceSubscription = totalBalanceProvider
+            .totalBalancePublisher
+            .withWeakCaptureOf(self)
+            .sink(receiveValue: { provider, state in
+                if provider.userWalletStateInfoProvider.isUserWalletLocked {
                     return
                 }
 
-                if userWalletStateInfoProvider.isUserWalletLocked {
-                    return
-                }
-
-                switch newValue {
-                case .loading:
-                    headerBalanceSubject.send(.loading)
-                case .loaded(let balance):
-                    guard balance.allTokensBalancesIncluded else {
-                        // We didn't show any error in header, so no need to specify error
-                        headerBalanceSubject.send(.failedToLoad(error: ""))
-                        return
-                    }
-
-                    var balanceToFormat = balance.balance
-                    if balanceToFormat == nil, userWalletStateInfoProvider.isTokensListEmpty {
-                        balanceToFormat = 0
-                    }
-
-                    let formattedForMainBalance = mainBalanceFormatter.formatBalance(balance: balanceToFormat, currencyCode: balance.currencyCode)
-                    headerBalanceSubject.send(.loaded(formattedForMainBalance))
-                case .failedToLoad(let error):
-                    headerBalanceSubject.send(.failedToLoad(error: error))
-                }
+                let state = provider.mapToLoadableTokenBalanceViewState(state: state)
+                provider.headerBalanceSubject.send(state)
             })
+    }
+
+    private func mapToLoadableTokenBalanceViewState(state: TotalBalanceState) -> LoadableTokenBalanceView.State {
+        switch state {
+        case .empty, .failed(.none, _):
+            let formatted = mainBalanceFormatter.formatBalance(balance: .none)
+            return .failed(cached: .attributed(formatted))
+        case .loading(let cached):
+            let formatted = cached.map { self.mainBalanceFormatter.formatBalance(balance: $0) }
+            return .loading(cached: formatted.map { .attributed($0) })
+        case .failed(.some(let cached), _):
+            let formatted = mainBalanceFormatter.formatBalance(balance: cached)
+            return .failed(cached: .attributed(formatted))
+        case .loaded(let balance):
+            let formatted = mainBalanceFormatter.formatBalance(balance: balance)
+            return .loaded(text: .attributed(formatted))
+        }
     }
 }
 
+// MARK: - MainHeaderBalanceProvider
+
 extension CommonMainHeaderBalanceProvider: MainHeaderBalanceProvider {
-    var balanceProvider: AnyPublisher<LoadingValue<AttributedString>, Never> {
+    var balanceProvider: AnyPublisher<LoadableTokenBalanceView.State, Never> {
         headerBalanceSubject.eraseToAnyPublisher()
     }
 }

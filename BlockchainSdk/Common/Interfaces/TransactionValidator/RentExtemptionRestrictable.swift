@@ -20,7 +20,15 @@ extension RentExtemptionRestrictable where Self: WalletProvider {
             throw ValidationError.balanceNotFound
         }
 
-        let remainingBalance = balance.value - (amount.value + fee.value)
+        var remainingBalance = balance.value
+
+        if amount.type == balance.type {
+            remainingBalance -= amount.value
+        }
+
+        if fee.type == balance.type {
+            remainingBalance -= fee.value
+        }
 
         guard remainingBalance >= 0 else {
             throw ValidationError.totalExceedsBalance

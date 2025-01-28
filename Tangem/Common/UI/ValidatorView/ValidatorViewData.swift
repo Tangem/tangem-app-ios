@@ -69,7 +69,7 @@ extension ValidatorViewData {
 
     enum DetailsType: Hashable {
         case checkmark
-        case balance(_ balance: WalletModel.BalanceFormatted, action: (() -> Void)? = nil)
+        case balance(_ balance: BalanceFormatted, action: (() -> Void)? = nil)
 
         static func == (lhs: ValidatorViewData.DetailsType, rhs: ValidatorViewData.DetailsType) -> Bool {
             lhs.hashValue == rhs.hashValue

@@ -438,6 +438,7 @@ private extension Blockchain {
         case .fact0rn: return nil
         case .odysseyChain: return nil
         case .bitrock: return nil
+        case .apeChain: return nil
         case .alephium: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }
@@ -527,6 +528,7 @@ private extension Blockchain {
         case .fact0rn: return nil
         case .odysseyChain: return nil
         case .bitrock: return nil
+        case .apeChain: return nil
         case .alephium: return nil
             // Did you get a compilation error here? If so, check whether the network is supported at https://api.moonpay.com/v3/currencies
         }

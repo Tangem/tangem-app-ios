@@ -123,6 +123,7 @@ struct TransactionParamsBuilder {
              .fact0rn,
              .odysseyChain,
              .bitrock,
+             .apeChain,
              .alephium:
             throw TransactionParamsBuilderError.extraIdNotSupported
         }

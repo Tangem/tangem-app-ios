@@ -94,6 +94,7 @@ public extension Blockchain {
         case .fact0rn: break
         case .odysseyChain: break
         case .bitrock: break
+        case .apeChain: break
         case .alephium: break
             // READ BELOW:
             //
@@ -182,6 +183,7 @@ public extension Blockchain {
             .fact0rn,
             .odysseyChain(testnet: false),
             .bitrock(testnet: false),
+            .apeChain(testnet: false),
             .alephium(testnet: false),
         ]
     }

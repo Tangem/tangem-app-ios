@@ -314,17 +314,36 @@ private extension SolanaWalletManager {
 // MARK: - StakeKitTransactionSender, StakeKitTransactionSenderProvider
 
 extension SolanaWalletManager: StakeKitTransactionSender, StakeKitTransactionSenderProvider {
-    typealias RawTransaction = String
+    struct RawTransactionData: CustomStringConvertible {
+        let serializedData: String
+        let blockhashDate: Date
+
+        var description: String {
+            serializedData
+        }
+    }
+
+    typealias RawTransaction = RawTransactionData
 
     func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data {
         SolanaStakeKitTransactionHelper().prepareForSign(transaction.unsignedData)
     }
 
     func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction {
-        SolanaStakeKitTransactionHelper().prepareForSend(transaction.unsignedData, signature: signature.signature)
+        let signedTransaction = SolanaStakeKitTransactionHelper().prepareForSend(
+            transaction.unsignedData,
+            signature: signature.signature
+        )
+        return RawTransactionData(
+            serializedData: signedTransaction,
+            blockhashDate: transaction.params.solanaBlockhashDate
+        )
     }
 
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String {
-        try await networkService.sendRaw(base64serializedTransaction: rawTransaction).async()
+        try await networkService.sendRaw(
+            base64serializedTransaction: rawTransaction.serializedData,
+            startSendingTimestamp: rawTransaction.blockhashDate
+        ).async()
     }
 }

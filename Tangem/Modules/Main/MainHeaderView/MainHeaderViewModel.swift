@@ -15,8 +15,7 @@ final class MainHeaderViewModel: ObservableObject {
     @Published private(set) var cardImage: ImageType?
     @Published private(set) var userWalletName: String = ""
     @Published private(set) var subtitleInfo: MainHeaderSubtitleInfo = .empty
-    @Published private(set) var balance: LoadableTokenBalanceView.State = .empty
-
+    @Published private(set) var balance: LoadableTokenBalanceView.State = .loading()
     @Published var isLoadingSubtitle: Bool = true
 
     var subtitleContainsSensitiveInfo: Bool {
@@ -67,22 +66,7 @@ final class MainHeaderViewModel: ObservableObject {
 
         balanceProvider.balanceProvider
             .receive(on: DispatchQueue.main)
-            .debounce(for: 0.2, scheduler: DispatchQueue.main) // Hide skeleton and apply state with delay, mimic current behavior
-            .sink { [weak self] newValue in
-                guard let self else {
-                    return
-                }
-
-                switch newValue {
-                case .loading:
-                    balance = .loading()
-                case .loaded(let balance):
-                    self.balance = .loaded(text: .attributed(balance))
-                case .failedToLoad(let error):
-                    AppLog.shared.debug("Failed to load total balance. Reason: \(error)")
-                    balance = .empty
-                }
-            }
+            .assign(to: \.balance, on: self, ownership: .weak)
             .store(in: &bag)
     }
 }

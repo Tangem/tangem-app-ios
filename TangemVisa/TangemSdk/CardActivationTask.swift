@@ -10,9 +10,9 @@ import Foundation
 import Combine
 import TangemSdk
 
-struct CardActivationResponse {
-    let signedActivationOrder: SignedActivationOrder
-    let rootOTP: Data
+public struct CardActivationResponse {
+    public let signedActivationOrder: SignedActivationOrder
+    public let rootOTP: Data
 }
 
 protocol CardActivationTaskOrderProvider: AnyObject {

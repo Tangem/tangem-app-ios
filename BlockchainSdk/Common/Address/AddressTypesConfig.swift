@@ -97,6 +97,7 @@ struct AddressTypesConfig {
              .fact0rn,
              .odysseyChain,
              .bitrock,
+             .apeChain,
              .alephium:
             return [.default]
         }

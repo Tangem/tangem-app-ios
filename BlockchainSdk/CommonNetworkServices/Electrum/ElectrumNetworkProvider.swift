@@ -26,6 +26,7 @@ class ElectrumNetworkProvider: MultiNetworkProvider {
 
                 return try await ElectrumAddressInfo(
                     balance: Decimal(balance.confirmed),
+                    unconfirmed: Decimal(balance.unconfirmed),
                     outputs: unspents.map { unspent in
                         ElectrumUTXO(
                             position: unspent.txPos,

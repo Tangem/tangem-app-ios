@@ -37,21 +37,11 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
                 provider.getAddressInfo(identifier: .scriptHash(scriptHash))
             }
             .withWeakCaptureOf(self)
-            .flatMap { provider, accountInfo in
-                let pendingTransactionsPublisher = provider.getPendingTransactions(address: address, with: accountInfo.outputs)
-                return pendingTransactionsPublisher
-                    .map { pendingTranactions in
-                        (accountInfo, pendingTranactions)
-                    }
-            }
-            .withWeakCaptureOf(self)
-            .tryMap { provider, args in
-                let (accountInfo, pendingTransactions) = args
+            .tryMap { provider, accountInfo in
                 let outputScriptData = try Fact0rnAddressService.addressToScript(address: address).scriptData
 
                 return try provider.mapBitcoinResponse(
                     account: accountInfo,
-                    pendingTransactions: pendingTransactions,
                     outputScript: outputScriptData.hexString
                 )
             }
@@ -116,6 +106,7 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
 
             return try await ElectrumAddressInfo(
                 balance: Decimal(balance.confirmed) / self.decimalValue,
+                unconfirmed: Decimal(balance.unconfirmed) / self.decimalValue,
                 outputs: unspents.map { unspent in
                     ElectrumUTXO(
                         position: unspent.txPos,
@@ -125,34 +116,6 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
                     )
                 }
             )
-        }
-        .eraseToAnyPublisher()
-    }
-
-    private func getPendingTransactions(
-        address: String,
-        with unspents: [ElectrumUTXO]
-    ) -> AnyPublisher<[PendingTransaction], Error> {
-        Future.async {
-            let unconfirmedUnspents = unspents.filter(\.isNonConfirmed)
-
-            let result: [PendingTransaction] = try await withThrowingTaskGroup(of: PendingTransaction.self) { group in
-                var pendingTransactions: [PendingTransaction] = []
-
-                for unspent in unconfirmedUnspents {
-                    group.addTask {
-                        try await self.createPendingTransaction(unspent: unspent, address: address)
-                    }
-                }
-
-                for try await value in group {
-                    pendingTransactions.append(value)
-                }
-
-                return pendingTransactions
-            }
-
-            return result
         }
         .eraseToAnyPublisher()
     }
@@ -180,14 +143,14 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
 
     // MARK: - Helpers
 
-    private func mapBitcoinResponse(account: ElectrumAddressInfo, pendingTransactions: [PendingTransaction], outputScript: String) throws -> BitcoinResponse {
-        let hasUnconfirmed = account.balance != .zero
+    private func mapBitcoinResponse(account: ElectrumAddressInfo, outputScript: String) throws -> BitcoinResponse {
+        let hasUnconfirmed = account.unconfirmed != .zero
         let unspentOutputs = mapUnspent(outputs: account.outputs, outputScript: outputScript)
 
         return BitcoinResponse(
             balance: account.balance,
             hasUnconfirmed: hasUnconfirmed,
-            pendingTxRefs: pendingTransactions,
+            pendingTxRefs: [],
             unspentOutputs: unspentOutputs
         )
     }
@@ -201,51 +164,6 @@ final class Fact0rnNetworkProvider: BitcoinNetworkProvider {
                 outputScript: outputScript
             )
         }
-    }
-
-    private func createPendingTransaction(unspent: ElectrumUTXO, address: String) async throws -> PendingTransaction {
-        let transaction = try await provider.getTransaction(hash: unspent.hash)
-        return toPendingTx(transaction: transaction, address: address, decimalValue: decimalValue)
-    }
-
-    private func toPendingTx(
-        transaction: ElectrumDTO.Response.Transaction,
-        address: String,
-        decimalValue: Decimal
-    ) -> PendingTransaction {
-        var source: String = .unknown
-        var destination: String = .unknown
-        var value: Decimal?
-        var isIncoming = false
-
-        let vin = transaction.vin
-        let vout = transaction.vout
-
-        if vin.contains(where: { $0.address?.contains(address) ?? false }),
-           let txDestination = vout.first(where: { $0.scriptPubKey.address != address }) {
-            destination = txDestination.scriptPubKey.address
-            source = address
-            value = txDestination.value
-        } else if let txDestination = vout.first(where: { $0.scriptPubKey.address == address }),
-                  let txSource = vin.first(where: { $0.address != address }) {
-            isIncoming = true
-            destination = address
-            source = txSource.address ?? .unknown
-            value = txDestination.value
-        }
-
-        let fee = transaction.fee ?? .zero
-
-        return PendingTransaction(
-            hash: transaction.hash,
-            destination: destination,
-            value: (value ?? 0) / decimalValue,
-            source: source,
-            fee: fee / decimalValue,
-            date: Date(timeIntervalSince1970: TimeInterval(transaction.blocktime ?? UInt64(Date().timeIntervalSince1970))),
-            isIncoming: isIncoming,
-            transactionParams: nil
-        )
     }
 }
 
