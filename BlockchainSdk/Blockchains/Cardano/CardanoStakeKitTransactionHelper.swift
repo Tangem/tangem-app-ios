@@ -98,11 +98,15 @@ struct CardanoTransactionBody {
     }
 
     struct RewardAddress: Hashable {
-        let network: UInt8
-        let credential: Credential
+        let network: UInt8?
+        let credential: Credential?
 
+        // address parsing is really complex, skip since it is not used at the moment
         init?(cbor: CBOR) {
-            nil
+            guard case .byteString(let addressBytes) = cbor else { return nil }
+
+            network = nil
+            credential = nil
         }
     }
 
@@ -382,10 +386,16 @@ private extension CardanoTransactionBody {
     }
 
     private static func parseWithdrawals(_ cbor: CBOR) -> [RewardAddress: UInt64]? {
-        guard case .tagged(let tag, let cbor) = cbor, tag.rawValue == 258, case .array(let certs) = cbor else {
+        guard case .map(let dictionary) = cbor else {
             return nil
         }
 
-        return nil
+        return dictionary.reduce(into: [:]) { partialResult, pair in
+            guard let address = RewardAddress(cbor: pair.key),
+                  case .unsignedInt(let uInt64) = pair.value else {
+                return
+            }
+            partialResult[address] = uInt64
+        }
     }
 }

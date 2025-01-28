@@ -55,7 +55,7 @@ class RestakingModel {
         self.transactionValidator = transactionValidator
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
-        
+
         self.action = switch tokenItem.blockchain {
         // for restaking cardano regular STAKE action is performed
         case .cardano: StakingAction(amount: action.amount, validatorType: action.validatorType, type: .stake)

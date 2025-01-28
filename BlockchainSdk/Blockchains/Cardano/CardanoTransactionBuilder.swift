@@ -253,21 +253,24 @@ private extension CardanoTransactionBuilder {
 
             for certificate in transaction.body.certificates {
                 switch certificate {
-                case .stakeRegistrationLegacy, .stakeRegistrationConway:
+                case .stakeDelegation(let stakeDelegation):
                     // Register staking key, 2 ADA desposit
                     $0.registerStakingKey.stakingAddress = stakingAddress
                     $0.registerStakingKey.depositAmount = 2000000
-                case .stakeDelegation(let stakeDelegation):
                     // Delegate
                     $0.delegate.depositAmount = 0
                     $0.delegate.stakingAddress = stakingAddress
                     $0.delegate.poolID = stakeDelegation.poolKeyHash
                 case .stakeDeregistrationLegacy, .stakeDeregistrationConway:
-                    // Withdraw available amount
-                    $0.withdraw.stakingAddress = stakingAddress
-                    $0.withdraw.withdrawAmount = transaction.body.withdrawals.flatMap { $0.values.reduce(0, +) } ?? 0
+                    $0.deregisterStakingKey.stakingAddress = stakingAddress
+                    $0.registerStakingKey.depositAmount = 2000000
                 default: continue
                 }
+            }
+            
+            if let withdrawals = transaction.body.withdrawals, !withdrawals.isEmpty {
+                $0.withdraw.stakingAddress = stakingAddress
+                $0.withdraw.withdrawAmount = withdrawals.values.reduce(0, +)
             }
 
             // Transaction validity time. Currently we are using absolute values.
