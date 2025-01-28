@@ -16,8 +16,8 @@ public struct VisaAPIServiceBuilder {
         self.mockedAPI = mockedAPI
     }
 
-    public func buildTransactionHistoryService(isTestnet: Bool, urlSessionConfiguration: URLSessionConfiguration, logger: VisaLogger) -> VisaTransactionHistoryAPIService {
-        let logger = InternalLogger(logger: logger)
+    public func buildTransactionHistoryService(isTestnet: Bool, urlSessionConfiguration: URLSessionConfiguration) -> VisaTransactionHistoryAPIService {
+        let logger = InternalLogger()
         let additionalAPIHeaders = (try? VisaConfigProvider.shared().getTxHistoryAPIAdditionalHeaders()) ?? [:]
 
         return PayAPIService(
@@ -32,19 +32,30 @@ public struct VisaAPIServiceBuilder {
     }
 
     // Requirements are changed so this function will be also changed, but for now it is used for testing purposes
-    public func buildAuthorizationService(urlSessionConfiguration: URLSessionConfiguration, logger: VisaLogger) -> VisaAuthorizationService {
+    public func buildAuthorizationService(urlSessionConfiguration: URLSessionConfiguration) -> VisaAuthorizationService {
         if mockedAPI {
             return AuthorizationServiceMock()
         }
 
-        return AuthorizationServiceBuilder().build(urlSessionConfiguration: urlSessionConfiguration, logger: logger)
+        return AuthorizationServiceBuilder().build(urlSessionConfiguration: urlSessionConfiguration)
     }
 
-    public func buildAuthorizationTokenRefreshService(urlSessionConfiguration: URLSessionConfiguration, logger: VisaLogger) -> VisaAuthorizationTokenRefreshService {
+    public func buildAuthorizationTokenRefreshService(urlSessionConfiguration: URLSessionConfiguration) -> VisaAuthorizationTokenRefreshService {
         if mockedAPI {
             return AuthorizationServiceMock()
         }
 
-        return AuthorizationServiceBuilder().build(urlSessionConfiguration: urlSessionConfiguration, logger: logger)
+        return AuthorizationServiceBuilder().build(urlSessionConfiguration: urlSessionConfiguration)
+    }
+
+    public func buildCardActivationRemoteStateService(urlSessionConfiguration: URLSessionConfiguration) -> VisaCardActivationRemoteStateService {
+        if mockedAPI {
+            return CardActivationRemoteStateServiceMock()
+        }
+
+        return CommonCardActivationRemoteStateService(apiService: .init(
+            provider: MoyaProviderBuilder().buildProvider(configuration: urlSessionConfiguration),
+            decoder: JSONDecoderFactory().makeCIMDecoder()
+        ))
     }
 }

@@ -9,7 +9,6 @@
 import Foundation
 import TangemSdk
 import TangemLogger
-import protocol TangemVisa.VisaLogger
 
 class AppLog {
     static let shared = AppLog()
@@ -18,11 +17,5 @@ class AppLog {
 
     func debug<T>(_ message: @autoclosure () -> T) {
         TangemLogger.Logger.debug(.custom("Common"), message())
-    }
-}
-
-extension AppLog: VisaLogger {
-    func error(_ error: any Error) {
-        Analytics.error(error)
     }
 }

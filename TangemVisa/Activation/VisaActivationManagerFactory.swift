@@ -20,16 +20,12 @@ public struct VisaActivationManagerFactory {
         cardId: String,
         initialActivationStatus: VisaCardActivationLocalState,
         tangemSdk: TangemSdk,
-        urlSessionConfiguration: URLSessionConfiguration,
-        logger: VisaLogger
+        urlSessionConfiguration: URLSessionConfiguration
     ) -> VisaActivationManager {
-        let internalLogger = InternalLogger(logger: logger)
+        let internalLogger = InternalLogger()
 
         let authorizationService = VisaAPIServiceBuilder(mockedAPI: isMockedAPIEnabled)
-            .buildAuthorizationService(
-                urlSessionConfiguration: urlSessionConfiguration,
-                logger: logger
-            )
+            .buildAuthorizationService(urlSessionConfiguration: urlSessionConfiguration)
 
         let authorizationTokensHolder: AuthorizationTokensHolder
         if case .activationStarted(_, let authorizationTokens, _) = initialActivationStatus {
@@ -39,10 +35,7 @@ public struct VisaActivationManagerFactory {
         }
 
         let authorizationTokenRefreshService = VisaAPIServiceBuilder(mockedAPI: isMockedAPIEnabled)
-            .buildAuthorizationTokenRefreshService(
-                urlSessionConfiguration: urlSessionConfiguration,
-                logger: logger
-            )
+            .buildAuthorizationTokenRefreshService(urlSessionConfiguration: urlSessionConfiguration)
 
         let authorizationTokensHandler = CommonVisaAuthorizationTokensHandler(
             cardId: cardId,
@@ -58,20 +51,18 @@ public struct VisaActivationManagerFactory {
         )
 
         let cardActivationStatusService = VisaCardActivationStatusServiceBuilder(isMockedAPIEnabled: isMockedAPIEnabled)
-            .build(urlSessionConfiguration: urlSessionConfiguration, logger: logger)
+            .build(urlSessionConfiguration: urlSessionConfiguration)
 
         let activationOrderProvider = CardActivationOrderProviderBuilder(isMockedAPIEnabled: isMockedAPIEnabled)
             .build(
                 urlSessionConfiguration: urlSessionConfiguration,
                 tokensHandler: authorizationTokensHandler,
-                cardActivationStatusService: cardActivationStatusService,
-                logger: logger
+                cardActivationStatusService: cardActivationStatusService
             )
         let productActivationService = ProductActivationServiceBuilder(isMockAPIEnabled: isMockedAPIEnabled)
             .build(
                 urlSessionConfiguration: urlSessionConfiguration,
-                authorizationTokensHandler: authorizationTokensHandler,
-                logger: logger
+                authorizationTokensHandler: authorizationTokensHandler
             )
 
         return CommonVisaActivationManager(

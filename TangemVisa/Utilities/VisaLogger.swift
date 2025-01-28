@@ -1,5 +1,5 @@
 //
-//  VisaLogger.swift
+//  InternalLogger.swift
 //  TangemVisa
 //
 //  Created by Andrew Son on 22/01/24.
@@ -7,25 +7,15 @@
 //
 
 import Foundation
-
-public protocol VisaLogger {
-    func error(_ error: Error)
-    func debug<T>(_ message: @autoclosure () -> T)
-}
+import TangemLogger
 
 struct InternalLogger {
-    private let logger: VisaLogger
-
-    init(logger: VisaLogger) {
-        self.logger = logger
-    }
-
     func error(error: Error) {
-        logger.error(error)
+        Logger.error(.visa, error)
     }
 
     func debug<T>(subsystem: Subsystem, _ message: @autoclosure () -> T) {
-        logger.debug("\(subsystem.rawValue)\(message())")
+        Logger.error(.visa, subsystem, message())
     }
 }
 

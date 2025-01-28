@@ -14,10 +14,10 @@ public struct VisaBridgeInteractorBuilder {
     private let evmSmartContractInteractor: EVMSmartContractInteractor
     private let logger: InternalLogger
 
-    public init(isTestnet: Bool, evmSmartContractInteractor: EVMSmartContractInteractor, logger: VisaLogger) {
+    public init(isTestnet: Bool, evmSmartContractInteractor: EVMSmartContractInteractor) {
         self.isTestnet = isTestnet
         self.evmSmartContractInteractor = evmSmartContractInteractor
-        self.logger = .init(logger: logger)
+        logger = .init()
     }
 
     public func build(for cardAddress: String) async throws -> VisaBridgeInteractor {
