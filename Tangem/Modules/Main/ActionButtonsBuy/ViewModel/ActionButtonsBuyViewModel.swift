@@ -6,9 +6,9 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import BlockchainSdk
 import Combine
 import Foundation
+import BlockchainSdk
 
 final class ActionButtonsBuyViewModel: ObservableObject {
     // MARK: - Dependencies
@@ -118,7 +118,10 @@ extension ActionButtonsBuyViewModel {
 extension ActionButtonsBuyViewModel {
     func updateHotTokens(_ hotTokens: [HotCryptoToken]) {
         let walletModelNetworkIds = userWalletModel.walletModelsManager.walletModels.map(\.blockchainNetwork.blockchain.networkId)
-        hotCryptoItems = hotTokens.filter { !walletModelNetworkIds.contains($0.networkId) }
+        let networkIds = Blockchain.allMainnetCases.map(\.networkId)
+        hotCryptoItems = hotTokens.filter {
+            !walletModelNetworkIds.contains($0.networkId) && networkIds.contains($0.networkId)
+        }
     }
 
     func addTokenToPortfolio(_ token: HotCryptoToken) {

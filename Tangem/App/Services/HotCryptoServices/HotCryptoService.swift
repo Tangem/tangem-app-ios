@@ -22,7 +22,6 @@ final class CommonHotCryptoService {
 
     // MARK: - Private properties
 
-    private var isHotTokensNotLoaded = true
     private var hotCryptoItemsSubject = CurrentValueSubject<[HotCryptoToken], Never>([])
     private var currencyCodeBag: AnyCancellable?
 

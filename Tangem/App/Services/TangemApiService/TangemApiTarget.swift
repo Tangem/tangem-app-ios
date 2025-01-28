@@ -194,7 +194,7 @@ struct TangemApiTarget: TargetType {
         case .tokenExchangesList, .seedNotifyGetStatus:
             return .requestPlain
         case .hotCrypto(let requestModel):
-            return .requestParameters(parameters: ["currency": requestModel.currency], encoding: URLEncoding.queryString)
+            return .requestParameters(parameters: ["currency": requestModel.currency], encoding: URLEncoding.default)
         case .walletInitialized(let userWalletId):
             return .requestParameters(
                 parameters: [

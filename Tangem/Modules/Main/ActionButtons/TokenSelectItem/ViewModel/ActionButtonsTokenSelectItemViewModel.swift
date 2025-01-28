@@ -32,8 +32,10 @@ final class ActionButtonsTokenSelectItemViewModel: ObservableObject {
                 case .loading:
                     viewModel.updateBalances(to: .loading())
                 case .loaded:
-                    viewModel.fiatBalanceState = .loaded(text: viewModel.model.infoProvider.fiatBalance)
-                    viewModel.balanceState = .loaded(text: viewModel.model.infoProvider.balance)
+                    viewModel.updateBalances(
+                        to: .loaded(text: viewModel.model.infoProvider.fiatBalance),
+                        and: .loaded(text: viewModel.model.infoProvider.balance)
+                    )
                 default:
                     viewModel.updateBalances(to: .empty)
                 }
@@ -43,6 +45,14 @@ final class ActionButtonsTokenSelectItemViewModel: ObservableObject {
     private func updateBalances(to state: LoadableTokenBalanceView.State) {
         fiatBalanceState = state
         balanceState = state
+    }
+    
+    private func updateBalances(
+        to fiatState: LoadableTokenBalanceView.State,
+        and cryptoState: LoadableTokenBalanceView.State
+    ) {
+        fiatBalanceState = fiatState
+        balanceState = cryptoState
     }
 }
 
