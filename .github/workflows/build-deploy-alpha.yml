@@ -121,6 +121,7 @@ jobs:
 
   notification:
     name: Deploy Notification
+    if: false # TODO: Test only, remove
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
     needs:
       - prepare
@@ -141,7 +142,8 @@ jobs:
 
   error_notification:
     name: Error Notification
-    if: failure()
+    #if: failure()
+    if: false # TODO: Test only, remove
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
     needs:
       - prepare
