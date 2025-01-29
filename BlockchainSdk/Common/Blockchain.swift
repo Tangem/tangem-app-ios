@@ -563,6 +563,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "XDC Network"
         case .arbitrum:
             return "Arbitrum One" + testnetSuffix
+        case .areon:
+            return "Areon Network" + testnetSuffix
         case .playa3ullGames:
             return "PLAYA3ULL GAMES"
         case .pulsechain:
