@@ -16,6 +16,7 @@ class StakingTransactionDispatcher {
     private let transactionSigner: TangemSigner
     private let pendingHashesSender: StakingPendingHashesSender
     private let stakingTransactionMapper: StakingTransactionMapper
+    private let transactionStatusProvider: StakeKitTransactionStatusProvider
 
     private var stuck: DispatchProgressStuck? = .none
 
@@ -23,12 +24,14 @@ class StakingTransactionDispatcher {
         walletModel: WalletModel,
         transactionSigner: TangemSigner,
         pendingHashesSender: StakingPendingHashesSender,
-        stakingTransactionMapper: StakingTransactionMapper
+        stakingTransactionMapper: StakingTransactionMapper,
+        transactionStatusProvider: some StakeKitTransactionStatusProvider
     ) {
         self.walletModel = walletModel
         self.transactionSigner = transactionSigner
         self.pendingHashesSender = pendingHashesSender
         self.stakingTransactionMapper = stakingTransactionMapper
+        self.transactionStatusProvider = transactionStatusProvider
     }
 }
 
@@ -83,7 +86,12 @@ private extension StakingTransactionDispatcher {
         case .tron: 5 // to stake tron 2 transactions must be executed in specific order
         default: shouldDelayTransactions ? 1 : nil
         }
-        let stream = sender.sendStakeKit(transactions: transactions, signer: transactionSigner, delay: delay)
+        let stream = sender.sendStakeKit(
+            transactions: transactions,
+            signer: transactionSigner,
+            transactionStatusProvider: transactionStatusProvider,
+            delay: delay
+        )
 
         var transactionDispatcherResult: TransactionDispatcherResult?
 
