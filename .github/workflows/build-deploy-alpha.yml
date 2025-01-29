@@ -97,20 +97,6 @@ jobs:
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
 
-  # TODO: Remove
-  debug:
-    name: Debug
-    runs-on: ubuntu-latest
-    if: false
-    needs: build_notification
-    steps:
-    - name: Debug output
-      env:
-        SLACK_TS: ${{ needs.build_notification.outputs.ts }}
-      run: |
-        echo "SLACK_TS: ${SLACK_TS}"
-        exit -1
-
   build:
     name: Tangem Alpha
     needs: prepare
@@ -171,7 +157,6 @@ jobs:
 
   success_notification:
     name: Success Notification
-    #if: false # TODO: Test only, remove
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
     needs:
       - prepare
@@ -195,7 +180,6 @@ jobs:
   error_notification:
     name: Error Notification
     if: failure()
-    #if: false # TODO: Test only, remove
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
     needs:
       - prepare
