@@ -88,10 +88,11 @@ jobs:
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       status: 'building'
-      app_name: '${{ vars.APP_RC }}'
-      deploy_to: '${{ vars.DEPLOYMENT_APPLE_TESTFLIGHT }}'
+      app_name: '${{ vars.APP_ALPHA }}'
+      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.jira_summary }}'
       build_description: '${{ inputs.build_description }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
@@ -140,10 +141,11 @@ jobs:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
       message_ts: '${{ needs.build_notification.outputs.ts }}'
       status: 'deploying'
-      app_name: '${{ vars.APP_RC }}'
-      deploy_to: '${{ vars.DEPLOYMENT_APPLE_TESTFLIGHT }}'
+      app_name: '${{ vars.APP_ALPHA }}'
+      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
       version: '${{ needs.prepare.outputs.version }}'
       build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.jira_summary }}'
       build_description: '${{ inputs.build_description }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
@@ -202,7 +204,7 @@ jobs:
       - deploy_notification
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
-      message_ts: '${{ needs.build_notification.outputs.ts || needs.deploy_notification.outputs.ts }}'
+      message_ts: '${{ needs.deploy_notification.outputs.ts || needs.build_notification.outputs.ts }}'
       status: 'error'
       app_name: '${{ vars.APP_ALPHA }}'
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
