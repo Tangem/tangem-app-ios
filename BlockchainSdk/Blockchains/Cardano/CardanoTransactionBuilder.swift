@@ -267,7 +267,7 @@ private extension CardanoTransactionBuilder {
                 default: continue
                 }
             }
-            
+
             if let withdrawals = transaction.body.withdrawals, !withdrawals.isEmpty {
                 $0.withdraw.stakingAddress = stakingAddress
                 $0.withdraw.withdrawAmount = withdrawals.values.reduce(0, +)

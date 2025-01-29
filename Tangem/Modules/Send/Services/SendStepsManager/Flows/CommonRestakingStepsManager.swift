@@ -83,7 +83,11 @@ extension CommonRestakingStepsManager: SendStepsManager {
     }
 
     var initialState: SendStepsManagerViewState {
-        SendStepsManagerViewState(step: validatorsStep, action: .next, backButtonVisible: false)
+        if actionType == .stake {
+            SendStepsManagerViewState(step: summaryStep, action: .action, backButtonVisible: false)
+        } else {
+            SendStepsManagerViewState(step: validatorsStep, action: .next, backButtonVisible: false)
+        }
     }
 
     var shouldShowDismissAlert: Bool {

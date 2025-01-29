@@ -11,6 +11,7 @@ import Combine
 import SwiftUI
 import BlockchainSdk
 import TangemExpress
+import TangemStaking
 
 class SendCoordinator: CoordinatorObject {
     let dismissAction: Action<(walletModel: WalletModel, userWalletModel: UserWalletModel)?>
@@ -62,8 +63,15 @@ class SendCoordinator: CoordinatorObject {
             rootViewModel = factory.makeSendViewModel(router: self)
         case .sell(let parameters):
             rootViewModel = factory.makeSellViewModel(sellParameters: parameters, router: self)
-        case .staking(let manager):
+        case .staking(let manager) where options.walletModel.tokenItem.blockchain.isStakeAmountEditable:
             rootViewModel = factory.makeStakingViewModel(manager: manager, router: self)
+        case .staking(let manager):
+            let action = StakingAction(
+                amount: (try? options.walletModel.getBalance()) ?? 0,
+                validatorType: .empty,
+                type: .stake
+            )
+            rootViewModel = factory.makeRestakingViewModel(manager: manager, action: action, router: self)
         case .unstaking(let manager, let action):
             rootViewModel = factory.makeUnstakingViewModel(manager: manager, action: action, router: self)
         case .restaking(let manager, let action):

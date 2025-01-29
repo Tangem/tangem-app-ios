@@ -156,6 +156,10 @@ private extension CommonStakingNotificationManager {
                 break
             }
 
+            if case .cardano = tokenItem.blockchain, case .stake = action.type {
+                show(notification: .cardanoAdditionalDeposit)
+            }
+
             if case .pending(.restake) = action.type {
                 show(notification: .restake)
             }

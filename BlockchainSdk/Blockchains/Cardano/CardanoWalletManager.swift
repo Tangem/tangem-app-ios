@@ -18,8 +18,7 @@ class CardanoWalletManager: BaseManager, WalletManager {
 
     override func update(completion: @escaping (Result<Void, Error>) -> Void) {
         cancellable = networkService
-            .getInfo(addresses: ["addr1qy9eaqnmwjflxpsc8a2w8ezauxfqa9zske2xfsnyua2ld4stn6p8kayn7vrps065u0j9mcvjp629pdj5vnpxfe647mtq44hmyj"], tokens: cardTokens)
-//            .getInfo(addresses: wallet.addresses.map { $0.value }, tokens: cardTokens)
+            .getInfo(addresses: wallet.addresses.map { $0.value }, tokens: cardTokens)
             .sink(receiveCompletion: { [weak self] completionSubscription in
                 if case .failure(let error) = completionSubscription {
                     self?.wallet.clearAmounts()
