@@ -41,6 +41,7 @@ class ServicesManager {
         AppLog.shared.debug("Start services initializing")
 
         if !AppEnvironment.current.isDebug {
+            UserDefaults.standard.set(true, forKey: "/google/firebase/debug_mode")
             configureFirebase()
         }
 

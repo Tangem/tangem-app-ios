@@ -98,6 +98,9 @@ struct DetailsView: View {
                 Text(applicationInfoFooter)
                     .style(Fonts.Regular.footnote, color: Colors.Text.tertiary)
                     .padding(.top, 8)
+                    .onTapGesture(count: 5) {
+                        preconditionFailure("test crash")
+                    }
             }
         }
         .frame(maxWidth: .infinity)
