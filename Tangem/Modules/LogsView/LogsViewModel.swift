@@ -7,6 +7,7 @@
 //
 
 import Combine
+import UIKit
 import Foundation
 import TangemFoundation
 import TangemLogger
@@ -25,6 +26,13 @@ class LogsViewModel: ObservableObject {
 
     init() {
         setup()
+    }
+
+    func share() {
+        let url = OSLogFileParser.logFile
+        AppPresenter.shared.show(
+            UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        )
     }
 
     func setup() {

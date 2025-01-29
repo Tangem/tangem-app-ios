@@ -15,14 +15,29 @@ struct LogsView: View {
         GroupedScrollView(alignment: .leading, spacing: .zero) {
             content
         }
-        .navigationTitle(Text("Logs"))
         .background(Colors.Background.tertiary.ignoresSafeArea())
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu(viewModel.selectedCategory) {
+            ToolbarItem(placement: .principal) {
+                Menu {
                     ForEach(viewModel.categories.indexed(), id: \.1) { index, category in
                         Button(category, action: { viewModel.selectedCategoryIndex = index })
                     }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(viewModel.selectedCategory)
+
+                        Assets.chevron.image
+                            .renderingMode(.template)
+                            .rotationEffect(.degrees(90))
+                            .frame(width: 10, height: 10)
+                    }
+                    .style(Fonts.Bold.body, color: Colors.Text.primary1)
+                }
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: viewModel.share) {
+                    Image(systemName: "square.and.arrow.up")
                 }
             }
         }
