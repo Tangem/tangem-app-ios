@@ -14,10 +14,18 @@ import TangemVisa
 protocol VisaRefreshTokenRepository: VisaRefreshTokenSaver {
     func save(refreshToken: String, cardId: String) throws
     func deleteToken(cardId: String) throws
-    func clear()
+    /// - Parameters:
+    ///  - cardIdTokenToKeep: this token will be saved after clearing secure and biometrics storages, but it will only persist in memory, not in storages
+    func clear(cardIdTokenToKeep: String?)
     func fetch(using context: LAContext)
     func getToken(forCardId cardId: String) -> String?
     func lock()
+}
+
+extension VisaRefreshTokenRepository {
+    func clear() {
+        clear(cardIdTokenToKeep: nil)
+    }
 }
 
 extension VisaRefreshTokenRepository {
@@ -88,14 +96,22 @@ class CommonVisaRefreshTokenRepository: VisaRefreshTokenRepository {
         storeCardsIds(savedCardIds)
     }
 
-    func clear() {
+    func clear(cardIdTokenToKeep: String?) {
         do {
+            var tokenToKeep: String?
+            if let cardIdTokenToKeep {
+                tokenToKeep = tokens[cardIdTokenToKeep]
+            }
             let savedCardIds = loadStoredCardIds()
             tokens.removeAll()
             storeCardsIds([])
             for cardId in savedCardIds {
                 let storageKey = makeRefreshTokenStorageKey(cardId: cardId)
                 try biometricsStorage.delete(storageKey)
+            }
+            
+            if let cardIdTokenToKeep, let tokenToKeep {
+                try save(refreshToken: tokenToKeep, cardId: cardIdTokenToKeep)
             }
         } catch {
             log("Failed to clear repository. Error: \(error)")

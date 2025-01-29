@@ -376,16 +376,10 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     private func clearVisaRefreshTokenRepository(except userWalletModelToKeep: UserWalletModel? = nil) {
-        var pairToKeep: (refreshToken: String, cardId: String)?
-        if let userWalletModelToKeep,
-           let cardId = userWalletModelToKeep.userWallet?.card.cardId,
-           let refreshToken = visaRefreshTokenRepository.getToken(forCardId: cardId) {
-            pairToKeep = (refreshToken, cardId)
-        }
-
-        visaRefreshTokenRepository.clear()
-        if let pairToKeep {
-            try? visaRefreshTokenRepository.save(refreshToken: pairToKeep.refreshToken, cardId: pairToKeep.cardId)
+        if let userWalletModelToKeep, let cardId = userWalletModelToKeep.userWallet?.card.cardId {
+            visaRefreshTokenRepository.clear(cardIdTokenToKeep: cardId)
+        } else {
+            visaRefreshTokenRepository.clear()
         }
     }
 
