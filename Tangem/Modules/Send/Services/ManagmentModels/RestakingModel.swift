@@ -36,6 +36,7 @@ class RestakingModel {
     private let transactionDispatcher: TransactionDispatcher
     private let transactionValidator: TransactionValidator
     private let action: Action
+    private let adjustedAction: Action
     private let tokenItem: TokenItem
     private let feeTokenItem: TokenItem
 
@@ -55,13 +56,13 @@ class RestakingModel {
         self.transactionValidator = transactionValidator
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
+        self.action = action
 
-        self.action = switch tokenItem.blockchain {
+        adjustedAction = switch tokenItem.blockchain {
         // for restaking cardano regular STAKE action is performed
         case .cardano: StakingAction(amount: action.amount, validatorType: action.validatorType, type: .stake)
         default: action
         }
-
         bind()
     }
 }
@@ -117,7 +118,7 @@ private extension RestakingModel {
 
     func state(amount: Decimal, validator: ValidatorInfo) async throws -> RestakingModel.State {
         let estimateFee = try await stakingManager.estimateFee(
-            action: StakingAction(amount: amount, validatorType: .validator(validator), type: action.type)
+            action: StakingAction(amount: amount, validatorType: .validator(validator), type: adjustedAction.type)
         )
 
         if let error = validate(amount: action.amount, fee: estimateFee) {
@@ -177,7 +178,7 @@ private extension RestakingModel {
         let action = StakingAction(
             amount: action.amount,
             validatorType: .validator(validator),
-            type: action.type
+            type: adjustedAction.type
         )
 
         do {
