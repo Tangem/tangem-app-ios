@@ -21,6 +21,7 @@ protocol AuthorizationTokenHandler {
     var authorizationHeader: String { get async throws }
     var authorizationTokens: VisaAuthorizationTokens? { get async }
     func setupTokens(_ tokens: VisaAuthorizationTokens) async throws
+    func forceRefreshToken() async throws
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
 }
 
@@ -136,7 +137,8 @@ class CommonVisaAccessTokenHandler {
         }
     }
 
-    private func refreshAccessToken(refreshJWTToken: JWT) async throws {
+    @discardableResult
+    private func refreshAccessToken(refreshJWTToken: JWT) async throws -> DecodedAuthorizationJWTTokens {
         log("Refreshing access token")
         if refreshJWTToken.expired {
             log("Refresh token expired, cant refresh")
@@ -152,6 +154,7 @@ class CommonVisaAccessTokenHandler {
 
         await accessTokenHolder.setTokens(newJWTTokens)
         try await refreshTokenSaver?.saveRefreshTokenToStorage(refreshToken: newJWTTokens.refreshToken.string)
+        return newJWTTokens
     }
 }
 
@@ -185,6 +188,16 @@ extension CommonVisaAccessTokenHandler: AuthorizationTokenHandler {
         try await accessTokenHolder.setTokens(authorizationTokens: tokens)
         /// We need to use `setupRefresherTask` to prevent blocking current task
         setupRefresherTask()
+    }
+
+    func forceRefreshToken() async throws {
+        guard let tokens = await accessTokenHolder.tokens else {
+            log("Nothing to refresh")
+            return
+        }
+
+        let newTokens = try await refreshAccessToken(refreshJWTToken: tokens.refreshToken)
+        try await refreshTokenSaver?.saveRefreshTokenToStorage(refreshToken: newTokens.refreshToken.string)
     }
 
     func setupRefreshTokenSaver(_ refreshTokenSaver: any VisaRefreshTokenSaver) {
