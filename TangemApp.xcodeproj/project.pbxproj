@@ -13777,6 +13777,7 @@
 				DC283ABA2CCA61AB0043F7D2 /* Coordinator */,
 				DC283AB32CCA607D0043F7D2 /* ViewModel */,
 				DC283AB22CCA60760043F7D2 /* View */,
+				DC7C45652CF8B33B00747589 /* NotificationManager */,
 			);
 			path = ActionButtons;
 			sourceTree = "<group>";
@@ -13984,7 +13985,6 @@
 		DCFEFE5B2CF5B52F002DFE58 /* ActionButtonsSwap */ = {
 			isa = PBXGroup;
 			children = (
-				DC7C45652CF8B33B00747589 /* NotificationManager */,
 				DCFEFE512CF08A12002DFE58 /* ViewModel */,
 				DCFEFE482CF081D5002DFE58 /* Coordinator */,
 				DCFEFE452CF080DC002DFE58 /* Service */,
