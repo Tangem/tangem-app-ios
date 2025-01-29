@@ -81,6 +81,35 @@ jobs:
 
           echo "build_version=${BUILD_VERSION}" >> "$GITHUB_OUTPUT"
 
+  build_notification:
+    name: Build Notification
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
+    needs: prepare
+    with:
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
+      status: 'building'
+      app_name: '${{ vars.APP_RC }}'
+      deploy_to: '${{ vars.DEPLOYMENT_APPLE_TESTFLIGHT }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      build_description: '${{ inputs.build_description }}'
+    secrets:
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
+
+  # TODO: Remove
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    if: false
+    needs: build_notification
+    steps:
+    - name: Debug output
+      env:
+        SLACK_TS: ${{ needs.build_notification.outputs.ts }}
+      run: |
+        echo "SLACK_TS: ${SLACK_TS}"
+        exit -1
+
   build:
     name: Tangem Alpha
     needs: prepare
@@ -99,6 +128,25 @@ jobs:
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
+
+  deploy_notification:
+    name: Deploy Notification
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
+    needs:
+      - prepare
+      - build
+      - build_notification
+    with:
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
+      message_ts: '${{ needs.build_notification.outputs.ts }}'
+      status: 'deploying'
+      app_name: '${{ vars.APP_RC }}'
+      deploy_to: '${{ vars.DEPLOYMENT_APPLE_TESTFLIGHT }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      build_description: '${{ inputs.build_description }}'
+    secrets:
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
 
   deploy:
     name: Google Distribution
@@ -119,16 +167,18 @@ jobs:
       FIREBASE_CLI_TOKEN: '${{ secrets.FIREBASE_CLI_TOKEN }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
 
-  notification:
-    name: Deploy Notification
-    if: false # TODO: Test only, remove
+  success_notification:
+    name: Success Notification
+    #if: false # TODO: Test only, remove
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
     needs:
       - prepare
       - build
       - deploy
+      - deploy_notification
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
+      message_ts: '${{ needs.deploy_notification.outputs.ts }}'
       status: 'success'
       app_name: '${{ vars.APP_ALPHA }}'
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
@@ -142,14 +192,17 @@ jobs:
 
   error_notification:
     name: Error Notification
-    #if: failure()
-    if: false # TODO: Test only, remove
+    if: failure()
+    #if: false # TODO: Test only, remove
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
     needs:
       - prepare
       - build
+      - build_notification
+      - deploy_notification
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
+      message_ts: '${{ needs.build_notification.outputs.ts || needs.deploy_notification.outputs.ts }}'
       status: 'error'
       app_name: '${{ vars.APP_ALPHA }}'
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
