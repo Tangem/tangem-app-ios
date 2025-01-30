@@ -223,3 +223,25 @@ private extension TONWalletManager {
         static let transactionLifetimeInSec: TimeInterval = 60
     }
 }
+
+// MARK: - StakeKitTransactionSender, StakeKitTransactionSenderProvider
+
+extension TONWalletManager: StakeKitTransactionSender, StakeKitTransactionSenderProvider {
+    typealias RawTransaction = String
+
+    func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data {
+        try TONStakeKitTransactionHelper().prepareForSign(transaction)
+    }
+
+    func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction {
+        try TONStakeKitTransactionHelper()
+            .prepareForSend(stakingTransaction: transaction, signatureInfo: signature)
+            .hexString
+            .lowercased()
+            .addHexPrefix()
+    }
+
+    func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String {
+        try await networkService.send(message: rawTransaction).async()
+    }
+}

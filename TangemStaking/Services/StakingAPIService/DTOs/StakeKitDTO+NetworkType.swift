@@ -76,5 +76,6 @@ public enum StakeKitNetworkType: String, Hashable, Codable {
     case near
     case solana
     case tezos
+    case ton
     case tron
 }

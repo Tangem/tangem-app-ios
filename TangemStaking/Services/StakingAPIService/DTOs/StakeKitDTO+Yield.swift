@@ -98,7 +98,7 @@ extension StakeKitDTO {
                     let withdrawPeriod: Period?
                     let rewardClaiming: RewardClaiming
                     let defaultValidator: String?
-                    let supportsMultipleValidators: Bool
+                    let supportsMultipleValidators: Bool?
                     let revshare: Enabled
 
                     enum MetadataType: String, Decodable {

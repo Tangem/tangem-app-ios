@@ -20,6 +20,7 @@
 		0A7FF63D2C888D380072C2E8 /* StakingAnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7FF63C2C888D380072C2E8 /* StakingAnalyticsLogger.swift */; };
 		0A81B3732BB2D24A0008F21C /* BlockchainURLSchemesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */; };
 		0A81B38E2BB3018E0008F21C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 0A81B38D2BB3018E0008F21C /* ZIPFoundation */; };
+		0A917D822D4A54E3008A3C8F /* TONStakeKitTransactionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A917D812D4A54E3008A3C8F /* TONStakeKitTransactionHelper.swift */; };
 		0A94FAAB2CF9D25900FD6C2F /* RentExtemptionRestrictable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A94FAAA2CF9D25900FD6C2F /* RentExtemptionRestrictable.swift */; };
 		0AB5A4732C5267CB00491764 /* SegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */; };
 		0ABC61152C410AFD00065EBA /* TweetNacl in Frameworks */ = {isa = PBXBuildFile; productRef = 0ABC61142C410AFD00065EBA /* TweetNacl */; };
@@ -3239,6 +3240,7 @@
 		0A713CEF2CAA76530042FC27 /* CommonRestakingStepsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonRestakingStepsManager.swift; sourceTree = "<group>"; };
 		0A7FF63C2C888D380072C2E8 /* StakingAnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingAnalyticsLogger.swift; sourceTree = "<group>"; };
 		0A81B3722BB2D24A0008F21C /* BlockchainURLSchemesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockchainURLSchemesParser.swift; sourceTree = "<group>"; };
+		0A917D812D4A54E3008A3C8F /* TONStakeKitTransactionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TONStakeKitTransactionHelper.swift; sourceTree = "<group>"; };
 		0A94FAAA2CF9D25900FD6C2F /* RentExtemptionRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RentExtemptionRestrictable.swift; sourceTree = "<group>"; };
 		0AB5A4722C5267CB00491764 /* SegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedPicker.swift; sourceTree = "<group>"; };
 		0AC9EFF42CAE8515005F868F /* StakingSingleActionFlowBaseBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StakingSingleActionFlowBaseBuilder.swift; sourceTree = "<group>"; };
@@ -10810,6 +10812,7 @@
 				B62D3E332CBC79D900C2460E /* TONWalletAssembly.swift */,
 				B62D3E342CBC79D900C2460E /* TONWalletInfo.swift */,
 				B62D3E352CBC79D900C2460E /* TONWalletManager.swift */,
+				0A917D812D4A54E3008A3C8F /* TONStakeKitTransactionHelper.swift */,
 				2D1366182D036737000AE1C4 /* Domain */,
 				B62D3E2B2CBC79D900C2460E /* TONProvider */,
 			);
@@ -19113,6 +19116,7 @@
 				B62D418A2CBC79DA00C2460E /* SolanaError+.swift in Sources */,
 				B62D40DB2CBC79DA00C2460E /* HederaAccountInfo.swift in Sources */,
 				B62D42AF2CBC79DB00C2460E /* FeeResourceType.swift in Sources */,
+				0A917D822D4A54E3008A3C8F /* TONStakeKitTransactionHelper.swift in Sources */,
 				B62D41402CBC79DA00C2460E /* NEARNetworkResult.TransactionStatus.swift in Sources */,
 				B62D41272CBC79DA00C2460E /* LitecoinNetworkParams.swift in Sources */,
 				B62D40422CBC79DA00C2460E /* RosettaData.swift in Sources */,

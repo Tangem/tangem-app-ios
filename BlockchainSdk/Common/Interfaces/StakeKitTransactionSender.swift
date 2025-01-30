@@ -95,8 +95,7 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
     private func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> TransactionSendResult {
         do {
             let hash: String = try await broadcast(transaction: transaction, rawTransaction: rawTransaction)
-            let mapper = PendingTransactionRecordMapper()
-            let record = mapper.mapToPendingTransactionRecord(
+            let mapper = PendingTransactionRecordMapper()            let record = mapper.mapToPendingTransactionRecord(
                 stakeKitTransaction: transaction,
                 source: wallet.defaultAddress.value,
                 hash: hash
