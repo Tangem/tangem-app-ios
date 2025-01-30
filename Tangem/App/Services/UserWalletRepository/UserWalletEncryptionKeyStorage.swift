@@ -16,39 +16,20 @@ class UserWalletEncryptionKeyStorage {
     private let biometricsStorage = BiometricsStorage()
     private let userWalletIdsStorageKey = "user_wallet_ids"
 
-    func fetch(completion: @escaping (Result<[UserWalletId: UserWalletEncryptionKey], Error>) -> Void) {
-        do {
-            let userWalletIds = try userWalletIds()
+    func fetch(context: LAContext) throws -> [UserWalletId: UserWalletEncryptionKey] {
+        let userWalletIds = try userWalletIds()
 
-            let reason = Localization.biometryTouchIdReason
-            BiometricsUtil.requestAccess(localizedReason: reason) { [weak self] result in
-                guard let self else { return }
+        var keys: [UserWalletId: UserWalletEncryptionKey] = [:]
 
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                case .success(let context):
-                    do {
-                        var keys: [UserWalletId: UserWalletEncryptionKey] = [:]
-
-                        for userWalletId in userWalletIds {
-                            let storageKey = encryptionKeyStorageKey(for: userWalletId)
-                            let encryptionKeyData = try biometricsStorage.get(storageKey, context: context)
-                            if let encryptionKeyData = encryptionKeyData {
-                                keys[userWalletId] = UserWalletEncryptionKey(symmetricKey: SymmetricKey(data: encryptionKeyData))
-                            }
-                        }
-
-                        completion(.success(keys))
-                    } catch {
-                        AppLog.shared.error(error)
-                        completion(.failure(error))
-                    }
-                }
+        for userWalletId in userWalletIds {
+            let storageKey = encryptionKeyStorageKey(for: userWalletId)
+            let encryptionKeyData = try biometricsStorage.get(storageKey, context: context)
+            if let encryptionKeyData = encryptionKeyData {
+                keys[userWalletId] = UserWalletEncryptionKey(symmetricKey: SymmetricKey(data: encryptionKeyData))
             }
-        } catch {
-            completion(.failure(error))
         }
+
+        return keys
     }
 
     func add(_ userWalletId: UserWalletId, encryptionKey: UserWalletEncryptionKey) {

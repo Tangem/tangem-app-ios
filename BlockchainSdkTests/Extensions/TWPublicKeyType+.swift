@@ -71,7 +71,8 @@ extension PublicKeyType {
              .chiliz,
              .odysseyChain,
              .bitrock,
-             .apeChain:
+             .apeChain,
+             .sonic:
             self = PublicKeyType.secp256k1Extended
         case .stellar,
              .ton,

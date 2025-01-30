@@ -100,6 +100,7 @@ public indirect enum Blockchain: Equatable, Hashable {
     case odysseyChain(testnet: Bool)
     case bitrock(testnet: Bool)
     case apeChain(testnet: Bool)
+    case sonic(testnet: Bool)
     case alephium(testnet: Bool)
 
     public var isTestnet: Bool {
@@ -149,6 +150,7 @@ public indirect enum Blockchain: Equatable, Hashable {
              .odysseyChain(let testnet),
              .bitrock(let testnet),
              .apeChain(let testnet),
+             .sonic(let testnet),
              .alephium(let testnet):
             return testnet
         case .litecoin,
@@ -327,6 +329,7 @@ public indirect enum Blockchain: Equatable, Hashable {
              .odysseyChain,
              .bitrock,
              .apeChain,
+             .sonic,
              .alephium:
             return 18
         case .cardano,
@@ -514,6 +517,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "BROCK"
         case .apeChain:
             return "APE"
+        case .sonic:
+            return "S"
         case .alephium:
             return "ALPH"
         }
@@ -602,6 +607,8 @@ public indirect enum Blockchain: Equatable, Hashable {
             return "Bitrock" + testnetSuffix
         case .apeChain:
             return isTestnet ? "Curtis Testnet" : "ApeChain"
+        case .sonic:
+            return "Sonic" + (isTestnet ? " Blaze Testnet" : "")
         default:
             var name = "\(self)".capitalizingFirstLetter()
             if let index = name.firstIndex(of: "(") {
@@ -862,6 +869,7 @@ public extension Blockchain {
         case .odysseyChain: return isTestnet ? 131313 : 153153
         case .bitrock: return isTestnet ? 7771 : 7171
         case .apeChain: return isTestnet ? 33111 : 33139
+        case .sonic: return isTestnet ? 57054 : 146
         default:
             return nil
         }
@@ -937,6 +945,7 @@ public extension Blockchain {
         case .odysseyChain: return true
         case .bitrock: return false // eth_feeHistory all zeroes
         case .apeChain: return true
+        case .sonic: return true
         default:
             assertionFailure("Don't forget about evm here")
             return false
@@ -1083,6 +1092,7 @@ extension Blockchain: Codable {
         case .odysseyChain: return "dione"
         case .bitrock: return "bitrock"
         case .apeChain: return "apechain"
+        case .sonic: return "sonic"
         case .alephium: return "alephium"
         }
     }
@@ -1189,6 +1199,7 @@ extension Blockchain: Codable {
         case "dione": self = .odysseyChain(testnet: isTestnet)
         case "bitrock": self = .bitrock(testnet: isTestnet)
         case "apechain": self = .apeChain(testnet: isTestnet)
+        case "sonic": self = .sonic(testnet: isTestnet)
         case "alephium": self = .alephium(testnet: isTestnet)
         default:
             throw BlockchainSdkError.decodingFailed
@@ -1452,6 +1463,11 @@ private extension Blockchain {
             case .network: return "apechain"
             case .coin: return "apecoin"
             }
+        case .sonic:
+            switch type {
+            case .network: return "sonic"
+            case .coin: return "sonic-3"
+            }
         case .alephium:
             return "alephium"
         }
@@ -1514,7 +1530,8 @@ extension Blockchain {
              .xodex,
              .odysseyChain,
              .bitrock,
-             .apeChain:
+             .apeChain,
+             .sonic:
             return EthereumWalletAssembly()
         case .optimism,
              .manta,

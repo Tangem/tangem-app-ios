@@ -257,6 +257,10 @@ struct TestnetAPINodeInfoProvider {
             return [
                 .init(url: URL(string: "https://curtis.rpc.caldera.xyz/http")!),
             ]
+        case .sonic:
+            return [
+                .init(url: URL(string: "https://sonic-blaze-rpc.publicnode.com")!),
+            ]
         case .alephium:
             return []
         // TODO: Refactor in IOS-6639
