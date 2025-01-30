@@ -18,35 +18,32 @@ struct AppCoordinatorView: CoordinatorView {
     @Namespace private var namespace
 
     var body: some View {
-        NavigationView {
-            content
-        }
-        .navigationViewStyle(.stack)
-        .accentColor(Colors.Text.primary1)
-        .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
-            let viewHierarchySnapshotter = ViewHierarchySnapshottingContainerViewController()
-            viewHierarchySnapshotter.shouldPropagateOverriddenUserInterfaceStyleToChildren = true
-            let adapter = ViewHierarchySnapshottingWeakifyAdapter(adaptee: viewHierarchySnapshotter)
-            let marketsCoordinatorView = MarketsCoordinatorView(coordinator: coordinator)
-                .environment(\.mainWindowSize, mainWindowSize)
-                .environment(\.viewHierarchySnapshotter, adapter)
+        content
+            .accentColor(Colors.Text.primary1)
+            .overlayContentContainer(item: $coordinator.marketsCoordinator) { coordinator in
+                let viewHierarchySnapshotter = ViewHierarchySnapshottingContainerViewController()
+                viewHierarchySnapshotter.shouldPropagateOverriddenUserInterfaceStyleToChildren = true
+                let adapter = ViewHierarchySnapshottingWeakifyAdapter(adaptee: viewHierarchySnapshotter)
+                let marketsCoordinatorView = MarketsCoordinatorView(coordinator: coordinator)
+                    .environment(\.mainWindowSize, mainWindowSize)
+                    .environment(\.viewHierarchySnapshotter, adapter)
 
-            return UIAppearanceBoundaryContainerView(
-                boundaryMarker: { viewHierarchySnapshotter },
-                content: { marketsCoordinatorView }
-            )
-            // Ensures that this is a full-screen container and keyboard avoidance is disabled to mitigate IOS-7997
-            .ignoresSafeArea(.all, edges: .vertical)
-        }
-        .bottomSheet(
-            item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
-            backgroundColor: Colors.Background.primary
-        ) {
-            InformationHiddenBalancesView(viewModel: $0)
-        }
-        .onChange(of: coordinator.isOverlayContentContainerShown) { isShown in
-            overlayContentContainer.setOverlayHidden(!isShown)
-        }
+                return UIAppearanceBoundaryContainerView(
+                    boundaryMarker: { viewHierarchySnapshotter },
+                    content: { marketsCoordinatorView }
+                )
+                // Ensures that this is a full-screen container and keyboard avoidance is disabled to mitigate IOS-7997
+                .ignoresSafeArea(.all, edges: .vertical)
+            }
+            .bottomSheet(
+                item: $sensitiveTextVisibilityViewModel.informationHiddenBalancesViewModel,
+                backgroundColor: Colors.Background.primary
+            ) {
+                InformationHiddenBalancesView(viewModel: $0)
+            }
+            .onChange(of: coordinator.isOverlayContentContainerShown) { isShown in
+                overlayContentContainer.setOverlayHidden(!isShown)
+            }
     }
 
     @ViewBuilder
@@ -57,24 +54,19 @@ struct AppCoordinatorView: CoordinatorView {
             case .welcome(let welcomeCoordinator):
                 WelcomeCoordinatorView(coordinator: welcomeCoordinator)
                     .transition(.opacity.animation(.easeIn))
-                    .navigationBarHidden(true)
             case .uncompleteBackup(let uncompletedBackupCoordinator):
                 UncompletedBackupCoordinatorView(coordinator: uncompletedBackupCoordinator)
                     .transition(.opacity.animation(.easeIn))
-                    .navigationBarHidden(true)
             case .auth(let authCoordinator):
                 AuthCoordinatorView(coordinator: authCoordinator)
                     .setNamespace(namespace)
                     .transition(.opacity.animation(.easeIn))
-                    .navigationBarHidden(true)
             case .main(let mainCoordinator):
                 MainCoordinatorView(coordinator: mainCoordinator)
                     .transition(.opacity.animation(.easeIn))
-                    .navigationBarHidden(false)
             case .onboarding(let onboardingCoordinator):
                 OnboardingCoordinatorView(coordinator: onboardingCoordinator)
                     .transition(.opacity.animation(.easeIn))
-                    .navigationBarHidden(true)
             case .lock:
                 LockView(usesNamespace: true)
                     .setNamespace(namespace)
