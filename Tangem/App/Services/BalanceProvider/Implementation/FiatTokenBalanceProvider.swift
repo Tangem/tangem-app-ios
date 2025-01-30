@@ -13,6 +13,7 @@ import TangemStaking
 struct FiatTokenBalanceProvider {
     private let walletModel: WalletModel
     private let cryptoBalanceProvider: TokenBalanceProvider
+
     private let balanceFormatter = BalanceFormatter()
 
     init(walletModel: WalletModel, cryptoBalanceProvider: TokenBalanceProvider) {
@@ -25,7 +26,10 @@ struct FiatTokenBalanceProvider {
 
 extension FiatTokenBalanceProvider: TokenBalanceProvider {
     var balanceType: TokenBalanceType {
-        mapToTokenBalance(rate: walletModel.rate, balanceType: cryptoBalanceProvider.balanceType)
+        mapToTokenBalance(
+            rate: walletModel.rate,
+            balanceType: cryptoBalanceProvider.balanceType
+        )
     }
 
     var balanceTypePublisher: AnyPublisher<TokenBalanceType, Never> {
