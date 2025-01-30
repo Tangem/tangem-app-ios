@@ -35,6 +35,7 @@ class RestakingModel {
     private let stakingManager: StakingManager
     private let transactionDispatcher: TransactionDispatcher
     private let transactionValidator: TransactionValidator
+    private let sendAmountValidator: SendAmountValidator
     private let action: Action
     private let adjustedAction: Action
     private let tokenItem: TokenItem
@@ -47,6 +48,7 @@ class RestakingModel {
         stakingManager: StakingManager,
         transactionDispatcher: TransactionDispatcher,
         transactionValidator: TransactionValidator,
+        sendAmountValidator: SendAmountValidator,
         action: Action,
         tokenItem: TokenItem,
         feeTokenItem: TokenItem
@@ -54,6 +56,7 @@ class RestakingModel {
         self.stakingManager = stakingManager
         self.transactionDispatcher = transactionDispatcher
         self.transactionValidator = transactionValidator
+        self.sendAmountValidator = sendAmountValidator
         self.tokenItem = tokenItem
         self.feeTokenItem = feeTokenItem
         self.action = action
@@ -102,6 +105,14 @@ private extension RestakingModel {
         guard let validator = _selectedValidator.value.value else {
             return
         }
+
+        do {
+            try validateMinimumStakingAmountRequirement()
+        } catch {
+            update(state: .stakingValidationError(error))
+            return
+        }
+
         estimatedFeeTask?.cancel()
 
         estimatedFeeTask = runTask(in: self) { model in
@@ -126,6 +137,17 @@ private extension RestakingModel {
         }
 
         return .ready(fee: estimateFee)
+    }
+
+    func validateMinimumStakingAmountRequirement() throws (StakingValidationError) {
+        do {
+            try sendAmountValidator.validate(amount: action.amount)
+        } catch let error as StakingValidationError {
+            AppLog.shared.error(error)
+            throw error
+        } catch {
+            AppLog.shared.error(error)
+        }
     }
 
     func validate(amount: Decimal, fee: Decimal) -> RestakingModel.State? {
@@ -156,6 +178,8 @@ private extension RestakingModel {
         case .loading:
             return SendFee(option: .market, value: .loading)
         case .networkError(let error):
+            return SendFee(option: .market, value: .failedToLoad(error: error))
+        case .stakingValidationError(let error):
             return SendFee(option: .market, value: .failedToLoad(error: error))
         case .validationError(_, let fee), .ready(let fee):
             return SendFee(option: .market, value: .loaded(makeFee(value: fee)))
@@ -316,7 +340,7 @@ extension RestakingModel: SendSummaryInput, SendSummaryOutput {
     var isReadyToSendPublisher: AnyPublisher<Bool, Never> {
         _state.map { state in
             switch state {
-            case .loading, .validationError, .networkError:
+            case .loading, .validationError, .networkError, .stakingValidationError:
                 return false
             case .ready:
                 return true
@@ -396,5 +420,12 @@ extension RestakingModel: StakingBaseDataBuilderInput {
 
 extension RestakingModel {
     typealias Action = StakingAction
-    typealias State = UnstakingModel.State
+
+    enum State {
+        case loading
+        case ready(fee: Decimal)
+        case validationError(ValidationError, fee: Decimal)
+        case networkError(Error)
+        case stakingValidationError(StakingValidationError)
+    }
 }

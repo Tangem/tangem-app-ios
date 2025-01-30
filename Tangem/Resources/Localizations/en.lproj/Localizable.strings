@@ -776,6 +776,8 @@
 "staking_notification_earn_rewards_title" = "Earn staking rewards";
 "staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
 "staking_notification_low_staked_balance_title" = "Low staked balance";
+"staking_notification_minimum_balance_error_text" = "A minimum of %1$@ %2$@ is required for restaking. Please top up your balance.";
+"staking_notification_minimum_balance_error_title" = "Not enough %@";
 "staking_notification_network_error_text" = "Staking is currently unavailable due to network conditions. Please try again later.";
 "staking_notification_new_validator_funds_transfer" = "Staking in the %1$@ network with a new validator will automatically transfer all previously staked funds to this validator";
 "staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";

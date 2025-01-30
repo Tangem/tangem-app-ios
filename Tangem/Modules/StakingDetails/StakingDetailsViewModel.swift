@@ -347,7 +347,7 @@ private extension StakingDetailsViewModel {
 
     func shouldShowMinimumRequirement() -> Bool {
         switch tokenItem.blockchain {
-        case .polkadot, .binance: true
+        case .polkadot, .binance, .cardano, .polygon: true
         default: false
         }
     }

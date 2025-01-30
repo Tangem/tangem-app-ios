@@ -25,6 +25,7 @@ enum StakingNotificationEvent {
     case lowStakedBalance
     case maxAmountStaking
     case cardanoAdditionalDeposit
+    case amountRequirementError(minAmount: String, currency: String)
 }
 
 extension StakingNotificationEvent: NotificationEvent {
@@ -45,6 +46,8 @@ extension StakingNotificationEvent: NotificationEvent {
         case .lowStakedBalance: "lowStakedBalance".hashValue
         case .maxAmountStaking: "maxAmountStaking".hashValue
         case .cardanoAdditionalDeposit: "cardanoAdditionalDeposit".hashValue
+        case .amountRequirementError(let minAmount, let currency):
+            "amountRequirementError\(minAmount)\(currency)".hashValue
         }
     }
 
@@ -65,6 +68,8 @@ extension StakingNotificationEvent: NotificationEvent {
         case .lowStakedBalance: .string(Localization.stakingNotificationLowStakedBalanceTitle)
         case .maxAmountStaking: .string(Localization.commonNetworkFeeTitle)
         case .cardanoAdditionalDeposit: .string(Localization.stakingNotificationAdditionalAdaDepositTitle)
+        case .amountRequirementError(_, let currency):
+            .string(Localization.stakingNotificationMinimumBalanceErrorTitle(currency))
         }
     }
 
@@ -101,13 +106,15 @@ extension StakingNotificationEvent: NotificationEvent {
             Localization.stakingNotificationStakeEntireBalanceText
         case .cardanoAdditionalDeposit:
             Localization.stakingNotificationAdditionalAdaDepositText
+        case .amountRequirementError(let minAmount, let currency):
+            Localization.stakingNotificationMinimumBalanceErrorText(minAmount, currency)
         }
     }
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
         case .approveTransactionInProgress, .feeWillBeSubtractFromSendingAmount,
-             .stakesWillMoveToNewValidator, .lowStakedBalance:
+             .stakesWillMoveToNewValidator, .lowStakedBalance, .amountRequirementError:
             .secondary
         case .unstake, .networkUnreachable, .withdraw, .claimRewards,
              .restakeRewards, .restake, .unlock, .revote, .maxAmountStaking, .cardanoAdditionalDeposit:
@@ -119,20 +126,22 @@ extension StakingNotificationEvent: NotificationEvent {
     var icon: NotificationView.MessageIcon {
         switch self {
         case .networkUnreachable, .feeWillBeSubtractFromSendingAmount, .lowStakedBalance:
-            return .init(iconType: .image(Assets.attention.image))
+            .init(iconType: .image(Assets.attention.image))
         case .approveTransactionInProgress:
-            return .init(iconType: .progressView)
+            .init(iconType: .progressView)
         case .unstake, .withdraw, .claimRewards, .restakeRewards, .restake,
              .unlock, .stakesWillMoveToNewValidator, .revote, .maxAmountStaking, .cardanoAdditionalDeposit:
-            return .init(iconType: .image(Assets.blueCircleWarning.image))
+            .init(iconType: .image(Assets.blueCircleWarning.image))
+        case .amountRequirementError:
+            .init(iconType: .image(Assets.redCircleWarning.image))
         case .validationErrorEvent(let event):
-            return event.icon
+            event.icon
         }
     }
 
     var severity: NotificationView.Severity {
         switch self {
-        case .networkUnreachable:
+        case .networkUnreachable, .amountRequirementError:
             return .critical
         case .approveTransactionInProgress,
              .unstake,
@@ -171,6 +180,7 @@ extension StakingNotificationEvent: NotificationEvent {
              .lowStakedBalance,
              .maxAmountStaking,
              .cardanoAdditionalDeposit,
+             .amountRequirementError,
              .stakesWillMoveToNewValidator:
             return nil
         }
