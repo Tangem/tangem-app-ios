@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct StoryPageView: View {
+    private let screenBounds = UIScreen.main.bounds
+
     let content: AnyView
 
     init(content: some View) {
@@ -17,6 +19,7 @@ struct StoryPageView: View {
 
     var body: some View {
         content
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .frame(width: screenBounds.width, height: screenBounds.height)
+            .contentShape(Rectangle())
     }
 }

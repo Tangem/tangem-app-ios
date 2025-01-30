@@ -9,6 +9,7 @@
 import Combine
 import Foundation
 
+@MainActor
 final class StoryViewModel: ObservableObject {
     private let pagesCount: Int
     private let pageDuration: TimeInterval
@@ -162,8 +163,6 @@ extension StoryViewModel {
 
         if isPresented {
             startTimer()
-        } else {
-            print("")
         }
     }
 
@@ -190,6 +189,7 @@ extension StoryViewModel {
         }
 
         visiblePageIndex += 1
+        visiblePageProgress = 0
     }
 
     private func handleTappedBackward() {

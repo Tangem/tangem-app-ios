@@ -18,7 +18,7 @@ struct StoryView: View {
                 pageViews[viewModel.visiblePageIndex]
             }
             .gesture(shortTapGesture(proxy))
-            .gesture(longTapGesture)
+            .highPriorityGesture(longTapGesture)
             .overlay(alignment: .top) {
                 progressBar
             }
@@ -51,7 +51,7 @@ struct StoryView: View {
 
     private var progressBar: some View {
         HStack(spacing: 4) {
-            ForEach(0..<pageViews.count, id: \.self) { pageIndex in
+            ForEach(0 ..< pageViews.count, id: \.self) { pageIndex in
                 GeometryReader { proxy in
                     Capsule()
                         .fill(.white.opacity(0.5))
@@ -118,6 +118,7 @@ struct StoryView: View {
 }
 
 // MARK: - Nested private types
+
 extension StoryView {
     private enum CubicRotation {
         static let perspective: CGFloat = 2.5

@@ -9,6 +9,7 @@
 import Combine
 import Dispatch
 
+@MainActor
 final class StoriesHostViewModel: ObservableObject {
     private let storyViewModels: [StoryViewModel]
     private var cancellables = Set<AnyCancellable>()

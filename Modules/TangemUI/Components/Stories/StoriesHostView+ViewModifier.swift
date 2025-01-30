@@ -8,9 +8,9 @@
 
 import SwiftUI
 
-struct StoriesHostViewModifier: ViewModifier {
-    let storyPages: [[AnyView]]
+private struct StoriesHostViewModifier: ViewModifier {
     @Binding var isPresented: Bool
+    let storiesPages: [[AnyView]]
 
     func body(content: Content) -> some View {
         content
@@ -23,7 +23,7 @@ struct StoriesHostViewModifier: ViewModifier {
                     }
 
                     if isPresented {
-                        StoriesHostView(isPresented: $isPresented, storiesPages: storyPages)
+                        StoriesHostView(isPresented: $isPresented, storiesPages: storiesPages)
                     }
                 }
                 .animation(.easeOut(duration: 0.4), value: isPresented)
@@ -31,8 +31,26 @@ struct StoriesHostViewModifier: ViewModifier {
     }
 }
 
-extension View {
-    public func storiesHost(storyPages: [[AnyView]], isPresented: Binding<Bool>) -> some View {
-        modifier(StoriesHostViewModifier(storyPages: storyPages, isPresented: isPresented))
+// MARK: - SwiftUI.View modifier methods
+
+public extension View {
+    func storiesHost(isPresented: Binding<Bool>, storiesPages: [[AnyView]]) -> some View {
+        modifier(StoriesHostViewModifier(isPresented: isPresented, storiesPages: storiesPages))
+    }
+
+    func storiesHost(singleStoryPages: [AnyView], isPresented: Binding<Bool>) -> some View {
+        modifier(StoriesHostViewModifier(isPresented: isPresented, storiesPages: [singleStoryPages]))
+    }
+
+    func storiesHost<each PageView: View>(
+        isPresented: Binding<Bool>,
+        @ViewBuilder singleStoryPagesViewBuilder: () -> TupleView < (repeat each PageView)>
+    ) -> some View {
+        var erasedViews = [AnyView]()
+        for pageView in repeat each singleStoryPagesViewBuilder().value {
+            erasedViews.append(AnyView(pageView))
+        }
+
+        return modifier(StoriesHostViewModifier(isPresented: isPresented, storiesPages: [erasedViews]))
     }
 }
