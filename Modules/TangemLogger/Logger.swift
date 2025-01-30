@@ -13,7 +13,6 @@ public struct Logger {
     public typealias Category = OSLogCategory
     public typealias Level = OSLogLevel
 
-    public static var prefixBuilder: PrefixBuilder = DefaultPrefixBuilder()
     public static var configuration: Configuration = DefaultConfiguration()
     public static var logFile: URL { OSLogFileWriter.shared.logFile }
 
@@ -21,6 +20,18 @@ public struct Logger {
 
     public init(category: Category) {
         self.category = category
+    }
+}
+
+// MARK: - Tagable
+
+extension Logger: Logger.Tagable {
+    public subscript(tag tag: String) -> Self {
+        self.tag(tag)
+    }
+
+    public func tag(_ tag: String) -> Logger {
+        Logger(category: category.tag(tag))
     }
 }
 
@@ -84,7 +95,7 @@ public extension Logger {
 private extension Logger {
     func log<M>(_ level: OSLog.Level, message: @autoclosure () -> M, option: PrefixOption) {
         let message: String = {
-            if let prefix = Logger.prefixBuilder.prefix(category: category, level: level, option: option) {
+            if let prefix = category.prefix?(level, option) {
                 return [prefix, message()].describing()
             }
 

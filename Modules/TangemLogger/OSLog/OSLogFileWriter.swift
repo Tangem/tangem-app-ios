@@ -9,6 +9,10 @@
 import Foundation
 import OSLog
 
+extension OSLogCategory {
+    static let logFileWriter = OSLogCategory(name: "LogFileWriter")
+}
+
 class OSLogFileWriter {
     static let shared = OSLogFileWriter()
 

@@ -6,34 +6,58 @@
 //  Copyright © 2025 Tangem AG. All rights reserved.
 //
 
-public enum OSLogCategory: Hashable {
-    // Common
-    case app(_ subcategory: String?)
-    case network
-    case analytics
+import Foundation
 
-    // Frameworks
-    case tangemSDK
-    case blockchainSDK
-    case express
-    case visa
-    case staking
-    case logFileWriter
+public struct OSLogCategory {
+    public let name: String
+    public let prefix: ((_ level: Logger.Level, _ option: Logger.PrefixOption) -> String)?
 
-    var name: String {
-        switch self {
-        case .app(.none): "App"
-        case .app(.some(let string)): "App [\(string)]"
-        case .network: "Network"
-        case .analytics: "Analytics"
-        case .tangemSDK: "TangemSDK"
-        case .blockchainSDK: "BlockchainSDK"
-        case .express: "Express"
-        case .visa: "Visa"
-        case .staking: "Staking"
-        case .tangemSDK: "TangemSDK"
-        case .blockchainSDK: "BlockchainSDK"
-        case .logFileWriter: "LogFileWriter"
+    public init(
+        name: String,
+        prefix: ((_: Logger.Level, _: Logger.PrefixOption) -> String)? = {
+            PrefixBuilder().prefix(level: $0, option: $1)
+        }
+    ) {
+        self.name = name
+        self.prefix = prefix
+    }
+}
+
+// MARK: Tagable
+
+extension OSLogCategory: Logger.Tagable {
+    public func tag(_ tag: String) -> Self {
+        OSLogCategory(name: "\(name) [\(tag)]")
+    }
+}
+
+// MARK: - Hashable
+
+extension OSLogCategory: Hashable {
+    public static func == (lhs: OSLogCategory, rhs: OSLogCategory) -> Bool {
+        lhs.name == rhs.name
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+    }
+}
+
+// MARK: - PrefixBuilder
+
+public extension OSLogCategory {
+    struct PrefixBuilder {
+        public init() {}
+        public func prefix(level _: Logger.Level, option: Logger.PrefixOption) -> String {
+            switch option {
+            case .object(.none):
+                return "<EmptyObject>"
+            case .object(.some(let object)):
+                return "\(object.description)"
+            case .verbose(let file, let line, let function):
+                let prefix = "\(URL(fileURLWithPath: file.description).deletingPathExtension().lastPathComponent):\(line):\(function)"
+                return "<\(prefix)>"
+            }
         }
     }
 }
