@@ -117,7 +117,7 @@ lane :release do |options|
     version: options[:version],
     changelog: options[:changelog]
   )
-  clean_artifacts
+
   slack_message(
     message: "Tangem Release successfully uploaded to TestFlight",
     changelog: options[:changelog]
@@ -441,6 +441,9 @@ private_lane :build do |options|
   sh("ls -ltrah ./fastlane/builds || true")
   sh("ls -ltrah ~/Library/Developer/Xcode/Archives/ || true")
   clean_artifacts
+  sh("ls -ltrah ./builds || true")
+  sh("ls -ltrah ./fastlane/builds || true")
+  sh("ls -ltrah ~/Library/Developer/Xcode/Archives/ || true")
 
   if options[:analyze_archive] == true
     build_and_analyze(
@@ -623,6 +626,7 @@ private_lane :slack_message do |options|
 end
 
 private_lane :clean_artifacts do |options|
-  sh("rm -rf builds")
+  sh("rm -rf builds || true")
+  sh("find ~/Library/Developer/Xcode/Archives/ -mindepth 1 -maxdepth 1 -type d | sort -r | tail -n +$((3+1)) | xargs rm -rf || true") 
   clean_build_artifacts
 end
