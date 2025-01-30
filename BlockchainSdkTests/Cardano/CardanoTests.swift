@@ -285,19 +285,14 @@ class CardanoTests: XCTestCase {
 
         let privateKey = Data(hexString: "089b68e458861be0c44bf9f7967f05cc91e51ede86dc679448a3566990b7785bd48c330875b1e0d03caaed0e67cecc42075dce1c7a13b1c49240508848ac82f603391c68824881ae3fc23a56a1a75ada3b96382db502e37564e84a5413cfaf1290dbd508e5ec71afaea98da2df1533c22ef02a26bb87b31907d0b2738fb7785b38d53aa68fc01230784c9209b2b2a2faf28491b3b1f1d221e63e704bbd0403c4154425dfbb01a2c5c042da411703603f89af89e57faae2946e2a5c18b1c5ca0e")
 
-//        input.privateKey.append(signature)
-
-        let half = Data(privateKey.bytes[privateKey.bytes.count / 2 ..< privateKey.bytes.count])
-        var bbytes = privateKey.bytes
         var bytes = privateKey.bytes[privateKey.bytes.count / 2 ..< privateKey.bytes.count]
         bytes.append(contentsOf: Data(repeating: 0, count: 96))
+
         let stakingSignature = Data(bytes)
 
         let prKey = PrivateKey(data: stakingSignature)!
         let publicKey = prKey.getPublicKeyByType(pubkeyType: .ed25519Cardano)
 
-//        let stakingPrivateKey = PrivateKey(data: stakingSignature)!
-//        let stakingPublicKey = stakingPrivateKey.getPublicKeyByType(pubkeyType: .ed25519Cardano)
         let testAddress = AnyAddress(publicKey: publicKey, coin: .cardano).description
 
         let utxo1 = CardanoTxInput.with {
@@ -338,8 +333,6 @@ class CardanoTests: XCTestCase {
 
         let output = try CardanoSigningOutput(serializedData: compileWithSignatures)
 
-        // Sign
-//        let output: CardanoSigningOutput = AnySigner.sign(input: input, coin: .cardano)
         XCTAssertEqual(output.error, TW_Common_Proto_SigningError.ok)
 
         let encoded = output.encoded

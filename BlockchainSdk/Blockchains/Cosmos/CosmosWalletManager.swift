@@ -45,38 +45,37 @@ class CosmosWalletManager: BaseManager, WalletManager {
     }
 
     func send(_ transaction: Transaction, signer: TransactionSigner) -> AnyPublisher<TransactionSendResult, SendTxError> {
-        .anyFail(error: SendTxError(error: WalletError.empty))
-//        Result {
-//            try txBuilder.buildForSign(transaction: transaction)
-//        }
-//        .publisher
-//        .withWeakCaptureOf(self)
-//        .flatMap { manager, hash in
-//            signer
-//                .sign(hash: hash, walletPublicKey: self.wallet.publicKey)
-//                .tryMap { signature -> Data in
-//                    let signature = try Secp256k1Signature(with: signature)
-//                    return try signature.unmarshal(with: manager.wallet.publicKey.blockchainKey, hash: hash).data
-//                }
-//        }
-//        .withWeakCaptureOf(self)
-//        .tryMap { manager, signature -> Data in
-//            try manager.txBuilder.buildForSend(transaction: transaction, signature: signature)
-//        }
-//        .withWeakCaptureOf(self)
-//        .flatMap { manager, transaction in
-//            manager.networkService
-//                .send(transaction: transaction)
-//                .mapSendError(tx: transaction.hexString.lowercased())
-//        }
-//        .handleEvents(receiveOutput: { [weak self] hash in
-//            let mapper = PendingTransactionRecordMapper()
-//            let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
-//            self?.wallet.addPendingTransaction(record)
-//        })
-//        .map { TransactionSendResult(hash: $0) }
-//        .eraseSendError()
-//        .eraseToAnyPublisher()
+        Result {
+            try txBuilder.buildForSign(transaction: transaction)
+        }
+        .publisher
+        .withWeakCaptureOf(self)
+        .flatMap { manager, hash in
+            signer
+                .sign(hash: hash, walletPublicKey: self.wallet.publicKey)
+                .tryMap { signature -> Data in
+                    let signature = try Secp256k1Signature(with: signature)
+                    return try signature.unmarshal(with: manager.wallet.publicKey.blockchainKey, hash: hash).data
+                }
+        }
+        .withWeakCaptureOf(self)
+        .tryMap { manager, signature -> Data in
+            try manager.txBuilder.buildForSend(transaction: transaction, signature: signature)
+        }
+        .withWeakCaptureOf(self)
+        .flatMap { manager, transaction in
+            manager.networkService
+                .send(transaction: transaction)
+                .mapSendError(tx: transaction.hexString.lowercased())
+        }
+        .handleEvents(receiveOutput: { [weak self] hash in
+            let mapper = PendingTransactionRecordMapper()
+            let record = mapper.mapToPendingTransactionRecord(transaction: transaction, hash: hash)
+            self?.wallet.addPendingTransaction(record)
+        })
+        .map { TransactionSendResult(hash: $0) }
+        .eraseSendError()
+        .eraseToAnyPublisher()
     }
 
     func getFee(amount: Amount, destination: String) -> AnyPublisher<[Fee], Error> {

@@ -11,7 +11,6 @@ import WalletCore
 import BigInt
 import TangemSdk
 import TangemFoundation
-import SwiftCBOR
 
 // You can decode your CBOR transaction here: https://cbor.me
 class CardanoTransactionBuilder {

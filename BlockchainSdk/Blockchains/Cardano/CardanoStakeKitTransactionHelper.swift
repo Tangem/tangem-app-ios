@@ -51,6 +51,29 @@ struct CardanoTransaction {
 }
 
 struct CardanoTransactionBody {
+    let inputs: [Input]
+    let outputs: [Output]
+    let fee: Decimal
+    let auxiliaryScripts: String?
+    let certificates: [Certificate]
+    let collateralInputs: [String]?
+    let currentTreasuryValue: String?
+    let era: String?
+    let governanceActions: [String]?
+    let metadata: String?
+    let mint: String?
+    let redeemers: [String]?
+    let referenceInputs: [String]?
+    let requiredSigners: String?
+    let returnCollateral: String?
+    let totalCollateral: String?
+    let updateProposal: String?
+    let voters: [String: String]?
+    let withdrawals: [RewardAddress: UInt64]?
+    let witnesses: [String]?
+}
+
+extension CardanoTransactionBody {
     struct Input {
         let transactionID: String
         let index: UInt64
@@ -107,6 +130,50 @@ struct CardanoTransactionBody {
 
             network = nil
             credential = nil
+        }
+    }
+
+    enum Certificate {
+        case stakeRegistrationLegacy
+        case stakeDeregistrationLegacy(StakeDeregistrationLegacy)
+        case stakeDelegation(StakeDelegation)
+        case poolRegistration
+        case poolRetirement
+        case genesisKeyDelegation
+        case moveInstantaneousRewardsCert
+        case stakeRegistrationConway
+        case stakeDeregistrationConway(StakeDeregistrationConway)
+        case voteDelegation
+        case stakeAndVoteDelegation
+        case stakeRegistrationAndDelegation
+        case voteRegistrationAndDelegation
+        case stakeVoteRegistrationAndDelegation
+        case committeeHotAuth
+        case committeeColdResign
+        case dRepRegistration
+        case dRepDeregistration
+        case dRepUpdate
+
+        enum Index: UInt64, RawRepresentable {
+            case stakeRegistrationLegacy = 0
+            case stakeDeregistrationLegacy
+            case stakeDelegation
+            case poolRegistration
+            case poolRetirement
+            case genesisKeyDelegation
+            case moveInstantaneousRewardsCert
+            case stakeRegistrationConway
+            case stakeDeregistrationConway
+            case voteDelegation
+            case stakeAndVoteDelegation
+            case stakeRegistrationAndDelegation
+            case voteRegistrationAndDelegation
+            case stakeVoteRegistrationAndDelegation
+            case committeeHotAuth
+            case committeeColdResign
+            case dRepRegistration
+            case dRepDeregistration
+            case dRepUpdate
         }
     }
 
@@ -206,73 +273,6 @@ struct CardanoTransactionBody {
         }
     }
 
-    enum Certificate {
-        case stakeRegistrationLegacy
-        case stakeDeregistrationLegacy(StakeDeregistrationLegacy)
-        case stakeDelegation(StakeDelegation)
-        case poolRegistration
-        case poolRetirement
-        case genesisKeyDelegation
-        case moveInstantaneousRewardsCert
-        case stakeRegistrationConway
-        case stakeDeregistrationConway(StakeDeregistrationConway)
-        case voteDelegation
-        case stakeAndVoteDelegation
-        case stakeRegistrationAndDelegation
-        case voteRegistrationAndDelegation
-        case stakeVoteRegistrationAndDelegation
-        case committeeHotAuth
-        case committeeColdResign
-        case dRepRegistration
-        case dRepDeregistration
-        case dRepUpdate
-
-        enum Index: UInt64, RawRepresentable {
-            case stakeRegistrationLegacy = 0
-            case stakeDeregistrationLegacy
-            case stakeDelegation
-            case poolRegistration
-            case poolRetirement
-            case genesisKeyDelegation
-            case moveInstantaneousRewardsCert
-            case stakeRegistrationConway
-            case stakeDeregistrationConway
-            case voteDelegation
-            case stakeAndVoteDelegation
-            case stakeRegistrationAndDelegation
-            case voteRegistrationAndDelegation
-            case stakeVoteRegistrationAndDelegation
-            case committeeHotAuth
-            case committeeColdResign
-            case dRepRegistration
-            case dRepDeregistration
-            case dRepUpdate
-        }
-    }
-
-    let inputs: [Input]
-    let outputs: [Output]
-    let fee: Decimal
-    let auxiliaryScripts: String?
-    let certificates: [Certificate]
-    let collateralInputs: [String]?
-    let currentTreasuryValue: String?
-    let era: String?
-    let governanceActions: [String]?
-    let metadata: String?
-    let mint: String?
-    let redeemers: [String]?
-    let referenceInputs: [String]?
-    let requiredSigners: String?
-    let returnCollateral: String?
-    let totalCollateral: String?
-    let updateProposal: String?
-    let voters: [String: String]?
-    let withdrawals: [RewardAddress: UInt64]?
-    let witnesses: [String]?
-}
-
-private extension CardanoTransactionBody {
     init?(cbor: CBOR) {
         guard case .array(let byteString) = cbor else {
             return nil

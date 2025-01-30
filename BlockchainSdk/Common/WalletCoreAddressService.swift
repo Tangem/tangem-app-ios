@@ -45,9 +45,6 @@ extension WalletCoreAddressService: AddressProvider {
             }
 
             let address = AnyAddress(publicKey: walletCorePublicKey, coin: coin).description
-            let tmp = "addr1qxzah68yc5a5fyaz6pazzmuthvfwpnwcqlchxwgmskjukrw7n3ekrzf4fjhgz33gjnqcldugyqkgl6l0vylyazaryvush3qw95"
-            let tmp1 = "addr1qy9eaqnmwjflxpsc8a2w8ezauxfqa9zske2xfsnyua2ld4stn6p8kayn7vrps065u0j9mcvjp629pdj5vnpxfe647mtq44hmyj"
-            let tmp2 = "addr1q8calnxh03je9kxzx6gu9auw6mefz9x6kq6mwr5dnadjekm45ne6kl07fqtvvj99lrj74r570p5ra3c6ep0030428wgqj8deun" // no staking
             return PlainAddress(value: address, publicKey: publicKey, type: addressType)
         case .legacy:
             if coin == .cardano {

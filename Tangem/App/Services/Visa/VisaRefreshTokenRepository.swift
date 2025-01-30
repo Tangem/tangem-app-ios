@@ -109,7 +109,7 @@ class CommonVisaRefreshTokenRepository: VisaRefreshTokenRepository {
                 let storageKey = makeRefreshTokenStorageKey(cardId: cardId)
                 try biometricsStorage.delete(storageKey)
             }
-            
+
             if let cardIdTokenToKeep, let tokenToKeep {
                 try save(refreshToken: tokenToKeep, cardId: cardIdTokenToKeep)
             }

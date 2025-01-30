@@ -10,7 +10,6 @@ import XCTest
 import CryptoKit
 import TangemSdk
 import WalletCore
-import BigInt
 @testable import BlockchainSdk
 
 class TONTests: XCTestCase {

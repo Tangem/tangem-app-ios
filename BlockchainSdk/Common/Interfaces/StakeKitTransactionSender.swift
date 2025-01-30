@@ -21,32 +21,37 @@ protocol StakeKitTransactionSenderProvider {
     func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data
     func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String
+
     func buildRawTransactions(
         from transactions: [StakeKitTransaction],
+        wallet: Wallet,
         signer: TransactionSigner
     ) async throws -> [RawTransaction]
 }
 
 extension StakeKitTransactionSenderProvider {
-//    func prepareDataForSend(transaction: StakeKitTransaction, signatures: [SignatureInfo]) throws -> RawTransaction {
-//        guard let signature = signatures.first else { throw WalletError.empty }
-//        return try prepareDataForSend(transaction: transaction, signature: signature)
-//    }
-}
+    func buildRawTransactions(
+        from transactions: [StakeKitTransaction],
+        wallet: Wallet,
+        signer: TransactionSigner
+    ) async throws -> [RawTransaction] {
+        let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
 
-protocol StakeKitMultiSignatureTransactionSenderProvider: StakeKitTransactionSenderProvider {
-    func prepareDataForSend(transaction: StakeKitTransaction, signatures: [SignatureInfo]) throws -> RawTransaction
-}
+        let signatures: [SignatureInfo] = try await signer.sign(
+            hashes: preparedHashes,
+            walletPublicKey: wallet.publicKey
+        ).async()
 
-extension StakeKitMultiSignatureTransactionSenderProvider {
-    func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction {
-        try prepareDataForSend(transaction: transaction, signatures: [signature])
+        return try zip(transactions, signatures).map { transaction, signature in
+            try prepareDataForSend(transaction: transaction, signature: signature)
+        }
     }
 }
 
 // MARK: - Common implementation for StakeKitTransactionSenderProvider
 
-extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvider, Self: WalletProvider, RawTransaction: CustomStringConvertible {
+extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvider,
+    Self: WalletProvider, RawTransaction: CustomStringConvertible {
     func sendStakeKit(transactions: [StakeKitTransaction], signer: TransactionSigner, delay second: UInt64?) -> AsyncThrowingStream<StakeKitTransactionSendResult, Error> {
         .init { [weak self] continuation in
             let task = Task { [weak self] in
@@ -56,9 +61,15 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                 }
 
                 do {
-                    let rawTransactions = try await buildRawTransactions(from: transactions, signer: signer)
+                    let rawTransactions = try await buildRawTransactions(
+                        from: transactions,
+                        wallet: wallet,
+                        signer: signer
+                    )
 
-                    _ = try await withThrowingTaskGroup(of: (TransactionSendResult, StakeKitTransaction).self) { group in
+                    _ = try await withThrowingTaskGroup(
+                        of: (TransactionSendResult, StakeKitTransaction).self
+                    ) { group in
                         var results = [TransactionSendResult]()
                         for (transaction, rawTransaction) in zip(transactions, rawTransactions) {
                             group.addTask {
@@ -125,20 +136,5 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
     @MainActor
     private func addPendingTransaction(_ record: PendingTransactionRecord) {
         wallet.addPendingTransaction(record)
-    }
-
-    func buildRawTransactions(
-        from transactions: [StakeKitTransaction],
-        signer: TransactionSigner
-    ) async throws -> [RawTransaction] {
-        let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
-        let signatures: [SignatureInfo] = try await signer.sign(
-            hashes: preparedHashes,
-            walletPublicKey: wallet.publicKey
-        ).async()
-
-        return try zip(transactions, signatures).map { transaction, signature in
-            try prepareDataForSend(transaction: transaction, signature: signature)
-        }
     }
 }

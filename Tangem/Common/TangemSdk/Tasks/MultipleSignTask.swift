@@ -24,7 +24,8 @@ class MultipleSignTask: CardSessionRunnable {
     }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<[MultipleSignTaskResponse]>) {
-        let queue = OperationQueue.current?.underlyingQueue ?? .main
+        let completionQueue = OperationQueue.current?.underlyingQueue ?? .main
+
         TangemFoundation.runTask(in: self) { task in
             let result: Result<[MultipleSignTaskResponse], TangemSdkError>
             do {
@@ -47,7 +48,8 @@ class MultipleSignTask: CardSessionRunnable {
             } catch {
                 result = .failure(error.toTangemSdkError())
             }
-            queue.async {
+
+            completionQueue.async {
                 completion(result)
             }
         }

@@ -38,7 +38,6 @@ public extension StakingAction {
         case voteLocked(passthrough: String)
         case unlockLocked(passthrough: String)
         case restake(passthrough: String)
-        // case stake(passthrough: String) // this case behavior may differ across the chains: for cardano this is handled exactly as restake in other chains
         case claimUnstaked(passthroughs: Set<String>) // this case is handled exactly as withdraw on UI
     }
 }

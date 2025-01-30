@@ -40,7 +40,7 @@ extension CommonSigner: TransactionSigner {
                     hashes: hashes,
                     walletPublicKey: walletPublicKey.seedKey,
                     cardId: cardId,
-                    derivationPath: walletPublicKey.signDerivationPath,
+                    derivationPath: walletPublicKey.derivationPath,
                     initialMessage: initialMessage
                 ) { signResult in
                     switch signResult {
@@ -59,5 +59,9 @@ extension CommonSigner: TransactionSigner {
         sign(hashes: [hash], walletPublicKey: walletPublicKey)
             .map { $0.first ?? Data() }
             .eraseToAnyPublisher()
+    }
+
+    func sign(dataToSign: [BlockchainSdk.SignData], seedKey: Data) -> AnyPublisher<[(Data, Data)], any Error> {
+        Fail(error: WalletError.empty).eraseToAnyPublisher()
     }
 }

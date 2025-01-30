@@ -57,7 +57,7 @@ struct StakingFlowBaseBuilder {
             actionType: .stake,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
-            editableType: walletModel.tokenItem.blockchain.isStakeAmountEditable ? .editable : .noEditable,
+            editableType: .editable,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: amount.compact,
             stakingValidatorsCompactViewModel: validators.compact,
