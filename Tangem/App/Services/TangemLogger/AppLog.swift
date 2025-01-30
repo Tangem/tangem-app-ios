@@ -10,6 +10,11 @@ import Foundation
 import TangemSdk
 import TangemLogger
 
-public let AppLog = Logger(category: .app(.none))
-public let WCLog = Logger(category: .app("Wallet Connect"))
-public let AnalyticsLog = Logger(category: .analytics)
+let AppLog = Logger(category: .app)
+let WCLog = Logger(category: .app).tag("Wallet Connect")
+let AnalyticsLog = Logger(category: .analytics)
+
+extension Logger.Category {
+    static let app = OSLogCategory(name: "App")
+    static let analytics = OSLogCategory(name: "Analytics", prefix: nil)
+}

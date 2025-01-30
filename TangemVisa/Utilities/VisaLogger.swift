@@ -9,7 +9,7 @@
 import Foundation
 import TangemLogger
 
-public let VisaLogger = Logger(category: .visa)
+public let VisaLogger = Logger(category: OSLogCategory(name: "Visa"))
 
 struct InternalLogger {
     func error(error: Error) {
@@ -17,7 +17,7 @@ struct InternalLogger {
     }
 
     func debug<T>(subsystem: Subsystem, _ message: @autoclosure () -> T) {
-        VisaLogger.info(subsystem, message())
+        VisaLogger.tag(subsystem.rawValue).info(message())
     }
 }
 

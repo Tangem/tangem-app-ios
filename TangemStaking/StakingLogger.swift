@@ -8,4 +8,4 @@
 
 import TangemLogger
 
-public let StakingLogger = Logger(category: .staking)
+public let StakingLogger = Logger(category: OSLogCategory(name: "Staking"))

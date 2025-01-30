@@ -8,4 +8,4 @@
 
 import TangemLogger
 
-public let NetworkLogger = Logger(category: .network)
+public let NetworkLogger = Logger(category: OSLogCategory(name: "Network", prefix: .none))

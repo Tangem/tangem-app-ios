@@ -8,4 +8,4 @@
 
 import TangemLogger
 
-public let BlockchainSDKLogger = Logger(category: .blockchainSDK)
+public let BlockchainSDKLogger = Logger(category: OSLogCategory(name: "BlockchainSDK"))

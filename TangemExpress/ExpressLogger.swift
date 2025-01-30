@@ -8,4 +8,4 @@
 
 import TangemLogger
 
-public let ExpressLogger = Logger(category: .express)
+public let ExpressLogger = Logger(category: OSLogCategory(name: "Express"))

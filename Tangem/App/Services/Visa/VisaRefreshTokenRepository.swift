@@ -151,7 +151,7 @@ class CommonVisaRefreshTokenRepository: VisaRefreshTokenRepository {
     }
 
     private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.shared.debug("[VisaRefreshTokenRepository] - \(message())")
+        VisaLogger[tag: "VisaRefreshTokenRepository"].info(message())
     }
 
     private func loadStoredCardIds() -> Set<String> {

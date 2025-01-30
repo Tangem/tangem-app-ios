@@ -447,7 +447,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                     completion(nil) // TODO: throw error?
                 }
             } catch {
-                AppLog.shared.error(error)
+                AppLog.error(error: error)
                 completion(.error(error))
             }
         }

@@ -10,7 +10,7 @@ import TangemLogger
 import class TangemSdk.Log
 import protocol TangemSdk.TangemSdkLogger
 
-public let TSDKLogger = Logger(category: .tangemSDK)
+public let TSDKLogger = Logger(category: OSLogCategory(name: "TangemSDK", prefix: .none))
 
 struct TangemLoggerConfigurator: Initializable {
     let tangemSDKLogConfig: Log.Config = .custom(
@@ -20,7 +20,6 @@ struct TangemLoggerConfigurator: Initializable {
 
     func initialize() {
         Logger.configuration = TangemLoggerConfiguration()
-        Logger.prefixBuilder = TangemLoggerPrefixBuilder()
         // TangemSDK logger
         Log.config = tangemSDKLogConfig
     }
@@ -35,21 +34,6 @@ struct TangemLoggerConfiguration: Logger.Configuration {
 
     func shouldPrint(category: Logger.Category, level: Logger.Level) -> Bool {
         !AppEnvironment.current.isProduction
-    }
-}
-
-// MARK: - TangemLogger.PrefixBuilder
-
-struct TangemLoggerPrefixBuilder: Logger.PrefixBuilder {
-    let defaultPrefixBuilder = Logger.DefaultPrefixBuilder()
-
-    func prefix(category: Logger.Category, level: Logger.Level, option: Logger.PrefixOption) -> String? {
-        switch category {
-        case .analytics, .tangemSDK, .network:
-            return nil
-        default:
-            return defaultPrefixBuilder.prefix(category: category, level: level, option: option)
-        }
     }
 }
 
