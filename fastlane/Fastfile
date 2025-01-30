@@ -165,6 +165,20 @@ lane :build_Alpha do |options|
     code_sign_mode: "debug"
   )
 
+  paths = [
+    Actions.lane_context[Actions::SharedValues::IPA_OUTPUT_PATH],
+    Actions.lane_context[Actions::SharedValues::DSYM_OUTPUT_PATH],
+    Actions.lane_context[Actions::SharedValues::CERT_FILE_PATH],
+  ]
+
+  paths += Actions.lane_context[Actions::SharedValues::SIGH_PROFILE_PATHS] || []
+  paths += Actions.lane_context[Actions::SharedValues::DSYM_PATHS] || []
+  paths = paths.uniq
+
+  paths.each do |file|
+    UI.message("got a path '#{file}'")
+  end
+
   upload_dsyms(app_id: options[:firebase_app_id], filename: options[:filename])
 end
 
@@ -423,6 +437,9 @@ lane :deploy_testflight do |options|
 end
 
 private_lane :build do |options|
+  sh("ls -ltrah ./builds || true")
+  sh("ls -ltrah ./fastlane/builds || true")
+  sh("ls -ltrah ~/Library/Developer/Xcode/Archives/ || true")
   clean_artifacts
 
   if options[:analyze_archive] == true
