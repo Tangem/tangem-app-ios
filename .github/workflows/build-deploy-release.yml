@@ -173,10 +173,10 @@ jobs:
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
       runner_name: ${{ inputs.runner_name }}
     secrets:
-      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-      ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
-      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-      GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT }}
+      ASC_KEY_ID: '${{ secrets.ASC_KEY_ID }}'
+      ASC_PRIVATE_KEY: '${{ secrets.ASC_PRIVATE_KEY }}'
+      ASC_ISSUER_ID: '${{ secrets.ASC_ISSUER_ID }}'
+      GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
 
   success_notification:
     name: Success Notification
