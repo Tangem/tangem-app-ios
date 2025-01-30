@@ -162,10 +162,10 @@ jobs:
       - prepare
       - build
       - deploy
-      - deploy_notification
+      - build_notification
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
-      message_ts: '${{ needs.deploy_notification.outputs.ts }}'
+      message_ts: '${{ needs.build_notification.outputs.ts }}'
       status: 'success'
       app_name: '${{ needs.prepare.outputs.version }}'
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
@@ -184,11 +184,11 @@ jobs:
     needs:
       - prepare
       - build
+      - deploy
       - build_notification
-      - deploy_notification
     with:
       channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
-      message_ts: '${{ needs.deploy_notification.outputs.ts || needs.build_notification.outputs.ts }}'
+      message_ts: '${{ needs.build_notification.outputs.ts }}'
       status: 'error'
       app_name: '${{ needs.prepare.outputs.version }}'
       deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
