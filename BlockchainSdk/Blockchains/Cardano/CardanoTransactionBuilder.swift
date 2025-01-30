@@ -248,7 +248,7 @@ private extension CardanoTransactionBuilder {
             $0.utxos = try buildTxInput()
             $0.transferMessage.toAddress = address
             $0.transferMessage.changeAddress = address
-            $0.transferMessage.amount = 1000000
+            $0.transferMessage.amount = 1000000 // not relevant as we use MaxAmount
             $0.transferMessage.useMaxAmount = true
 
             for certificate in transaction.body.certificates {
