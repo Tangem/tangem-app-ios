@@ -6,6 +6,18 @@ on:
       - 'releases/**'
   workflow_dispatch:
     inputs:
+      runner_name:
+        type: choice
+        description: >
+          Self-hosted runner to run the build. Leave blank (default value) to use the runner selected by GitHub
+        options:
+          - ''
+          - bamboo
+          - builder1
+          - builder2
+          - builder3
+          - builder4
+        default: ''
       build_description:
         description: >
           Optional additional info about the build
@@ -108,6 +120,7 @@ jobs:
       #  `github.event_name == 'push'` provides the default value (`true`) in this case
       #analyze_archive: ${{ (github.event_name == 'push' || inputs.analyze_archive == true) && 'true' || 'false' }}
       analyze_archive: ${{ inputs.analyze_archive == true && 'true' || 'false' }}  # TODO: Enable by default
+      runner_name: ${{ inputs.runner_name }}
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
@@ -124,6 +137,7 @@ jobs:
       build_number: '${{ needs.prepare.outputs.build_number }}'
       changelog: '${{ inputs.build_description }}'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
+      runner_name: ${{ inputs.runner_name }}
     secrets:
       ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
       ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}

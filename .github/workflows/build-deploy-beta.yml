@@ -6,6 +6,18 @@ on:
       - 'develop'
   workflow_dispatch:
     inputs:
+      runner_name:
+        type: choice
+        description: >
+          Self-hosted runner to run the build. Leave blank (default value) to use the runner selected by GitHub
+        options:
+          - ''
+          - bamboo
+          - builder1
+          - builder2
+          - builder3
+          - builder4
+        default: ''
       build_description:
         description: >
           Optional additional info about the build
@@ -124,6 +136,7 @@ jobs:
       # GA boolean inputs are just awful https://stackoverflow.com/questions/76292948
       # The reusable workflow requires all input params to be of type string, so we use this ugly ternary operator here
       analyze_archive: ${{ inputs.analyze_archive == true && 'true' || 'false' }}
+      runner_name: ${{ inputs.runner_name }}
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
@@ -141,6 +154,7 @@ jobs:
       changelog: '${{ needs.prepare.outputs.jira-issues-summary }}'
       build_description: '${{ inputs.build_description }}'
       filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
+      runner_name: ${{ inputs.runner_name }}
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       FIREBASE_CLI_TOKEN: '${{ secrets.FIREBASE_CLI_TOKEN }}'
