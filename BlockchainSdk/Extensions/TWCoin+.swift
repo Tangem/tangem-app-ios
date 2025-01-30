@@ -132,6 +132,7 @@ extension CoinType {
              .odysseyChain,
              .bitrock,
              .apeChain,
+             .sonic,
              .alephium:
             // Blockchains that are not in WalletCore yet
             return nil
