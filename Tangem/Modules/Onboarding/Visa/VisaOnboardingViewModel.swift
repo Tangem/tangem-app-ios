@@ -23,6 +23,7 @@ protocol VisaOnboardingRoutable: OnboardingRoutable, OnboardingBrowserRoutable {
 
 class VisaOnboardingViewModel: ObservableObject {
     @Injected(\.userWalletRepository) private var userWalletRepository: UserWalletRepository
+    @Injected(\.visaRefreshTokenRepository) private var visaRefreshTokenRepository: VisaRefreshTokenRepository
 
     @Published var shouldFireConfetti = false
     @Published var currentProgress: CGFloat = 0
@@ -275,6 +276,8 @@ extension VisaOnboardingViewModel: VisaOnboardingInProgressDelegate {
     func proceedFromCurrentRemoteState() async {
         switch visaActivationManager.activationRemoteState {
         case .activated:
+            visaActivationManager.setupRefreshTokenSaver(visaRefreshTokenRepository)
+
             goToNextStep()
         case .blockedForActivation:
             // TODO: Discuss with analyst
@@ -319,6 +322,7 @@ extension VisaOnboardingViewModel: UserWalletStorageAgreementRoutable {
     }
 
     func didAskToSaveUserWallets(agreed: Bool) {
+        visaActivationManager.setupRefreshTokenSaver(visaRefreshTokenRepository)
         OnboardingUtils().processSaveUserWalletRequestResult(agreed: agreed)
         trySaveAccessCode()
     }
@@ -561,6 +565,7 @@ extension VisaOnboardingViewModel {
         return .init(
             input: cardInput,
             visaActivationManager: VisaActivationManagerFactory(isMockedAPIEnabled: true).make(
+                cardId: cardInput.primaryCardId,
                 initialActivationStatus: activationStatus,
                 tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
                 urlSessionConfiguration: .default,

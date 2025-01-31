@@ -35,6 +35,7 @@ struct VisaOnboardingViewModelBuilder {
         if let initialActivationStatus {
             let factory = VisaActivationManagerFactory(isMockedAPIEnabled: FeatureStorage.instance.isVisaAPIMocksEnabled)
             visaActivationManager = factory.make(
+                cardId: onboardingInput.primaryCardId,
                 initialActivationStatus: initialActivationStatus,
                 tangemSdk: TangemSdkDefaultFactory().makeTangemSdk(),
                 urlSessionConfiguration: .defaultConfiguration,

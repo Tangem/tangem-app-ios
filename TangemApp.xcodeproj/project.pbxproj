@@ -351,6 +351,7 @@
 		B0323F27258BFCF4005C7CD5 /* WriteIssuerDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0323F26258BFCF4005C7CD5 /* WriteIssuerDataTask.swift */; };
 		B0323F2C258C041D005C7CD5 /* SignerUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0323F2B258C041D005C7CD5 /* SignerUtils.swift */; };
 		B0340B9E2C50C7C4008FF6FC /* ForegroundBlinkAnimationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0340B9D2C50C7C4008FF6FC /* ForegroundBlinkAnimationModifier.swift */; };
+		B03430FC2D4382AC00087D16 /* VisaRefreshTokenRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03430FB2D4382AC00087D16 /* VisaRefreshTokenRepository.swift */; };
 		B03478602B0F6C08004FECA0 /* HighPriceImpactCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B034785F2B0F6C08004FECA0 /* HighPriceImpactCalculator.swift */; };
 		B035645D2950689700397787 /* WalletConnectServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B035645C2950689700397787 /* WalletConnectServiceError.swift */; };
 		B035645F29506C4D00397787 /* WalletConnectAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B035645E29506C4D00397787 /* WalletConnectAction.swift */; };
@@ -3590,6 +3591,7 @@
 		B0332D3229251A4A00553AD9 /* notReferralMock.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = notReferralMock.json; sourceTree = "<group>"; };
 		B0332D3329251A4A00553AD9 /* referralMock.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = referralMock.json; sourceTree = "<group>"; };
 		B0340B9D2C50C7C4008FF6FC /* ForegroundBlinkAnimationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForegroundBlinkAnimationModifier.swift; sourceTree = "<group>"; };
+		B03430FB2D4382AC00087D16 /* VisaRefreshTokenRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisaRefreshTokenRepository.swift; sourceTree = "<group>"; };
 		B034785F2B0F6C08004FECA0 /* HighPriceImpactCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighPriceImpactCalculator.swift; sourceTree = "<group>"; };
 		B035645C2950689700397787 /* WalletConnectServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectServiceError.swift; sourceTree = "<group>"; };
 		B035645E29506C4D00397787 /* WalletConnectAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectAction.swift; sourceTree = "<group>"; };
@@ -7936,6 +7938,7 @@
 			children = (
 				B050F5022B613A6F00B2E53C /* VisaTransactionHistoryService.swift */,
 				B050F5072B6283CF00B2E53C /* VisaTransactionHistoryMapper.swift */,
+				B03430FB2D4382AC00087D16 /* VisaRefreshTokenRepository.swift */,
 			);
 			path = Visa;
 			sourceTree = "<group>";
@@ -17429,6 +17432,7 @@
 				EFC84B2A2C37FBB300546882 /* SendDestinationStep.swift in Sources */,
 				B62C65D12C38D06B00189AD4 /* PushNotificationsAvailabilityProvider.swift in Sources */,
 				EFE5EC532AEC1BB100C5ADC3 /* UndoToastView.swift in Sources */,
+				B03430FC2D4382AC00087D16 /* VisaRefreshTokenRepository.swift in Sources */,
 				DC66BC02285B537A00CDF765 /* WalletOnboardingRoutable.swift in Sources */,
 				EF4662202924DEEE00346B6C /* DefaultWarningRowViewModel.swift in Sources */,
 				DC261CAA292CF56600875E64 /* AuthView.swift in Sources */,
