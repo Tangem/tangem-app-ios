@@ -25,19 +25,36 @@ struct PendingActionMapper {
         case .active:
             let unstake = stakingAction(type: .unstake)
 
-            if let restakeAction = balance.actions.first(
-                where: {
-                    $0.type == .restake || ($0.type == .stake && balance.item.network == .cardano)
-                }
-            ),
-                validators.filter(\.preferred).count > 1 {
+            var actions = [StakingAction]()
+
+            if let restakeAction = balance.actions.first(where: { $0.type == .restake }),
+               validators.filter(\.preferred).count > 1 {
                 let restake = stakingAction(
                     type: .pending(.restake(passthrough: restakeAction.passthrough))
                 )
 
-                return .multiple([unstake, restake])
+                actions.append(restake)
             }
-            return .single(unstake)
+
+            if let stakeAction = balance.actions.first(where: { $0.type == .stake }),
+               validators.filter(\.preferred).count > 1 {
+                // pending STAKE action for cardano must be handled as RESTAKE on UI but sent to stakekit as STAKE
+                if case .cardano = balance.item.network {
+                    actions.append(stakingAction(
+                        type: .pending(.stake(passthrough: stakeAction.passthrough)),
+                        displayType: .pending(.restake(passthrough: stakeAction.passthrough))
+                    ))
+                } else {
+                    actions.append(stakingAction(
+                        type: .pending(.stake(passthrough: stakeAction.passthrough))
+                    ))
+                }
+            }
+            if actions.isEmpty {
+                return .single(unstake)
+            } else {
+                return .multiple([unstake] + actions)
+            }
         case .unstaked:
             var withdrawType: StakingAction.PendingActionType?
             let withdraws = balance.actions.filter { $0.type == .withdraw }.map { $0.passthrough }
@@ -107,8 +124,16 @@ struct PendingActionMapper {
         }
     }
 
-    private func stakingAction(type: StakingAction.ActionType) -> StakingAction {
-        StakingAction(amount: balance.amount, validatorType: balance.validatorType, type: type)
+    private func stakingAction(
+        type: StakingAction.ActionType,
+        displayType: StakingAction.ActionType? = nil
+    ) -> StakingAction {
+        StakingAction(
+            amount: balance.amount,
+            validatorType: balance.validatorType,
+            type: type,
+            displayType: displayType
+        )
     }
 }
 

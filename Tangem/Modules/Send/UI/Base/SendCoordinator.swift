@@ -66,12 +66,7 @@ class SendCoordinator: CoordinatorObject {
         case .staking(let manager) where options.walletModel.tokenItem.blockchain.isStakeAmountEditable:
             rootViewModel = factory.makeStakingViewModel(manager: manager, router: self)
         case .staking(let manager):
-            let action = StakingAction(
-                amount: (try? options.walletModel.getBalance()) ?? 0,
-                validatorType: .empty,
-                type: .stake
-            )
-            rootViewModel = factory.makeRestakingViewModel(manager: manager, action: action, router: self)
+            rootViewModel = factory.makeRestakingViewModel(manager: manager, router: self)
         case .unstaking(let manager, let action):
             rootViewModel = factory.makeUnstakingViewModel(manager: manager, action: action, router: self)
         case .restaking(let manager, let action):

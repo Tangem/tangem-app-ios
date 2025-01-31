@@ -262,7 +262,11 @@ private extension CardanoTransactionBuilder {
                     $0.delegate.poolID = stakeDelegation.poolKeyHash
                 case .stakeDeregistrationLegacy, .stakeDeregistrationConway:
                     $0.deregisterStakingKey.stakingAddress = stakingAddress
-                    $0.registerStakingKey.depositAmount = 2000000
+
+                    if transaction.body.withdrawals == nil {
+                        $0.withdraw.stakingAddress = stakingAddress
+                        $0.withdraw.withdrawAmount = 0
+                    }
                 default: continue
                 }
             }

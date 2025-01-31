@@ -15,6 +15,7 @@ class CommonUnstakingStepsManager {
     private let summaryStep: SendSummaryStep
     private let finishStep: SendFinishStep
     private let action: UnstakingModel.Action
+    private let initialStepIsSummary: Bool
 
     private var stack: [SendStep]
     private var bag: Set<AnyCancellable> = []
@@ -24,14 +25,16 @@ class CommonUnstakingStepsManager {
         amountStep: SendAmountStep,
         summaryStep: SendSummaryStep,
         finishStep: SendFinishStep,
-        action: UnstakingModel.Action
+        action: UnstakingModel.Action,
+        initialStepIsSummary: Bool
     ) {
         self.amountStep = amountStep
         self.summaryStep = summaryStep
         self.finishStep = finishStep
         self.action = action
+        self.initialStepIsSummary = initialStepIsSummary
 
-        stack = [amountStep]
+        stack = [initialStepIsSummary ? summaryStep : amountStep]
     }
 
     private func currentStep() -> SendStep {
@@ -107,14 +110,18 @@ extension CommonUnstakingStepsManager: SendStepsManager {
             return .unlockLocked
         case .pending(.claimUnstaked):
             return .claimUnstaked
-        case .stake:
+        case .stake, .pending(.stake):
             assertionFailure("Doesn't support in UnstakingFlow")
             return .unstake
         }
     }
 
     var initialState: SendStepsManagerViewState {
-        .init(step: amountStep, action: .next, backButtonVisible: false)
+        if initialStepIsSummary {
+            .init(step: summaryStep, action: .action, backButtonVisible: false)
+        } else {
+            .init(step: amountStep, action: .next, backButtonVisible: false)
+        }
     }
 
     var shouldShowDismissAlert: Bool {

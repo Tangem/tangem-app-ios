@@ -26,7 +26,7 @@ struct StakingSingleActionFlowBaseBuilder {
         notificationManager.setupManager(with: actionModel)
 
         let sendAmountCompactViewModel = sendAmountStepBuilder.makeSendAmountCompactViewModel(input: actionModel)
-        let actionType = builder.sendFlowActionType(actionType: action.type)
+        let actionType = builder.sendFlowActionType(actionType: action.displayType)
         let sendFinishAnalyticsLogger = builder.makeStakingFinishAnalyticsLogger(
             actionType: actionType,
             stakingValidatorsInput: actionModel

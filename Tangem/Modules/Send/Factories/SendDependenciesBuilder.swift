@@ -22,7 +22,7 @@ struct SendDependenciesBuilder {
 
     func sendFlowActionType(actionType: StakingAction.ActionType) -> SendFlowActionType {
         switch actionType {
-        case .stake: .stake
+        case .stake, .pending(.stake): .stake
         case .unstake: .unstake
         case .pending(.claimRewards): .claimRewards
         case .pending(.withdraw): .withdraw
