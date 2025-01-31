@@ -128,9 +128,12 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             .store(in: &bag)
 
         infoProvider.actionsUpdatePublisher
+            .receive(on: DispatchQueue.global())
+            .withWeakCaptureOf(self)
+            .map { $0.0.contextActionsProvider?.buildContextActions(for: $0.0) }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.buildContextActions()
+            .sink { [weak self] actions in
+                self?.contextActionSections = actions ?? []
             }
             .store(in: &bag)
 
@@ -149,7 +152,6 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
         }
 
         updatePendingTransactionsStateIfNeeded()
-        buildContextActions()
     }
 
     private func setupBalance(_ type: FormattedTokenBalanceType) {
