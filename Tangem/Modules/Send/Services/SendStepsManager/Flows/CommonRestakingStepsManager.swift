@@ -83,10 +83,10 @@ extension CommonRestakingStepsManager: SendStepsManager {
     }
 
     var initialState: SendStepsManagerViewState {
-        if actionType == .stake {
-            SendStepsManagerViewState(step: summaryStep, action: .action, backButtonVisible: false)
-        } else {
+        if actionType == .restake {
             SendStepsManagerViewState(step: validatorsStep, action: .next, backButtonVisible: false)
+        } else {
+            SendStepsManagerViewState(step: summaryStep, action: .action, backButtonVisible: false)
         }
     }
 
