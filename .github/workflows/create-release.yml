@@ -17,22 +17,25 @@ on:
         default: ''
       versionName:
         description: 'Name of version  (ie 1.3.0)'
+        default: '5.21' # TODO: Test only, remove
         required: true
-      versionType:
+      releaseType:
         type: choice
         description: 'Release or Hotfix'
+        options:
+          - release
+          - hotfix
+        default: 'release'
         required: true
-        options: 
-        - release
-        - hotfix
       xcode_version_override:
         description: >
           Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
           pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
         type: string
       analyze_archive:
+        # TODO: Enable by default
         description: >
-          Whether the archive should be analyzed during the build process (default: true)
+          Whether the archive should be analyzed during the build process (default: false)
         type: boolean
         default: false # TODO: Enable by default
 
@@ -41,14 +44,15 @@ jobs:
     name: Prepare Release
     uses: tangem/actions/.github/workflows/prepare-release.yml@feature/IOS-8741_ci_cd_notifications
     with:
-      versionName: ${{ github.event.inputs.versionName }}
-      versionType: ${{ github.event.inputs.versionType }}
+      versionName: ${{ inputs.versionName }}
+      releaseType: ${{ inputs.releaseType }}
     secrets:
       GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
       JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
       JIRA_USER_EMAIL: ${{ secrets.JIRA_USER }}
       JIRA_API_TOKEN: ${{ secrets.JIRA_TOKEN }}
- 
+
+  # TODO: Bump release branch instead to trigger a build
   build:
     name: Tangem Release
     needs: prepare
@@ -71,22 +75,27 @@ jobs:
     secrets:
       FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
       GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
-     
+
   deploy:
-    name: TestFlight
+    name: Tangem Release TestFlight
     if: false # TODO: Test onyl
-    needs: [prepare,build]
     uses: tangem/actions/.github/workflows/deploy-testflight.yml@feature/IOS-8741_ci_cd_notifications
+    needs:
+      - prepare
+      - build
     with:
-      stage: ${{needs.prepare.outputs.stage}}
-      version: "${{needs.prepare.outputs.version}}"
-      build_number: ${{needs.prepare.outputs.build_number}}
-      changelog: "${{needs.prepare.outputs.changelog}}"
-      filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ inputs.build_description }}'
+      filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
+      runner_name: ${{ inputs.runner_name }}
     secrets:
-      FIREBASE_APP_ID: ${{ secrets.FIREBASE_IOS_ALPHA_ID}}
-      FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN}}
-   
+      ASC_KEY_ID: '${{ secrets.ASC_KEY_ID }}'
+      ASC_PRIVATE_KEY: '${{ secrets.ASC_PRIVATE_KEY }}'
+      ASC_ISSUER_ID: '${{ secrets.ASC_ISSUER_ID }}'
+      GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
+
   notification:
     name: Deploy Notification
     if: false # TODO: Test onyl
@@ -102,7 +111,7 @@ jobs:
       changelog: ${{needs.prepare.outputs.changelog}}
     secrets:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
-    
+
   error_notification:
     name: Error Notification
     # if: failure()
