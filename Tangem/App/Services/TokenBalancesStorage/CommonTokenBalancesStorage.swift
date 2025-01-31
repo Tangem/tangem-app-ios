@@ -27,6 +27,7 @@ class CommonTokenBalancesStorage {
     private typealias Balances = [String: [String: [String: CachedBalance]]]
     @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
 
+    private let queue = DispatchQueue(label: "com.tangem.TokenBalancesStorage", attributes: .concurrent)
     private let balances: CurrentValueSubject<Balances, Never> = .init([:])
     private var bag: Set<AnyCancellable> = []
 
@@ -39,16 +40,20 @@ class CommonTokenBalancesStorage {
 // MARK: - TokenBalancesStorage
 
 extension CommonTokenBalancesStorage: TokenBalancesStorage {
-    func store(balance: CachedBalance, type: CachedBalanceType, id: WalletModelId, userWalletId: UserWalletId) {
-        var balancesForUserWallet = balances.value[userWalletId.stringValue, default: [:]]
-        var balancesForWalletModel = balancesForUserWallet[id, default: [:]]
-        balancesForWalletModel.updateValue(balance, forKey: type.rawValue)
-        balancesForUserWallet.updateValue(balancesForWalletModel, forKey: id)
-        balances.value.updateValue(balancesForUserWallet, forKey: userWalletId.stringValue)
+    func store(balance: CachedBalance, type: CachedBalanceType, id: WalletModelId, userWalletId: String) {
+        queue.async(flags: .barrier) {
+            var balancesForUserWallet = self.balances.value[userWalletId, default: [:]]
+            var balancesForWalletModel = balancesForUserWallet[id, default: [:]]
+            balancesForWalletModel.updateValue(balance, forKey: type.rawValue)
+            balancesForUserWallet.updateValue(balancesForWalletModel, forKey: id)
+            self.balances.value.updateValue(balancesForUserWallet, forKey: userWalletId)
+        }
     }
 
-    func balance(for id: WalletModelId, userWalletId: UserWalletId, type: CachedBalanceType) -> CachedBalance? {
-        balances.value[userWalletId.stringValue]?[id]?[type.rawValue]
+    func balance(for id: WalletModelId, userWalletId: String, type: CachedBalanceType) -> CachedBalance? {
+        queue.sync {
+            balances.value[userWalletId]?[id]?[type.rawValue]
+        }
     }
 }
 
@@ -59,7 +64,8 @@ private extension CommonTokenBalancesStorage {
         balances
             .dropFirst()
             .removeDuplicates()
-            .receive(on: DispatchQueue.global())
+            // Add small debounce to reduce impact to write to disk operation
+            .debounce(for: 0.5, scheduler: queue)
             .withWeakCaptureOf(self)
             .receiveValue { $0.save(balances: $1) }
             .store(in: &bag)
