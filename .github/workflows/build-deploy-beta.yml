@@ -239,3 +239,25 @@ jobs:
       build_description: '${{ inputs.build_description }}'
     secrets:
       SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
+
+  cancel_notification:
+    name: Cancel Notification
+    if: cancelled()
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
+    needs:
+      - prepare
+      - build
+      - deploy
+      - build_notification
+    with:
+      channel: '${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}'
+      message_ts: '${{ needs.build_notification.outputs.ts }}'
+      status: 'cancel'
+      app_name: '${{ needs.prepare.outputs.version }}'
+      deploy_to: '${{ vars.DEPLOYMENT_GOOGLE_DISTRIBUTION }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      changelog: '${{ needs.prepare.outputs.jira-issues-summary }}'
+      build_description: '${{ inputs.build_description }}'
+    secrets:
+      SLACK_BOT_TOKEN: '${{ secrets.SLACK_BOT_TOKEN }}'
