@@ -53,7 +53,7 @@ private extension TotalBalanceProvider {
             walletModelsManager.walletModelsPublisher,
             hasEntriesWithoutDerivationPublisher
         )
-        .receive(on: DispatchQueue.main)
+        .receive(on: DispatchQueue.global())
         .withWeakCaptureOf(self)
         .sink { balanceProvider, input in
             let (walletModels, hasEntriesWithoutDerivation) = input
