@@ -22,6 +22,8 @@ class BaseManager: WalletProvider {
     var walletPublisher: AnyPublisher<Wallet, Never> { _wallet.eraseToAnyPublisher() }
     var statePublisher: AnyPublisher<WalletManagerState, Never> { state.eraseToAnyPublisher() }
 
+    private let updateQueue = DispatchQueue(label: "com.tangem.BaseManager.updateQueue")
+    private var updateWorkItem: DispatchWorkItem?
     private var latestUpdateTime: Date?
 
     // TODO: move constant into config
@@ -52,19 +54,24 @@ class BaseManager: WalletProvider {
             return
         }
 
-        state.send(.loading)
+        updateWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.state.send(.loading)
+            self?.update { [weak self] result in
+                guard let self else { return }
 
-        update { [weak self] result in
-            guard let self else { return }
-
-            switch result {
-            case .success:
-                didFinishUpdating(error: nil)
-                latestUpdateTime = Date()
-            case .failure(let error):
-                didFinishUpdating(error: error)
+                switch result {
+                case .success:
+                    didFinishUpdating(error: nil)
+                    latestUpdateTime = Date()
+                case .failure(let error):
+                    didFinishUpdating(error: error)
+                }
             }
         }
+
+        updateWorkItem = workItem
+        updateQueue.async(execute: workItem)
     }
 
     func update(completion: @escaping (Result<Void, Error>) -> Void) {}
