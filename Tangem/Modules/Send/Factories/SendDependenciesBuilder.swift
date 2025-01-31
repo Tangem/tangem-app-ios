@@ -76,6 +76,14 @@ struct SendDependenciesBuilder {
         }
     }
 
+    func makeStakeAction() -> StakingAction {
+        StakingAction(
+            amount: (try? walletModel.getBalance()) ?? 0,
+            validatorType: .empty,
+            type: .stake
+        )
+    }
+
     func formattedBalance(for amount: SendAmount?, actionType: SendFlowActionType) -> String {
         let balanceFormatted: BalanceFormatted
         switch actionType {

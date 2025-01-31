@@ -65,7 +65,7 @@ class SendCoordinator: CoordinatorObject {
             rootViewModel = factory.makeSellViewModel(sellParameters: parameters, router: self)
         case .staking(let manager) where options.walletModel.tokenItem.blockchain.isStakeAmountEditable:
             rootViewModel = factory.makeStakingViewModel(manager: manager, router: self)
-        case .staking(let manager):
+        case .staking(let manager): // we are using restaking flow here because it doesn't allow to edit amount
             rootViewModel = factory.makeRestakingViewModel(manager: manager, router: self)
         case .unstaking(let manager, let action):
             rootViewModel = factory.makeUnstakingViewModel(manager: manager, action: action, router: self)

@@ -22,11 +22,7 @@ struct RestakingFlowBaseBuilder {
 
     func makeSendViewModel(manager: some StakingManager, action: RestakingModel.Action? = nil, router: SendRoutable) -> SendViewModel {
         // no pending action == full balance staking
-        let action = action ?? StakingAction(
-            amount: (try? walletModel.getBalance()) ?? 0,
-            validatorType: .empty,
-            type: .stake
-        )
+        let action = action ?? builder.makeStakeAction()
 
         let restakingModel = builder.makeRestakingModel(stakingManager: manager, action: action)
         let notificationManager = builder.makeStakingNotificationManager()
