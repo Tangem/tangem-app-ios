@@ -24,12 +24,14 @@ final class CommonHotCryptoService {
 
     private var hotCryptoItemsSubject = CurrentValueSubject<[HotCryptoToken], Never>([])
     private var currencyCodeBag: AnyCancellable?
+    private var loadTask: Task<Void, Never>?
 
     init() {
         bind()
     }
 
     func bind() {
+        // Don't uses .dropFirst(), because loading required when we create instance of service
         currencyCodeBag = AppSettings.shared.$selectedCurrencyCode
             .withWeakCaptureOf(self)
             .receiveValue { service, currencyCode in
@@ -46,14 +48,19 @@ extension CommonHotCryptoService: HotCryptoService {
     }
 
     func loadHotCrypto(_ currencyCode: String) {
-        Task {
+        loadTask?.cancel()
+        
+        loadTask = Task { [weak self] in
             guard
+                let self,
                 let fetchedHotCryptoItems = try? await tangemApiService.loadHotCrypto(
                     requestModel: .init(currency: AppSettings.shared.selectedCurrencyCode)
                 )
             else {
                 return
             }
+            
+            guard !Task.isCancelled else { return }
 
             hotCryptoItemsSubject.send(fetchedHotCryptoItems.tokens.map { .init(from: $0) })
         }

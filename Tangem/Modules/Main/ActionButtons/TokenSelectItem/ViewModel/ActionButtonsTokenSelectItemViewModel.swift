@@ -46,7 +46,7 @@ final class ActionButtonsTokenSelectItemViewModel: ObservableObject {
         fiatBalanceState = state
         balanceState = state
     }
-    
+
     private func updateBalances(
         to fiatState: LoadableTokenBalanceView.State,
         and cryptoState: LoadableTokenBalanceView.State

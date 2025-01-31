@@ -6,7 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-import Combine
 import Foundation
 
 final class ActionButtonsBuyCoordinator: CoordinatorObject {

@@ -19,9 +19,9 @@ struct ActionButtonsTokenSelectorItem: Identifiable {
 extension ActionButtonsTokenSelectorItem: Equatable {
     static func == (lhs: ActionButtonsTokenSelectorItem, rhs: ActionButtonsTokenSelectorItem) -> Bool {
         lhs.id == rhs.id
-            && lhs.isDisabled == rhs.isDisabled
-            && lhs.tokenIconInfo == rhs.tokenIconInfo
-            && lhs.infoProvider === rhs.infoProvider
-            && lhs.walletModel === rhs.walletModel
+        && lhs.isDisabled == rhs.isDisabled
+        && lhs.tokenIconInfo == rhs.tokenIconInfo
+        && lhs.infoProvider === rhs.infoProvider
+        && lhs.walletModel === rhs.walletModel
     }
 }
