@@ -1,7 +1,20 @@
 name: Create release
+
 on:
   workflow_dispatch:
     inputs:
+      runner_name:
+        type: choice
+        description: >
+          Self-hosted runner to run the build. Leave blank (default value) to use the runner selected by GitHub
+        options:
+          - ''
+          - bamboo
+          - builder1
+          - builder2
+          - builder3
+          - builder4
+        default: ''
       versionName:
         description: 'Name of version  (ie 1.3.0)'
         required: true
@@ -12,74 +25,97 @@ on:
         options: 
         - release
         - hotfix
+      xcode_version_override:
+        description: >
+          Optional Xcode version override. Leave blank (default value) to use the default Xcode version; 
+          pass a custom value (e.g. '16.0', '10.2.1', '11 Beta 7', '11.2 GM seed', etc) to use a different Xcode version for the build
+        type: string
+      analyze_archive:
+        description: >
+          Whether the archive should be analyzed during the build process (default: true)
+        type: boolean
+        default: false # TODO: Enable by default
 
 jobs:
- prepare:
-   name: Prepare Release
-   uses: tangem/actions/.github/workflows/build.yml@main
-   with:
-    versionName: ${{ github.event.inputs.versionName }}
-    versionType: ${{ github.event.inputs.versionType }}
-   secrets:
-    GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
-    JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
-    JIRA_USER_EMAIL: ${{ secrets.JIRA_USER }}
-    JIRA_API_TOKEN: ${{ secrets.JIRA_TOKEN }}
+  prepare:
+    name: Prepare Release
+    uses: tangem/actions/.github/workflows/prepare-release.yml@feature/IOS-8741_ci_cd_notifications
+    with:
+      versionName: ${{ github.event.inputs.versionName }}
+      versionType: ${{ github.event.inputs.versionType }}
+    secrets:
+      GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
+      JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
+      JIRA_USER_EMAIL: ${{ secrets.JIRA_USER }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_TOKEN }}
  
- build:
-   name: Tangem RC
-   needs: prepare
-   uses: tangem/actions/.github/workflows/build.yml@main
-   with:
-    stage: ${{needs.prepare.outputs.stage}}
-    version: "${{ github.event.inputs.name }}"
-    build_number: ${{needs.prepare.outputs.build_number}}
-    path: "fastlane/builds/"
-    filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
-   secrets:
-    GH_MOBILE_PAT: ${{ secrets.GH_MOBILE_PAT}}
+  build:
+    name: Tangem Release
+    needs: prepare
+    uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8741_ci_cd_notifications
+    with:
+      stage: '${{ needs.prepare.outputs.stage }}'
+      version: '${{ needs.prepare.outputs.version }}'
+      build_number: '${{ needs.prepare.outputs.build_number }}'
+      path: 'fastlane/builds/'
+      filename: 'Tangem-${{ needs.prepare.outputs.stage }}-${{ needs.prepare.outputs.version }}(${{ needs.prepare.outputs.build_number }}).ipa'
+      xcode_version_override: '${{ inputs.xcode_version_override }}'
+      arm_runners_only: true
+      # GA boolean inputs are just awful https://stackoverflow.com/questions/76292948
+      # - The reusable workflow requires all input params to be of type string, so we use this ugly ternary operator here
+      # - When a workflow is triggered by push, there is no input, therefore the condition
+      #  `github.event_name == 'push'` provides the default value (`true`) in this case
+      #analyze_archive: ${{ (github.event_name == 'push' || inputs.analyze_archive == true) && 'true' || 'false' }}
+      analyze_archive: ${{ inputs.analyze_archive == true && 'true' || 'false' }}  # TODO: Enable by default
+      runner_name: ${{ inputs.runner_name }}
+    secrets:
+      FIREBASE_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
+      GH_MOBILE_PAT: '${{ secrets.GH_MOBILE_PAT }}'
      
- deploy:
-   name: TestFlight
-   needs: [prepare,build]
-   uses: tangem/actions/.github/workflows/deploy-testflight.yml@main
-   with:
-    stage: ${{needs.prepare.outputs.stage}}
-    version: "${{needs.prepare.outputs.version}}"
-    build_number: ${{needs.prepare.outputs.build_number}}
-    changelog: "${{needs.prepare.outputs.changelog}}"
-    filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
-   secrets:
-    FIREBASE_APP_ID: ${{ secrets.FIREBASE_IOS_ALPHA_ID}}
-    FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN}}
+  deploy:
+    name: TestFlight
+    if: false # TODO: Test onyl
+    needs: [prepare,build]
+    uses: tangem/actions/.github/workflows/deploy-testflight.yml@feature/IOS-8741_ci_cd_notifications
+    with:
+      stage: ${{needs.prepare.outputs.stage}}
+      version: "${{needs.prepare.outputs.version}}"
+      build_number: ${{needs.prepare.outputs.build_number}}
+      changelog: "${{needs.prepare.outputs.changelog}}"
+      filename: "Tangem-${{needs.prepare.outputs.stage}}-${{needs.prepare.outputs.version}}(${{needs.prepare.outputs.build_number}}).ipa"
+    secrets:
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_IOS_ALPHA_ID}}
+      FIREBASE_CLI_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN}}
    
- notification:
-   name: Deploy Notification
-   needs: [prepare,deploy]
-   uses: tangem/actions/.github/workflows/notification.yml@main
-   with: 
-    channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
-    status: "success"
-    app_name: ${{vars.APP_RC}}
-    deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
-    version: ${{needs.prepare.outputs.version}}
-    build_number: ${{needs.prepare.outputs.build_number}}
-    changelog: ${{needs.prepare.outputs.changelog}}
-   secrets:
-    SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+  notification:
+    name: Deploy Notification
+    if: false # TODO: Test onyl
+    needs: [prepare,deploy]
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
+    with: 
+      channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
+      status: "success"
+      app_name: ${{vars.APP_RC}}
+      deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
+      version: ${{needs.prepare.outputs.version}}
+      build_number: ${{needs.prepare.outputs.build_number}}
+      changelog: ${{needs.prepare.outputs.changelog}}
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
     
- error_notification:
-   name: Error Notification
-   if: failure()
-   needs: [prepare,deploy]
-   uses: tangem/actions/.github/workflows/notification.yml@main
-   with: 
-    channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
-    status: "error"
-    app_name: ${{vars.APP_RC}}
-    deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
-    version: ${{needs.prepare.outputs.version}}
-    build_number: ${{needs.prepare.outputs.build_number}}
-    changelog: ${{needs.prepare.outputs.changelog}}
-   secrets:
-    SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+  error_notification:
+    name: Error Notification
+    # if: failure()
+    if: false # TODO: Test onyl
+    needs: [prepare,deploy]
+    uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
+    with: 
+      channel: ${{vars.SLACK_CHANNEL_DEPLOYMENTS_IOS}}
+      status: "error"
+      app_name: ${{vars.APP_RC}}
+      deploy_to: ${{vars.DEPLOYMENT_GOOGLE_DISTRIBUTION}}
+      version: ${{needs.prepare.outputs.version}}
+      build_number: ${{needs.prepare.outputs.build_number}}
+      changelog: ${{needs.prepare.outputs.changelog}}
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
