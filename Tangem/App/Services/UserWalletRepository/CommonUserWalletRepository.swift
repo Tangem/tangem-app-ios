@@ -59,6 +59,7 @@ class CommonUserWalletRepository: UserWalletRepository {
 
     private let eventSubject = PassthroughSubject<UserWalletRepositoryEvent, Never>()
 
+    private let queue = DispatchQueue(label: "com.tangem.UserWalletRepository")
     private var bag: Set<AnyCancellable> = .init()
 
     init() {}
@@ -418,7 +419,7 @@ class CommonUserWalletRepository: UserWalletRepository {
     ) {
         visaRefreshTokenRepository.fetch(using: context)
 
-        DispatchQueue.main.async {
+        queue.async {
             do {
                 let keys = try self.encryptionKeyStorage.fetch(context: context)
 
@@ -454,7 +455,7 @@ class CommonUserWalletRepository: UserWalletRepository {
 
     private func unlockWithCard(scanner: CardScanner, _ requiredUserWalletId: UserWalletId?, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
         scanPublisher(scanner)
-            .receive(on: DispatchQueue.main)
+            .receive(on: queue)
             .sink { [weak self] result in
                 guard let self else {
                     completion(result)
@@ -508,7 +509,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                     save(userWalletModel)
                 }
 
-                // TODO: We have to create userWalletModel twice. First on scan and second - during restoring from a storage. Shoul be refactored.
+                // TODO: We have to create userWalletModel twice. First on scan and second - during restoring from a storage. Should be refactored.
                 guard
                     let userWalletModel = models.first(where: { $0.userWalletId == userWalletModel.userWalletId })
                 else {
@@ -524,6 +525,8 @@ class CommonUserWalletRepository: UserWalletRepository {
             .store(in: &bag)
     }
 
+    /// Method `loadModels` in case when we have 100+ wallets/tokens on main screen will be heavy for main thread
+    /// Be sure that you call it on the background queue / thread
     private func loadModels() {
         var savedUserWallets = savedUserWallets(withSensitiveData: true)
         migrateNamesIfNeeded(&savedUserWallets)
