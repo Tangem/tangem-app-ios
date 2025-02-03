@@ -57,7 +57,7 @@ final class TONTransactionBuilder {
         expireAt: UInt32
     ) throws -> TONPreSignData {
         let input = try input(
-            amount: Amount(with: wallet.blockchain, value: transaction.amount),
+            amount: Amount(with: wallet.blockchain, value: transaction.amount / wallet.blockchain.decimalValue),
             destination: transaction.destination,
             expireAt: expireAt,
             params: TONTransactionParams(memo: transaction.comment),
