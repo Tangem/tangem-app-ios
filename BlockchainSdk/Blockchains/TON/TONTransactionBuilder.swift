@@ -60,24 +60,31 @@ final class TONTransactionBuilder {
     func buildCompiledForSign(
         buildInput: CommonMsgInfoRelaxedInternal,
         sequenceNumber: Int,
+        comment: String,
         expireAt: UInt32
     ) throws -> TONPreSignData {
-        let input = try input(from: buildInput, expireAt: expireAt)
+        let input = try input(from: buildInput, sequenceNumber: sequenceNumber, comment: comment, expireAt: expireAt)
 
         return try preSignData(from: input)
     }
 
-    func input(from buildInput: CommonMsgInfoRelaxedInternal, expireAt: UInt32) throws -> TheOpenNetworkSigningInput {
+    func input(
+        from buildInput: CommonMsgInfoRelaxedInternal,
+        sequenceNumber: Int,
+        comment: String,
+        expireAt: UInt32
+    ) throws -> TheOpenNetworkSigningInput {
         guard let amountDecimal = buildInput.value.coins.rawValue.decimal else {
             throw WalletError.empty
         }
 
         return try input(
-            amount: Amount(with: .ton(curve: .ed25519, testnet: false), value: amountDecimal),
-            destination: buildInput.dest.toString(),
+            amount: Amount(with: wallet.blockchain, value: amountDecimal),
+            destination: buildInput.dest.toString(bounceable: buildInput.bounce),
             expireAt: expireAt,
-            params: nil,
-            sequenceNumber: sequenceNumber
+            params: TONTransactionParams(memo: comment),
+            sequenceNumber: sequenceNumber,
+            bounce: buildInput.bounce
         )
     }
 
@@ -144,7 +151,8 @@ final class TONTransactionBuilder {
         expireAt: UInt32,
         jettonWalletAddress: String? = nil,
         params: TONTransactionParams?,
-        sequenceNumber: Int
+        sequenceNumber: Int,
+        bounce: Bool = false
     ) throws -> TheOpenNetworkSigningInput {
         let transferMessage: TheOpenNetworkTransfer
 
@@ -153,7 +161,8 @@ final class TONTransactionBuilder {
             transferMessage = try transfer(
                 amountValue: amount.value,
                 destination: destination,
-                params: params
+                params: params,
+                bounce: bounce
             )
         case .token(let token):
             guard let jettonWalletAddress else {
@@ -172,6 +181,7 @@ final class TONTransactionBuilder {
                 amountValue: Constants.jettonTransferProcessingFee,
                 destination: jettonWalletAddress,
                 params: params,
+                bounce: bounce,
                 jettonTransfer: jettonTransfer
             )
         case .feeResource:
@@ -196,13 +206,14 @@ final class TONTransactionBuilder {
         amountValue: Decimal,
         destination: String,
         params: TONTransactionParams?,
+        bounce: Bool = false,
         jettonTransfer: TheOpenNetworkJettonTransfer? = nil
     ) throws -> TheOpenNetworkTransfer {
         TheOpenNetworkTransfer.with {
             $0.dest = destination
             $0.amount = (amountValue * wallet.blockchain.decimalValue).uint64Value
             $0.mode = modeTransactionConstant
-            $0.bounceable = false
+            $0.bounceable = bounce
             $0.comment = params?.memo ?? ""
 
             if let jettonTransfer {

@@ -40,6 +40,7 @@ class TONStakeKitTransactionHelper {
         return try transactionBuilder.buildCompiledForSign(
             buildInput: info,
             sequenceNumber: Int(decodedTransaction.seqno) ?? 0,
+            comment: message.extractComment(),
             expireAt: expireAt
         )
     }
@@ -53,6 +54,17 @@ class TONStakeKitTransactionHelper {
             serializedInputData: preSignData.serializedTransactionInput,
             signature: signatureInfo.signature
         )
+    }
+}
+
+private extension MessageRelaxed {
+    func extractComment() throws -> String {
+        let data = Data(hex: body.bits.toHex())
+        guard let firstNonNullIndex = data.firstIndex(where: { $0 != 0 }) else { throw WalletError.failedToBuildTx }
+        let subData = data.subdata(in: firstNonNullIndex ..< data.endIndex)
+
+        guard let result = String(data: subData, encoding: .utf8) else { throw WalletError.failedToBuildTx }
+        return result
     }
 }
 

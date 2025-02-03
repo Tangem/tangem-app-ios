@@ -226,7 +226,7 @@ private extension TONWalletManager {
 
 // MARK: - StakeKitTransactionSender, StakeKitTransactionSenderProvider
 
-extension TONWalletManager: StakeKitTransactionBuilder {
+extension TONWalletManager: StakeKitTransactionBuilder, StakeKitTransactionSender {
     typealias RawTransaction = String
 
     func buildRawTransactions(
