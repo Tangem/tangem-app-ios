@@ -14,11 +14,6 @@ import BigInt
 import TangemFoundation
 import TangemSdk
 
-struct TONPreSignData {
-    let dataToSign: Data
-    let serializedTransactionInput: Data
-}
-
 /// Transaction builder for TON wallet
 final class TONTransactionBuilder {
     // MARK: - Properties
@@ -58,36 +53,22 @@ final class TONTransactionBuilder {
 
     /// Build input for sign transaction from compiled transaction (usually obtained from StakeKit)
     func buildCompiledForSign(
-        buildInput: CommonMsgInfoRelaxedInternal,
-        sequenceNumber: Int,
-        comment: String,
+        transaction: TONCompiledTransaction,
         expireAt: UInt32
     ) throws -> TONPreSignData {
-        let input = try input(from: buildInput, sequenceNumber: sequenceNumber, comment: comment, expireAt: expireAt)
+        let input = try input(
+            amount: Amount(with: wallet.blockchain, value: transaction.amount),
+            destination: transaction.destination,
+            expireAt: expireAt,
+            params: TONTransactionParams(memo: transaction.comment),
+            sequenceNumber: transaction.sequenceNumber,
+            bounce: transaction.bounce
+        )
 
         return try preSignData(from: input)
     }
 
-    func input(
-        from buildInput: CommonMsgInfoRelaxedInternal,
-        sequenceNumber: Int,
-        comment: String,
-        expireAt: UInt32
-    ) throws -> TheOpenNetworkSigningInput {
-        guard let amountDecimal = buildInput.value.coins.rawValue.decimal else {
-            throw WalletError.empty
-        }
-
-        return try input(
-            amount: Amount(with: wallet.blockchain, value: amountDecimal),
-            destination: buildInput.dest.toString(bounceable: buildInput.bounce),
-            expireAt: expireAt,
-            params: TONTransactionParams(memo: comment),
-            sequenceNumber: sequenceNumber,
-            bounce: buildInput.bounce
-        )
-    }
-
+    // Creates PreSignData from transaction input
     private func preSignData(from txInput: TheOpenNetworkSigningInput) throws -> TONPreSignData {
         let txInputData = try txInput.serializedData()
 
@@ -255,6 +236,13 @@ final class TONTransactionBuilder {
 
         return rawPayload
     }
+}
+
+struct TONPreSignData {
+    // pre-image data obtained from TxCompilerPreSigningOutput -> data
+    let dataToSign: Data
+    // TheOpenNetworkSigningInput -> serializedData()
+    let serializedTransactionInput: Data
 }
 
 extension TONTransactionBuilder {

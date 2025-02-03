@@ -45,7 +45,7 @@ extension WalletCoreAddressService: AddressProvider {
             }
 
             let address = AnyAddress(publicKey: walletCorePublicKey, coin: coin).description
-            return PlainAddress(value: "UQDfWGkjuxz90WXSFCFRtwjvln_e9NAi_sC87l48nfDEl4rg", publicKey: publicKey, type: addressType)
+            return PlainAddress(value: address, publicKey: publicKey, type: addressType)
         case .legacy:
             if coin == .cardano {
                 let address = try makeByronAddress(publicKey: publicKey)
