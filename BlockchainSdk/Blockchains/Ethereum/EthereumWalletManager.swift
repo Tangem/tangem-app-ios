@@ -408,7 +408,7 @@ extension EthereumWalletManager: EthereumTransactionDataBuilder {
 
 // MARK: - StakeKitTransactionSender, StakeKitTransactionSenderProvider
 
-extension EthereumWalletManager: StakeKitTransactionSender, StakeKitTransactionSenderProvider {
+extension EthereumWalletManager: StakeKitTransactionBuilder, StakeKitTransactionSender, StakeKitTransactionSenderProvider {
     typealias RawTransaction = String
 
     func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data {

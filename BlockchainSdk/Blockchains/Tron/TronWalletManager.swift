@@ -283,7 +283,7 @@ extension TronWalletManager: TronTransactionDataBuilder {
 
 // MARK: - StakeKitTransactionSender, StakeKitTransactionSenderProvider
 
-extension TronWalletManager: StakeKitTransactionSender, StakeKitTransactionSenderProvider {
+extension TronWalletManager: StakeKitTransactionBuilder, StakeKitTransactionSender, StakeKitTransactionSenderProvider {
     typealias RawTransaction = Data
 
     func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data {

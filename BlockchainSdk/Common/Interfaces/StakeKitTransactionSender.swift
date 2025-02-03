@@ -20,12 +20,42 @@ protocol StakeKitTransactionSenderProvider {
 
     func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data
     func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction
+}
+
+protocol StakeKitTransactionBuilder {
+    associatedtype RawTransaction
+
+    func buildRawTransactions(
+        from transactions: [StakeKitTransaction],
+        wallet: Wallet,
+        signer: TransactionSigner
+    ) async throws -> [RawTransaction]
+
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String
+}
+
+extension StakeKitTransactionBuilder where Self: StakeKitTransactionSenderProvider {
+    func buildRawTransactions(
+        from transactions: [StakeKitTransaction],
+        wallet: Wallet,
+        signer: TransactionSigner
+    ) async throws -> [RawTransaction] {
+        let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
+
+        let signatures: [SignatureInfo] = try await signer.sign(
+            hashes: preparedHashes,
+            walletPublicKey: wallet.publicKey
+        ).async()
+
+        return try zip(transactions, signatures).map { transaction, signature in
+            try prepareDataForSend(transaction: transaction, signature: signature)
+        }
+    }
 }
 
 // MARK: - Common implementation for StakeKitTransactionSenderProvider
 
-extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvider, Self: WalletProvider, RawTransaction: CustomStringConvertible {
+extension StakeKitTransactionSender where Self: StakeKitTransactionBuilder, Self: WalletProvider, RawTransaction: CustomStringConvertible {
     func sendStakeKit(transactions: [StakeKitTransaction], signer: TransactionSigner, delay second: UInt64?) -> AsyncThrowingStream<StakeKitTransactionSendResult, Error> {
         .init { [weak self] continuation in
             let task = Task { [weak self] in
@@ -35,20 +65,16 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                 }
 
                 do {
-                    let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
-                    let signatures: [SignatureInfo] = try await signer.sign(
-                        hashes: preparedHashes,
-                        walletPublicKey: wallet.publicKey
-                    ).async()
+                    let rawTransactions = try await buildRawTransactions(
+                        from: transactions,
+                        wallet: wallet,
+                        signer: signer
+                    )
 
                     _ = try await withThrowingTaskGroup(of: (TransactionSendResult, StakeKitTransaction).self) { group in
                         var results = [TransactionSendResult]()
-                        for (transaction, signature) in zip(transactions, signatures) {
-                            let rawTransaction = try self.prepareDataForSend(
-                                transaction: transaction,
-                                signature: signature
-                            )
 
+                        for (transaction, rawTransaction) in zip(transactions, rawTransactions) {
                             group.addTask {
                                 try Task.checkCancellation()
                                 let result: TransactionSendResult = try await self.broadcast(
@@ -95,7 +121,8 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
     private func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> TransactionSendResult {
         do {
             let hash: String = try await broadcast(transaction: transaction, rawTransaction: rawTransaction)
-            let mapper = PendingTransactionRecordMapper()            let record = mapper.mapToPendingTransactionRecord(
+            let mapper = PendingTransactionRecordMapper()
+            let record = mapper.mapToPendingTransactionRecord(
                 stakeKitTransaction: transaction,
                 source: wallet.defaultAddress.value,
                 hash: hash

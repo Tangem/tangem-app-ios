@@ -10,36 +10,49 @@ import Foundation
 import TonSwift
 
 class TONStakeKitTransactionHelper {
-    func prepareForSign(_ stakingTransaction: StakeKitTransaction) throws -> Data {
+    private let transactionBuilder: TONTransactionBuilder
+
+    init(transactionBuilder: TONTransactionBuilder) {
+        self.transactionBuilder = transactionBuilder
+    }
+
+    func prepareForSign(_ stakingTransaction: StakeKitTransaction, expireAt: UInt32) throws -> TONPreSignData {
         print(stakingTransaction)
         guard let data = stakingTransaction.unsignedData.data(using: .utf8) else {
             throw WalletError.failedToBuildTx
         }
-        do {
-            let decodedTransaction = try JSONDecoder().decode(UnsignedTransaction.self, from: data)
-            let decodedMessage: [UInt8] = try decodedTransaction.message.base64Decoded()
-            let cells = try Cell.fromBoc(src: Data(decodedMessage))
-            
-            guard let cell = cells.first else {
-                throw WalletError.failedToBuildTx
-            }
-            
-            let slice = try cell.beginParse()
-            let message: MessageRelaxed = try slice.loadType()
-            print(message)
 
-        } catch {
-            print(error)
+        let decodedTransaction = try JSONDecoder().decode(UnsignedTransaction.self, from: data)
+        let decodedMessage: [UInt8] = try decodedTransaction.message.base64Decoded()
+        let cells = try Cell.fromBoc(src: Data(decodedMessage))
+
+        guard let cell = cells.first else {
+            throw WalletError.failedToBuildTx
         }
 
-        return Data()
+        let slice = try cell.beginParse()
+        let message: MessageRelaxed = try slice.loadType()
+
+        guard case .internalInfo(let info) = message.info else {
+            throw WalletError.failedToBuildTx
+        }
+
+        return try transactionBuilder.buildCompiledForSign(
+            buildInput: info,
+            sequenceNumber: Int(decodedTransaction.seqno) ?? 0,
+            expireAt: expireAt
+        )
     }
 
     func prepareForSend(
         stakingTransaction: StakeKitTransaction,
+        preSignData: TONPreSignData,
         signatureInfo: SignatureInfo
-    ) throws -> Data {
-        Data()
+    ) throws -> String {
+        try transactionBuilder.buildForSend(
+            serializedInputData: preSignData.serializedTransactionInput,
+            signature: signatureInfo.signature
+        )
     }
 }
 

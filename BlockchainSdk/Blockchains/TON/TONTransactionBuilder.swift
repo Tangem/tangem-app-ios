@@ -14,6 +14,11 @@ import BigInt
 import TangemFoundation
 import TangemSdk
 
+struct TONPreSignData {
+    let dataToSign: Data
+    let serializedTransactionInput: Data
+}
+
 /// Transaction builder for TON wallet
 final class TONTransactionBuilder {
     // MARK: - Properties
@@ -44,10 +49,40 @@ final class TONTransactionBuilder {
             destination: buildInput.destination,
             expireAt: buildInput.expireAt,
             jettonWalletAddress: buildInput.jettonWalletAddress,
-            params: buildInput.params
+            params: buildInput.params,
+            sequenceNumber: sequenceNumber
         )
 
-        let txInputData = try input.serializedData()
+        return try preSignData(from: input).dataToSign
+    }
+
+    /// Build input for sign transaction from compiled transaction (usually obtained from StakeKit)
+    func buildCompiledForSign(
+        buildInput: CommonMsgInfoRelaxedInternal,
+        sequenceNumber: Int,
+        expireAt: UInt32
+    ) throws -> TONPreSignData {
+        let input = try input(from: buildInput, expireAt: expireAt)
+
+        return try preSignData(from: input)
+    }
+
+    func input(from buildInput: CommonMsgInfoRelaxedInternal, expireAt: UInt32) throws -> TheOpenNetworkSigningInput {
+        guard let amountDecimal = buildInput.value.coins.rawValue.decimal else {
+            throw WalletError.empty
+        }
+
+        return try input(
+            amount: Amount(with: .ton(curve: .ed25519, testnet: false), value: amountDecimal),
+            destination: buildInput.dest.toString(),
+            expireAt: expireAt,
+            params: nil,
+            sequenceNumber: sequenceNumber
+        )
+    }
+
+    private func preSignData(from txInput: TheOpenNetworkSigningInput) throws -> TONPreSignData {
+        let txInputData = try txInput.serializedData()
 
         let preImageHashes = TransactionCompiler.preImageHashes(coinType: .ton, txInputData: txInputData)
         let preSigningOutput = try TxCompilerPreSigningOutput(serializedData: preImageHashes)
@@ -57,7 +92,7 @@ final class TONTransactionBuilder {
             throw NSError()
         }
 
-        return preSigningOutput.data
+        return TONPreSignData(dataToSign: preSigningOutput.data, serializedTransactionInput: txInputData)
     }
 
     /// Build for send transaction obtain external message output
@@ -67,14 +102,19 @@ final class TONTransactionBuilder {
             destination: buildInput.destination,
             expireAt: buildInput.expireAt,
             jettonWalletAddress: buildInput.jettonWalletAddress,
-            params: buildInput.params
+            params: buildInput.params,
+            sequenceNumber: sequenceNumber
         )
 
         let txInputData = try input.serializedData()
 
+        return try buildForSend(serializedInputData: txInputData, signature: signature)
+    }
+
+    func buildForSend(serializedInputData: Data, signature: Data) throws -> String {
         let compiledTransaction = TransactionCompiler.compileWithSignatures(
             coinType: .ton,
-            txInputData: txInputData,
+            txInputData: serializedInputData,
             signatures: signature.asDataVector(),
             publicKeys: wallet.publicKey.blockchainKey.asDataVector()
         )
@@ -103,7 +143,8 @@ final class TONTransactionBuilder {
         destination: String,
         expireAt: UInt32,
         jettonWalletAddress: String? = nil,
-        params: TONTransactionParams?
+        params: TONTransactionParams?,
+        sequenceNumber: Int
     ) throws -> TheOpenNetworkSigningInput {
         let transferMessage: TheOpenNetworkTransfer
 
