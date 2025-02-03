@@ -173,8 +173,8 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func setState(_ newViewState: AppCoordinator.ViewState) {
-        DispatchQueue.main.async { [weak self] in
-            self?.viewState = newViewState
+        DispatchQueue.main.async {
+            self.viewState = newViewState
         }
     }
 }
