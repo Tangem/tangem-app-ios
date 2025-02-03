@@ -53,7 +53,8 @@ extension StoriesHostView: View {
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
-        .animation(.easeOut(duration: 0.25), value: viewModel.visibleStoryIndex)
+        .animation(.default, value: viewModel.visibleStoryIndex)
+        .allowsHitTesting(viewModel.allowsHitTesting)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .offset(y: verticalDragAmount)
         .gesture(dragGesture)

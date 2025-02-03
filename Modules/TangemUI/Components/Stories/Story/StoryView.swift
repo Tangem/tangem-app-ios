@@ -151,9 +151,10 @@ extension StoryView {
 
 private extension View {
     func cubicRotationEffect(_ proxy: GeometryProxy) -> some View {
+        // @alobankov, 0.0001 is a 'any small number close to zero'. Used to silence warning that may happen during transition backwards.
         rotation3DEffect(
             StoryView.CubicRotation.angle(proxy),
-            axis: (x: 0, y: 1, z: 0),
+            axis: (x: 0.0001, y: 1, z: 0),
             anchor: StoryView.CubicRotation.anchor(proxy),
             perspective: StoryView.CubicRotation.perspective
         )

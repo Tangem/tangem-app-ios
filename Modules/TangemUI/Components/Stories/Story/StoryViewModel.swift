@@ -15,8 +15,7 @@ final class StoryViewModel: ObservableObject {
     private let pageDuration: TimeInterval
 
     private var visiblePageProgress: CGFloat = 0
-    private var canHandleUIInteractions = true
-    private var isPresented = false
+    private var hasAppeared = false
 
     private lazy var timer = Timer.publish(every: Constants.timerTickDuration, on: .main, in: .common).autoconnect()
     private var timerCancellable: (any Cancellable)?
@@ -138,47 +137,37 @@ final class StoryViewModel: ObservableObject {
 
 extension StoryViewModel {
     private func handleViewDidAppear() {
-        isPresented = true
+        hasAppeared = true
 
-        if visiblePageProgress > Constants.appearancePageProgressThreshold {
-            visiblePageProgress = Constants.appearanceAdjustedPageProgress
-            objectWillChange.send()
-        }
+        visiblePageProgress = 0
+        objectWillChange.send()
 
         startTimer()
     }
 
     private func handleViewDidDisappear() {
-        isPresented = false
+        hasAppeared = false
         stopTimer()
     }
 
     private func handleViewInteractionPaused() {
-        canHandleUIInteractions = false
         stopTimer()
     }
 
     private func handleViewInteractionResumed() {
-        canHandleUIInteractions = true
-
-        if isPresented {
-            startTimer()
-        }
+        guard hasAppeared else { return }
+        startTimer()
     }
 
     private func handleLongTapPressed() {
-        guard canHandleUIInteractions else { return }
         stopTimer()
     }
 
     private func handleLongTapEnded() {
-        guard canHandleUIInteractions else { return }
         startTimer()
     }
 
     private func handleTappedForward() {
-        guard canHandleUIInteractions else { return }
-
         if !timerIsRunning {
             startTimer()
         }
@@ -193,21 +182,18 @@ extension StoryViewModel {
     }
 
     private func handleTappedBackward() {
-        guard canHandleUIInteractions else { return }
-
         if !timerIsRunning {
             startTimer()
         }
 
+        visiblePageProgress = 0
+
         guard visiblePageIndex > 0 else {
-            visiblePageProgress = 0
             storyTransitionSubject.send(.backward)
             return
         }
 
         visiblePageIndex -= 1
-        let progressToUpdate = visiblePageProgress - Constants.extraProgressForPageBackMovement
-        visiblePageProgress = max(0, progressToUpdate)
     }
 
     private func handleWillTransitionBackFromOtherStory() {
@@ -227,11 +213,5 @@ extension StoryViewModel {
     private enum Constants {
         /// 0.05
         static let timerTickDuration: TimeInterval = 0.05
-        /// 0.6
-        static let appearancePageProgressThreshold: CGFloat = 0.6
-        /// 0.2
-        static let appearanceAdjustedPageProgress: CGFloat = 0.2
-        /// 0.2
-        static let extraProgressForPageBackMovement: CGFloat = 0.2
     }
 }

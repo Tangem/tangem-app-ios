@@ -15,6 +15,7 @@ final class StoriesHostViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     @Published var visibleStoryIndex: Int
+    @Published private(set) var allowsHitTesting = true
     @Published private(set) var isPresented = true
 
     init(storyViewModels: [StoryViewModel], visibleStoryIndex: Int = 0) {
@@ -53,14 +54,30 @@ final class StoriesHostViewModel: ObservableObject {
                 isPresented = false
                 return
             }
-            visibleStoryIndex = index + 1
+            updateVisibleStory(index: index + 1)
 
         case .backward:
             guard index > 0 else { return }
             let previousStoryViewModelIndex = index - 1
             storyViewModels[previousStoryViewModelIndex].handle(viewEvent: .willTransitionBackFromOtherStory)
-
-            visibleStoryIndex = previousStoryViewModelIndex
+            updateVisibleStory(index: previousStoryViewModelIndex)
         }
+    }
+
+    private func updateVisibleStory(index: Int) {
+        allowsHitTesting = false
+        visibleStoryIndex = index
+
+        // @alobankov, prevents mid-transition break when user taps faster than animation duration.
+        Task {
+            try? await Task.sleep(nanoseconds: Constants.storyTransitionDuration)
+            allowsHitTesting = true
+        }
+    }
+}
+
+extension StoriesHostViewModel {
+    private enum Constants {
+        static let storyTransitionDuration: UInt64 = 35 * NSEC_PER_SEC / 100
     }
 }
