@@ -56,6 +56,7 @@ jobs:
   # TODO: Bump release branch instead to trigger a build
   build:
     name: Tangem Release
+    if: false # TODO: Remove if not used
     needs: prepare
     uses: tangem/actions/.github/workflows/build.yml@feature/IOS-8741_ci_cd_notifications
     with:
@@ -79,7 +80,7 @@ jobs:
 
   deploy:
     name: Tangem Release TestFlight
-    if: false # TODO: Test onyl
+    if: false # TODO: Remove if not used
     uses: tangem/actions/.github/workflows/deploy-testflight.yml@feature/IOS-8741_ci_cd_notifications
     needs:
       - prepare
@@ -99,7 +100,7 @@ jobs:
 
   notification:
     name: Deploy Notification
-    if: false # TODO: Test onyl
+    if: false # TODO: Remove if not used
     needs: [prepare,deploy]
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
     with: 
@@ -116,7 +117,7 @@ jobs:
   error_notification:
     name: Error Notification
     # if: failure()
-    if: false # TODO: Test onyl
+    if: false # TODO: Remove if not used
     needs: [prepare,deploy]
     uses: tangem/actions/.github/workflows/notification.yml@feature/IOS-8741_ci_cd_notifications
     with: 
