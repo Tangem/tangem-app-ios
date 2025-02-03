@@ -25,12 +25,7 @@ struct StoryView: View {
             .background {
                 cubicTransitionTracker
             }
-            .rotation3DEffect(
-                CubicRotation.angle(proxy),
-                axis: (x: 0, y: 1, z: 0),
-                anchor: CubicRotation.anchor(proxy),
-                perspective: CubicRotation.perspective
-            )
+            .cubicRotationEffect(proxy)
         }
         .onAppear {
             viewModel.handle(viewEvent: .viewDidAppear)
@@ -51,23 +46,24 @@ struct StoryView: View {
 
     private var progressBar: some View {
         HStack(spacing: 4) {
-            ForEach(0 ..< pageViews.count, id: \.self) { pageIndex in
-                GeometryReader { proxy in
-                    Capsule()
-                        .fill(.white.opacity(0.5))
-                        .overlay(alignment: .leading) {
-                            let width = pageProgressWidth(for: pageIndex, proxy: proxy)
-                            Capsule()
-                                .fill(.white)
-                                .frame(width: width)
-                        }
-                        .clipped()
-                }
-            }
+            ForEach(Array(pageViews.indices), id: \.self, content: pageProgressView)
         }
         .frame(height: 2)
         .padding(.top, 8)
         .padding(.horizontal, 8)
+    }
+
+    private func pageProgressView(_ pageIndex: Int) -> some View {
+        GeometryReader { proxy in
+            Capsule()
+                .fill(.white.opacity(0.5))
+                .overlay(alignment: .leading) {
+                    Capsule()
+                        .fill(.white)
+                        .frame(width: pageProgressWidth(for: pageIndex, proxy: proxy))
+                }
+                .clipped()
+        }
     }
 
     private var cubicTransitionTracker: some View {
@@ -117,10 +113,10 @@ struct StoryView: View {
     }
 }
 
-// MARK: - Nested private types
+// MARK: - Private nested types
 
 extension StoryView {
-    private enum CubicRotation {
+    fileprivate enum CubicRotation {
         static let perspective: CGFloat = 2.5
 
         static func angle(_ proxy: GeometryProxy) -> Angle {
@@ -144,7 +140,22 @@ extension StoryView {
     }
 
     private enum Constants {
+        /// 0.25
         static let tapToBackThresholdPercentage: CGFloat = 0.25
+        /// 0.2
         static let longPressMinimumDuration: TimeInterval = 0.2
+    }
+}
+
+// MARK: - View extensions
+
+private extension View {
+    func cubicRotationEffect(_ proxy: GeometryProxy) -> some View {
+        rotation3DEffect(
+            StoryView.CubicRotation.angle(proxy),
+            axis: (x: 0, y: 1, z: 0),
+            anchor: StoryView.CubicRotation.anchor(proxy),
+            perspective: StoryView.CubicRotation.perspective
+        )
     }
 }

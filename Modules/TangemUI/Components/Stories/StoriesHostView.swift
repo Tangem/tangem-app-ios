@@ -79,8 +79,9 @@ extension StoriesHostView: View {
             }
             .onEnded { drag in
                 viewModel.resumeVisibleStory()
+                let heightThreshold: CGFloat = 80
                 withAnimation {
-                    if drag.translation.height > 80 {
+                    if drag.translation.height > heightThreshold {
                         isPresented = false
                     } else {
                         verticalDragAmount = 0
