@@ -51,6 +51,7 @@ jobs:
       JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
       JIRA_USER_EMAIL: ${{ secrets.JIRA_USER }}
       JIRA_API_TOKEN: ${{ secrets.JIRA_TOKEN }}
+      CREATE_RELEASE_BRANCH_KEY: '${{ secrets.CREATE_RELEASE_BRANCH_KEY }}'
 
   # TODO: Bump release branch instead to trigger a build
   build:
