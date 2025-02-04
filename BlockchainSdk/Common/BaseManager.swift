@@ -21,7 +21,7 @@ class BaseManager: WalletProvider {
 
     var walletPublisher: AnyPublisher<Wallet, Never> { _wallet.eraseToAnyPublisher() }
     var statePublisher: AnyPublisher<WalletManagerState, Never> { state.eraseToAnyPublisher() }
-
+    
     private var latestUpdateTime: Date?
 
     // TODO: move constant into config

@@ -24,7 +24,8 @@ extension YieldInfo {
                 preferred: true,
                 partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                apr: 0.08
+                apr: 0.08,
+                isFull: false
             ),
             .init(
                 address: UUID().uuidString,
@@ -32,7 +33,8 @@ extension YieldInfo {
                 preferred: true,
                 partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/aconcagua.png"),
-                apr: 0.032
+                apr: 0.032,
+                isFull: false
             ),
         ],
         preferredValidators: [
@@ -42,7 +44,8 @@ extension YieldInfo {
                 preferred: true,
                 partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/infstones.png"),
-                apr: 0.08
+                apr: 0.08,
+                isFull: false
             ),
             .init(
                 address: UUID().uuidString,
@@ -50,7 +53,8 @@ extension YieldInfo {
                 preferred: true,
                 partner: false,
                 iconURL: URL(string: "https://assets.stakek.it/validators/aconcagua.png"),
-                apr: 0.032
+                apr: 0.032,
+                isFull: false
             ),
         ],
         item: .init(network: .tron, contractAddress: nil, name: "", decimals: 0, symbol: ""),

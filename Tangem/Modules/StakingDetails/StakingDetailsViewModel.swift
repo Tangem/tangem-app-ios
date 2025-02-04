@@ -21,6 +21,7 @@ final class StakingDetailsViewModel: ObservableObject {
 
     @Published var rewardViewData: RewardViewData?
     @Published var stakes: [StakingDetailsStakeViewData] = []
+    @Published var notificationInputs: [NotificationViewInput] = []
     @Published var descriptionBottomSheetInfo: DescriptionBottomSheetInfo?
     @Published var actionButtonLoading: Bool = false
     @Published var actionButtonDisabled: Bool = false
@@ -35,6 +36,7 @@ final class StakingDetailsViewModel: ObservableObject {
     private let tokenItem: TokenItem
     private let tokenBalanceProvider: TokenBalanceProvider
     private let stakingManager: StakingManager
+    private let notificationManager: StakingNotificationManager
     private weak var coordinator: StakingDetailsRoutable?
 
     private lazy var balanceFormatter = BalanceFormatter()
@@ -48,12 +50,14 @@ final class StakingDetailsViewModel: ObservableObject {
         tokenItem: TokenItem,
         tokenBalanceProvider: TokenBalanceProvider,
         stakingManager: StakingManager,
-        coordinator: StakingDetailsRoutable
+        coordinator: StakingDetailsRoutable,
+        notificationManager: StakingNotificationManager
     ) {
         self.tokenItem = tokenItem
         self.tokenBalanceProvider = tokenBalanceProvider
         self.stakingManager = stakingManager
         self.coordinator = coordinator
+        self.notificationManager = notificationManager
 
         bind()
     }
@@ -110,6 +114,15 @@ private extension StakingDetailsViewModel {
                 viewModel.setupMainActionButton(state: state)
             }
             .store(in: &bag)
+
+        notificationManager
+            .notificationPublisher
+            .withWeakCaptureOf(self)
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel, notificationInputs in
+                viewModel.notificationInputs = notificationInputs
+            }
+            .store(in: &bag)
     }
 
     func setupMainActionButton(state: TokenBalanceType) {
@@ -150,6 +163,7 @@ private extension StakingDetailsViewModel {
     func setupView(yield: YieldInfo, balances: [StakingBalance]) {
         setupHeaderView(hasBalances: !balances.isEmpty)
         setupDetailsSection(yield: yield)
+        setupNotificationsView(yield: yield, balances: balances)
         setupStakes(yield: yield, staking: balances.stakes())
         setupRewardView(yield: yield, balances: balances)
     }
@@ -242,6 +256,10 @@ private extension StakingDetailsViewModel {
         )
 
         detailsViewModels = viewModels
+    }
+
+    func setupNotificationsView(yield: YieldInfo, balances: [StakingBalance]) {
+        notificationManager.setup(yieldInfo: yield)
     }
 
     func setupRewardView(yield: YieldInfo, balances: [StakingBalance]) {

@@ -19,11 +19,11 @@ protocol StakingNotificationManager: NotificationManager {
     func setup(provider: UnstakingModelStateProvider, input: StakingNotificationManagerInput)
     func setup(provider: RestakingModelStateProvider, input: StakingNotificationManagerInput)
     func setup(provider: StakingSingleActionModelStateProvider, input: StakingNotificationManagerInput)
+    func setup(yieldInfo: YieldInfo)
 }
 
 class CommonStakingNotificationManager {
-    private let tokenItem: TokenItem
-    private let feeTokenItem: TokenItem
+    private let wallet: WalletModel
 
     private let notificationInputsSubject = CurrentValueSubject<[NotificationViewInput], Never>([])
     private var stateSubscription: AnyCancellable?
@@ -37,9 +37,16 @@ class CommonStakingNotificationManager {
 
     private weak var delegate: NotificationTapDelegate?
 
-    init(tokenItem: TokenItem, feeTokenItem: TokenItem) {
-        self.tokenItem = tokenItem
-        self.feeTokenItem = feeTokenItem
+    init(wallet: WalletModel) {
+        self.wallet = wallet
+    }
+    
+    var tokenItem: TokenItem {
+        wallet.tokenItem
+    }
+    
+    var feeTokenItem: TokenItem {
+        wallet.feeTokenItem
     }
 }
 
@@ -278,6 +285,17 @@ extension CommonStakingNotificationManager: StakingNotificationManager {
         .withWeakCaptureOf(self)
         .sink { manager, state in
             manager.update(state: state.0, yield: state.1, action: provider.stakingAction, stakedBalance: provider.stakingAction.amount)
+        }
+    }
+
+    func setup(yieldInfo: YieldInfo) {
+        var events = [StakingNotificationEvent]()
+        if yieldInfo.validators.allSatisfy(\.isFull) {
+            // TODO: add new events
+        }
+        
+        if !wallet.isAccountInitialized {
+            // TODO: add new events
         }
     }
 

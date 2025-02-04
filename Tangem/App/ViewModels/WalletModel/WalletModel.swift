@@ -185,6 +185,10 @@ class WalletModel {
         )
         .eraseToAnyPublisher()
     }
+    
+    var isAccountInitialized: Bool {
+        walletManager.isAccountInitialized
+    }
 
     var isDemo: Bool { demoBalance != nil }
     var demoBalance: Decimal?

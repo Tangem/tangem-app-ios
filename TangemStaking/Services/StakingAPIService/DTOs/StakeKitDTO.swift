@@ -44,6 +44,7 @@ enum StakeKitDTO {
             case jailed
             case deactivating
             case inactive
+            case full
         }
     }
 

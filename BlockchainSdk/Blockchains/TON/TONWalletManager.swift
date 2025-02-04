@@ -15,6 +15,9 @@ final class TONWalletManager: BaseManager, WalletManager {
     // MARK: - Properties
 
     var currentHost: String { networkService.host }
+    var isAccountInitialized: Bool {
+        isAvailable
+    }
 
     // MARK: - Private Properties
 
