@@ -27,7 +27,6 @@ class BaseManager: WalletProvider {
     var statePublisher: AnyPublisher<WalletManagerState, Never> { state.eraseToAnyPublisher() }
 
     private let updateQueue: DispatchQueue
-    private var updateWorkItem: DispatchWorkItem?
     private var latestUpdateTime: Date?
 
     // TODO: move constant into config
@@ -59,8 +58,7 @@ class BaseManager: WalletProvider {
             return
         }
 
-        updateWorkItem?.cancel()
-        let workItem = DispatchWorkItem { [weak self] in
+        updateQueue.async { [weak self] in
             self?.state.send(.loading)
             self?.update { [weak self] result in
                 guard let self else { return }
@@ -74,9 +72,6 @@ class BaseManager: WalletProvider {
                 }
             }
         }
-
-        updateWorkItem = workItem
-        updateQueue.async(execute: workItem)
     }
 
     func update(completion: @escaping (Result<Void, Error>) -> Void) {}
