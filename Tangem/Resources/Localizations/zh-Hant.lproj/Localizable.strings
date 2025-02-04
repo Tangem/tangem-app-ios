@@ -1056,7 +1056,7 @@
 "warning_solana_rent_fee_message" = "Solana 網絡每 2 天收取 %1$@ 的費用。無法付此費用的帳戶將從網絡中清除。向您的帳戶存入超過 %2$@ 即可免費使用";
 "warning_some_networks_unreachable_message" = "Swipe down to refresh or try again later.";
 "warning_some_networks_unreachable_title" = "Some networks are unreachable";
-"warning_some_token_balances_not_updated" = "Some token balances could not updated";
+"warning_some_token_balances_not_updated" = "Some token balances could not be updated";
 "warning_system_deprecation_title" = "需要系統更新";
 "warning_system_deprecation_with_date_message" = "對您的操作系統版本的支持將於 %@ 結束。要接收未來的應用程式更新，您必須將其更新到最新版本";
 "warning_system_update_message" = "Tangem 建議安裝最新的 iOS 更新以穩定和安全地運行";

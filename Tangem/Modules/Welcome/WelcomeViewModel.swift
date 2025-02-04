@@ -96,6 +96,11 @@ class WelcomeViewModel: ObservableObject {
             case .onboarding(let input):
                 openOnboarding(with: input)
             case .error(let error):
+                if error.isCancellationError {
+                    return
+                }
+
+                Analytics.tryLogCardVerificationError(error, source: .signIn)
                 self.error = error.alertBinder
             case .success(let model), .partial(let model, _): // partial unlock is impossible in this case
                 openMain(with: model)

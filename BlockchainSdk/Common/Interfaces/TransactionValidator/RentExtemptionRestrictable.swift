@@ -16,7 +16,7 @@ protocol RentExtemptionRestrictable {
 
 extension RentExtemptionRestrictable where Self: WalletProvider {
     func validateRentExtemption(amount: Amount, fee: Amount) throws {
-        guard let balance = wallet.amounts[amount.type] else {
+        guard let balance = wallet.amounts[.coin] else {
             throw ValidationError.balanceNotFound
         }
 
