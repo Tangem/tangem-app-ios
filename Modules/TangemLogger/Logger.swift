@@ -94,6 +94,14 @@ public extension Logger {
 
 private extension Logger {
     func log<M>(_ level: OSLog.Level, message: @autoclosure () -> M, option: PrefixOption) {
+        guard Logger.configuration.isLoggable() else {
+            return
+        }
+
+        guard checkIfConsoleLogAllowed() else {
+            return
+        }
+
         let message: String = {
             if let prefix = category.prefix?(level, option) {
                 return [prefix, message()].describing()
@@ -102,16 +110,24 @@ private extension Logger {
             return String(describing: message())
         }()
 
-        guard Logger.configuration.isLoggable() else {
-            return
-        }
-
         do {
             OSLog.logger(for: category).log(level: level, message: "\(message)")
             try OSLogFileWriter.shared.write(message, category: category, level: level)
         } catch {
             OSLog.logger(for: .logFileWriter).fault("\(error.localizedDescription)")
         }
+    }
+
+    func checkIfConsoleLogAllowed() -> Bool {
+        guard category == .console else {
+            return true
+        }
+
+        #if DEBUG
+        return true
+        #else
+        return false
+        #endif
     }
 }
 
