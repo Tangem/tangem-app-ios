@@ -9,6 +9,10 @@
 import Foundation
 import Combine
 
+private extension DispatchQueue {
+    static let baseManagerUpdateQueue = DispatchQueue(label: "com.tangem.BaseManager.updateQueue", attributes: .concurrent)
+}
+
 @available(iOS 13.0, *)
 class BaseManager: WalletProvider {
     var wallet: Wallet {
@@ -22,7 +26,7 @@ class BaseManager: WalletProvider {
     var walletPublisher: AnyPublisher<Wallet, Never> { _wallet.eraseToAnyPublisher() }
     var statePublisher: AnyPublisher<WalletManagerState, Never> { state.eraseToAnyPublisher() }
 
-    private let updateQueue = DispatchQueue(label: "com.tangem.BaseManager.updateQueue")
+    private let updateQueue: DispatchQueue
     private var updateWorkItem: DispatchWorkItem?
     private var latestUpdateTime: Date?
 
@@ -42,6 +46,7 @@ class BaseManager: WalletProvider {
 
     init(wallet: Wallet) {
         _wallet = .init(wallet)
+        updateQueue = DispatchQueue(label: "com.tangem.\(wallet.blockchain.displayName).updateQueue", target: .baseManagerUpdateQueue)
     }
 
     func update() {
