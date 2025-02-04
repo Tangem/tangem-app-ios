@@ -178,7 +178,8 @@ final class MainViewModel: ObservableObject {
     func didTapEditWallet() {
         Analytics.log(.buttonEditWalletTapped)
 
-        if let alert = AlertBuilder.makeWalletRenamingAlert(userWalletRepository: userWalletRepository) {
+        if let selectedModel = userWalletRepository.selectedModel,
+           let alert = AlertBuilder.makeWalletRenamingAlert(userWalletModel: selectedModel, userWalletRepository: userWalletRepository) {
             AppPresenter.shared.show(alert)
         }
     }
