@@ -16,13 +16,21 @@ public struct StoriesHostView {
 
     @State private var verticalDragAmount = 0.0
 
-    public init(isPresented: Binding<Bool>, storiesPages: [[AnyView]]) {
-        _isPresented = isPresented
-
+    public init(isPresented: Binding<Bool>, storiesPagesBuilder: (StoriesHostProxy) -> [[any View]]) {
         var storyViewModels = [StoryViewModel]()
         var storyViews = [StoryView]()
 
-        storiesPages.forEach { erasedPages in
+        weak var futureViewModel: StoriesHostViewModel?
+        let controller = StoriesHostProxy(
+            pauseVisibleStoryAction: {
+                futureViewModel?.pauseVisibleStory()
+            },
+            resumeVisibleStoryAction: {
+                futureViewModel?.resumeVisibleStory()
+            }
+        )
+
+        storiesPagesBuilder(controller).forEach { erasedPages in
             let viewModel = StoryViewModel(pagesCount: erasedPages.count)
             let view = StoryView(viewModel: viewModel, pageViews: erasedPages.map(StoryPageView.init))
 
@@ -30,12 +38,12 @@ public struct StoriesHostView {
             storyViews.append(view)
         }
 
-        viewModel = StoriesHostViewModel(storyViewModels: storyViewModels)
-        self.storyViews = storyViews
-    }
+        let viewModel = StoriesHostViewModel(storyViewModels: storyViewModels)
+        futureViewModel = viewModel
 
-    public init(isPresented: Binding<Bool>, singleStoryPages: [AnyView]) {
-        self.init(isPresented: isPresented, storiesPages: [singleStoryPages])
+        _isPresented = isPresented
+        self.viewModel = viewModel
+        self.storyViews = storyViews
     }
 }
 
@@ -149,6 +157,9 @@ struct SampleStoryPage2: View {
 }
 
 struct SampleStoryPage3: View {
+    let pauseStoryAction: () -> Void
+    let resumeStoryAction: () -> Void
+
     var body: some View {
         VStack {
             Text("Another one")
@@ -160,6 +171,14 @@ struct SampleStoryPage3: View {
                 .resizable()
                 .frame(width: 100, height: 100)
                 .foregroundStyle(.orange)
+
+            HStack {
+                Button("Pause story", action: pauseStoryAction)
+                Spacer()
+                Button("Resume story", action: resumeStoryAction)
+            }
+            .buttonStyle(.borderedProminent)
+            .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.tertiary)
@@ -190,26 +209,31 @@ struct SampleStoryPage4: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .storiesHost(
                 isPresented: $isPresented,
-                storiesPages: [
+                storiesPagesBuilder: { proxy in
                     [
-                        AnyView(SampleStoryPage1()),
-                        AnyView(SampleStoryPage2()),
-                        AnyView(SampleStoryPage3()),
-                        AnyView(SampleStoryPage4()),
-                    ],
-                    [
-                        AnyView(SampleStoryPage2()),
-                        AnyView(SampleStoryPage4()),
-                        AnyView(SampleStoryPage2()),
-                    ],
-                    [
-                        AnyView(Color.red),
-                        AnyView(Color.orange),
-                        AnyView(Color.purple),
-                        AnyView(Color.yellow),
-                        AnyView(Color.brown),
-                    ],
-                ]
+                        [
+                            SampleStoryPage1(),
+                            SampleStoryPage2(),
+                            SampleStoryPage3(
+                                pauseStoryAction: proxy.pauseVisibleStory,
+                                resumeStoryAction: proxy.resumeVisibleStory
+                            ),
+                            SampleStoryPage4(),
+                        ],
+                        [
+                            SampleStoryPage2(),
+                            SampleStoryPage4(),
+                            SampleStoryPage2(),
+                        ],
+                        [
+                            Color.red,
+                            Color.orange,
+                            Color.purple,
+                            Color.yellow,
+                            Color.brown,
+                        ],
+                    ]
+                }
             )
         }
     }
@@ -228,11 +252,15 @@ struct SampleStoryPage4: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .storiesHost(isPresented: $isPresented) {
-                SampleStoryPage4()
-                SampleStoryPage2()
-                SampleStoryPage1()
-                SampleStoryPage3()
+            .storiesHost(isPresented: $isPresented) { proxy in
+                [
+                    SampleStoryPage3(
+                        pauseStoryAction: proxy.pauseVisibleStory,
+                        resumeStoryAction: proxy.resumeVisibleStory
+                    ),
+                    SampleStoryPage2(),
+                    SampleStoryPage1(),
+                ]
             }
         }
     }

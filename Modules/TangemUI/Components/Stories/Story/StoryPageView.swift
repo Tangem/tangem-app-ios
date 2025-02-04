@@ -13,13 +13,14 @@ struct StoryPageView: View {
 
     let content: AnyView
 
-    init(content: some View) {
+    init(content: any View) {
         self.content = AnyView(content)
     }
 
     var body: some View {
         content
-            .frame(width: screenBounds.width, height: screenBounds.height)
+            .frame(maxWidth: screenBounds.width, maxHeight: screenBounds.height)
+            .clipShape(RoundedRectangle(cornerRadius: 4))
             .contentShape(Rectangle())
     }
 }

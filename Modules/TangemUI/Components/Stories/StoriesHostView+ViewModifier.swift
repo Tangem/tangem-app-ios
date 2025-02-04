@@ -10,7 +10,7 @@ import SwiftUI
 
 private struct StoriesHostViewModifier: ViewModifier {
     @Binding var isPresented: Bool
-    let storiesPages: [[AnyView]]
+    let storiesPagesBuilder: (StoriesHostProxy) -> [[any View]]
 
     func body(content: Content) -> some View {
         content
@@ -23,7 +23,7 @@ private struct StoriesHostViewModifier: ViewModifier {
                     }
 
                     if isPresented {
-                        StoriesHostView(isPresented: $isPresented, storiesPages: storiesPages)
+                        StoriesHostView(isPresented: $isPresented, storiesPagesBuilder: storiesPagesBuilder)
                     }
                 }
                 .animation(.easeOut(duration: 0.4), value: isPresented)
@@ -34,23 +34,15 @@ private struct StoriesHostViewModifier: ViewModifier {
 // MARK: - SwiftUI.View modifier methods
 
 public extension View {
-    func storiesHost(isPresented: Binding<Bool>, storiesPages: [[AnyView]]) -> some View {
-        modifier(StoriesHostViewModifier(isPresented: isPresented, storiesPages: storiesPages))
+    func storiesHost(isPresented: Binding<Bool>, storiesPagesBuilder: @escaping (StoriesHostProxy) -> [[any View]]) -> some View {
+        modifier(StoriesHostViewModifier(isPresented: isPresented, storiesPagesBuilder: storiesPagesBuilder))
     }
 
-    func storiesHost(singleStoryPages: [AnyView], isPresented: Binding<Bool>) -> some View {
-        modifier(StoriesHostViewModifier(isPresented: isPresented, storiesPages: [singleStoryPages]))
-    }
-
-    func storiesHost<each PageView: View>(
-        isPresented: Binding<Bool>,
-        @ViewBuilder singleStoryPagesViewBuilder: () -> TupleView <(repeat each PageView)>
-    ) -> some View {
-        var erasedViews = [AnyView]()
-        for pageView in repeat each singleStoryPagesViewBuilder().value {
-            erasedViews.append(AnyView(pageView))
+    func storiesHost(isPresented: Binding<Bool>, singleStoryPagesBuilder: @escaping (StoriesHostProxy) -> [any View]) -> some View {
+        let storiesPagesBuilder: (StoriesHostProxy) -> [[any View]] = { proxy in
+            [singleStoryPagesBuilder(proxy)]
         }
 
-        return modifier(StoriesHostViewModifier(isPresented: isPresented, storiesPages: [erasedViews]))
+        return storiesHost(isPresented: isPresented, storiesPagesBuilder: storiesPagesBuilder)
     }
 }
