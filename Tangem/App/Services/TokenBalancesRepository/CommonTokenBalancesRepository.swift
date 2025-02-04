@@ -13,10 +13,10 @@ import TangemFoundation
 struct CommonTokenBalancesRepository {
     @Injected(\.tokenBalancesStorage)
     private var storage: TokenBalancesStorage
-    private let userWalletId: String
+    private let userWalletId: UserWalletId
 
     init(userWalletId: UserWalletId) {
-        self.userWalletId = userWalletId.stringValue
+        self.userWalletId = userWalletId
     }
 }
 

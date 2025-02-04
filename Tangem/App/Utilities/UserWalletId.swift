@@ -12,8 +12,12 @@ import TangemSdk
 
 struct UserWalletId: Hashable {
     let value: Data
+    let stringValue: String
 
-    var stringValue: String { value.hexString }
+    init(value: Data) {
+        self.value = value
+        stringValue = value.hexString
+    }
 }
 
 extension UserWalletId {
@@ -22,6 +26,7 @@ extension UserWalletId {
         let key = SymmetricKey(data: keyHash)
         let authenticationCode = HMAC<SHA256>.authenticationCode(for: Constants.message, using: key)
         value = Data(authenticationCode)
+        stringValue = value.hexString
     }
 }
 
