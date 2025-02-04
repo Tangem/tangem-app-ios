@@ -102,16 +102,15 @@ private extension Logger {
             return String(describing: message())
         }()
 
-        if Logger.configuration.shouldPrint(category: category, level: level) {
-            OSLog.logger(for: category).log(level: level, message: "\(message)")
+        guard Logger.configuration.isLoggable() else {
+            return
         }
 
-        if Logger.configuration.shouldStore(category: category, level: level) {
-            do {
-                try OSLogFileWriter.shared.write(message, category: category, level: level)
-            } catch {
-                OSLog.logger(for: .logFileWriter).fault("\(error.localizedDescription)")
-            }
+        do {
+            OSLog.logger(for: category).log(level: level, message: "\(message)")
+            try OSLogFileWriter.shared.write(message, category: category, level: level)
+        } catch {
+            OSLog.logger(for: .logFileWriter).fault("\(error.localizedDescription)")
         }
     }
 }

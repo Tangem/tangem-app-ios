@@ -12,15 +12,13 @@ import Foundation
 
 public extension Logger {
     protocol Configuration {
-        func shouldPrint(category: Category, level: Level) -> Bool
-        func shouldStore(category: Category, level: Level) -> Bool
+        func isLoggable() -> Bool
     }
 
     struct DefaultConfiguration: Configuration {
         public init() {}
 
-        public func shouldPrint(category: Category, level: Level) -> Bool { false }
-        public func shouldStore(category: Category, level: Level) -> Bool { false }
+        public func isLoggable() -> Bool { false }
     }
 }
 
