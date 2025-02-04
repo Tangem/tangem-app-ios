@@ -51,12 +51,14 @@ struct UnstakingFlowBaseBuilder {
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)
 
+        let supportsPartialUnstake = walletModel.tokenItem.blockchain.supportsPartialUnstake
+
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: io,
             actionType: actionType,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
-            editableType: .editable,
+            editableType: supportsPartialUnstake ? .editable : .noEditable,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: amount.compact,
             stakingValidatorsCompactViewModel: .none,
@@ -78,10 +80,15 @@ struct UnstakingFlowBaseBuilder {
             amountStep: amount.step,
             summaryStep: summary.step,
             finishStep: finish,
-            action: action
+            action: action,
+            supportsPartialUnstake: supportsPartialUnstake
         )
 
         summary.step.set(router: stepsManager)
+
+        if !supportsPartialUnstake {
+            unstakingModel.updateFees()
+        }
 
         let interactor = CommonSendBaseInteractor(input: unstakingModel, output: unstakingModel)
 
@@ -100,5 +107,16 @@ struct UnstakingFlowBaseBuilder {
         unstakingModel.router = viewModel
 
         return viewModel
+    }
+}
+
+import BlockchainSdk
+
+private extension Blockchain {
+    var supportsPartialUnstake: Bool {
+        switch self {
+        case .ton: false
+        default: true
+        }
     }
 }
