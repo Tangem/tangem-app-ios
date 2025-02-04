@@ -13,8 +13,6 @@ import Foundation
 final class StoryViewModel: ObservableObject {
     private let pagesCount: Int
     private let pageDuration: TimeInterval
-
-    private var visiblePageProgress: CGFloat = 0
     private var hasAppeared = false
 
     private lazy var timer = Timer.publish(every: Constants.timerTickDuration, on: .main, in: .common).autoconnect()
@@ -32,6 +30,7 @@ final class StoryViewModel: ObservableObject {
 
     let storyTransitionPublisher: AnyPublisher<StoryTransition, Never>
 
+    @Published private(set) var visiblePageProgress: CGFloat
     @Published private(set) var visiblePageIndex: Int
 
     init(pagesCount: Int, pageDuration: TimeInterval = 2.5) {
@@ -39,6 +38,8 @@ final class StoryViewModel: ObservableObject {
 
         self.pagesCount = pagesCount
         self.pageDuration = pageDuration
+
+        visiblePageProgress = 0
         visiblePageIndex = 0
 
         storyTransitionSubject = PassthroughSubject()
@@ -114,8 +115,6 @@ final class StoryViewModel: ObservableObject {
     }
 
     private func incrementProgressFromTimer() {
-        defer { objectWillChange.send() }
-
         let incrementedProgressValue = visiblePageProgress + Constants.timerTickDuration / pageDuration
         let maxProgressValue = 1.0
 
@@ -138,10 +137,7 @@ final class StoryViewModel: ObservableObject {
 extension StoryViewModel {
     private func handleViewDidAppear() {
         hasAppeared = true
-
         visiblePageProgress = 0
-        objectWillChange.send()
-
         startTimer()
     }
 
@@ -198,7 +194,6 @@ extension StoryViewModel {
 
     private func handleWillTransitionBackFromOtherStory() {
         visiblePageProgress = 0
-        objectWillChange.send()
     }
 }
 

@@ -78,6 +78,6 @@ final class StoriesHostViewModel: ObservableObject {
 
 extension StoriesHostViewModel {
     private enum Constants {
-        static let storyTransitionDuration: UInt64 = 35 * NSEC_PER_SEC / 100
+        static let storyTransitionDuration: UInt64 = 350 * NSEC_PER_MSEC
     }
 }

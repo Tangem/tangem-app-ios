@@ -44,7 +44,7 @@ public extension View {
 
     func storiesHost<each PageView: View>(
         isPresented: Binding<Bool>,
-        @ViewBuilder singleStoryPagesViewBuilder: () -> TupleView < (repeat each PageView)>
+        @ViewBuilder singleStoryPagesViewBuilder: () -> TupleView <(repeat each PageView)>
     ) -> some View {
         var erasedViews = [AnyView]()
         for pageView in repeat each singleStoryPagesViewBuilder().value {
