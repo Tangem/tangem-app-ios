@@ -56,7 +56,7 @@ final class MarketsViewModel: MarketsBaseViewModel {
 
     private lazy var listDataController: MarketsListDataController = .init(dataFetcher: self, cellsStateUpdater: self)
 
-    private var viewHierarchySnapshotter: ViewHierarchySnapshotting?
+    private let viewHierarchySnapshotter: ViewHierarchySnapshotting
     private var marketCapFormatter: MarketCapFormatter
     private var bag = Set<AnyCancellable>()
     private var currentSearchValue: String = ""
@@ -72,9 +72,11 @@ final class MarketsViewModel: MarketsBaseViewModel {
 
     init(
         quotesRepositoryUpdateHelper: MarketsQuotesUpdateHelper,
+        viewHierarchySnapshotter: ViewHierarchySnapshotting,
         coordinator: MarketsRoutable
     ) {
         self.quotesRepositoryUpdateHelper = quotesRepositoryUpdateHelper
+        self.viewHierarchySnapshotter = viewHierarchySnapshotter
         self.coordinator = coordinator
 
         marketCapFormatter = .init(
@@ -152,10 +154,6 @@ final class MarketsViewModel: MarketsBaseViewModel {
         tokenListLoadingState = .loading
         resetShowItemsBelowCapFlag()
         fetch(with: currentSearchValue, by: filterProvider.currentFilterValue)
-    }
-
-    func setViewHierarchySnapshotter(_ snapshotter: ViewHierarchySnapshotting?) {
-        viewHierarchySnapshotter = snapshotter
     }
 }
 
@@ -416,14 +414,12 @@ private extension MarketsViewModel {
     }
 
     func updateFooterSnapshot() {
-        assert(viewHierarchySnapshotter != nil, "`viewHierarchySnapshotter` is not injected from the view hierarchy")
-
-        let lightAppearanceSnapshotImage = viewHierarchySnapshotter?.makeSnapshotViewImage(
+        let lightAppearanceSnapshotImage = viewHierarchySnapshotter.makeSnapshotViewImage(
             afterScreenUpdates: true,
             isOpaque: true,
             overrideUserInterfaceStyle: .light
         )
-        let darkAppearanceSnapshotImage = viewHierarchySnapshotter?.makeSnapshotViewImage(
+        let darkAppearanceSnapshotImage = viewHierarchySnapshotter.makeSnapshotViewImage(
             afterScreenUpdates: true,
             isOpaque: true,
             overrideUserInterfaceStyle: .dark

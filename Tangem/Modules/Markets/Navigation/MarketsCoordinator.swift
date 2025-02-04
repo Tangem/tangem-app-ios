@@ -28,11 +28,21 @@ class MarketsCoordinator: CoordinatorObject {
 
     @Published var marketsListOrderBottomSheetViewModel: MarketsListOrderBottomSheetViewModel?
 
+    // MARK: - Helpers
+
+    let viewHierarchySnapshotter: UIViewController
+    private let viewHierarchySnapshottingAdapter: ViewHierarchySnapshotting
+
     // MARK: - Init
 
     required init(dismissAction: @escaping Action<Void>, popToRootAction: @escaping Action<PopToRootOptions>) {
         self.dismissAction = dismissAction
         self.popToRootAction = popToRootAction
+
+        let viewHierarchySnapshotter = ViewHierarchySnapshottingContainerViewController()
+        viewHierarchySnapshotter.shouldPropagateOverriddenUserInterfaceStyleToChildren = true
+        viewHierarchySnapshottingAdapter = ViewHierarchySnapshottingWeakifyAdapter(adaptee: viewHierarchySnapshotter)
+        self.viewHierarchySnapshotter = viewHierarchySnapshotter
     }
 
     // MARK: - Implementation
@@ -40,6 +50,7 @@ class MarketsCoordinator: CoordinatorObject {
     func start(with options: MarketsCoordinator.Options) {
         rootViewModel = .init(
             quotesRepositoryUpdateHelper: CommonMarketsQuotesUpdateHelper(),
+            viewHierarchySnapshotter: viewHierarchySnapshottingAdapter,
             coordinator: self
         )
     }

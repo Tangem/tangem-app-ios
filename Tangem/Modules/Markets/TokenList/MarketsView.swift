@@ -17,7 +17,6 @@ struct MarketsView: View {
     @StateObject private var navigationControllerConfigurator = MarketsViewNavigationControllerConfigurator()
 
     @Environment(\.overlayContentContainer) private var overlayContentContainer
-    @Environment(\.viewHierarchySnapshotter) private var viewHierarchySnapshotter
     @Environment(\.mainWindowSize) private var mainWindowSize
 
     @State private var headerHeight: CGFloat = .zero
@@ -40,7 +39,6 @@ struct MarketsView: View {
     var body: some View {
         rootView
             .onAppear {
-                viewModel.setViewHierarchySnapshotter(viewHierarchySnapshotter)
                 viewModel.onViewAppear()
             }
             .onDisappear(perform: viewModel.onViewDisappear)
