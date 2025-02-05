@@ -14,7 +14,6 @@ public extension View {
     /// - Parameters:
     ///   - content: The modifier to apply to the view.
     /// - Returns: The modified view.
-    @ViewBuilder
     func modifyView<T: View>(@ViewBuilder content: (Self) -> T) -> some View {
         content(self)
     }

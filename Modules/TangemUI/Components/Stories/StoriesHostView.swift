@@ -14,8 +14,6 @@ public struct StoriesHostView {
 
     @Binding var isPresented: Bool
 
-    @State private var verticalDragAmount = 0.0
-
     public init(isPresented: Binding<Bool>, storiesPagesBuilder: (StoriesHostProxy) -> [[any View]]) {
         var storyViewModels = [StoryViewModel]()
         var storyViews = [StoryView]()
@@ -64,43 +62,11 @@ extension StoriesHostView: View {
         .animation(.default, value: viewModel.visibleStoryIndex)
         .allowsHitTesting(viewModel.allowsHitTesting)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .offset(y: verticalDragAmount)
-        .gesture(dragGesture)
         .transition(.move(edge: .bottom))
         .onReceive(viewModel.$isPresented) { isPresented in
             self.isPresented = isPresented
         }
         .ignoresSafeArea(.all, edges: .bottom)
-    }
-
-    private var dragGesture: some Gesture {
-        DragGesture(minimumDistance: 10)
-            .onChanged { drag in
-                guard drag.translation.height > 0 else { return }
-                viewModel.pauseVisibleStory()
-
-                let dragGestureReactionCompensation: CGFloat = 20
-                let dragAmount = max(drag.translation.height - dragGestureReactionCompensation, 0)
-
-                withAnimation {
-                    verticalDragAmount = dragAmount
-                }
-            }
-            .onEnded { drag in
-                viewModel.resumeVisibleStory()
-
-                let heightThreshold: CGFloat = 80
-
-                if drag.translation.height > heightThreshold {
-                    withAnimation(.easeIn(duration: 0.15)) {
-                        isPresented = false
-                    }
-                } else {
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        verticalDragAmount = 0
-                    }
-                }
-            }
     }
 }
 
@@ -120,6 +86,7 @@ struct SampleStoryPage1: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.gray)
+        .allowsHitTesting(false)
     }
 }
 
@@ -153,6 +120,7 @@ struct SampleStoryPage2: View {
         .onAppear {
             isAnimating = true
         }
+        .allowsHitTesting(false)
     }
 }
 
@@ -174,14 +142,20 @@ struct SampleStoryPage3: View {
 
             HStack {
                 Button("Pause story", action: pauseStoryAction)
+                    .gesture(DragGesture(minimumDistance: 0))
+
                 Spacer()
+
                 Button("Resume story", action: resumeStoryAction)
+                    .gesture(DragGesture(minimumDistance: 0))
             }
             .buttonStyle(.borderedProminent)
             .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.tertiary)
+        .background {
+            Color.gray.allowsHitTesting(false)
+        }
     }
 }
 
@@ -193,6 +167,7 @@ struct SampleStoryPage4: View {
         .font(.largeTitle)
         .fontWeight(.black)
         .foregroundStyle(.cyan)
+        .allowsHitTesting(false)
     }
 }
 
@@ -224,14 +199,7 @@ struct SampleStoryPage4: View {
                             SampleStoryPage2(),
                             SampleStoryPage4(),
                             SampleStoryPage2(),
-                        ],
-                        [
-                            Color.red,
-                            Color.orange,
-                            Color.purple,
-                            Color.yellow,
-                            Color.brown,
-                        ],
+                        ]
                     ]
                 }
             )

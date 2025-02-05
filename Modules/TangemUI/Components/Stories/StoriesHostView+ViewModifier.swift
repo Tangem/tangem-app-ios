@@ -26,7 +26,7 @@ private struct StoriesHostViewModifier: ViewModifier {
                         StoriesHostView(isPresented: $isPresented, storiesPagesBuilder: storiesPagesBuilder)
                     }
                 }
-                .animation(.easeOut(duration: 0.4), value: isPresented)
+                .animation(.easeInOut(duration: 0.2), value: isPresented)
             }
     }
 }

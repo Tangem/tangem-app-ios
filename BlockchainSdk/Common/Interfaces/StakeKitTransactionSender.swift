@@ -81,9 +81,9 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                             if transaction.requiresWaitingToComplete {
                                 guard let result = try await group.next() else { continue }
                                 results.append(result.0)
-                                
+
                                 continuation.yield(.init(transaction: result.1, result: result.0))
-                                
+
                                 try await self.waitForTransactionToComplete(
                                     transaction,
                                     transactionStatusProvider: transactionStatusProvider
@@ -136,8 +136,8 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
     ) async throws {
         var status: StakeKitTransaction.Status?
         let startPollingDate = Date()
-        while status != .confirmed &&
-                Date().timeIntervalSince(startPollingDate) < StakeKitTransactionSenderConstants.pollingTimeout {
+        while status != .confirmed,
+              Date().timeIntervalSince(startPollingDate) < StakeKitTransactionSenderConstants.pollingTimeout {
             try await Task.sleep(nanoseconds: StakeKitTransactionSenderConstants.pollingDelayInSeconds * NSEC_PER_SEC)
             status = try await transactionStatusProvider.transactionStatus(transaction)
         }
