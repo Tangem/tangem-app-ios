@@ -126,7 +126,7 @@ extension CardanoTransactionBody {
 
         // address parsing is really complex, skip since it is not used at the moment
         init?(cbor: CBOR) {
-            guard case .byteString(let addressBytes) = cbor else { return nil }
+            guard case .byteString = cbor else { return nil }
 
             network = nil
             credential = nil
