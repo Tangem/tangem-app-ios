@@ -49,8 +49,6 @@ final class UserWalletSettingsViewModel: ObservableObject {
 
         self.userWalletModel = userWalletModel
         self.coordinator = coordinator
-
-        bind()
     }
 
     func onAppear() {
@@ -61,6 +59,7 @@ final class UserWalletSettingsViewModel: ObservableObject {
         guard AppSettings.shared.saveUserWallets else { return }
 
         if let alert = AlertBuilder.makeWalletRenamingAlert(
+            userWalletModel: userWalletModel,
             userWalletRepository: userWalletRepository,
             updateName: { self.name = $0 }
         ) {
@@ -118,19 +117,6 @@ private extension UserWalletSettingsViewModel {
             title: Localization.settingsForgetWallet,
             action: weakify(self, forFunction: UserWalletSettingsViewModel.didTapDeleteWallet)
         )
-    }
-
-    // MARK: - Actions
-
-    func bind() {
-        $name
-            .debounce(for: 0.5, scheduler: DispatchQueue.global())
-            .removeDuplicates()
-            .withWeakCaptureOf(self)
-            .sink(receiveValue: { viewModel, name in
-                viewModel.userWalletModel.updateWalletName(name.trimmed())
-            })
-            .store(in: &bag)
     }
 
     func prepareBackup() {
