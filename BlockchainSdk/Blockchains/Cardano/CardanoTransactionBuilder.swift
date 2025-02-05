@@ -255,18 +255,14 @@ private extension CardanoTransactionBuilder {
                 case .stakeDelegation(let stakeDelegation):
                     // Register staking key, 2 ADA desposit
                     $0.registerStakingKey.stakingAddress = stakingAddress
-                    $0.registerStakingKey.depositAmount = 2000000
+                    $0.registerStakingKey.depositAmount = Constants.stakingDepositAmount
                     // Delegate
                     $0.delegate.depositAmount = 0
                     $0.delegate.stakingAddress = stakingAddress
                     $0.delegate.poolID = stakeDelegation.poolKeyHash
                 case .stakeDeregistrationLegacy, .stakeDeregistrationConway:
                     $0.deregisterStakingKey.stakingAddress = stakingAddress
-
-                    if transaction.body.withdrawals == nil {
-                        $0.withdraw.stakingAddress = stakingAddress
-                        $0.withdraw.withdrawAmount = 0
-                    }
+                    $0.deregisterStakingKey.undepositAmount = Constants.stakingDepositAmount
                 default: continue
                 }
             }
@@ -444,6 +440,10 @@ private extension CardanoTransactionBuilder {
         case useMaxAmount
         case adaValue(UInt64)
         case parameters(CardanoFeeParameters)
+    }
+    
+    enum Constants {
+        static let stakingDepositAmount: UInt64 = 2000000
     }
 }
 
