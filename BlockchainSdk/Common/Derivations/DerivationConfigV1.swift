@@ -157,6 +157,8 @@ struct DerivationConfigV1: DerivationConfig {
             return "m/44'/695'/0'/0/0"
         case .bitrock:
             return "m/44'/7171666'/0'/0/0"
+        case .sonic:
+            return "m/44'/10007'/0'/0/0"
         }
     }
 }

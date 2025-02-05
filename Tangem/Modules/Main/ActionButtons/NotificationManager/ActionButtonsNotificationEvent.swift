@@ -9,6 +9,7 @@
 enum ActionButtonsNotificationEvent: Hashable {
     case refreshRequired(title: String, message: String)
     case noAvailablePairs
+    case sellRegionalRestriction
 }
 
 extension ActionButtonsNotificationEvent: NotificationEvent {
@@ -18,6 +19,8 @@ extension ActionButtonsNotificationEvent: NotificationEvent {
             return .string(title)
         case .noAvailablePairs:
             return .string(Localization.actionButtonsSwapNoAvailablePairNotificationTitle)
+        case .sellRegionalRestriction:
+            return .string(Localization.sellingRegionalRestrictionAlertTitle)
         }
     }
 
@@ -27,39 +30,41 @@ extension ActionButtonsNotificationEvent: NotificationEvent {
             return message
         case .noAvailablePairs:
             return Localization.actionButtonsSwapNoAvailablePairNotificationMessage
+        case .sellRegionalRestriction:
+            return Localization.sellingRegionalRestrictionAlertMessage
         }
     }
 
     var colorScheme: NotificationView.ColorScheme {
         switch self {
-        case .refreshRequired, .noAvailablePairs: .action
+        case .refreshRequired, .noAvailablePairs, .sellRegionalRestriction: .action
         }
     }
 
     var icon: NotificationView.MessageIcon {
         switch self {
         case .refreshRequired: .init(iconType: .image(Assets.attention.image))
-        case .noAvailablePairs: .init(iconType: .image(Assets.warningIcon.image))
+        case .noAvailablePairs, .sellRegionalRestriction: .init(iconType: .image(Assets.warningIcon.image))
         }
     }
 
     var severity: NotificationView.Severity {
         switch self {
         case .refreshRequired: .critical
-        case .noAvailablePairs: .warning
+        case .noAvailablePairs, .sellRegionalRestriction: .warning
         }
     }
 
     var buttonAction: NotificationButtonAction? {
         switch self {
         case .refreshRequired: .init(.refresh, withLoader: false)
-        case .noAvailablePairs: nil
+        case .noAvailablePairs, .sellRegionalRestriction: nil
         }
     }
 
     var removingOnFullLoadingState: Bool {
         switch self {
-        case .refreshRequired, .noAvailablePairs: return false
+        case .refreshRequired, .noAvailablePairs, .sellRegionalRestriction: return false
         }
     }
 

@@ -36,8 +36,9 @@ on:
           Optional build number override. Leave blank (default value) to use the latest value obtained from App Store Connect + 1
         type: string
       analyze_archive:
+        # TODO: Enable by default
         description: >
-          Whether the archive should be analyzed during the build process (default: true)
+          Whether the archive should be analyzed during the build process (default: false)
         type: boolean
         default: false # TODO: Enable by default
 
