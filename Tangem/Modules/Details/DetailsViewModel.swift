@@ -317,6 +317,11 @@ private extension DetailsViewModel {
             case .onboarding(let input):
                 coordinator?.openOnboardingModal(with: input)
             case .error(let error):
+                if error.isCancellationError {
+                    return
+                }
+
+                Analytics.tryLogCardVerificationError(error, source: .settings)
                 alert = error.alertBinder
             case .success, .partial:
                 coordinator?.dismiss()

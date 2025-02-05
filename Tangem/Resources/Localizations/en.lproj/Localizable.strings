@@ -1060,7 +1060,7 @@
 "warning_solana_rent_fee_message" = "Solana network charges a rent of %1$@ every 2 days. Accounts that can't afford the rent are purged from the network. Deposit your account with more than %2$@ to use it for free.";
 "warning_some_networks_unreachable_message" = "Swipe down to refresh or try again later.";
 "warning_some_networks_unreachable_title" = "Some networks are unreachable";
-"warning_some_token_balances_not_updated" = "Some token balances could not updated";
+"warning_some_token_balances_not_updated" = "Some token balances could not be updated";
 "warning_system_deprecation_title" = "System update required";
 "warning_system_deprecation_with_date_message" = "Support for your version of the operating system will end on %@. To receive future app updates you must update it to the latest version.";
 "warning_system_update_message" = "Tangem recommends installing the latest iOS update for stable and safe operation";

@@ -2187,6 +2187,7 @@
 		DC0DE2762B616C7100E7247F /* IncomingAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0DE2752B616C7100E7247F /* IncomingAction.swift */; };
 		DC0DE2782B61709D00E7247F /* IncomingActionURLHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0DE2772B61709D00E7247F /* IncomingActionURLHelper.swift */; };
 		DC0DE27A2B6175B100E7247F /* IncomingActionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0DE2792B6175B100E7247F /* IncomingActionConstants.swift */; };
+		DC0DE7812D48005800492A0B /* Analytics+CardVerificationErrorSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0DE7802D48004000492A0B /* Analytics+CardVerificationErrorSource.swift */; };
 		DC10A7C6295DED4E00367574 /* BindableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC10A7C5295DED4E00367574 /* BindableError.swift */; };
 		DC13D03929DEC1230003895C /* CardDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC13D03829DEC1230003895C /* CardDTO.swift */; };
 		DC13D03E29DF28140003895C /* OnboardingStepsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC13D03D29DF28140003895C /* OnboardingStepsBuilder.swift */; };
@@ -5382,6 +5383,7 @@
 		DC0DE2752B616C7100E7247F /* IncomingAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingAction.swift; sourceTree = "<group>"; };
 		DC0DE2772B61709D00E7247F /* IncomingActionURLHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingActionURLHelper.swift; sourceTree = "<group>"; };
 		DC0DE2792B6175B100E7247F /* IncomingActionConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingActionConstants.swift; sourceTree = "<group>"; };
+		DC0DE7802D48004000492A0B /* Analytics+CardVerificationErrorSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Analytics+CardVerificationErrorSource.swift"; sourceTree = "<group>"; };
 		DC10A7C5295DED4E00367574 /* BindableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindableError.swift; sourceTree = "<group>"; };
 		DC13D03829DEC1230003895C /* CardDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDTO.swift; sourceTree = "<group>"; };
 		DC13D03D29DF28140003895C /* OnboardingStepsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStepsBuilder.swift; sourceTree = "<group>"; };
@@ -9038,6 +9040,7 @@
 		B0D1AC302906718600584E6C /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
+				DC0DE7802D48004000492A0B /* Analytics+CardVerificationErrorSource.swift */,
 				B074AF832B06585B00E9CEA3 /* AnalyticsContext */,
 				B079DB702AEB937000D2D0D5 /* Debug */,
 				5D225CB82524B721001564A3 /* Analytics.swift */,
@@ -17798,6 +17801,7 @@
 				B0CB73B72A82324200D530BA /* TokenWithoutDerivationInfoProvider.swift in Sources */,
 				0AC9EFF72CAE857C005F868F /* StakingSingleActionModel.swift in Sources */,
 				B020FFBE25DE895E00EF422C /* FileLogger.swift in Sources */,
+				DC0DE7812D48005800492A0B /* Analytics+CardVerificationErrorSource.swift in Sources */,
 				B058D2372A79668D008E79D2 /* TokenQuotesRepositoryMock.swift in Sources */,
 				EF914D502A604627001F00B2 /* QuotesMapper.swift in Sources */,
 				B026178D26FCAB7900B5107F /* FanStackCalculator.swift in Sources */,

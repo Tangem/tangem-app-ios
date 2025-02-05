@@ -26,11 +26,12 @@ struct UserTokenListConverter {
             .compactMap { entry in
                 let network = entry.blockchainNetwork
                 let id = entry.isToken ? entry.id : network.blockchain.coinId
+                let name = entry.isToken ? entry.name : network.blockchain.coinDisplayName
 
                 return UserTokenList.Token(
                     id: id,
                     networkId: network.blockchain.networkId,
-                    name: entry.name,
+                    name: name,
                     symbol: entry.symbol,
                     decimals: entry.decimalCount,
                     derivationPath: network.derivationPath,
