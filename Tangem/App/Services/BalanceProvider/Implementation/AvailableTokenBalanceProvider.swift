@@ -77,6 +77,7 @@ private extension AvailableTokenBalanceProvider {
             storeBalance(balance: balance)
             return .loaded(balance)
         case .noAccount(let message, _):
+            storeBalance(balance: .zero)
             return .empty(.noAccount(message: message))
         case .failed:
             return .failure(cachedBalance())
