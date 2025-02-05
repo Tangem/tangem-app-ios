@@ -803,6 +803,8 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
                     if !sdkError.isUserCancelled {
                         self?.alert = sdkError.alertBinder
                     }
+
+                    Analytics.tryLogCardVerificationError(error, source: .backup)
                     self?.isMainButtonBusy = false
                 }
                 self?.stepPublisher = nil

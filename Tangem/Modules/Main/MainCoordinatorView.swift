@@ -16,6 +16,13 @@ struct MainCoordinatorView: CoordinatorView {
     @StateObject private var navigationAssertion = MainCoordinatorNavigationAssertion()
 
     var body: some View {
+        NavigationView {
+            content
+        }
+        .navigationViewStyle(.stack)
+    }
+
+    private var content: some View {
         ZStack {
             if let mainViewModel = coordinator.mainViewModel {
                 MainView(viewModel: mainViewModel)

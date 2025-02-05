@@ -23,10 +23,10 @@ struct LoadableTokenBalanceView: View {
         switch state {
         case .loading(.some(let cached)):
             textView(cached)
-                .modifier(PulseEffect())
+                .modifier(Shimmer())
         case .loading(.none):
             RoundedRectangle(cornerRadius: loader.cornerRadius, style: .continuous)
-                .fill(Colors.Background.tertiary)
+                .fill(Colors.Control.shimmer)
                 .frame(size: loader.size)
                 .modifier(Shimmer())
         case .failed(let text, .none):
@@ -118,6 +118,8 @@ extension LoadableTokenBalanceView {
             )
         }
 
+        Divider()
+
         VStack(alignment: .trailing, spacing: 2) {
             LoadableTokenBalanceView(
                 state: .loading(cached: .string("1 312 422,23 $")),
@@ -127,6 +129,22 @@ extension LoadableTokenBalanceView {
 
             LoadableTokenBalanceView(
                 state: .loading(cached: .string("1,23 BTC")),
+                style: .init(font: Fonts.Regular.caption1, textColor: Colors.Text.tertiary),
+                loader: .init(size: .init(width: 40, height: 12))
+            )
+        }
+
+        Divider()
+
+        VStack(alignment: .trailing, spacing: 2) {
+            LoadableTokenBalanceView(
+                state: .loading(cached: .none),
+                style: .init(font: Fonts.Regular.subheadline, textColor: Colors.Text.primary1),
+                loader: .init(size: .init(width: 40, height: 12))
+            )
+
+            LoadableTokenBalanceView(
+                state: .loading(cached: .none),
                 style: .init(font: Fonts.Regular.caption1, textColor: Colors.Text.tertiary),
                 loader: .init(size: .init(width: 40, height: 12))
             )
