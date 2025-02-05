@@ -17,7 +17,19 @@ struct ActionButtonsBuyCoordinatorView: View {
         } else if let actionButtonsBuyViewModel = coordinator.actionButtonsBuyViewModel {
             NavigationView {
                 ActionButtonsBuyView(viewModel: actionButtonsBuyViewModel)
+                    .sheet(item: $coordinator.addToPortfolioBottomSheetInfo, content: { addToPortfolioSheet($0) })
             }
         }
+    }
+
+    private func addToPortfolioSheet(_ info: HotCryptoAddToPortfolioModel) -> some View {
+        HotCryptoAddToPortfolioBottomSheet(
+            info: info,
+            action: {
+                coordinator.actionButtonsBuyViewModel?.handleViewAction(.addToPortfolio(info.token))
+            }
+        )
+        .adaptivePresentationDetents()
+        .background(Colors.Background.tertiary)
     }
 }

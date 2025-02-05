@@ -68,7 +68,12 @@ struct TangemApiTarget: TargetType {
         case .tokenExchangesList(let requestModel):
             return "/coins/\(requestModel.tokenId)/exchanges"
 
-            // MARK: SeedNotify
+        // MARK: - Action Buttons
+
+        case .hotCrypto:
+            return "/hot_crypto"
+
+        // MARK: SeedNotify
 
         case .seedNotifyGetStatus(let userWalletId), .seedNotifySetStatus(let userWalletId, _):
             return "/seedphrase-notification/\(userWalletId)"
@@ -93,6 +98,7 @@ struct TangemApiTarget: TargetType {
              .tokenMarketsDetails,
              .historyChart,
              .tokenExchangesList,
+             .hotCrypto,
              .seedNotifyGetStatus:
             return .get
         case .saveUserWalletTokens,
@@ -187,6 +193,8 @@ struct TangemApiTarget: TargetType {
             return .requestParameters(requestModel, encoding: URLEncoding.default)
         case .tokenExchangesList, .seedNotifyGetStatus:
             return .requestPlain
+        case .hotCrypto(let requestModel):
+            return .requestParameters(parameters: ["currency": requestModel.currency], encoding: URLEncoding.default)
         case .walletInitialized(let userWalletId):
             return .requestParameters(
                 parameters: [
@@ -238,6 +246,10 @@ extension TangemApiTarget {
         case historyChart(_ requestModel: MarketsDTO.ChartsHistory.HistoryRequest)
         case tokenExchangesList(_ requestModel: MarketsDTO.ExchangesList.Request)
 
+        // MARK: - Action Buttons
+
+        case hotCrypto(_ requestModel: HotCryptoDTO.Request)
+
         // Configs
         case apiList
 
@@ -271,7 +283,7 @@ extension TangemApiTarget: TargetTypeLogConvertible {
 
     var shouldLogResponseBody: Bool {
         switch type {
-        case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart, .tokenMarketsDetails, .tokenExchangesList:
+        case .currencies, .coins, .quotes, .apiList, .coinsList, .coinsHistoryChartPreview, .historyChart, .tokenMarketsDetails, .tokenExchangesList, .hotCrypto:
             return false
         case .geo, .features, .getUserWalletTokens, .saveUserWalletTokens, .loadReferralProgramInfo, .participateInReferralProgram, .createAccount, .promotion, .validateNewUserPromotionEligibility, .validateOldUserPromotionEligibility, .awardNewUser, .awardOldUser, .resetAward, .seedNotifyGetStatus, .seedNotifySetStatus, .walletInitialized:
             return true

@@ -73,7 +73,7 @@ final class ActionButtonsSellViewModel: ObservableObject {
             return
         }
 
-        ActionButtonsAnalyticsService.trackTokenClicked(.sell, tokenSymbol: token.symbol)
+        ActionButtonsAnalyticsService.trackTokenClicked(.sell, tokenSymbol: token.infoProvider.tokenItem.currencySymbol)
 
         guard let url = makeSellUrl(from: token) else { return }
 
@@ -149,7 +149,7 @@ private extension ActionButtonsSellViewModel {
 
     func makeSellUrl(from token: ActionButtonsTokenSelectorItem) -> URL? {
         let sellUrl = exchangeService.getSellUrl(
-            currencySymbol: token.symbol,
+            currencySymbol: token.infoProvider.tokenItem.currencySymbol,
             amountType: token.walletModel.amountType,
             blockchain: token.walletModel.blockchainNetwork.blockchain,
             walletAddress: token.walletModel.defaultAddress

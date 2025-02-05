@@ -15,8 +15,8 @@ struct ActionButtonsSwapView: View {
     var body: some View {
         content
             .scrollDismissesKeyboardCompat(.immediately)
-            .animation(.easeInOut(duration: 0.2), value: viewModel.sourceToken)
-            .animation(.easeOut, value: viewModel.destinationToken)
+            .animation(.easeInOut(duration: 0.2), value: viewModel.sourceToken?.id)
+            .animation(.easeOut, value: viewModel.destinationToken?.id)
             .animation(.easeInOut, value: viewModel.tokenSelectorState)
             .animation(.easeInOut, value: viewModel.notificationInputs)
             .padding(.top, 10)

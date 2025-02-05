@@ -21,11 +21,15 @@ final class ActionButtonsViewModel: ObservableObject {
     @Injected(\.expressAvailabilityProvider)
     private var expressAvailabilityProvider: ExpressAvailabilityProvider
 
+    @Injected(\.hotCryptoService)
+    private var hotCryptoService: HotCryptoService
+
     // MARK: Button ViewModels
 
-    let buyActionButtonViewModel: BuyActionButtonViewModel
     let sellActionButtonViewModel: SellActionButtonViewModel
     let swapActionButtonViewModel: SwapActionButtonViewModel
+
+    private(set) var buyActionButtonViewModel: BuyActionButtonViewModel?
 
     // MARK: Private properties
 
@@ -47,13 +51,6 @@ final class ActionButtonsViewModel: ObservableObject {
         self.expressTokensListAdapter = expressTokensListAdapter
         self.userWalletModel = userWalletModel
 
-        buyActionButtonViewModel = BuyActionButtonViewModel(
-            model: .buy,
-            coordinator: coordinator,
-            lastButtonTapped: lastButtonTapped,
-            userWalletModel: userWalletModel
-        )
-
         sellActionButtonViewModel = SellActionButtonViewModel(
             model: .sell,
             coordinator: coordinator,
@@ -68,12 +65,24 @@ final class ActionButtonsViewModel: ObservableObject {
             userWalletModel: userWalletModel
         )
 
+        makeBuyButtonViewModel(coordinator)
+
         bind()
     }
 
     func refresh() {
         // do nothing if already iniitialized
         exchangeService.initialize()
+        hotCryptoService.loadHotCrypto(AppSettings.shared.selectedCurrencyCode)
+    }
+
+    func makeBuyButtonViewModel(_ coordinator: ActionButtonsBuyFlowRoutable) {
+        buyActionButtonViewModel = BuyActionButtonViewModel(
+            model: .buy,
+            coordinator: coordinator,
+            lastButtonTapped: lastButtonTapped,
+            userWalletModel: userWalletModel
+        )
     }
 }
 
@@ -106,7 +115,7 @@ private extension ActionButtonsViewModel {
 
     @MainActor
     private func disabledAllButtons() {
-        buyActionButtonViewModel.updateState(to: .disabled)
+        buyActionButtonViewModel?.updateState(to: .disabled)
         sellActionButtonViewModel.updateState(to: .disabled)
         swapActionButtonViewModel.updateState(to: .disabled)
     }
@@ -162,8 +171,8 @@ private extension ActionButtonsViewModel {
 
             switch exchangeServiceState {
             case .initializing: viewModel.handleBuyUpdatingState()
-            case .initialized: viewModel.buyActionButtonViewModel.updateState(to: .idle)
-            case .failed(let error): viewModel.buyActionButtonViewModel.updateState(
+            case .initialized: viewModel.buyActionButtonViewModel?.updateState(to: .idle)
+            case .failed(let error): viewModel.buyActionButtonViewModel?.updateState(
                     to: .restricted(reason: error.localizedDescription)
                 )
             }
@@ -177,7 +186,7 @@ private extension ActionButtonsViewModel {
             switch expressUpdateState {
             case .updating: viewModel.handleBuyUpdatingState()
             case .updated: viewModel.handleBuyUpdatedState()
-            case .failed: viewModel.buyActionButtonViewModel.updateState(
+            case .failed: viewModel.buyActionButtonViewModel?.updateState(
                     to: .restricted(reason: Localization.actionButtonsSomethingWrongAlertMessage)
                 )
             }
@@ -186,17 +195,17 @@ private extension ActionButtonsViewModel {
 
     @MainActor
     func handleBuyUpdatingState() {
-        switch buyActionButtonViewModel.viewState {
+        switch buyActionButtonViewModel?.viewState {
         case .idle:
-            buyActionButtonViewModel.updateState(to: .initial)
-        case .restricted, .loading, .initial, .disabled:
+            buyActionButtonViewModel?.updateState(to: .initial)
+        case .restricted, .loading, .initial, .disabled, .none:
             break
         }
     }
 
     @MainActor
     func handleBuyUpdatedState() {
-        buyActionButtonViewModel.updateState(
+        buyActionButtonViewModel?.updateState(
             to: userWalletModel.walletModelsManager.walletModels.isEmpty ? .disabled : .idle
         )
     }

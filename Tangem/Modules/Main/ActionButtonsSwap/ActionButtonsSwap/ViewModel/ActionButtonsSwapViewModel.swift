@@ -165,14 +165,14 @@ final class ActionButtonsSwapViewModel: ObservableObject {
 
     @MainActor
     private func selectSourceToken(_ token: ActionButtonsTokenSelectorItem) async {
-        ActionButtonsAnalyticsService.trackTokenClicked(.swap, tokenSymbol: token.symbol)
+        ActionButtonsAnalyticsService.trackTokenClicked(.swap, tokenSymbol: token.infoProvider.tokenItem.currencySymbol)
 
         sourceToken = token
         await updatePairs(for: token, userWalletModel: userWalletModel)
     }
 
     private func selectDestinationToken(_ token: ActionButtonsTokenSelectorItem) {
-        ActionButtonsAnalyticsService.trackReceiveTokenClicked(tokenSymbol: token.symbol)
+        ActionButtonsAnalyticsService.trackReceiveTokenClicked(tokenSymbol: token.infoProvider.tokenItem.currencySymbol)
 
         destinationToken = token
         tokenSelectorState = .readyToSwap
@@ -240,7 +240,7 @@ private extension ActionButtonsSwapViewModel {
     ) -> ActionButtonsTokenSelectorViewModel {
         .init(
             tokenSelectorItemBuilder: ActionButtonsTokenSelectorItemBuilder(),
-            strings: SwapTokenSelectorStrings(tokenName: token.name),
+            strings: SwapTokenSelectorStrings(tokenName: token.infoProvider.tokenItem.name),
             expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
             tokenSorter: SwapDestinationTokenAvailabilitySorter(
                 sourceTokenWalletModel: token.walletModel,

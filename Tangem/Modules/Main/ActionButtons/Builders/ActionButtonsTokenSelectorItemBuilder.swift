@@ -9,21 +9,16 @@
 struct ActionButtonsTokenSelectorItemBuilder: TokenSelectorItemBuilder {
     func map(from walletModel: WalletModel, isDisabled: Bool) -> ActionButtonsTokenSelectorItem {
         let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
-        let balanceBuilder = LoadableTokenBalanceViewStateBuilder()
-        let balance = walletModel.totalTokenBalanceProvider.formattedBalanceType
-        let fiatBalance = walletModel.fiatTotalTokenBalanceProvider.formattedBalanceType
+        let infoProvider = DefaultTokenItemInfoProvider(walletModel: walletModel)
 
         // TODO. Better to use logic
         // from `DefaultTokenItemInfoProvider` or DefaultTokenItemInfoProvider
         // to support balance state changes loading / loaded / cached
         return ActionButtonsTokenSelectorItem(
             id: walletModel.id,
-            tokenIconInfo: tokenIconInfo,
-            name: walletModel.tokenItem.name,
-            symbol: walletModel.tokenItem.currencySymbol,
-            balance: balanceBuilder.build(type: balance),
-            fiatBalance: balanceBuilder.build(type: fiatBalance, icon: .leading),
             isDisabled: isDisabled,
+            tokenIconInfo: tokenIconInfo,
+            infoProvider: infoProvider,
             walletModel: walletModel
         )
     }
