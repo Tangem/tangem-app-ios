@@ -260,7 +260,8 @@ extension CardanoWalletManager: StakeKitTransactionSender, StakeKitTransactionSe
 
     func buildRawTransactions(
         from transactions: [StakeKitTransaction],
-        signer: any TransactionSigner
+        wallet: Wallet,
+        signer: TransactionSigner
     ) async throws -> [Data] {
         let firstDerivationPath: DerivationPath
         let secondDerivationPath: DerivationPath
