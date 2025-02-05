@@ -114,6 +114,8 @@ private extension RestakingModel {
                 model.update(state: .loading)
                 let state = try await model.state(amount: model.action.amount, validator: validator)
                 model.update(state: state)
+            } catch _ as CancellationError {
+                // Do nothing
             } catch {
                 AppLog.shared.error(error)
                 model.update(state: .networkError(error))

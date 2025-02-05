@@ -134,7 +134,7 @@ extension CardanoTransactionBody {
     }
 
     enum Certificate {
-        case stakeRegistrationLegacy
+        case stakeRegistrationLegacy(StakeRegistrationLegacy)
         case stakeDeregistrationLegacy(StakeDeregistrationLegacy)
         case stakeDelegation(StakeDelegation)
         case poolRegistration
@@ -208,6 +208,34 @@ extension CardanoTransactionBody {
 
             credential = Credential(keyHash: Data(keyHashArray))
             poolKeyHash = Data(poolKeyHashArray)
+        }
+    }
+
+    struct StakeRegistrationLegacy {
+        let credential: Credential
+
+        init?(cbor: CBOR) {
+            guard case .array(let certInfo) = cbor,
+                  certInfo.count == 2 /* cert_index, stake_credential */ else {
+                return nil
+            }
+
+            guard case .array(let credentials) = certInfo[1],
+                  credentials.count == 2 else { // credential type, byte array
+                return nil
+            }
+
+            guard case .unsignedInt(let credentialType) = credentials[0],
+                  credentialType == 0 else { // 0 - key hash, 1 - script hash
+                return nil
+            }
+
+            guard case .byteString(let keyHashArray) = credentials[1],
+                  keyHashArray.count == 28 else { // 28 bytes ed key
+                return nil
+            }
+
+            credential = Credential(keyHash: Data(keyHashArray))
         }
     }
 
@@ -369,6 +397,10 @@ extension CardanoTransactionBody {
             guard case .unsignedInt(let index) = certInfo[0] else { return nil }
 
             switch index {
+            case CardanoTransactionBody.Certificate.Index.stakeRegistrationLegacy.rawValue:
+                return CardanoTransactionBody.StakeRegistrationLegacy(cbor: certCBOR).flatMap {
+                    .stakeRegistrationLegacy($0)
+                }
             case CardanoTransactionBody.Certificate.Index.stakeDelegation.rawValue:
                 return CardanoTransactionBody.StakeDelegation(cbor: certCBOR).flatMap { .stakeDelegation($0) }
             case CardanoTransactionBody.Certificate.Index.stakeDeregistrationLegacy.rawValue:
