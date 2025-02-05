@@ -441,7 +441,7 @@ private extension CardanoTransactionBuilder {
         case adaValue(UInt64)
         case parameters(CardanoFeeParameters)
     }
-    
+
     enum Constants {
         static let stakingDepositAmount: UInt64 = 2000000
     }
