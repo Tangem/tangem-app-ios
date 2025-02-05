@@ -570,7 +570,16 @@ extension KaspaWalletManager: DustRestrictable {
         }
 
         // Max amount available to send
-        let balance = txBuilder.availableAmount()
+        let maxAmount: Amount? = {
+            switch amount.type {
+            case .coin: txBuilder.availableAmount()
+            default: wallet.amounts[amount.type]
+            }
+        }()
+
+        guard let maxAmount else {
+            throw ValidationError.balanceNotFound
+        }
 
         if amount < dustValue {
             throw ValidationError.dustAmount(minimumAmount: dustValue)
@@ -583,7 +592,7 @@ extension KaspaWalletManager: DustRestrictable {
             sendingAmount += fee.value
         }
 
-        let change = balance.value - sendingAmount
+        let change = maxAmount.value - sendingAmount
         if change > 0, change < dustValue.value {
             throw ValidationError.dustChange(minimumAmount: dustValue)
         }
