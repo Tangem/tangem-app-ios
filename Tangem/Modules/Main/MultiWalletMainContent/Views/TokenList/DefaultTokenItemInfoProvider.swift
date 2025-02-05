@@ -11,39 +11,47 @@ import Combine
 
 class DefaultTokenItemInfoProvider {
     private let walletModel: WalletModel
+    private let balanceProvider: TokenBalanceProvider
+    private let fiatBalanceProvider: TokenBalanceProvider
 
     init(walletModel: WalletModel) {
         self.walletModel = walletModel
+
+        balanceProvider = walletModel.totalTokenBalanceProvider
+        fiatBalanceProvider = walletModel.fiatTotalTokenBalanceProvider
     }
 }
 
 extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
     var id: WalletModel.ID { walletModel.id }
 
-    var tokenItemState: TokenItemViewState {
-        TokenItemViewState(walletModel: walletModel)
-    }
-
-    var tokenItemStatePublisher: AnyPublisher<TokenItemViewState, Never> {
-        walletModel.walletDidChangePublisher
-            .withWeakCaptureOf(self)
-            .map { provider, _ in
-                TokenItemViewState(walletModel: provider.walletModel)
-            }
-            .eraseToAnyPublisher()
-    }
-
     var tokenItem: TokenItem { walletModel.tokenItem }
 
     var hasPendingTransactions: Bool { walletModel.hasPendingTransactions }
 
-    var balance: String { walletModel.allBalanceFormatted.crypto }
+    var isZeroBalanceValue: Bool {
+        walletModel.balanceState != .positive
+    }
 
-    var isZeroBalanceValue: Bool { walletModel.totalBalance.crypto?.isZero ?? true }
+    var balance: TokenBalanceType {
+        balanceProvider.balanceType
+    }
 
-    var fiatBalance: String { walletModel.allBalanceFormatted.fiat }
+    var quotePublisher: AnyPublisher<TokenQuote?, Never> {
+        walletModel.ratePublisher.map { $0.quote }.eraseToAnyPublisher()
+    }
 
-    var quote: TokenQuote? { walletModel.quote }
+    var balancePublisher: AnyPublisher<TokenBalanceType, Never> {
+        balanceProvider.balanceTypePublisher
+    }
+
+    var balanceTypePublisher: AnyPublisher<FormattedTokenBalanceType, Never> {
+        balanceProvider.formattedBalanceTypePublisher
+    }
+
+    var fiatBalanceTypePublisher: AnyPublisher<FormattedTokenBalanceType, Never> {
+        fiatBalanceProvider.formattedBalanceTypePublisher
+    }
 
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { walletModel.actionsUpdatePublisher }
 
@@ -57,5 +65,11 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
                 }
             }
             .eraseToAnyPublisher()
+    }
+}
+
+extension DefaultTokenItemInfoProvider: Equatable {
+    static func == (lhs: DefaultTokenItemInfoProvider, rhs: DefaultTokenItemInfoProvider) -> Bool {
+        lhs.id == rhs.id
     }
 }

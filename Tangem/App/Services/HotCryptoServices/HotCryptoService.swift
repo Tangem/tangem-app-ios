@@ -49,7 +49,7 @@ extension CommonHotCryptoService: HotCryptoService {
 
     func loadHotCrypto(_ currencyCode: String) {
         loadTask?.cancel()
-        
+
         loadTask = Task { [weak self] in
             guard
                 let self,
@@ -59,7 +59,7 @@ extension CommonHotCryptoService: HotCryptoService {
             else {
                 return
             }
-            
+
             guard !Task.isCancelled else { return }
 
             hotCryptoItemsSubject.send(fetchedHotCryptoItems.tokens.map { .init(from: $0) })

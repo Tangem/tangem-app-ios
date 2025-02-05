@@ -50,8 +50,8 @@ final class ActionButtonsSwapViewModel: ObservableObject {
     private var bag = Set<AnyCancellable>()
 
     private lazy var notificationManager: some NotificationManager = {
-        let notificationManager = ActionButtonsSwapNotificationManager(
-            statePublisher: $tokenSelectorState.eraseToAnyPublisher()
+        let notificationManager = ActionButtonsNotificationManager(
+            destination: .swap($tokenSelectorState.eraseToAnyPublisher())
         )
 
         notificationManager.setupManager(with: self)

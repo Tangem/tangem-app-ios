@@ -73,8 +73,6 @@ struct UserTokensReorderingLogger {
             return "noAccount"
         case .failed(let error):
             return "failed (\(error.localizedDescription))"
-        case .noDerivation:
-            return "noDerivation"
         }
     }
 

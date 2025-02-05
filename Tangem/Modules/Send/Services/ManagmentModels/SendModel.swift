@@ -39,7 +39,8 @@ class SendModel {
 
     // MARK: - Private injections
 
-    private let walletModel: WalletModel
+    private let tokenItem: TokenItem
+    private let balanceProvider: TokenBalanceProvider
     private let transactionDispatcher: TransactionDispatcher
     private let transactionSigner: TransactionSigner
     private let transactionCreator: TransactionCreator
@@ -52,7 +53,8 @@ class SendModel {
     // MARK: - Public interface
 
     init(
-        walletModel: WalletModel,
+        tokenItem: TokenItem,
+        balanceProvider: TokenBalanceProvider,
         transactionDispatcher: TransactionDispatcher,
         transactionCreator: TransactionCreator,
         transactionSigner: TransactionSigner,
@@ -60,7 +62,8 @@ class SendModel {
         feeAnalyticsParameterBuilder: FeeAnalyticsParameterBuilder,
         predefinedValues: PredefinedValues
     ) {
-        self.walletModel = walletModel
+        self.tokenItem = tokenItem
+        self.balanceProvider = balanceProvider
         self.transactionDispatcher = transactionDispatcher
         self.transactionSigner = transactionSigner
         self.transactionCreator = transactionCreator
@@ -129,8 +132,8 @@ private extension SendModel {
 
     private func makeAmount(decimal: Decimal) -> Amount {
         Amount(
-            with: walletModel.tokenItem.blockchain,
-            type: walletModel.tokenItem.amountType,
+            with: tokenItem.blockchain,
+            type: tokenItem.amountType,
             value: decimal
         )
     }
@@ -181,7 +184,7 @@ private extension SendModel {
         transaction.amount.type.token.map { token in
             UserWalletFinder().addToken(
                 token,
-                in: walletModel.tokenItem.blockchain,
+                in: tokenItem.blockchain,
                 for: transaction.destinationAddress
             )
         }
@@ -199,7 +202,7 @@ private extension SendModel {
             break
         case .sendTxError:
             Analytics.log(event: .sendErrorTransactionRejected, params: [
-                .token: walletModel.tokenItem.currencySymbol,
+                .token: tokenItem.currencySymbol,
             ])
         }
     }
@@ -288,6 +291,12 @@ extension SendModel: SendSummaryInput, SendSummaryOutput {
         _transaction.map { $0?.value != nil }.eraseToAnyPublisher()
     }
 
+    var isNotificationButtonIsLoading: AnyPublisher<Bool, Never> {
+        _selectedFee
+            .map { $0.value.isLoading }
+            .eraseToAnyPublisher()
+    }
+
     var summaryTransactionDataPublisher: AnyPublisher<SendSummaryTransactionData?, Never> {
         _transaction.map { transaction -> SendSummaryTransactionData? in
             transaction?.value.map {
@@ -351,7 +360,7 @@ extension SendModel: NotificationTapDelegate {
         case .openFeeCurrency:
             router?.openNetworkCurrency()
         case .leaveAmount(let amount, _):
-            walletModel.balanceValue.map { reduceAmountBy(amount, source: $0) }
+            balanceProvider.balanceType.value.flatMap { reduceAmountBy(amount, source: $0) }
         case .reduceAmountBy(let amount, _):
             _amount.value?.crypto.flatMap { reduceAmountBy(amount, source: $0) }
         case .reduceAmountTo(let amount, _):
@@ -417,8 +426,8 @@ private extension SendModel {
 
         Analytics.log(event: .transactionSent, params: [
             .source: source.analyticsValue.rawValue,
-            .token: walletModel.tokenItem.currencySymbol,
-            .blockchain: walletModel.tokenItem.blockchain.displayName,
+            .token: tokenItem.currencySymbol,
+            .blockchain: tokenItem.blockchain.displayName,
             .feeType: feeType.rawValue,
             .memo: additionalFieldAnalyticsParameter().rawValue,
             .walletForm: signerType,

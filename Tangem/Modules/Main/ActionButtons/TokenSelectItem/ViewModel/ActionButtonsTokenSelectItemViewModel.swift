@@ -15,7 +15,7 @@ final class ActionButtonsTokenSelectItemViewModel: ObservableObject {
     @Published private(set) var fiatBalanceState: LoadableTokenBalanceView.State = .loading()
     @Published private(set) var balanceState: LoadableTokenBalanceView.State = .loading()
 
-    private var itemStateBag: AnyCancellable?
+    private var bag = Set<AnyCancellable>()
 
     init(model: ActionButtonsTokenSelectorItem) {
         self.model = model
@@ -24,43 +24,37 @@ final class ActionButtonsTokenSelectItemViewModel: ObservableObject {
     }
 
     private func bind() {
-        itemStateBag = model.infoProvider.tokenItemStatePublisher
+        bindBalance(publisher: model.infoProvider.balanceTypePublisher) { [weak self] in
+            self?.balanceState = $0
+        }
+
+        bindBalance(publisher: model.infoProvider.fiatBalanceTypePublisher) { [weak self] in
+            self?.fiatBalanceState = $0
+        }
+    }
+
+    private func bindBalance<P: Publisher>(
+        publisher: P,
+        stateUpdate: @escaping (LoadableTokenBalanceView.State) -> Void
+    ) where P.Output == FormattedTokenBalanceType, P.Failure == Never {
+        publisher
             .receive(on: DispatchQueue.main)
-            .withWeakCaptureOf(self)
-            .sink { viewModel, newState in
-                switch newState {
-                case .loading:
-                    viewModel.updateBalances(to: .loading())
-                case .loaded:
-                    viewModel.updateBalances(
-                        to: .loaded(text: viewModel.model.infoProvider.fiatBalance),
-                        and: .loaded(text: viewModel.model.infoProvider.balance)
-                    )
-                default:
-                    viewModel.updateBalances(to: .empty)
-                }
+            .sink { balanceType in
+                stateUpdate(LoadableTokenBalanceViewStateBuilder().build(type: balanceType))
             }
-    }
-
-    private func updateBalances(to state: LoadableTokenBalanceView.State) {
-        fiatBalanceState = state
-        balanceState = state
-    }
-
-    private func updateBalances(
-        to fiatState: LoadableTokenBalanceView.State,
-        and cryptoState: LoadableTokenBalanceView.State
-    ) {
-        fiatBalanceState = fiatState
-        balanceState = cryptoState
+            .store(in: &bag)
     }
 }
 
 // MARK: - UI Properties
 
 extension ActionButtonsTokenSelectItemViewModel {
+    private var isLoading: Bool {
+        balanceState == .loading() || fiatBalanceState == .loading()
+    }
+
     var isDisabled: Bool {
-        model.infoProvider.tokenItemState == .loading || model.isDisabled
+        model.isDisabled || isLoading
     }
 
     var tokenIconInfo: TokenIconInfo {

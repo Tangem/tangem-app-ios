@@ -11,14 +11,16 @@ import BlockchainSdk
 
 protocol TokenItemInfoProvider: AnyObject {
     var id: WalletModel.ID { get }
-    var tokenItemState: TokenItemViewState { get }
-    var tokenItemStatePublisher: AnyPublisher<TokenItemViewState, Never> { get }
     var tokenItem: TokenItem { get }
     var hasPendingTransactions: Bool { get }
-    var balance: String { get }
     var isZeroBalanceValue: Bool { get }
-    var fiatBalance: String { get }
-    var quote: TokenQuote? { get }
+    var balance: TokenBalanceType { get }
+
+    var quotePublisher: AnyPublisher<TokenQuote?, Never> { get }
+    var balancePublisher: AnyPublisher<TokenBalanceType, Never> { get }
+    var balanceTypePublisher: AnyPublisher<FormattedTokenBalanceType, Never> { get }
+    var fiatBalanceTypePublisher: AnyPublisher<FormattedTokenBalanceType, Never> { get }
+
     var actionsUpdatePublisher: AnyPublisher<Void, Never> { get }
     var isStakedPublisher: AnyPublisher<Bool, Never> { get }
 }

@@ -12,16 +12,16 @@ struct ActionButtonsTokenSelectorItem: Identifiable {
     let id: String
     let isDisabled: Bool
     let tokenIconInfo: TokenIconInfo
-    let infoProvider: any TokenItemInfoProvider
+    let infoProvider: DefaultTokenItemInfoProvider
     let walletModel: WalletModel
 }
 
 extension ActionButtonsTokenSelectorItem: Equatable {
     static func == (lhs: ActionButtonsTokenSelectorItem, rhs: ActionButtonsTokenSelectorItem) -> Bool {
         lhs.id == rhs.id
-        && lhs.isDisabled == rhs.isDisabled
-        && lhs.tokenIconInfo == rhs.tokenIconInfo
-        && lhs.infoProvider === rhs.infoProvider
-        && lhs.walletModel === rhs.walletModel
+            && lhs.isDisabled == rhs.isDisabled
+            && lhs.tokenIconInfo == rhs.tokenIconInfo
+            && lhs.infoProvider.id == rhs.infoProvider.id
+            && lhs.walletModel.id == rhs.walletModel.id
     }
 }

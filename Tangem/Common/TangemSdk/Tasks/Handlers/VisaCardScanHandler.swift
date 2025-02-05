@@ -12,6 +12,8 @@ import TangemSdk
 import TangemVisa
 
 class VisaCardScanHandler {
+    @Injected(\.visaRefreshTokenRepository) private var visaRefreshTokenRepository: VisaRefreshTokenRepository
+
     typealias CompletionHandler = CompletionResult<DefaultWalletData>
     private let authorizationService: VisaAuthorizationService
     private let cardActivationStateProvider: VisaCardActivationRemoteStateService
@@ -128,6 +130,7 @@ class VisaCardScanHandler {
 
             if let authorizationTokensResponse {
                 log("Authorized using Wallet public key successfully")
+                try visaRefreshTokenRepository.save(refreshToken: authorizationTokensResponse.refreshToken, cardId: card.cardId)
                 completion(.success(.visa(.activated(authTokens: authorizationTokensResponse))))
             } else {
                 log("Failed to get Access token for Wallet public key authoziation. Authorizing using Card Pub key")

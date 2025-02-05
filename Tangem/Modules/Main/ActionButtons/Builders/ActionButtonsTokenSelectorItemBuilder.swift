@@ -11,6 +11,9 @@ struct ActionButtonsTokenSelectorItemBuilder: TokenSelectorItemBuilder {
         let tokenIconInfo = TokenIconInfoBuilder().build(from: walletModel.tokenItem, isCustom: walletModel.isCustom)
         let infoProvider = DefaultTokenItemInfoProvider(walletModel: walletModel)
 
+        // TODO. Better to use logic
+        // from `DefaultTokenItemInfoProvider` or DefaultTokenItemInfoProvider
+        // to support balance state changes loading / loaded / cached
         return ActionButtonsTokenSelectorItem(
             id: walletModel.id,
             isDisabled: isDisabled,

@@ -29,24 +29,34 @@ struct ActionButtonsSellView: View {
     @ViewBuilder
     private var content: some View {
         ScrollView {
-            TokenSelectorView(
-                viewModel: viewModel.tokenSelectorViewModel,
-                tokenCellContent: { token in
-                    ActionButtonsTokenSelectItemView(model: token) {
-                        viewModel.handleViewAction(.didTapToken(token))
+            VStack(spacing: 14) {
+                notifications
+
+                TokenSelectorView(
+                    viewModel: viewModel.tokenSelectorViewModel,
+                    tokenCellContent: { token in
+                        ActionButtonsTokenSelectItemView(model: token) {
+                            viewModel.handleViewAction(.didTapToken(token))
+                        }
+                        .padding(.vertical, 16)
+                    },
+                    emptySearchContent: {
+                        Text(viewModel.tokenSelectorViewModel.strings.emptySearchMessage)
+                            .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
+                            .multilineTextAlignment(.center)
+                            .animation(.default, value: viewModel.tokenSelectorViewModel.searchText)
                     }
-                    .padding(.vertical, 16)
-                },
-                emptySearchContent: {
-                    Text(viewModel.tokenSelectorViewModel.strings.emptySearchMessage)
-                        .style(Fonts.Regular.caption1, color: Colors.Text.tertiary)
-                        .multilineTextAlignment(.center)
-                        .animation(.default, value: viewModel.tokenSelectorViewModel.searchText)
-                }
-            )
+                )
+            }
             .padding(.horizontal, 16)
         }
         .background(Colors.Background.tertiary.ignoresSafeArea(.all))
         .scrollDismissesKeyboardCompat(.immediately)
+    }
+
+    private var notifications: some View {
+        ForEach(viewModel.notificationInputs) {
+            NotificationView(input: $0)
+        }
     }
 }

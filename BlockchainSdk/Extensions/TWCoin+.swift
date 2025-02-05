@@ -130,7 +130,9 @@ extension CoinType {
              .clore,
              .fact0rn,
              .odysseyChain,
-             .bitrock:
+             .bitrock,
+             .apeChain,
+             .sonic:
             // Blockchains that are not in WalletCore yet
             return nil
         }

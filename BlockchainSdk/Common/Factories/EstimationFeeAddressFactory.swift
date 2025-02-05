@@ -58,7 +58,8 @@ struct EstimationFeeAddressFactory {
              .areon, .playa3ullGames, .pulsechain, .aurora, .manta,
              .zkSync, .moonbeam, .polygonZkEVM, .moonriver, .mantle,
              .flare, .taraxa, .base, .blast, .cyber, .energyWebEVM,
-             .core, .canxium, .chiliz, .xodex, .odysseyChain, .bitrock:
+             .core, .canxium, .chiliz, .xodex, .odysseyChain, .bitrock,
+             .apeChain, .sonic:
             return "0x52bb4012854f808CF9BAbd855e44E506dAf6C077"
         case .ethereumClassic:
             return "0xc49722a6f4Fe5A1347710dEAAa1fafF4c275689b"

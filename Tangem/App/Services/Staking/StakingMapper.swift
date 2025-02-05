@@ -29,7 +29,13 @@ struct StakingTransactionMapper {
                 amount: amount,
                 fee: Fee(feeAmount),
                 unsignedData: transaction.unsignedTransactionData,
-                params: StakeKitTransactionParams(validator: action.validator)
+                type: .init(rawValue: transaction.type),
+                status: .init(rawValue: transaction.status),
+                stepIndex: transaction.stepIndex,
+                params: StakeKitTransactionParams(
+                    validator: action.validator,
+                    solanaBlockhashDate: Date()
+                )
             )
 
             return stakeKitTransaction

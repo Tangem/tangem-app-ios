@@ -22,6 +22,9 @@ class CommonWalletModelsManager {
     private var bag = Set<AnyCancellable>()
     private var updateAllSubscription: AnyCancellable?
 
+    /// An update is tracked only once per lifecycle of this manager.
+    private var shouldTrackWalletModelsUpdate = true
+
     init(
         walletManagersRepository: WalletManagersRepository,
         walletModelsFactory: WalletModelsFactory
@@ -80,15 +83,35 @@ class CommonWalletModelsManager {
             return []
         }
 
-        walletModelsToAdd.forEach {
-            $0.update(silent: false)
-        }
+        updateWalletModelsWithPerformanceTrackingIfNeeded(walletModels: walletModelsToAdd)
 
         existingWalletModels.append(contentsOf: walletModelsToAdd)
 
         log(walletModels: existingWalletModels)
 
         _walletModels.send(existingWalletModels)
+    }
+
+    private func updateWalletModelsWithPerformanceTrackingIfNeeded(walletModels: [WalletModel]) {
+        var token: PerformanceMetricToken?
+
+        if shouldTrackWalletModelsUpdate, walletModels.isNotEmpty {
+            shouldTrackWalletModelsUpdate = false
+            token = PerformanceTracker.startTracking(metric: .totalBalanceLoaded(tokensCount: walletModels.count))
+        }
+
+        var subscription: AnyCancellable?
+        subscription = walletModels
+            .map { $0.update(silent: false) }
+            .combineLatest()
+            .sink { states in
+                if states.contains(where: \.isBlockchainUnreachable) {
+                    PerformanceTracker.endTracking(token: token, with: .failure)
+                } else {
+                    PerformanceTracker.endTracking(token: token, with: .success)
+                }
+                withExtendedLifetime(subscription) {}
+            }
     }
 }
 

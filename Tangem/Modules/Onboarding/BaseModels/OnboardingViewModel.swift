@@ -211,7 +211,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
         userWalletModel = userWallet
     }
 
-    func handleUserWalletOnFinish() throws {
+    func handleUserWalletOnFinish() {
         guard let userWalletModel else {
             return
         }
@@ -271,12 +271,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
 
     func goToNextStep() {
         if isOnboardingFinished {
-            do {
-                try handleUserWalletOnFinish()
-            } catch {
-                AppLog.shared.error(error)
-                return
-            }
+            handleUserWalletOnFinish()
 
             DispatchQueue.main.async {
                 self.onboardingDidFinish()
@@ -317,12 +312,7 @@ class OnboardingViewModel<Step: OnboardingStep, Coordinator: OnboardingRoutable>
     }
 
     func didAskToSaveUserWallets(agreed: Bool) {
-        AppSettings.shared.askedToSaveUserWallets = true
-
-        AppSettings.shared.saveUserWallets = agreed
-        AppSettings.shared.saveAccessCodes = agreed
-
-        Analytics.log(.onboardingEnableBiometric, params: [.state: Analytics.ParameterValue.toggleState(for: agreed)])
+        OnboardingUtils().processSaveUserWalletRequestResult(agreed: agreed)
     }
 
     private func loadMainImage(imageLoadInput: OnboardingInput.ImageLoadInput) {
@@ -433,27 +423,8 @@ extension OnboardingViewModel {
 
 extension OnboardingViewModel: UserWalletStorageAgreementRoutable {
     func didAgreeToSaveUserWallets() {
-        BiometricsUtil.requestAccess(localizedReason: Localization.biometryTouchIdReason) { [weak self] result in
-            let biometryAccessGranted: Bool
-            switch result {
-            case .failure(let error):
-                if error.isUserCancelled {
-                    return
-                }
-
-                AppLog.shared.error(error)
-
-                biometryAccessGranted = false
-                self?.didAskToSaveUserWallets(agreed: false)
-            case .success:
-                biometryAccessGranted = true
-                self?.didAskToSaveUserWallets(agreed: true)
-            }
-
-            Analytics.log(.allowBiometricID, params: [
-                .state: Analytics.ParameterValue.toggleState(for: biometryAccessGranted),
-            ])
-
+        OnboardingUtils().requestBiometrics { [weak self] agreed in
+            self?.didAskToSaveUserWallets(agreed: agreed)
             self?.goToNextStep()
         }
     }

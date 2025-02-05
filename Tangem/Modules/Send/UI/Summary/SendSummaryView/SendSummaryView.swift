@@ -135,6 +135,7 @@ struct SendSummaryView: View {
 
                 ForEach(viewModel.notificationInputs) { input in
                     NotificationView(input: input)
+                        .setButtonsLoadingState(to: viewModel.notificationButtonIsLoading)
                 }
             }
             .coordinateSpace(name: coordinateSpaceName)

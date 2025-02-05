@@ -17,6 +17,7 @@ public struct VisaActivationManagerFactory {
     }
 
     public func make(
+        cardId: String,
         initialActivationStatus: VisaCardActivationStatus,
         tangemSdk: TangemSdk,
         urlSessionConfiguration: URLSessionConfiguration,
@@ -44,6 +45,7 @@ public struct VisaActivationManagerFactory {
             )
 
         let tokenHandler = CommonVisaAccessTokenHandler(
+            cardId: cardId,
             accessTokenHolder: accessTokenHolder,
             tokenRefreshService: authorizationTokenRefreshService,
             logger: internalLogger,

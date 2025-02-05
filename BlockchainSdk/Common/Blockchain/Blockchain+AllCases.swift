@@ -94,6 +94,8 @@ public extension Blockchain {
         case .fact0rn: break
         case .odysseyChain: break
         case .bitrock: break
+        case .apeChain: break
+        case .sonic: break
             // READ BELOW:
             //
             // Did you get a compilation error here? If so, add your new blockchain to the array below
@@ -181,6 +183,8 @@ public extension Blockchain {
             .fact0rn,
             .odysseyChain(testnet: false),
             .bitrock(testnet: false),
+            .apeChain(testnet: false),
+            .sonic(testnet: false),
         ]
     }
 }

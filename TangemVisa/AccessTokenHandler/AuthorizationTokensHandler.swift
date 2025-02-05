@@ -12,7 +12,7 @@ import TangemFoundation
 import JWTDecode
 
 public protocol VisaRefreshTokenSaver: AnyObject {
-    func saveRefreshTokenToStorage(refreshToken: String) async throws
+    func saveRefreshTokenToStorage(refreshToken: String, cardId: String) throws
 }
 
 protocol AuthorizationTokenHandler {
@@ -21,6 +21,7 @@ protocol AuthorizationTokenHandler {
     var authorizationHeader: String { get async throws }
     var authorizationTokens: VisaAuthorizationTokens? { get async }
     func setupTokens(_ tokens: VisaAuthorizationTokens) async throws
+    func forceRefreshToken() async throws
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
 }
 
@@ -28,6 +29,7 @@ class CommonVisaAccessTokenHandler {
     private let tokenRefreshService: VisaAuthorizationTokenRefreshService
     private weak var refreshTokenSaver: VisaRefreshTokenSaver?
 
+    private let cardId: String
     private let scheduler: AsyncTaskScheduler = .init()
     private let logger: InternalLogger
 
@@ -37,11 +39,13 @@ class CommonVisaAccessTokenHandler {
     private let minSecondsBeforeExpiration: TimeInterval = 60.0
 
     init(
+        cardId: String,
         accessTokenHolder: AccessTokenHolder,
         tokenRefreshService: VisaAuthorizationTokenRefreshService,
         logger: InternalLogger,
         refreshTokenSaver: VisaRefreshTokenSaver?
     ) {
+        self.cardId = cardId
         self.accessTokenHolder = accessTokenHolder
         self.tokenRefreshService = tokenRefreshService
         self.refreshTokenSaver = refreshTokenSaver
@@ -136,7 +140,8 @@ class CommonVisaAccessTokenHandler {
         }
     }
 
-    private func refreshAccessToken(refreshJWTToken: JWT) async throws {
+    @discardableResult
+    private func refreshAccessToken(refreshJWTToken: JWT) async throws -> DecodedAuthorizationJWTTokens {
         log("Refreshing access token")
         if refreshJWTToken.expired {
             log("Refresh token expired, cant refresh")
@@ -151,7 +156,8 @@ class CommonVisaAccessTokenHandler {
         }
 
         await accessTokenHolder.setTokens(newJWTTokens)
-        try await refreshTokenSaver?.saveRefreshTokenToStorage(refreshToken: newJWTTokens.refreshToken.string)
+        try refreshTokenSaver?.saveRefreshTokenToStorage(refreshToken: newJWTTokens.refreshToken.string, cardId: cardId)
+        return newJWTTokens
     }
 }
 
@@ -187,7 +193,32 @@ extension CommonVisaAccessTokenHandler: AuthorizationTokenHandler {
         setupRefresherTask()
     }
 
+    func forceRefreshToken() async throws {
+        guard let tokens = await accessTokenHolder.tokens else {
+            log("Nothing to refresh")
+            return
+        }
+
+        let newTokens = try await refreshAccessToken(refreshJWTToken: tokens.refreshToken)
+        try refreshTokenSaver?.saveRefreshTokenToStorage(refreshToken: newTokens.refreshToken.string, cardId: cardId)
+    }
+
     func setupRefreshTokenSaver(_ refreshTokenSaver: any VisaRefreshTokenSaver) {
         self.refreshTokenSaver = refreshTokenSaver
+        runTask(in: self) { handler in
+            do {
+                guard let tokens = await handler.accessTokenHolder.tokens else {
+                    handler.log("Nothing to save")
+                    return
+                }
+
+                try refreshTokenSaver.saveRefreshTokenToStorage(
+                    refreshToken: tokens.refreshToken.string,
+                    cardId: handler.cardId
+                )
+            } catch {
+                handler.log("Failed to save refresh token after saver setup. Error: \(error)")
+            }
+        }
     }
 }

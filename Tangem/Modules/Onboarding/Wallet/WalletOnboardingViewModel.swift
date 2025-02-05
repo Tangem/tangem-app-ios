@@ -815,15 +815,14 @@ class WalletOnboardingViewModel: OnboardingViewModel<WalletOnboardingStep, Onboa
     }
 
     private func trySaveAccessCodes() {
-        guard AppSettings.shared.saveAccessCodes,
-              let accessCode = accessCode,
-              let cardIds = cardIds else {
+        guard
+            let accessCode = accessCode,
+            let cardIds = cardIds
+        else {
             return
         }
 
-        let accessCodeData: Data = accessCode.sha256()
-        let accessCodeRepository = AccessCodeRepository()
-        try? accessCodeRepository.save(accessCodeData, for: cardIds)
+        AccessCodeSaveUtility().trySave(accessCode: accessCode, cardIds: cardIds)
     }
 
     private func previewGoToNextStepDelayed(_ delay: TimeInterval = 2) {

@@ -122,7 +122,9 @@ struct TransactionParamsBuilder {
              .clore,
              .fact0rn,
              .odysseyChain,
-             .bitrock:
+             .bitrock,
+             .apeChain,
+             .sonic:
             throw TransactionParamsBuilderError.extraIdNotSupported
         }
     }

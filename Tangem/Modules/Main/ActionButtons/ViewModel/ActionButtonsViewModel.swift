@@ -311,8 +311,13 @@ private extension ActionButtonsViewModel {
 
     @MainActor
     func handleFailedSellState(_ error: ExchangeServiceState.ExchangeServiceError) {
-        sellActionButtonViewModel.updateState(
-            to: .restricted(reason: error.localizedDescription)
-        )
+        switch error {
+        case .networkError:
+            sellActionButtonViewModel.updateState(
+                to: .restricted(reason: error.localizedDescription)
+            )
+        case .countryNotSupported:
+            sellActionButtonViewModel.updateState(to: .idle)
+        }
     }
 }
