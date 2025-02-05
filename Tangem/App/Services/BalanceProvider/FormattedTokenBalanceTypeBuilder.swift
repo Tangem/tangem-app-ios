@@ -17,6 +17,9 @@ struct FormattedTokenBalanceTypeBuilder {
 
     func mapToFormattedTokenBalanceType(type: TokenBalanceType) -> FormattedTokenBalanceType {
         switch type {
+        // For `.noAccount` as for XRP Wallet we formatted balance like a `.zero`
+        case .empty(.noAccount):
+            return .loaded(format(.zero))
         case .empty:
             return .loaded(format(.none))
         case .loading(.some(let cached)):
