@@ -59,6 +59,7 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
     private let tokenTapped: (WalletModelId) -> Void
     private let infoProvider: TokenItemInfoProvider
     private let priceChangeUtility = PriceChangeUtility()
+    private let loadableTokenBalanceViewStateBuilder = LoadableTokenBalanceViewStateBuilder()
     private let priceFormatter = TokenItemPriceFormatter()
 
     private var bag = Set<AnyCancellable>()
@@ -127,9 +128,12 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
             .store(in: &bag)
 
         infoProvider.actionsUpdatePublisher
+            .receive(on: DispatchQueue.global())
+            .withWeakCaptureOf(self)
+            .map { $0.0.contextActionsProvider?.buildContextActions(for: $0.0) }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.buildContextActions()
+            .sink { [weak self] actions in
+                self?.contextActionSections = actions ?? []
             }
             .store(in: &bag)
 
@@ -148,15 +152,14 @@ final class TokenItemViewModel: ObservableObject, Identifiable {
         }
 
         updatePendingTransactionsStateIfNeeded()
-        buildContextActions()
     }
 
     private func setupBalance(_ type: FormattedTokenBalanceType) {
-        balanceCrypto = LoadableTokenBalanceViewStateBuilder().build(type: type)
+        balanceCrypto = loadableTokenBalanceViewStateBuilder.build(type: type)
     }
 
     private func setupFiatBalance(_ type: FormattedTokenBalanceType) {
-        balanceFiat = LoadableTokenBalanceViewStateBuilder().build(type: type, icon: .leading)
+        balanceFiat = loadableTokenBalanceViewStateBuilder.build(type: type, icon: .leading)
     }
 
     private func setupPrice(_ quote: TokenQuote?) {

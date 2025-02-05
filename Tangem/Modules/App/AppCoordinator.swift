@@ -173,7 +173,9 @@ class AppCoordinator: CoordinatorObject {
     }
 
     private func setState(_ newViewState: AppCoordinator.ViewState) {
-        viewState = newViewState
+        DispatchQueue.main.async {
+            self.viewState = newViewState
+        }
     }
 }
 

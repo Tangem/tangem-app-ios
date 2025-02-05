@@ -58,7 +58,9 @@ final class AuthViewModel: ObservableObject {
 
     func unlockWithBiometry() {
         userWalletRepository.unlock(with: .biometry) { [weak self] result in
-            self?.didFinishUnlocking(result)
+            DispatchQueue.main.async {
+                self?.didFinishUnlocking(result)
+            }
         }
     }
 
@@ -67,7 +69,9 @@ final class AuthViewModel: ObservableObject {
         Analytics.beginLoggingCardScan(source: .auth)
 
         userWalletRepository.unlock(with: .card(userWalletId: nil, scanner: CardScannerFactory().makeDefaultScanner())) { [weak self] result in
-            self?.didFinishUnlocking(result)
+            DispatchQueue.main.async {
+                self?.didFinishUnlocking(result)
+            }
         }
     }
 

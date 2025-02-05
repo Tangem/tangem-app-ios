@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 import TangemFoundation
 
 class CommonTokenBalancesStorage {
@@ -26,10 +27,12 @@ class CommonTokenBalancesStorage {
     private typealias Balances = [String: [String: [String: CachedBalance]]]
     @Injected(\.persistentStorage) private var storage: PersistentStorageProtocol
 
-    private var balances: Balances = [:]
-    private let lock = Lock(isRecursive: false)
+    private let queue = DispatchQueue(label: "com.tangem.TokenBalancesStorage", attributes: .concurrent)
+    private let balances: CurrentValueSubject<Balances, Never> = .init([:])
+    private var bag: Set<AnyCancellable> = []
 
     init() {
+        bind()
         loadBalances()
     }
 }
@@ -38,19 +41,18 @@ class CommonTokenBalancesStorage {
 
 extension CommonTokenBalancesStorage: TokenBalancesStorage {
     func store(balance: CachedBalance, type: CachedBalanceType, id: WalletModelId, userWalletId: UserWalletId) {
-        lock.withLock {
-            var balancesForUserWallet = balances[userWalletId.stringValue, default: [:]]
+        queue.async(flags: .barrier) {
+            var balancesForUserWallet = self.balances.value[userWalletId.stringValue, default: [:]]
             var balancesForWalletModel = balancesForUserWallet[id, default: [:]]
             balancesForWalletModel.updateValue(balance, forKey: type.rawValue)
             balancesForUserWallet.updateValue(balancesForWalletModel, forKey: id)
-            balances.updateValue(balancesForUserWallet, forKey: userWalletId.stringValue)
-            save()
+            self.balances.value.updateValue(balancesForUserWallet, forKey: userWalletId.stringValue)
         }
     }
 
     func balance(for id: WalletModelId, userWalletId: UserWalletId, type: CachedBalanceType) -> CachedBalance? {
-        lock.withLock {
-            balances[userWalletId.stringValue]?[id]?[type.rawValue]
+        queue.sync {
+            balances.value[userWalletId.stringValue]?[id]?[type.rawValue]
         }
     }
 }
@@ -58,9 +60,20 @@ extension CommonTokenBalancesStorage: TokenBalancesStorage {
 // MARK: - Private
 
 private extension CommonTokenBalancesStorage {
+    func bind() {
+        balances
+            .dropFirst()
+            .removeDuplicates()
+            // Add small debounce to reduce impact to write to disk operation
+            .debounce(for: 0.5, scheduler: queue)
+            .withWeakCaptureOf(self)
+            .receiveValue { $0.save(balances: $1) }
+            .store(in: &bag)
+    }
+
     func loadBalances() {
         do {
-            balances = try storage.value(for: .cachedBalances) ?? [:]
+            try balances.send(storage.value(for: .cachedBalances) ?? [:])
             log("Storage load successfully")
         } catch {
             log("Storage load error \(error.localizedDescription)")
@@ -68,7 +81,7 @@ private extension CommonTokenBalancesStorage {
         }
     }
 
-    func save() {
+    private func save(balances: Balances) {
         do {
             try storage.store(value: balances, for: .cachedBalances)
             log("Storage save successfully")
@@ -88,7 +101,7 @@ private extension CommonTokenBalancesStorage {
 extension CommonTokenBalancesStorage: CustomStringConvertible {
     var description: String {
         TangemFoundation.objectDescription(self, userInfo: [
-            "balancesCount": balances.flatMap(\.value).flatMap(\.value).count,
+            "balancesCount": balances.value.flatMap(\.value).flatMap(\.value).count,
         ])
     }
 }
