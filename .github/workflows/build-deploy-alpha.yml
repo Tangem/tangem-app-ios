@@ -55,7 +55,7 @@ jobs:
           JIRA_USER_EMAIL: '${{ secrets.JIRA_USER }}'
           JIRA_API_TOKEN: '${{ secrets.JIRA_TOKEN }}'
 
-      - name: Get Jira Issue Number from Branch Name
+      - name: Get Jira Issue Summary from Branch Name
         id: jira
         uses: tangem/jira-action@master
         with:
