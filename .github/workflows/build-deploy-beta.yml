@@ -43,7 +43,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  next_version_name: 'Next Release'
   should_find_latest_release_branch: ${{ !inputs.base_branch || inputs.base_branch == '' }}
 
 jobs:
@@ -93,33 +92,6 @@ jobs:
         continue-on-error: true
         with:
           action: 'getIssuesSummary'
-          issues: '${{ steps.git-diff.outputs.issues }}'
-
-      - name: Jira Check Version
-        id: jira-check-version
-        if: false # TODO: Enable, requires IOS-8785
-        uses: tangem/jira-action@master
-        with:
-          action: 'checkVersion'
-          project: 'IOS'
-          version: '${{ env.next_version_name }}'
-
-      - name: Jira Create Version
-        if: false # TODO: Enable, requires IOS-8785
-        # if: ${{ steps.jira-check-version.outputs.result == 'false' }}
-        uses: tangem/jira-action@master
-        with:
-          action: 'createVersion'
-          project: 'IOS'
-          version: '${{ env.next_version_name }}'
-
-      - name: Jira Set Version To Issues
-        if: false # TODO: Enable, requires IOS-8785
-        uses: tangem/jira-action@master
-        with:
-          action: 'setVersionToIssues'
-          project: 'IOS'
-          version: '${{ env.next_version_name }}'
           issues: '${{ steps.git-diff.outputs.issues }}'
 
   build_notification:

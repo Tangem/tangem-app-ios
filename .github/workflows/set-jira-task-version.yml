@@ -1,0 +1,21 @@
+name: Jira - Set 'Next Release' version for the merged Jira task
+
+on:
+  pull_request:
+    branches: 
+      #- 'develop'
+      - 'test/IOS-8785_ci_cd_create_release'  # TODO: Test only
+    types: 
+      - closed
+
+jobs:
+  prepare:
+    name: Prepare Release
+    if: ${{ github.event.pull_request.merged }}
+    uses: tangem/actions/.github/workflows/set-jira-task-version.yml@feature/IOS-8741_ci_cd_notifications
+    with:
+      next_version_name: 'Next Release'
+    secrets:
+      JIRA_BASE_URL: ${{ secrets.JIRA_URL }}
+      JIRA_USER_EMAIL: ${{ secrets.JIRA_USER }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_TOKEN }}
