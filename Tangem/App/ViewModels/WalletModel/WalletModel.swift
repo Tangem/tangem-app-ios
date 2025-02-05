@@ -396,7 +396,7 @@ class WalletModel {
         }
 
         // Set to failure with saving cached value
-        _rate.send(.failure(cached: rate.cached))
+        _rate.send(.failure(cached: rate.quote))
     }
 
     // MARK: - Timer

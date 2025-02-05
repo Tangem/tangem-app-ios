@@ -43,13 +43,6 @@ extension WalletModel {
             }
         }
 
-        var cached: TokenQuote? {
-            switch self {
-            case .custom, .loaded: nil
-            case .loading(let cached), .failure(let cached): cached
-            }
-        }
-
         var quote: TokenQuote? {
             switch self {
             case .custom: nil
