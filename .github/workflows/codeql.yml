@@ -41,8 +41,6 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - language: ruby
-                      build-mode: none
                     - language: swift
                       build-mode: manual
                 # CodeQL supports the following values keywords for 'language': 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift'
@@ -98,7 +96,7 @@ jobs:
                     -scheme Tangem \
                     -destination 'generic/platform=iOS Simulator' \
                     -configuration Debug\(beta\) \
-                    clean build | xcpretty
+                    clean build
 
             - name: Perform CodeQL Analysis
               uses: github/codeql-action/analyze@v3
