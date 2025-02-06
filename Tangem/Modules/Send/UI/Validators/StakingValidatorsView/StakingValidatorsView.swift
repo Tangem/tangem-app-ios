@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemUI
 
 struct StakingValidatorsView: View {
     @ObservedObject var viewModel: StakingValidatorsViewModel
