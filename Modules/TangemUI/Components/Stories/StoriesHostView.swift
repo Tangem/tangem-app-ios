@@ -199,7 +199,7 @@ struct SampleStoryPage4: View {
                             SampleStoryPage2(),
                             SampleStoryPage4(),
                             SampleStoryPage2(),
-                        ]
+                        ],
                     ]
                 }
             )
