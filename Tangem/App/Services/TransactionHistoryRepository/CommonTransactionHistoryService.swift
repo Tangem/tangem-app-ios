@@ -88,7 +88,7 @@ private extension CommonTransactionHistoryService {
 
         cancellable = transactionHistoryProvider
             .loadTransactionHistory(request: request)
-            .handleEvents(receiveCancel: {
+            .handleEvents(receiveCancel: { [weak self] in
                 // Resolves conflicting requests for tracking history from different consumers so as not to lose output from the update process
                 AppLog.shared.debug("\(String(describing: self)) canceled")
                 result(.success(()))
