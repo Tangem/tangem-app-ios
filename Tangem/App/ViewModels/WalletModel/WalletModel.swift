@@ -269,7 +269,9 @@ class WalletModel {
 
     private func performHealthCheckIfNeeded(shouldPerform: Bool) {
         if shouldPerform {
-            accountHealthChecker.performAccountCheckIfNeeded(wallet.address)
+            DispatchQueue.main.async {
+                self.accountHealthChecker.performAccountCheckIfNeeded(self.wallet.address)
+            }
         }
     }
 

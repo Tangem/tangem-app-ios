@@ -20,7 +20,7 @@ class WelcomeViewModel: ObservableObject {
 
     let storiesModel: StoriesViewModel
 
-    var isScanningCard: CurrentValueSubject<Bool, Never> = .init(false)
+    let isScanningCard: CurrentValueSubject<Bool, Never> = .init(false)
 
     private var shouldScanOnAppear: Bool = false
 

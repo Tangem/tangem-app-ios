@@ -45,6 +45,7 @@ class StoriesViewModel: ObservableObject {
         self.delegate = delegate
 
         self.delegate?.isScanning
+            .receive(on: DispatchQueue.main)
             .assign(to: \.isScanning, on: self, ownership: .weak)
             .store(in: &bag)
     }

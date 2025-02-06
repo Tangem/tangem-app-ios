@@ -156,8 +156,9 @@ class CommonUserWalletRepository: UserWalletRepository {
             default:
                 break
             }
-
-            completion(result)
+            DispatchQueue.main.async {
+                completion(result)
+            }
         }
     }
 
@@ -329,11 +330,13 @@ class CommonUserWalletRepository: UserWalletRepository {
     }
 
     private func unlockInternal(with method: UserWalletRepositoryUnlockMethod, completion: @escaping (UserWalletRepositoryResult?) -> Void) {
-        switch method {
-        case .biometry:
-            unlockWithBiometry(completion: completion)
-        case .card(let userWalletId, let scanner):
-            unlockWithCard(scanner: scanner, userWalletId, completion: completion)
+        queue.async { [weak self] in
+            switch method {
+            case .biometry:
+                self?.unlockWithBiometry(completion: completion)
+            case .card(let userWalletId, let scanner):
+                self?.unlockWithCard(scanner: scanner, userWalletId, completion: completion)
+            }
         }
     }
 
@@ -418,38 +421,35 @@ class CommonUserWalletRepository: UserWalletRepository {
         completion: @escaping (UserWalletRepositoryResult?) -> Void
     ) {
         visaRefreshTokenRepository.fetch(using: context)
+        do {
+            let keys = try encryptionKeyStorage.fetch(context: context)
 
-        queue.async {
-            do {
-                let keys = try self.encryptionKeyStorage.fetch(context: context)
-
-                if keys.isEmpty {
-                    // clean to prevent double tap
-                    AccessCodeRepository().clear()
-                    completion(.error(UserWalletRepositoryError.biometricsChanged))
-                    return
-                }
-
-                self.encryptionKeyByUserWalletId = keys
-                self.loadModels()
-                self.initializeServicesForSelectedModel()
-
-                self.sendEvent(.biometryUnlocked)
-
-                if let selectedModel = self.selectedModel { // TODO: WTF?
-                    let savedUserWallets = self.savedUserWallets(withSensitiveData: false)
-                    if keys.count == savedUserWallets.count {
-                        completion(.success(selectedModel))
-                    } else {
-                        completion(.partial(selectedModel, UserWalletRepositoryError.biometricsChanged))
-                    }
-                } else {
-                    completion(nil) // TODO: throw error?
-                }
-            } catch {
-                AppLog.shared.error(error)
-                completion(.error(error))
+            if keys.isEmpty {
+                // clean to prevent double tap
+                AccessCodeRepository().clear()
+                completion(.error(UserWalletRepositoryError.biometricsChanged))
+                return
             }
+
+            encryptionKeyByUserWalletId = keys
+            loadModels()
+            initializeServicesForSelectedModel()
+
+            sendEvent(.biometryUnlocked)
+
+            if let selectedModel = selectedModel { // TODO: WTF?
+                let savedUserWallets = savedUserWallets(withSensitiveData: false)
+                if keys.count == savedUserWallets.count {
+                    completion(.success(selectedModel))
+                } else {
+                    completion(.partial(selectedModel, UserWalletRepositoryError.biometricsChanged))
+                }
+            } else {
+                completion(nil) // TODO: throw error?
+            }
+        } catch {
+            AppLog.shared.error(error)
+            completion(.error(error))
         }
     }
 
