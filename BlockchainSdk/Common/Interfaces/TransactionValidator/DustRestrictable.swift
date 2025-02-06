@@ -8,6 +8,8 @@
 
 import Foundation
 
+// Note: KaspaWalletManager has its own implementation
+
 protocol DustRestrictable {
     var dustValue: Amount { get }
 
@@ -29,13 +31,13 @@ extension DustRestrictable where Self: WalletProvider {
         }
 
         // Total amount which will be spend
-        var total = amount.value
+        var sendingAmount = amount.value
 
         if amount.type == fee.type {
-            total += fee.value
+            sendingAmount += fee.value
         }
 
-        let change = balance.value - total
+        let change = balance.value - sendingAmount
         if change > 0, change < dustValue.value {
             throw ValidationError.dustChange(minimumAmount: dustValue)
         }

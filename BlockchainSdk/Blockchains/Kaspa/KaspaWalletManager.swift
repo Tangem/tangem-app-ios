@@ -557,11 +557,49 @@ final class KaspaWalletManager: BaseManager, WalletManager {
     }
 }
 
+// MARK: - DustRestrictable
+
 extension KaspaWalletManager: DustRestrictable {
     var dustValue: Amount {
         Amount(with: wallet.blockchain, value: Decimal(0.2))
     }
+
+    func validateDust(amount: Amount, fee: Amount) throws {
+        guard dustValue.type == amount.type else {
+            return
+        }
+
+        // Max amount available to send
+        let maxAmount: Amount? = {
+            switch amount.type {
+            case .coin: txBuilder.availableAmount()
+            default: wallet.amounts[amount.type]
+            }
+        }()
+
+        guard let maxAmount else {
+            throw ValidationError.balanceNotFound
+        }
+
+        if amount < dustValue {
+            throw ValidationError.dustAmount(minimumAmount: dustValue)
+        }
+
+        // Total amount which will be spend
+        var sendingAmount = amount.value
+
+        if amount.type == fee.type {
+            sendingAmount += fee.value
+        }
+
+        let change = maxAmount.value - sendingAmount
+        if change > 0, change < dustValue.value {
+            throw ValidationError.dustChange(minimumAmount: dustValue)
+        }
+    }
 }
+
+// MARK: - WithdrawalNotificationProvider
 
 extension KaspaWalletManager: WithdrawalNotificationProvider {
     // Chia, kaspa have the same logic
@@ -591,6 +629,8 @@ extension KaspaWalletManager: WithdrawalNotificationProvider {
         return nil
     }
 }
+
+// MARK: - MaximumAmountRestrictable
 
 extension KaspaWalletManager: MaximumAmountRestrictable {
     func validateMaximumAmount(amount: Amount, fee: Amount) throws {
