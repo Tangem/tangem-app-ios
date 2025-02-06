@@ -15,12 +15,12 @@ struct ProductActivationServiceBuilder {
         self.isMockAPIEnabled = isMockAPIEnabled
     }
 
-    func build(urlSessionConfiguration: URLSessionConfiguration, authorizationTokensHandler: AuthorizationTokensHandler, logger: VisaLogger) -> ProductActivationService {
+    func build(urlSessionConfiguration: URLSessionConfiguration, authorizationTokensHandler: AuthorizationTokensHandler) -> ProductActivationService {
         if isMockAPIEnabled {
             return ProductActivationServiceMock()
         }
 
-        let internalLogger = InternalLogger(logger: logger)
+        let internalLogger = InternalLogger()
 
         return CommonProductActivationService(
             authorizationTokensHandler: authorizationTokensHandler,

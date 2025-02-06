@@ -24,7 +24,7 @@ class VisaCardScanHandler {
             .buildAuthorizationService(urlSessionConfiguration: .defaultConfiguration)
 
         cardActivationStateProvider = VisaCardActivationStatusServiceBuilder(isMockedAPIEnabled: FeatureStorage.instance.isVisaAPIMocksEnabled)
-            .build(urlSessionConfiguration: .defaultConfiguratio)
+            .build(urlSessionConfiguration: .defaultConfiguration)
     }
 
     deinit {

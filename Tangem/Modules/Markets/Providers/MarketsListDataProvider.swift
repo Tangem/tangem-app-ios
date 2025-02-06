@@ -71,7 +71,7 @@ final class MarketsListDataProvider {
     // MARK: - Implementation
 
     func reset() {
-        log("Reset market list tokens")
+        AppLog.tag("Markets").info("Reset market list tokens")
 
         lastSearchText = nil
         lastFilter = nil
@@ -91,7 +91,7 @@ final class MarketsListDataProvider {
         }
 
         guard scheduledFetchTask == nil else {
-            log("Ignoring fetch request. Waiting for scheduled task")
+            AppLog.tag("Markets").warning("Ignoring fetch request. Waiting for scheduled task")
             return
         }
 
@@ -116,12 +116,8 @@ final class MarketsListDataProvider {
         if let lastSearchText, let lastFilter {
             fetch(lastSearchText, with: lastFilter)
         } else {
-            log("Failed to fetch more items for Markets list. Reason: missing lastSearchText or lastFilter")
+            AppLog.tag("Markets").error(error: "Failed to fetch more items for Markets list. Reason: missing lastSearchText or lastFilter")
         }
-    }
-
-    private func log<T>(_ message: @autoclosure () -> T) {
-        AppLog.info("[MarketsListDataProvider] - \(message())")
     }
 
     private func clearSearchResults() {
@@ -173,9 +169,9 @@ private extension MarketsListDataProvider {
             currentOffset = response.offset + response.limit
             totalTokensCount = response.total
 
-            log("Load new items finished. Is loading set to false.")
+            AppLog.tag("Markets").info("Load new items finished. Is loading set to false.")
             isLoading = false
-            log("Loaded new items for market list. New total tokens count: \(items.count + response.tokens.count)")
+            AppLog.tag("Markets").info("Loaded new items for market list. New total tokens count: \(items.count + response.tokens.count)")
 
             items.append(contentsOf: response.tokens)
             lastEvent = .appendedItems(items: response.tokens, lastPage: currentOffset >= response.total)
@@ -185,7 +181,7 @@ private extension MarketsListDataProvider {
             }
 
             lastEvent = .failedToFetchData(error: error)
-            log("Failed to load next page. Error: \(error)")
+            AppLog.tag("Markets").error("Failed to load next page", error: error)
             if items.isEmpty {
                 isLoading = false
             } else {
@@ -195,13 +191,13 @@ private extension MarketsListDataProvider {
     }
 
     func scheduleRetryForFailedFetchRequest() {
-        log("Scheduling fetch more task")
+        AppLog.tag("Markets").info("Scheduling fetch more task")
         guard scheduledFetchTask == nil else {
-            log("Task was previously scheduled. Ignoring request")
+            AppLog.tag("Markets").info("Task was previously scheduled. Ignoring request")
             return
         }
 
-        log("Retry fetch more task scheduled. Request delay: \(repeatRequestDelayInSeconds)")
+        AppLog.tag("Markets").info("Retry fetch more task scheduled. Request delay: \(repeatRequestDelayInSeconds)")
         scheduledFetchTask = Task.delayed(withDelay: repeatRequestDelayInSeconds, operation: { [weak self] in
             guard let self else { return }
 
@@ -226,7 +222,7 @@ private extension MarketsListDataProvider {
             search: searchText
         )
 
-        log("Loading market list tokens with request \(requestModel.parameters.debugDescription)")
+        AppLog.tag("Markets").info("Loading market list tokens with request \(requestModel.parameters.debugDescription)")
 
         return try await tangemApiService.loadCoinsList(requestModel: requestModel)
     }

@@ -724,7 +724,7 @@ extension ExpressViewModel: NotificationTapDelegate {
             openFeeCurrency()
         case .reduceAmountBy(let amount, _):
             guard let value = sendCurrencyViewModel?.decimalNumberTextFieldViewModel.value else {
-                AppLog.info("Couldn't find sendDecimalValue")
+                ExpressLogger.info("Couldn't find sendDecimalValue")
                 return
             }
 
@@ -733,7 +733,7 @@ extension ExpressViewModel: NotificationTapDelegate {
             updateSendDecimalValue(to: amount)
         case .leaveAmount(let amount, _):
             guard let balance = try? interactor.getSender().getBalance() else {
-                AppLog.info("Couldn't find sender balance")
+                ExpressLogger.info("Couldn't find sender balance")
                 return
             }
 
@@ -812,7 +812,7 @@ private extension ExpressViewModel {
     }
 
     func stopTimer() {
-        AppLog.info("Stop timer")
+        ExpressLogger.info("Stop timer")
         refreshDataTimerBag?.cancel()
         refreshDataTimer
             .connect()
@@ -820,11 +820,11 @@ private extension ExpressViewModel {
     }
 
     func startTimer() {
-        AppLog.info("Start timer")
+        ExpressLogger.info("Start timer")
         refreshDataTimerBag = refreshDataTimer
             .autoconnect()
             .sink { [weak self] date in
-                AppLog.info("Timer call autoupdate")
+                ExpressLogger.info("Timer call autoupdate")
                 self?.interactor.refresh(type: .refreshRates)
             }
     }

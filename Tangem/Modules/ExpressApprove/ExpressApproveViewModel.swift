@@ -152,7 +152,7 @@ private extension ExpressApproveViewModel {
             } catch TransactionDispatcherResult.Error.userCancelled {
                 // Do nothing
             } catch {
-                AppLog.error(error: error)
+                ExpressLogger.error(error: error)
                 await runOnMain {
                     viewModel.errorAlert = .init(title: Localization.commonError, message: error.localizedDescription)
                 }

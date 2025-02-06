@@ -15,17 +15,15 @@ public struct VisaCardActivationStatusServiceBuilder {
         self.isMockedAPIEnabled = isMockedAPIEnabled
     }
 
-    public func build(urlSessionConfiguration: URLSessionConfiguration, logger: VisaLogger) -> VisaCardActivationStatusService {
+    public func build(urlSessionConfiguration: URLSessionConfiguration) -> VisaCardActivationStatusService {
         if isMockedAPIEnabled {
             return CardActivationStatusServiceMock()
         }
 
-        let logger = InternalLogger(logger: logger)
-
         return CommonCardActivationStatusService(
             apiService: .init(
                 provider: MoyaProviderBuilder().buildProvider(configuration: urlSessionConfiguration),
-                logger: logger,
+                logger: InternalLogger(),
                 decoder: JSONDecoder()
             ))
     }

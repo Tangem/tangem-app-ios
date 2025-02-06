@@ -18,19 +18,15 @@ struct CardActivationOrderProviderBuilder {
     func build(
         urlSessionConfiguration: URLSessionConfiguration,
         tokensHandler: AuthorizationTokensHandler,
-        cardActivationStatusService: VisaCardActivationStatusService?,
-        logger: VisaLogger
+        cardActivationStatusService: VisaCardActivationStatusService?
     ) -> CardActivationOrderProvider {
         if isMockedAPIEnabled {
             return CardActivationTaskOrderProviderMock()
         }
 
-        let internalLogger = InternalLogger(logger: logger)
+        let internalLogger = InternalLogger()
         let cardActivationStatusService = cardActivationStatusService ?? VisaCardActivationStatusServiceBuilder(
-            isMockedAPIEnabled: isMockedAPIEnabled).build(
-            urlSessionConfiguration: urlSessionConfiguration,
-            logger: logger
-        )
+            isMockedAPIEnabled: isMockedAPIEnabled).build(urlSessionConfiguration: urlSessionConfiguration)
 
         let productActivationService = CommonProductActivationService(
             authorizationTokensHandler: tokensHandler,
