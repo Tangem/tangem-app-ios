@@ -15,7 +15,7 @@ public protocol VisaActivationManager: VisaAccessCodeValidator {
     var targetApproveAddress: String? { get }
     var isAccessCodeSet: Bool { get }
     var isContinuingActivation: Bool { get }
-    var activationStatus: VisaCardActivationStatus { get }
+    var activationLocalState: VisaCardActivationLocalState { get }
     var activationRemoteState: VisaCardActivationRemoteState { get }
 
     func saveAccessCode(accessCode: String) throws (VisaAccessCodeValidationError)
@@ -24,6 +24,8 @@ public protocol VisaActivationManager: VisaAccessCodeValidator {
 
     func startActivation() async throws (VisaActivationError) -> CardActivationResponse
     func refreshActivationRemoteState() async throws (VisaActivationError) -> VisaCardActivationRemoteState
+    func getCustomerWalletApproveHash() async throws (VisaActivationError) -> Data
+    func sendSignedCustomerWalletApprove(_ signedData: Data) async throws (VisaActivationError)
 
     func setPINCode(_ pinCode: String) async throws (VisaActivationError)
 }
@@ -33,16 +35,16 @@ public protocol VisaAccessCodeValidator: AnyObject {
 }
 
 final class CommonVisaActivationManager {
-    public private(set) var activationStatus: VisaCardActivationStatus
+    public private(set) var activationLocalState: VisaCardActivationLocalState
 
     public private(set) var targetApproveAddress: String?
 
     public var activationRemoteState: VisaCardActivationRemoteState {
-        switch activationStatus {
+        switch activationLocalState {
         case .activated:
             return .activated
-        case .activationStarted(_, _, let activationRemoteState):
-            return activationRemoteState
+        case .activationStarted(_, _, let activationStatus):
+            return activationStatus.activationRemoteState
         case .notStartedActivation:
             return .cardWalletSignatureRequired
         case .blocked:
@@ -53,42 +55,54 @@ final class CommonVisaActivationManager {
     private var selectedAccessCode: String?
 
     private let authorizationService: VisaAuthorizationService
-    private let authorizationTokenHandler: AuthorizationTokenHandler
+    private let authorizationTokensHandler: AuthorizationTokensHandler
     private let tangemSdk: TangemSdk
 
     private let authorizationProcessor: CardAuthorizationProcessor
     private let cardActivationOrderProvider: CardActivationOrderProvider
-    private let cardActivationRemoteStateService: VisaCardActivationRemoteStateService
+    private let cardActivationStatusService: VisaCardActivationStatusService
+    private let productActivationService: ProductActivationService
     private let otpRepository: VisaOTPRepository
 
     private let logger: InternalLogger
 
     private var activationTask: AnyCancellable?
 
-    private var cardInput: VisaCardActivationInput? {
-        activationStatus.activationInput
+    private var activationStatus: VisaCardActivationStatus? {
+        switch activationLocalState {
+        case .activated, .notStartedActivation, .blocked:
+            return nil
+        case .activationStarted(_, _, let activationStatus):
+            return activationStatus
+        }
+    }
+
+    private var activationInput: VisaCardActivationInput? {
+        activationLocalState.activationInput
     }
 
     init(
-        initialActivationStatus: VisaCardActivationStatus,
+        initialActivationStatus: VisaCardActivationLocalState,
         authorizationService: VisaAuthorizationService,
-        authorizationTokenHandler: AuthorizationTokenHandler,
+        authorizationTokensHandler: AuthorizationTokensHandler,
         tangemSdk: TangemSdk,
         authorizationProcessor: CardAuthorizationProcessor,
         cardActivationOrderProvider: CardActivationOrderProvider,
-        cardActivationRemoteStateService: VisaCardActivationRemoteStateService,
+        cardActivationStatusService: VisaCardActivationStatusService,
+        productActivationService: ProductActivationService,
         otpRepository: VisaOTPRepository,
         logger: InternalLogger
     ) {
-        activationStatus = initialActivationStatus
+        activationLocalState = initialActivationStatus
 
         self.authorizationService = authorizationService
-        self.authorizationTokenHandler = authorizationTokenHandler
+        self.authorizationTokensHandler = authorizationTokensHandler
         self.tangemSdk = tangemSdk
 
         self.authorizationProcessor = authorizationProcessor
         self.cardActivationOrderProvider = cardActivationOrderProvider
-        self.cardActivationRemoteStateService = cardActivationRemoteStateService
+        self.cardActivationStatusService = cardActivationStatusService
+        self.productActivationService = productActivationService
         self.otpRepository = otpRepository
 
         self.logger = logger
@@ -101,15 +115,15 @@ final class CommonVisaActivationManager {
 
 extension CommonVisaActivationManager: VisaActivationManager {
     var isAccessCodeSet: Bool {
-        guard let cardInput else {
+        guard let activationInput else {
             return true
         }
 
-        return cardInput.isAccessCodeSet
+        return activationInput.isAccessCodeSet
     }
 
     var isContinuingActivation: Bool {
-        if case .notStartedActivation = activationStatus {
+        if case .notStartedActivation = activationLocalState {
             return false
         }
 
@@ -133,15 +147,15 @@ extension CommonVisaActivationManager: VisaActivationManager {
     }
 
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver) {
-        authorizationTokenHandler.setupRefreshTokenSaver(refreshTokenSaver)
+        authorizationTokensHandler.setupRefreshTokenSaver(refreshTokenSaver)
     }
 
     func startActivation() async throws (VisaActivationError) -> CardActivationResponse {
-        switch activationStatus {
+        switch activationLocalState {
         case .activated:
             throw .alreadyActivated
-        case .activationStarted(let activationInput, let authorizationTokens, let state):
-            guard state == .cardWalletSignatureRequired else {
+        case .activationStarted(let activationInput, let authorizationTokens, let status):
+            guard status.activationRemoteState == .cardWalletSignatureRequired else {
                 throw .invalidActivationState
             }
 
@@ -158,23 +172,28 @@ extension CommonVisaActivationManager: VisaActivationManager {
     }
 
     func refreshActivationRemoteState() async throws (VisaActivationError) -> VisaCardActivationRemoteState {
-        guard let authorizationTokens = await authorizationTokenHandler.authorizationTokens else {
+        guard let authorizationTokens = await authorizationTokensHandler.authorizationTokens else {
             throw .missingAccessToken
         }
 
-        guard let cardInput else {
+        guard let activationInput else {
             throw .invalidActivationState
         }
 
-        let loadedState: VisaCardActivationRemoteState
+        let loadedStatus: VisaCardActivationStatus
         do {
             // TODO: IOS-8777 Will be removed during BFF integration tests
             try await Task.sleep(seconds: 3)
-            loadedState = try await cardActivationRemoteStateService.loadCardActivationRemoteState(authorizationTokens: authorizationTokens)
+            loadedStatus = try await cardActivationStatusService.getCardActivationStatus(
+                authorizationTokens: authorizationTokens,
+                cardId: activationInput.cardId,
+                cardPublicKey: activationInput.cardPublicKey.hexString
+            )
         } catch {
             throw .underlyingError(error)
         }
 
+        let loadedState = loadedStatus.activationRemoteState
         guard loadedState != activationRemoteState else {
             return loadedState
         }
@@ -185,38 +204,105 @@ extension CommonVisaActivationManager: VisaActivationManager {
 
         updateActivationStatus(
             toState: loadedState,
-            using: cardInput,
+            using: activationInput,
             authorizationTokens: authorizationTokens
         )
 
         return loadedState
     }
 
+    func getCustomerWalletApproveHash() async throws (VisaActivationError) -> Data {
+        guard let activationOrderId = activationStatus?.activationOrder.id else {
+            throw .missingActivationStatusInfo
+        }
+
+        guard let walletAddress = activationInput?.walletAddress else {
+            throw .missingWalletAddressInInput
+        }
+
+        log("Attempting to get challenge to approve by customer wallet")
+        do {
+            let customerWalletApproveResponse = try await productActivationService.getCustomerWalletDeployAcceptance(
+                activationOrderId: activationOrderId,
+                cardWalletAddress: walletAddress
+            )
+            return Data(hexString: customerWalletApproveResponse)
+        } catch {
+            log("Failed to load customer wallet approve hash. Error: \(error)")
+            throw .underlyingError(error)
+        }
+    }
+
+    func sendSignedCustomerWalletApprove(_ signedData: Data) async throws (VisaActivationError) {
+        guard let activationInput else {
+            throw .missingActivationInput
+        }
+
+        guard let activationOrder = activationStatus?.activationOrder else {
+            throw .missingActivationStatusInfo
+        }
+
+        guard let authorizationTokens = await authorizationTokensHandler.authorizationTokens else {
+            throw .missingAccessToken
+        }
+
+        log("Receive signed approve by customer wallet. Attempting to send it")
+        do {
+            try await productActivationService.sendSignedCustomerWalletDeployAcceptance(
+                activationOrderId: activationOrder.id,
+                customerWalletAddress: activationOrder.customerWalletAddress,
+                deployAcceptanceSignature: signedData.hexString
+            )
+        } catch {
+            log("Failed to send signed customer wallet approve data. Error: \(error)")
+            throw .underlyingError(error)
+        }
+
+        updateActivationStatus(
+            toState: .paymentAccountDeploying,
+            using: activationInput,
+            authorizationTokens: authorizationTokens
+        )
+    }
+
     func setPINCode(_ pinCode: String) async throws (VisaActivationError) {
         guard
-            let cardInput,
-            let authorizationTokens = await authorizationTokenHandler.authorizationTokens
+            let activationInput,
+            let authorizationTokens = await authorizationTokensHandler.authorizationTokens,
+            let activationOrderId = activationStatus?.activationOrder.id
         else {
             throw .missingAccessToken
         }
 
-        // TODO: IOS-8572 implement saving pin code on issuer
-        try? await Task.sleep(seconds: 3)
+        log("Attempting to send selected PIN code")
+        do {
+            try? await Task.sleep(seconds: 3)
+            // TODO: IOS-9071 implement saving pin code on issuer
+            try await productActivationService.sendSelectedPINCodeToIssuer(
+                activationOrderId: activationOrderId,
+                sessionKey: "IOS-9071",
+                iv: "IOS-9071",
+                encryptedPin: "IOS-9071"
+            )
+        } catch {
+            log("Failed to send selected PIN to issuer. Error: \(error)")
+            throw .underlyingError(error)
+        }
 
-        updateActivationStatus(toState: .waitingForActivationFinishing, using: cardInput, authorizationTokens: authorizationTokens)
+        updateActivationStatus(toState: .waitingForActivationFinishing, using: activationInput, authorizationTokens: authorizationTokens)
     }
 }
 
 // MARK: - Task implementation
 
 extension CommonVisaActivationManager: CardActivationTaskOrderProvider {
-    func getOrderForSignedChallenge(
+    func getOrderForSignedAuthorizationChallenge(
         signedAuthorizationChallenge: AttestCardKeyResponse,
-        completion: @escaping (Result<CardActivationOrder, any Error>) -> Void
+        completion: @escaping (Result<VisaCardAcceptanceOrderInfo, any Error>) -> Void
     ) {
         runTask(in: self, isDetached: false) { manager in
             do {
-                guard let cardInput = manager.cardInput else {
+                guard let cardInput = manager.activationInput else {
                     throw VisaActivationError.alreadyActivated
                 }
 
@@ -225,8 +311,8 @@ extension CommonVisaActivationManager: CardActivationTaskOrderProvider {
                     salt: signedAuthorizationChallenge.salt,
                     cardInput: cardInput
                 )
-                try await manager.authorizationTokenHandler.setupTokens(tokens)
-                let activationOrderResponse = try await manager.cardActivationOrderProvider.provideActivationOrderForSign()
+                try await manager.authorizationTokensHandler.setupTokens(tokens)
+                let activationOrderResponse = try await manager.cardActivationOrderProvider.provideActivationOrderForSign(activationInput: cardInput)
                 completion(.success(activationOrderResponse))
             } catch {
                 manager.log("Failed to load authorization tokens: \(error)")
@@ -235,10 +321,14 @@ extension CommonVisaActivationManager: CardActivationTaskOrderProvider {
         }
     }
 
-    func getActivationOrder(completion: @escaping (Result<CardActivationOrder, any Error>) -> Void) {
+    func getActivationOrder(completion: @escaping (Result<VisaCardAcceptanceOrderInfo, any Error>) -> Void) {
         runTask(in: self, isDetached: false) { manager in
             do {
-                let activationOrder = try await manager.cardActivationOrderProvider.provideActivationOrderForSign()
+                guard let cardInput = manager.activationInput else {
+                    throw VisaActivationError.alreadyActivated
+                }
+
+                let activationOrder = try await manager.cardActivationOrderProvider.provideActivationOrderForSign(activationInput: cardInput)
                 completion(.success(activationOrder))
             } catch {
                 manager.log("Failed to load activation order. \nError:\(error)")
@@ -255,7 +345,7 @@ private extension CommonVisaActivationManager {
     ) async throws (VisaActivationError) -> CardActivationResponse {
         do {
             var authorizationChallenge: String?
-            if await !authorizationTokenHandler.containsAccessToken {
+            if await !authorizationTokensHandler.containsAccessToken {
                 authorizationChallenge = try await authorizationProcessor.getAuthorizationChallenge(for: activationInput)
             }
 
@@ -284,23 +374,24 @@ private extension CommonVisaActivationManager {
                 }
             }
 
-            let newInput = VisaCardActivationInput(
-                cardId: activationInput.cardId,
-                cardPublicKey: activationInput.cardPublicKey,
-                isAccessCodeSet: true
+            let newInput = try VisaCardActivationInput(
+                cardInput: activationInput,
+                cardActivationResponse: activationResponse
             )
 
-            guard let tokens = await authorizationTokenHandler.authorizationTokens else {
+            guard let tokens = await authorizationTokensHandler.authorizationTokens else {
                 throw VisaActivationError.missingAccessToken
             }
 
-            updateActivationStatus(
-                toState: .cardWalletSignatureRequired,
-                using: newInput,
-                authorizationTokens: tokens
+            activationLocalState = .activationStarted(
+                activationInput: newInput,
+                authTokens: tokens,
+                activationStatus: .init(
+                    activationRemoteState: .cardWalletSignatureRequired,
+                    activationOrder: activationResponse.signedActivationOrder.order.activationOrder
+                )
             )
-
-            try await handleCardActivation(using: activationResponse)
+            try await handleCardActivation(using: activationResponse, activationInput: newInput)
             return activationResponse
         } catch {
             log("Failed to activate card. Generic error: \(error)")
@@ -330,7 +421,7 @@ private extension CommonVisaActivationManager {
     }
 
     func signActivationOrder(activationInput: VisaCardActivationInput) async throws -> CardActivationResponse {
-        let activationOrder = try await cardActivationOrderProvider.provideActivationOrderForSign()
+        let activationOrder = try await cardActivationOrderProvider.provideActivationOrderForSign(activationInput: activationInput)
 
         let signTask = SignActivationOrderTask(orderToSign: activationOrder)
         let signedActivationOrder: SignedActivationOrder = try await withCheckedThrowingContinuation { [weak self] continuation in
@@ -350,28 +441,68 @@ private extension CommonVisaActivationManager {
         }
 
         let otp: Data
+        let otpCounter: Int
         if let storedOTP = otpRepository.getOTP(cardId: activationInput.cardId) {
-            otp = storedOTP
+            otp = storedOTP.rootOTP
+            otpCounter = storedOTP.rootOTPCounter
         } else {
             log("Failed to find stored OTP in repository. Continuing activation without OTP.")
             otp = Data()
+            otpCounter = 0
         }
 
-        let activationResponse = CardActivationResponse(signedActivationOrder: signedActivationOrder, rootOTP: otp)
-        try await handleCardActivation(using: activationResponse)
+        let activationResponse = CardActivationResponse(
+            signedActivationOrder: signedActivationOrder,
+            rootOTP: otp,
+            rootOTPCounter: otpCounter
+        )
+        let newActivationInput = try VisaCardActivationInput(
+            cardInput: activationInput,
+            cardActivationResponse: activationResponse
+        )
+        try await handleCardActivation(using: activationResponse, activationInput: newActivationInput)
         return activationResponse
     }
 
-    func handleCardActivation(using activationResponse: CardActivationResponse) async throws {
-        log("Do something with activation response: \(activationResponse)")
-        // TODO: IOS-8576
-        // TODO: Remove after backend integration
-        targetApproveAddress = "0x9F65354e595284956599F2892fA4A4a87653D6E6"
+    func handleCardActivation(using activationResponse: CardActivationResponse, activationInput: VisaCardActivationInput) async throws (VisaActivationError) {
+        targetApproveAddress = activationResponse.signedActivationOrder.order.activationOrder.customerWalletAddress
+
+        guard let tokens = await authorizationTokensHandler.authorizationTokens else {
+            throw .missingAccessToken
+        }
+
+        guard let walletAddress = activationInput.walletAddress else {
+            throw .missingWalletAddressInInput
+        }
+
+        log("Attempting to send deploy acceptance signed by card")
+        do {
+            let order = activationResponse.signedActivationOrder.order.activationOrder
+            try await productActivationService.sendSignedVisaCardDeployAcceptance(
+                activationOrderId: order.id,
+                cardWalletAddress: walletAddress,
+                signedAcceptance: activationResponse.signedActivationOrder.signedOrderByWallet.hexString,
+                rootOtp: activationResponse.rootOTP.hexString,
+                rootOtpCounter: activationResponse.rootOTPCounter
+            )
+        } catch {
+            log("Failed to send deploy acceptance signed by card. Error: \(error)")
+            throw .underlyingError(error)
+        }
+
+        activationLocalState = .activationStarted(
+            activationInput: activationInput,
+            authTokens: tokens,
+            activationStatus: .init(
+                activationRemoteState: .customerWalletSignatureRequired,
+                activationOrder: activationResponse.signedActivationOrder.order.activationOrder
+            )
+        )
     }
 
     func saveActivatedCardRefreshToken() async throws (VisaActivationError) {
         do {
-            try await authorizationTokenHandler.forceRefreshToken()
+            try await authorizationTokensHandler.forceRefreshToken()
         } catch {
             log("Failed to retreive activated card refresh token. Error: \(error)")
             throw .underlyingError(error)
@@ -385,31 +516,35 @@ private extension CommonVisaActivationManager {
         using input: VisaCardActivationInput,
         authorizationTokens: VisaAuthorizationTokens?
     ) {
-        guard let authorizationTokens else {
-            activationStatus = .notStartedActivation(activationInput: input)
+        // TODO: IOS-9087 - save activation status on device
+        guard
+            let authorizationTokens,
+            let activationStatus
+        else {
+            activationLocalState = .notStartedActivation(activationInput: input)
             return
         }
 
         switch state {
         case .cardWalletSignatureRequired:
             if input.isAccessCodeSet {
-                activationStatus = .activationStarted(
+                activationLocalState = .activationStarted(
                     activationInput: input,
                     authTokens: authorizationTokens,
-                    activationRemoteState: state
+                    activationStatus: .init(activationRemoteState: state, activationOrder: activationStatus.activationOrder)
                 )
             } else {
-                activationStatus = .notStartedActivation(activationInput: input)
+                activationLocalState = .notStartedActivation(activationInput: input)
             }
         case .blockedForActivation:
-            activationStatus = .blocked
+            activationLocalState = .blocked
         case .activated:
-            activationStatus = .activated(authTokens: authorizationTokens)
+            activationLocalState = .activated(authTokens: authorizationTokens)
         case .customerWalletSignatureRequired, .paymentAccountDeploying, .waitingForActivationFinishing, .waitingPinCode:
-            activationStatus = .activationStarted(
+            activationLocalState = .activationStarted(
                 activationInput: input,
                 authTokens: authorizationTokens,
-                activationRemoteState: state
+                activationStatus: .init(activationRemoteState: state, activationOrder: activationStatus.activationOrder)
             )
         }
     }

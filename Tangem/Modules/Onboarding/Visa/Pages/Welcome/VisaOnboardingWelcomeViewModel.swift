@@ -23,7 +23,7 @@ class VisaOnboardingWelcomeViewModel: ObservableObject {
     let isAccessCodeSet: Bool
 
     var title: String {
-        activationState.greetingsText(userName: userName)
+        activationState.greetingsText
     }
 
     var description: String {
@@ -35,19 +35,16 @@ class VisaOnboardingWelcomeViewModel: ObservableObject {
     }
 
     private let activationState: State
-    private let userName: String
     private weak var delegate: VisaOnboardingWelcomeDelegate?
 
     init(
         activationState: State,
         isAccessCodeSet: Bool,
-        userName: String,
         imagePublisher: some Publisher<Image?, Never>,
         delegate: VisaOnboardingWelcomeDelegate?
     ) {
         self.activationState = activationState
         self.isAccessCodeSet = isAccessCodeSet
-        self.userName = userName
         self.delegate = delegate
         var cancellable: AnyCancellable?
         cancellable = imagePublisher
@@ -114,12 +111,12 @@ extension VisaOnboardingWelcomeViewModel {
             }
         }
 
-        func greetingsText(userName: String) -> String {
+        var greetingsText: String {
             switch self {
             case .newActivation:
-                return "Hello, \(userName)"
+                return "Hello"
             case .continueActivation:
-                return "Welcome back, \(userName)"
+                return "Welcome back"
             }
         }
     }

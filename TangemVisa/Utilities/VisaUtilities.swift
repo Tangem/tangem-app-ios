@@ -35,8 +35,12 @@ public struct VisaUtilities {
         "tether"
     }
 
-    public var visaCardDerivationPath: DerivationPath? {
-        visaBlockchain.derivationPath(for: .v3)
+    public var visaDefaultDerivationStyle: DerivationStyle {
+        .v3
+    }
+
+    public var visaDefaultDerivationPath: DerivationPath? {
+        visaBlockchain.derivationPath(for: visaDefaultDerivationStyle)
     }
 
     public var mockToken: Token {
@@ -57,7 +61,7 @@ public struct VisaUtilities {
         AddressServiceFactory(blockchain: visaBlockchain).makeAddressService()
     }
 
-    public func visaDefaultDerivationPath(style: DerivationStyle) -> DerivationPath? {
+    public func visaDerivationPath(style: DerivationStyle) -> DerivationPath? {
         visaBlockchain.derivationPath(for: style)
     }
 
@@ -68,5 +72,35 @@ public struct VisaUtilities {
     public func isVisaCard(firmwareVersion: FirmwareVersion, batchId: String) -> Bool {
         return FirmwareVersion.visaRange.contains(firmwareVersion.doubleValue)
             && visaBatches.contains(batchId)
+    }
+
+    public func makeAddress(seedKey: Data, extendedKey: ExtendedPublicKey) throws (VisaError) -> Address {
+        guard let visaDefaultDerivationPath else {
+            throw VisaError.failedToCreateDerivation
+        }
+
+        do {
+            let hdKey = Wallet.PublicKey.HDKey(path: visaDefaultDerivationPath, extendedPublicKey: extendedKey)
+            let publicKey = Wallet.PublicKey(seedKey: seedKey, derivationType: .plain(hdKey))
+            let walletAddress = try addressService.makeAddress(for: publicKey, with: .default)
+            return walletAddress
+        } catch {
+            throw .failedToCreateAddress(error)
+        }
+    }
+
+    func makeAddress(using cardActivationResponse: CardActivationResponse) throws -> Address {
+        guard let derivationPath = visaDefaultDerivationPath else {
+            throw VisaActivationError.missingDerivationPath
+        }
+
+        guard
+            let wallet = cardActivationResponse.signedActivationOrder.cardSignedOrder.wallets.first(where: { $0.curve == mandatoryCurve }),
+            let derivedKey = wallet.derivedKeys[derivationPath]
+        else {
+            throw VisaActivationError.missingWallet
+        }
+
+        return try makeAddress(seedKey: wallet.publicKey, extendedKey: derivedKey)
     }
 }

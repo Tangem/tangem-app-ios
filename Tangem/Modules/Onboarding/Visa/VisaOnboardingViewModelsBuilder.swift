@@ -13,33 +13,27 @@ import TangemVisa
 
 struct VisaOnboardingViewModelsBuilder {
     func buildWelcomeModel(
-        activationStatus: VisaCardActivationStatus,
+        activationStatus: VisaCardActivationLocalState,
         isAccessCodeSet: Bool,
         cardImage: some Publisher<Image?, Never>,
         delegate: VisaOnboardingWelcomeDelegate
     ) -> VisaOnboardingWelcomeViewModel {
         let activationState: VisaOnboardingWelcomeViewModel.State
-        let userName: String
         switch activationStatus {
         case .activated:
             // This step shouldn't appeared for activated card. Only biometry, notification and success screen
             activationState = .continueActivation
-            userName = "Uninvited guest"
         case .activationStarted:
-            userName = "IOS-8572"
             activationState = .continueActivation
         case .notStartedActivation:
-            userName = "Visa Card"
             activationState = .newActivation
         case .blocked:
-            userName = "Blocked"
             activationState = .newActivation
         }
 
         return .init(
             activationState: activationState,
             isAccessCodeSet: isAccessCodeSet,
-            userName: userName,
             imagePublisher: cardImage,
             delegate: delegate
         )

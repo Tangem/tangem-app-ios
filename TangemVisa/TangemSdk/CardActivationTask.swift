@@ -13,14 +13,15 @@ import TangemSdk
 public struct CardActivationResponse {
     public let signedActivationOrder: SignedActivationOrder
     public let rootOTP: Data
+    public let rootOTPCounter: Int
 }
 
 protocol CardActivationTaskOrderProvider: AnyObject {
-    func getOrderForSignedChallenge(
+    func getOrderForSignedAuthorizationChallenge(
         signedAuthorizationChallenge: AttestCardKeyResponse,
-        completion: @escaping (Result<CardActivationOrder, Error>) -> Void
+        completion: @escaping (Result<VisaCardAcceptanceOrderInfo, Error>) -> Void
     )
-    func getActivationOrder(completion: @escaping (Result<CardActivationOrder, Error>) -> Void)
+    func getActivationOrder(completion: @escaping (Result<VisaCardAcceptanceOrderInfo, Error>) -> Void)
 }
 
 final class CardActivationTask: CardSessionRunnable {
@@ -36,7 +37,7 @@ final class CardActivationTask: CardSessionRunnable {
 
     private var taskCancellationError: TangemSdkError?
 
-    private var orderPublisher = CurrentValueSubject<CardActivationOrder?, Error>(nil)
+    private var orderPublisher = CurrentValueSubject<VisaCardAcceptanceOrderInfo?, Error>(nil)
     private var orderSubscription: AnyCancellable?
 
     init(
@@ -144,17 +145,15 @@ private extension CardActivationTask {
         otpCommand.run(in: session) { result in
             switch result {
             case .success(let otpResponse):
-                self.otpRepository.saveOTP(otpResponse.rootOTP, cardId: card.cardId)
-                self.waitForOrder(rootOTP: otpResponse.rootOTP, in: session, completion: completion)
+                self.otpRepository.saveOTP(otpResponse, cardId: card.cardId)
+                self.waitForOrder(rootOTP: otpResponse, in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
 
-    func waitForOrder(rootOTP: Data, in session: CardSession, completion: @escaping CompletionHandler) {
-        // TODO: IOS-8572
-        // For demo purposes only mocked implementation
+    func waitForOrder(rootOTP: GenerateOTPResponse, in session: CardSession, completion: @escaping CompletionHandler) {
         if let taskCancellationError {
             completion(.failure(taskCancellationError))
             return
@@ -182,7 +181,7 @@ private extension CardActivationTask {
 // MARK: - Order signing
 
 private extension CardActivationTask {
-    func signOrder(orderToSign: CardActivationOrder, in session: CardSession, completion: @escaping CompletionHandler) {
+    func signOrder(orderToSign: VisaCardAcceptanceOrderInfo, in session: CardSession, completion: @escaping CompletionHandler) {
         let signOrderTask = SignActivationOrderTask(orderToSign: orderToSign)
 
         signOrderTask.run(in: session, completion: { result in
@@ -212,7 +211,11 @@ private extension CardActivationTask {
             return
         }
 
-        let cardActivationResponse = CardActivationResponse(signedActivationOrder: signedOrder, rootOTP: otp)
+        let cardActivationResponse = CardActivationResponse(
+            signedActivationOrder: signedOrder,
+            rootOTP: otp.rootOTP,
+            rootOTPCounter: otp.rootOTPCounter
+        )
         setupAccessCode(signResponse: cardActivationResponse, in: session, completion: completion)
     }
 
@@ -258,7 +261,7 @@ private extension CardActivationTask {
             return
         }
 
-        orderProvider.getOrderForSignedChallenge(signedAuthorizationChallenge: signResponse) { [weak self] result in
+        orderProvider.getOrderForSignedAuthorizationChallenge(signedAuthorizationChallenge: signResponse) { [weak self] result in
             self?.processActivationOrder(result)
         }
         createWallet(in: session, completion: completion)
@@ -278,7 +281,7 @@ private extension CardActivationTask {
         createWallet(in: session, completion: completion)
     }
 
-    func processActivationOrder(_ result: Result<CardActivationOrder, Error>) {
+    func processActivationOrder(_ result: Result<VisaCardAcceptanceOrderInfo, Error>) {
         switch result {
         case .success(let activationOrder):
             orderPublisher.send(activationOrder)

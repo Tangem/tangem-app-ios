@@ -11,7 +11,7 @@ import TangemVisa
 
 struct VisaOnboardingViewModelBuilder {
     func makeOnboardingViewModel(onboardingInput: OnboardingInput, coordinator: VisaOnboardingRoutable) -> VisaOnboardingViewModel {
-        var initialActivationStatus: VisaCardActivationStatus?
+        var initialActivationStatus: VisaCardActivationLocalState?
         switch onboardingInput.cardInput {
         case .cardId:
             logInvalidInput("CardId provided in onboarding input. Can't resume backup with visa card")
@@ -28,7 +28,7 @@ struct VisaOnboardingViewModelBuilder {
                 break
             }
 
-            initialActivationStatus = config.activationStatus
+            initialActivationStatus = config.activationLocalState
         }
 
         let visaActivationManager: VisaActivationManager

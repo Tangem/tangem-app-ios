@@ -18,7 +18,7 @@ public struct VisaActivationManagerFactory {
 
     public func make(
         cardId: String,
-        initialActivationStatus: VisaCardActivationStatus,
+        initialActivationStatus: VisaCardActivationLocalState,
         tangemSdk: TangemSdk,
         urlSessionConfiguration: URLSessionConfiguration,
         logger: VisaLogger
@@ -31,11 +31,11 @@ public struct VisaActivationManagerFactory {
                 logger: logger
             )
 
-        let accessTokenHolder: AccessTokenHolder
+        let authorizationTokensHolder: AuthorizationTokensHolder
         if case .activationStarted(_, let authorizationTokens, _) = initialActivationStatus {
-            accessTokenHolder = .init(authorizationTokens: authorizationTokens)
+            authorizationTokensHolder = .init(authorizationTokens: authorizationTokens)
         } else {
-            accessTokenHolder = .init()
+            authorizationTokensHolder = .init()
         }
 
         let authorizationTokenRefreshService = VisaAPIServiceBuilder(mockedAPI: isMockedAPIEnabled)
@@ -44,9 +44,9 @@ public struct VisaActivationManagerFactory {
                 logger: logger
             )
 
-        let tokenHandler = CommonVisaAccessTokenHandler(
+        let authorizationTokensHandler = CommonVisaAuthorizationTokensHandler(
             cardId: cardId,
-            accessTokenHolder: accessTokenHolder,
+            authorizationTokensHolder: authorizationTokensHolder,
             tokenRefreshService: authorizationTokenRefreshService,
             logger: internalLogger,
             refreshTokenSaver: nil
@@ -57,43 +57,32 @@ public struct VisaActivationManagerFactory {
             logger: internalLogger
         )
 
-        let activationOrderProvider: CardActivationOrderProvider
-        if isMockedAPIEnabled {
-            activationOrderProvider = CardActivationTaskOrderProviderMock()
-        } else {
-            let customerInfoManagementService = CommonCustomerInfoManagementService(
-                authorizationTokenHandler: tokenHandler,
-                apiService: .init(
-                    provider: MoyaProviderBuilder().buildProvider(configuration: urlSessionConfiguration),
-                    logger: internalLogger,
-                    decoder: JSONDecoderFactory().makeCIMDecoder()
-                )
-            )
-            activationOrderProvider = CommonCardActivationOrderProvider(
-                accessTokenProvider: tokenHandler,
-                customerInfoManagementService: customerInfoManagementService,
-                logger: internalLogger
-            )
-        }
+        let cardActivationStatusService = VisaCardActivationStatusServiceBuilder(isMockedAPIEnabled: isMockedAPIEnabled)
+            .build(urlSessionConfiguration: urlSessionConfiguration, logger: logger)
 
-        let cardActivationRemoteStateService: VisaCardActivationRemoteStateService
-        if isMockedAPIEnabled {
-            cardActivationRemoteStateService = CardActivationRemoteStateServiceMock()
-        } else {
-            cardActivationRemoteStateService = VisaAPIServiceBuilder().buildCardActivationRemoteStateService(
+        let activationOrderProvider = CardActivationOrderProviderBuilder(isMockedAPIEnabled: isMockedAPIEnabled)
+            .build(
                 urlSessionConfiguration: urlSessionConfiguration,
+                tokensHandler: authorizationTokensHandler,
+                cardActivationStatusService: cardActivationStatusService,
                 logger: logger
             )
-        }
+        let productActivationService = ProductActivationServiceBuilder(isMockAPIEnabled: isMockedAPIEnabled)
+            .build(
+                urlSessionConfiguration: urlSessionConfiguration,
+                authorizationTokensHandler: authorizationTokensHandler,
+                logger: logger
+            )
 
         return CommonVisaActivationManager(
             initialActivationStatus: initialActivationStatus,
             authorizationService: authorizationService,
-            authorizationTokenHandler: tokenHandler,
+            authorizationTokensHandler: authorizationTokensHandler,
             tangemSdk: tangemSdk,
             authorizationProcessor: authorizationProcessor,
             cardActivationOrderProvider: activationOrderProvider,
-            cardActivationRemoteStateService: cardActivationRemoteStateService,
+            cardActivationStatusService: cardActivationStatusService,
+            productActivationService: productActivationService,
             otpRepository: CommonVisaOTPRepository(),
             logger: internalLogger
         )

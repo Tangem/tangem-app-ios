@@ -13,11 +13,11 @@ import TangemVisa
 
 struct VisaConfig: CardContainer {
     let card: CardDTO
-    let activationStatus: VisaCardActivationStatus
+    let activationLocalState: VisaCardActivationLocalState
 
-    init(card: CardDTO, activationStatus: VisaCardActivationStatus) {
+    init(card: CardDTO, activationLocalState: VisaCardActivationLocalState) {
         self.card = card
-        self.activationStatus = activationStatus
+        self.activationLocalState = activationLocalState
     }
 
     private var defaultBlockchain: Blockchain {
@@ -159,7 +159,7 @@ extension VisaConfig: VisaCardOnboardingStepsBuilderFactory {
             cardId: card.cardId,
             isPushNotificationsAvailable: isPushNotificationsAvailable,
             isAccessCodeSet: card.isAccessCodeSet,
-            activationStatus: activationStatus
+            activationLocalState: activationLocalState
         )
     }
 }

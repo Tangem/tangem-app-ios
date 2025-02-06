@@ -47,18 +47,4 @@ public struct VisaAPIServiceBuilder {
 
         return AuthorizationServiceBuilder().build(urlSessionConfiguration: urlSessionConfiguration, logger: logger)
     }
-
-    public func buildCardActivationRemoteStateService(urlSessionConfiguration: URLSessionConfiguration, logger: VisaLogger) -> VisaCardActivationRemoteStateService {
-        if mockedAPI {
-            return CardActivationRemoteStateServiceMock()
-        }
-
-        let logger = InternalLogger(logger: logger)
-
-        return CommonCardActivationRemoteStateService(apiService: .init(
-            provider: MoyaProviderBuilder().buildProvider(configuration: urlSessionConfiguration),
-            logger: logger,
-            decoder: JSONDecoderFactory().makeCIMDecoder()
-        ))
-    }
 }

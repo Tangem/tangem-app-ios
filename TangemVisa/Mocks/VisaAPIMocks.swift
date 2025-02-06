@@ -18,6 +18,14 @@ public class VisaMocksManager {
     public static let instance = VisaMocksManager()
 
     private(set) var activationRemoteState: VisaCardActivationRemoteState = .cardWalletSignatureRequired
+    private(set) var customerWalletAddress: String = "0x3e24897ab2a19ca51536839fda818f8ea99cf96b"
+    var activationOrder: VisaCardActivationOrder {
+        .init(
+            id: "f30bee47-21b6-4d07-9492-a5f2e0542875",
+            customerId: "f89a0b9e-e5ae-4c34-b0cd-f335f5c2a9f3",
+            customerWalletAddress: customerWalletAddress
+        )
+    }
 
     var isWalletAuthorizationTokenEnabled: Bool {
         activationRemoteState == .activated
@@ -25,7 +33,7 @@ public class VisaMocksManager {
 
     private init() {}
 
-    public func showMocksMenu(presenter: VisaMockMenuPresenter) {
+    public func showMocksMenu(openSupportAction: @escaping () -> Void, presenter: VisaMockMenuPresenter) {
         let actions: [UIAlertAction] = [
             UIAlertAction(
                 title: "Card activation remote state",
@@ -43,6 +51,23 @@ public class VisaMocksManager {
                     self.changeWalletAuthorizationTokenAvailability(presenter)
                 }
             },
+            UIAlertAction(
+                title: "Select customer wallet address",
+                style: .default
+            ) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.changeCustomerWalletAddress(presenter)
+                }
+            },
+            UIAlertAction(
+                title: "Open Support",
+                style: .default,
+                handler: { _ in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        openSupportAction()
+                    }
+                }
+            ),
         ]
         let actionSheet = buildActionSheet(
             title: "Select setting to toggle",
@@ -58,7 +83,7 @@ public class VisaMocksManager {
                 title: state.rawValue,
                 style: .default
             ) { _ in
-                self.activationRemoteState = state
+                self.changeActivationRemoteState(to: state)
             }
         }
         let actionSheet = buildActionSheet(
@@ -72,10 +97,10 @@ public class VisaMocksManager {
     func changeWalletAuthorizationTokenAvailability(_ presenter: VisaMockMenuPresenter) {
         let actions: [UIAlertAction] = [
             .init(title: "Enabled", style: .default) { _ in
-                self.activationRemoteState = .activated
+                self.changeActivationRemoteState(to: .activated)
             },
             .init(title: "Disabled", style: .default) { _ in
-                self.activationRemoteState = .cardWalletSignatureRequired
+                self.changeActivationRemoteState(to: .cardWalletSignatureRequired)
             },
         ]
         let actionSheet = buildActionSheet(
@@ -84,6 +109,42 @@ public class VisaMocksManager {
             actions: actions
         )
         presenter.modalFromTop(actionSheet)
+    }
+
+    func changeCustomerWalletAddress(_ presenter: VisaMockMenuPresenter) {
+        let actions: [UIAlertAction] = [
+        ]
+        let alertController = UIAlertController(
+            title: "Enter new customer wallet address",
+            message: "Current Customer Wallet Address is: \(customerWalletAddress)",
+            preferredStyle: .alert
+        )
+
+        alertController.addTextField { textField in
+            textField.placeholder = "Customer wallet address..."
+            textField.keyboardType = .default
+        }
+
+        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { _ in
+            guard let textField = alertController.textFields?.first,
+                  let text = textField.text, !text.isEmpty else {
+                return
+            }
+
+            self.customerWalletAddress = text
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in }
+
+        // Add actions to the alert controller
+        alertController.addAction(confirmAction)
+        alertController.addAction(cancelAction)
+
+        presenter.modalFromTop(alertController)
+    }
+
+    func changeActivationRemoteState(to newState: VisaCardActivationRemoteState) {
+        activationRemoteState = newState
     }
 
     private func buildActionSheet(title: String, message: String, actions: [UIAlertAction]) -> UIViewController {
@@ -113,7 +174,7 @@ struct AuthorizationServiceMock: VisaAuthorizationService, VisaAuthorizationToke
         )
     }
 
-    func getWalletAuthorizationChallenge(cardId: String, walletPublicKey: String) async throws -> VisaAuthChallengeResponse {
+    func getWalletAuthorizationChallenge(cardId: String, walletAddress: String) async throws -> VisaAuthChallengeResponse {
         return .init(
             nonce: RandomBytesGenerator().generateBytes(length: 32).hexString,
             sessionId: "098acd0987ba0af0787ff8abc90dcb12=098acd0987ba0af0787ff8abc90dcb12=="
@@ -137,23 +198,51 @@ struct AuthorizationServiceMock: VisaAuthorizationService, VisaAuthorizationToke
     }
 }
 
-struct CardActivationRemoteStateServiceMock: VisaCardActivationRemoteStateService {
-    func loadCardActivationRemoteState(authorizationTokens: VisaAuthorizationTokens) async throws -> VisaCardActivationRemoteState {
-        return VisaMocksManager.instance.activationRemoteState
+// MARK: - VisaCardActivationStatusService
+
+struct CardActivationStatusServiceMock: VisaCardActivationStatusService {
+    func getCardActivationStatus(authorizationTokens: VisaAuthorizationTokens, cardId: String, cardPublicKey: String) async throws -> VisaCardActivationStatus {
+        return .init(
+            activationRemoteState: VisaMocksManager.instance.activationRemoteState,
+            activationOrder: VisaMocksManager.instance.activationOrder
+        )
     }
 }
 
 struct CardActivationTaskOrderProviderMock: CardActivationOrderProvider {
-    func provideActivationOrderForSign() async throws -> CardActivationOrder {
+    func provideActivationOrderForSign(activationInput: VisaCardActivationInput) async throws -> VisaCardAcceptanceOrderInfo {
         let generator = RandomBytesGenerator()
-        return CardActivationOrder(
-            activationOrder: "tngm_activation_order",
-            dataToSignByCard: generator.generateBytes(length: 16),
-            dataToSignByWallet: generator.generateBytes(length: 32)
+        return VisaCardAcceptanceOrderInfo(
+            activationOrder: VisaMocksManager.instance.activationOrder,
+            hashToSignByWallet: generator.generateBytes(length: 32)
         )
     }
+}
 
-    func cancelOrderLoading() {}
+// MARK: - ProductActivationService
+
+struct ProductActivationServiceMock: ProductActivationService {
+    func getVisaCardDeployAcceptance(activationOrderId: String, customerWalletAddress: String) async throws -> String {
+        let generator = RandomBytesGenerator()
+        return generator.generateBytes(length: 32).hexString
+    }
+
+    func sendSignedVisaCardDeployAcceptance(activationOrderId: String, cardWalletAddress: String, signedAcceptance: String, rootOtp: String, rootOtpCounter: Int) async throws {
+        VisaMocksManager.instance.changeActivationRemoteState(to: .customerWalletSignatureRequired)
+    }
+
+    func getCustomerWalletDeployAcceptance(activationOrderId: String, cardWalletAddress: String) async throws -> String {
+        let generator = RandomBytesGenerator()
+        return generator.generateBytes(length: 32).hexString
+    }
+
+    func sendSignedCustomerWalletDeployAcceptance(activationOrderId: String, customerWalletAddress: String, deployAcceptanceSignature: String) async throws {
+        VisaMocksManager.instance.changeActivationRemoteState(to: .paymentAccountDeploying)
+    }
+
+    func sendSelectedPINCodeToIssuer(activationOrderId: String, sessionKey: String, iv: String, encryptedPin: String) async throws {
+        VisaMocksManager.instance.changeActivationRemoteState(to: .waitingForActivationFinishing)
+    }
 }
 
 private struct RandomBytesGenerator {

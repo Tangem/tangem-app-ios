@@ -16,7 +16,7 @@ enum DefaultWalletData: Codable {
     case file(WalletData)
     case legacy(WalletData)
     case twin(WalletData, TwinData)
-    case visa(VisaCardActivationStatus)
+    case visa(VisaCardActivationLocalState)
     case none
 
     var twinData: TwinData? {

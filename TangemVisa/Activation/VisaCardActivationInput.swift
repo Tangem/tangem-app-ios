@@ -7,22 +7,34 @@
 //
 
 import Foundation
+import TangemSdk
 
 public struct VisaCardActivationInput: Equatable, Codable {
     public let cardId: String
     public let cardPublicKey: Data
     public let isAccessCodeSet: Bool
+    public let walletAddress: String?
 
-    public init(cardId: String, cardPublicKey: Data, isAccessCodeSet: Bool) {
+    public init(cardId: String, cardPublicKey: Data, isAccessCodeSet: Bool, walletAddress: String? = nil) {
         self.cardId = cardId
         self.cardPublicKey = cardPublicKey
         self.isAccessCodeSet = isAccessCodeSet
+        self.walletAddress = walletAddress
+    }
+
+    init(cardInput: VisaCardActivationInput, cardActivationResponse: CardActivationResponse, isTestnet: Bool = false) throws {
+        cardId = cardInput.cardId
+        cardPublicKey = cardInput.cardPublicKey
+        isAccessCodeSet = true
+
+        let visaUtilities = VisaUtilities(isTestnet: isTestnet)
+        walletAddress = try visaUtilities.makeAddress(using: cardActivationResponse).value
     }
 }
 
-public enum VisaCardActivationStatus: Codable {
+public enum VisaCardActivationLocalState: Codable {
     case activated(authTokens: VisaAuthorizationTokens)
-    case activationStarted(activationInput: VisaCardActivationInput, authTokens: VisaAuthorizationTokens, activationRemoteState: VisaCardActivationRemoteState)
+    case activationStarted(activationInput: VisaCardActivationInput, authTokens: VisaAuthorizationTokens, activationStatus: VisaCardActivationStatus)
     case notStartedActivation(activationInput: VisaCardActivationInput)
     case blocked
 
@@ -53,6 +65,16 @@ public enum VisaCardActivationStatus: Codable {
     }
 }
 
+public struct VisaCardActivationStatus: Codable {
+    public let activationRemoteState: VisaCardActivationRemoteState
+    public let activationOrder: VisaCardActivationOrder
+
+    private enum CodingKeys: String, CodingKey {
+        case activationRemoteState = "activationStatus"
+        case activationOrder
+    }
+}
+
 public enum VisaCardActivationRemoteState: String, Codable, Equatable {
     case cardWalletSignatureRequired
     case customerWalletSignatureRequired
@@ -61,4 +83,10 @@ public enum VisaCardActivationRemoteState: String, Codable, Equatable {
     case waitingForActivationFinishing
     case activated
     case blockedForActivation
+}
+
+public struct VisaCardActivationOrder: Codable {
+    public let id: String
+    public let customerId: String
+    public let customerWalletAddress: String
 }

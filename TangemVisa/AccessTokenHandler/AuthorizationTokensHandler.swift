@@ -15,7 +15,7 @@ public protocol VisaRefreshTokenSaver: AnyObject {
     func saveRefreshTokenToStorage(refreshToken: String, cardId: String) throws
 }
 
-protocol AuthorizationTokenHandler {
+protocol AuthorizationTokensHandler {
     var accessToken: JWT? { get async }
     var containsAccessToken: Bool { get async }
     var authorizationHeader: String { get async throws }
@@ -25,7 +25,7 @@ protocol AuthorizationTokenHandler {
     func setupRefreshTokenSaver(_ refreshTokenSaver: VisaRefreshTokenSaver)
 }
 
-class CommonVisaAccessTokenHandler {
+class CommonVisaAuthorizationTokensHandler {
     private let tokenRefreshService: VisaAuthorizationTokenRefreshService
     private weak var refreshTokenSaver: VisaRefreshTokenSaver?
 
@@ -33,20 +33,20 @@ class CommonVisaAccessTokenHandler {
     private let scheduler: AsyncTaskScheduler = .init()
     private let logger: InternalLogger
 
-    private let accessTokenHolder: AccessTokenHolder
+    private let authorizationTokensHolder: AuthorizationTokensHolder
     private var refresherTask: AnyCancellable?
 
     private let minSecondsBeforeExpiration: TimeInterval = 60.0
 
     init(
         cardId: String,
-        accessTokenHolder: AccessTokenHolder,
+        authorizationTokensHolder: AuthorizationTokensHolder,
         tokenRefreshService: VisaAuthorizationTokenRefreshService,
         logger: InternalLogger,
         refreshTokenSaver: VisaRefreshTokenSaver?
     ) {
         self.cardId = cardId
-        self.accessTokenHolder = accessTokenHolder
+        self.authorizationTokensHolder = authorizationTokensHolder
         self.tokenRefreshService = tokenRefreshService
         self.refreshTokenSaver = refreshTokenSaver
         self.logger = logger
@@ -63,7 +63,7 @@ class CommonVisaAccessTokenHandler {
         refresherTask?.cancel()
         refresherTask = Task { [weak self] in
             do {
-                guard await self?.accessTokenHolder.authorizationTokens != nil else {
+                guard await self?.authorizationTokensHolder.authorizationTokens != nil else {
                     return
                 }
 
@@ -80,7 +80,7 @@ class CommonVisaAccessTokenHandler {
 
     private func setupAccessTokenRefresher() async throws {
         log("Attempting to setup token refresher")
-        guard let jwtTokens = await accessTokenHolder.tokens else {
+        guard let jwtTokens = await authorizationTokensHolder.tokens else {
             throw VisaAccessTokenHandlerError.authorizationTokensNotFound
         }
 
@@ -125,7 +125,7 @@ class CommonVisaAccessTokenHandler {
         log("Scheduling token refresh job with interval: \(tokenRefreshTimeInterval)")
         scheduler.scheduleJob(interval: tokenRefreshTimeInterval, repeats: true) { [weak self] in
             self?.log("Access token is about to expire. Refreshing...")
-            guard let jwtTokens = await self?.accessTokenHolder.tokens else {
+            guard let jwtTokens = await self?.authorizationTokensHolder.tokens else {
                 self?.log("Failed to find access token. Canceling scheduled job.")
                 self?.scheduler.cancel()
                 return
@@ -155,24 +155,24 @@ class CommonVisaAccessTokenHandler {
             throw VisaAccessTokenHandlerError.failedToUpdateAccessToken
         }
 
-        await accessTokenHolder.setTokens(newJWTTokens)
+        await authorizationTokensHolder.setTokens(newJWTTokens)
         try refreshTokenSaver?.saveRefreshTokenToStorage(refreshToken: newJWTTokens.refreshToken.string, cardId: cardId)
         return newJWTTokens
     }
 }
 
-extension CommonVisaAccessTokenHandler: AuthorizationTokenHandler {
+extension CommonVisaAuthorizationTokensHandler: AuthorizationTokensHandler {
     var accessToken: JWT? {
-        get async { await accessTokenHolder.tokens?.accessToken }
+        get async { await authorizationTokensHolder.tokens?.accessToken }
     }
 
     var containsAccessToken: Bool {
-        get async { await accessTokenHolder.tokens != nil }
+        get async { await authorizationTokensHolder.tokens != nil }
     }
 
     var authorizationHeader: String {
         get async throws {
-            guard let jwtTokens = await accessTokenHolder.tokens else {
+            guard let jwtTokens = await authorizationTokensHolder.tokens else {
                 throw VisaAccessTokenHandlerError.missingAccessToken
             }
 
@@ -182,19 +182,19 @@ extension CommonVisaAccessTokenHandler: AuthorizationTokenHandler {
 
     var authorizationTokens: VisaAuthorizationTokens? {
         get async {
-            await accessTokenHolder.authorizationTokens
+            await authorizationTokensHolder.authorizationTokens
         }
     }
 
     func setupTokens(_ tokens: VisaAuthorizationTokens) async throws {
         log("Setup new authorization tokens in token handler")
-        try await accessTokenHolder.setTokens(authorizationTokens: tokens)
+        try await authorizationTokensHolder.setTokens(authorizationTokens: tokens)
         /// We need to use `setupRefresherTask` to prevent blocking current task
         setupRefresherTask()
     }
 
     func forceRefreshToken() async throws {
-        guard let tokens = await accessTokenHolder.tokens else {
+        guard let tokens = await authorizationTokensHolder.tokens else {
             log("Nothing to refresh")
             return
         }
@@ -207,7 +207,7 @@ extension CommonVisaAccessTokenHandler: AuthorizationTokenHandler {
         self.refreshTokenSaver = refreshTokenSaver
         runTask(in: self) { handler in
             do {
-                guard let tokens = await handler.accessTokenHolder.tokens else {
+                guard let tokens = await handler.authorizationTokensHolder.tokens else {
                     handler.log("Nothing to save")
                     return
                 }
