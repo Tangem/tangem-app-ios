@@ -90,7 +90,7 @@ lane :build_simulator do |options|
       -project TangemApp.xcodeproj \
       -scheme Tangem \
       -destination 'generic/platform=iOS Simulator' \
-      -configuration Debug\(beta\) \
+      -configuration Debug(beta) \
       clean build"
 end
 
