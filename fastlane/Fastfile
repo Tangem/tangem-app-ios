@@ -86,12 +86,7 @@ desc """
 A lane for building for CodeQL analysis
  """
 lane :build_simulator do |options|
-    sh "xcodebuild \
-      -project TangemApp.xcodeproj \
-      -scheme Tangem \
-      -destination 'generic/platform=iOS Simulator' \
-      -configuration Debug(beta) \
-      clean build"
+    sh "xcodebuild -project ../#{PROJECT_NAME} -scheme Tangem -destination 'generic/platform=iOS Simulator' -configuration Debug clean build"
 end
 
 desc """
