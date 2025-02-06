@@ -34,7 +34,7 @@ extension UIApplication {
     static func modalFromTop(_ vc: UIViewController, animated: Bool = true, completion: (() -> Void)? = nil) {
         guard let top = topViewController else { return }
 
-        if top.isBeingDismissed {
+        if top.isBeingDismissed || top.isBeingPresented {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 modalFromTop(vc)
             }
