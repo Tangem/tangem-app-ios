@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TangemLogger
+import TangemFoundation
 
 actor CEXExpressProviderManager {
     // MARK: - Dependencies
@@ -43,7 +43,7 @@ extension CEXExpressProviderManager: ExpressProviderManager {
 
     func update(request: ExpressManagerSwappingPairRequest) async {
         let state = await getState(request: request)
-        log("Update to \(state)")
+        ExpressLogger.info(self, "Update to \(state)")
         _state = state
     }
 
@@ -166,11 +166,15 @@ private extension CEXExpressProviderManager {
         }
 
         // We're decreasing amount on the fee value
-        log("Subtract fee - \(fee) from amount - \(request.amount)")
+        ExpressLogger.info(self, "Subtract fee - \(fee) from amount - \(request.amount)")
         return fee
     }
+}
 
-    func log(_ args: Any) {
-        ExpressLogger.info("\(self) \(args)")
+// MARK: - CustomStringConvertible
+
+extension CEXExpressProviderManager: @preconcurrency CustomStringConvertible {
+    var description: String {
+        objectDescription(self)
     }
 }

@@ -37,7 +37,7 @@ struct WebView: UIViewRepresentable {
         }
 
         if let url = url {
-            AppLog.info("Loading request with url: \(url)")
+            WCLog.info("Loading request with url: \(url)")
             var request = URLRequest(url: url)
             request.allHTTPHeaderFields = headers
             view.load(request)
@@ -60,7 +60,7 @@ struct WebView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-            AppLog.info("Start to find decide for url \(String(describing: navigationAction.request.url?.absoluteString))")
+            WCLog.info("Start to find decide for url \(String(describing: navigationAction.request.url?.absoluteString))")
             if let url = navigationAction.request.url?.absoluteString.split(separator: "?").first,
                let actionForURL = urlActions[String(url).removeLatestSlash()] {
                 decisionHandler(.cancel)

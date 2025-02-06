@@ -213,7 +213,7 @@ private extension StakingModel {
     }
 
     func log(_ message: String) {
-        AppLog.info(self, message)
+        StakingLogger.info(self, message)
     }
 }
 

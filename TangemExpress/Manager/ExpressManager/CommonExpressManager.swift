@@ -89,7 +89,7 @@ extension CommonExpressManager: ExpressManager {
 
     func update(approvePolicy: ExpressApprovePolicy) async throws -> ExpressManagerState {
         guard _approvePolicy != approvePolicy else {
-            log("ApprovePolicy already is \(approvePolicy)")
+            ExpressLogger.info(self, "ApprovePolicy already is \(approvePolicy)")
             return try await selectedProviderState()
         }
 
@@ -102,7 +102,7 @@ extension CommonExpressManager: ExpressManager {
 
     func update(feeOption: ExpressFee.Option) async throws -> ExpressManagerState {
         guard _feeOption != feeOption else {
-            log("ExpressFeeOption already is \(feeOption)")
+            ExpressLogger.info(self, "ExpressFeeOption already is \(feeOption)")
             return try await selectedProviderState()
         }
 
@@ -133,7 +133,7 @@ private extension CommonExpressManager {
     /// Return the state which checking the all properties
     func updateState(by source: ExpressProviderUpdateSource) async throws -> ExpressManagerState {
         guard let pair = _pair else {
-            log("ExpressManagerSwappingPair not found")
+            ExpressLogger.error(self, error: "ExpressManagerSwappingPair not found")
             throw ExpressManagerError.pairNotFound
         }
 
@@ -143,7 +143,7 @@ private extension CommonExpressManager {
         try Task.checkCancellation()
 
         guard let amount = _amount, amount > 0 else {
-            log("Amount isn't set. Return .idle state")
+            ExpressLogger.warning(self, "Amount isn't set. Return .idle state")
             return .idle
         }
 
@@ -163,7 +163,7 @@ private extension CommonExpressManager {
         }
 
         let state = await selectedProvider.getState()
-        log("Selected provider state: \(state)")
+        ExpressLogger.info(self, "Selected provider state: \(state)")
 
         switch state {
         case .idle:
@@ -221,7 +221,7 @@ private extension CommonExpressManager {
         let bestRate = await bestByRateProvider()
         availableProviders.forEach { provider in
             provider.isBest = provider.provider == bestRate?.provider
-            log("Update provider \(provider.provider.name) isBest? - \(provider.isBest)")
+            ExpressLogger.info(self, "Update provider \(provider.provider.name) isBest? - \(provider.isBest)")
         }
     }
 
@@ -279,7 +279,7 @@ private extension CommonExpressManager {
 
     func updateStatesInProviders(request: ExpressManagerSwappingPairRequest) async {
         let providers = availableProviders.map { $0.provider.name }.joined(separator: ", ")
-        log("Start a parallel updating in providers: \(providers) with request \(request)")
+        ExpressLogger.info(self, "Start a parallel updating in providers: \(providers) with request \(request)")
 
         // Run a parallel asynchronous tasks
         await withTaskGroup(of: Void.self) { [weak self] taskGroup in
@@ -317,11 +317,7 @@ private extension CommonExpressManager {
     }
 }
 
-extension CommonExpressManager {
-    func log(_ args: Any) {
-        ExpressLogger.info(self, args)
-    }
-}
+// MARK: - CustomStringConvertible
 
 extension CommonExpressManager: @preconcurrency CustomStringConvertible {
     var description: String { objectDescription(self) }

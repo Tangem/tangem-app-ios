@@ -9,3 +9,4 @@
 import TangemLogger
 
 public let ExpressLogger = Logger(category: OSLogCategory(name: "Express"))
+public let OnrampLogger = ExpressLogger.tag("Onramp")

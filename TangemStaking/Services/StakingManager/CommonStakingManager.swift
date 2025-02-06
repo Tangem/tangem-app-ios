@@ -10,7 +10,6 @@ import Foundation
 import Combine
 import TangemSdk
 import TangemFoundation
-import TangemLogger
 
 class CommonStakingManager {
     private let integrationId: String
@@ -100,7 +99,7 @@ extension CommonStakingManager: StakingManager {
                 type: type
             )
         default:
-            log("Invalid staking manager state: \(state), for action: \(action)")
+            StakingLogger.info(self, "Invalid staking manager state: \(state), for action: \(action)")
             throw StakingManagerError.stakingManagerStateNotSupportEstimateFeeAction(action: action, state: state)
         }
     }
@@ -143,7 +142,7 @@ extension CommonStakingManager: StakingManager {
 
 private extension CommonStakingManager {
     func updateState(_ state: StakingManagerState) {
-        log("Update state to \(state)")
+        StakingLogger.info(self, "Update state to \(state)")
         _state.send(state)
         updateBalances(state)
     }
@@ -545,10 +544,6 @@ private extension CommonStakingManager {
 extension CommonStakingManager: CustomStringConvertible {
     var description: String {
         objectDescription(self, userInfo: ["item": wallet.item])
-    }
-
-    private func log(_ args: Any) {
-        StakingLogger.info(self, args)
     }
 }
 

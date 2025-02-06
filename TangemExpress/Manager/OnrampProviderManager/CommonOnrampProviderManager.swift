@@ -7,7 +7,6 @@
 //
 
 import TangemFoundation
-import TangemLogger
 
 class CommonOnrampProviderManager {
     // Dependencies
@@ -116,7 +115,7 @@ private extension CommonOnrampProviderManager {
     }
 
     func update(state: OnrampProviderManagerState) {
-        ExpressLogger.info(self, "State was updated")
+        OnrampLogger.info(self, "State was updated")
         _state = state
     }
 }

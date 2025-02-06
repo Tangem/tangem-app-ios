@@ -37,7 +37,7 @@ class WalletConnectViewModel: ObservableObject {
     }
 
     deinit {
-        AppLog.debug(self)
+        WCLog.debug(self)
     }
 
     func onAppear() {

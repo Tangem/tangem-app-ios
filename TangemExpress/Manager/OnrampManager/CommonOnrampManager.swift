@@ -7,7 +7,6 @@
 //
 
 import TangemFoundation
-import TangemLogger
 
 public actor CommonOnrampManager {
     private let apiProvider: ExpressAPIProvider
@@ -44,7 +43,7 @@ extension CommonOnrampManager: OnrampManager {
         )
 
         let supportedProviders = pairs.flatMap { $0.providers }
-        log(message: "Load pairs with supported providers \(supportedProviders)")
+        OnrampLogger.info(self, "Load pairs with supported providers \(supportedProviders)")
         guard !supportedProviders.isEmpty else {
             // Exclude unnecessary requests
             return []
@@ -56,9 +55,9 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func setupQuotes(in providers: ProvidersList, amount: OnrampUpdatingAmount) async throws -> (list: ProvidersList, provider: OnrampProvider) {
-        log(message: "Start update quotes for amount: \(amount)")
+        OnrampLogger.info(self, "Start update quotes for amount: \(amount)")
         try await updateQuotesInEachManager(providers: providers, amount: amount)
-        log(message: "The quotes was updated for amount: \(amount)")
+        OnrampLogger.info(self, "The quotes was updated for amount: \(amount)")
 
         providers.updateSupportedPaymentMethods()
         let sorted = providers.sorted()
@@ -67,20 +66,20 @@ extension CommonOnrampManager: OnrampManager {
     }
 
     public func suggestProvider(in providers: ProvidersList, paymentMethod: OnrampPaymentMethod) throws -> OnrampProvider {
-        log(message: "Payment method was updated by user to: \(paymentMethod.name)")
+        OnrampLogger.info(self, "Payment method was updated by user to: \(paymentMethod.name)")
 
         guard let providerItem = providers.select(for: paymentMethod) else {
             throw OnrampManagerError.noProviderForPaymentMethod
         }
 
         providerItem.updateAttractiveTypes()
-        log(message: "Providers for paymentMethod: \(providerItem.paymentMethod.name) was sorted to order: \(providerItem.providers)")
+        OnrampLogger.info(self, "Providers for paymentMethod: \(providerItem.paymentMethod.name) was sorted to order: \(providerItem.providers)")
 
         guard let selectedProvider = providerItem.maxPriorityProvider() else {
             throw OnrampManagerError.noProviderForPaymentMethod
         }
 
-        log(message: "New selected provider was updated to: \(selectedProvider as Any)")
+        OnrampLogger.info(self, "New selected provider was updated to: \(selectedProvider as Any)")
         return selectedProvider
     }
 
@@ -118,29 +117,29 @@ private extension CommonOnrampManager {
     }
 
     func suggestProvider(in providers: ProvidersList) throws -> OnrampProvider {
-        log(message: "Start to find the best provider")
+        OnrampLogger.info(self, "Start to find the best provider")
 
         for provider in providers {
             provider.updateAttractiveTypes()
-            log(message: "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(provider.providers)")
+            OnrampLogger.info(self, "Providers for paymentMethod: \(provider.paymentMethod.name) was sorted to order: \(provider.providers)")
 
             if let maxPriorityProvider = provider.maxPriorityProvider() {
-                log(message: "The selected max priority provider is \(maxPriorityProvider)")
+                OnrampLogger.info(self, "The selected max priority provider is \(maxPriorityProvider)")
                 return maxPriorityProvider
             }
         }
 
-        log(message: "We couldn't find any provider without error")
-        log(message: "Start the second search to find any provider to show user")
+        OnrampLogger.info(self, "We couldn't find any provider without error")
+        OnrampLogger.info(self, "Start the second search to find any provider to show user")
 
         for provider in providers {
             if let suggestProvider = provider.selectableProvider() {
-                log(message: "Then update selected provider to \(suggestProvider as Any)")
+                OnrampLogger.info(self, "Then update selected provider to \(suggestProvider as Any)")
                 return suggestProvider
             }
         }
 
-        log(message: "We couldn't find any provider to suggest")
+        OnrampLogger.info(self, "We couldn't find any provider to suggest")
         throw OnrampManagerError.suggestedProviderNotFound
     }
 
@@ -180,7 +179,7 @@ private extension CommonOnrampManager {
             return ProviderItem(paymentMethod: paymentMethod, providers: providers)
         }
 
-        log(message: "Built providers \(availableProviders)")
+        OnrampLogger.info(self, "Built providers \(availableProviders)")
 
         return availableProviders
     }
@@ -213,10 +212,6 @@ private extension CommonOnrampManager {
             analyticsLogger: analyticsLogger,
             state: state
         )
-    }
-
-    func log(message: String) {
-        ExpressLogger.info(self, message)
     }
 }
 

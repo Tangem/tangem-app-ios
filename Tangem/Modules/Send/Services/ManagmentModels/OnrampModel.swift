@@ -394,7 +394,7 @@ private extension OnrampModel {
     }
 
     func log(_ message: String) {
-        AppLog.info(self, message)
+        ExpressLogger.tag("Onramp").info(self, message)
     }
 }
 

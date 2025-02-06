@@ -106,7 +106,7 @@ private extension UnstakingModel {
             } catch _ as CancellationError {
                 // Do nothing
             } catch {
-                AppLog.error(error: error)
+                StakingLogger.error(error: error)
                 model.update(state: .networkError(error))
             }
         }
