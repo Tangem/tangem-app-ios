@@ -83,6 +83,18 @@ lane :test_modules do |options|
 end
 
 desc """
+A lane for building for CodeQL analysis
+ """
+lane :build_simulator do |options|
+    sh "xcodebuild \
+      -project TangemApp.xcodeproj \
+      -scheme Tangem \
+      -destination 'generic/platform=iOS Simulator' \
+      -configuration Debug\(beta\) \
+      clean build"
+end
+
+desc """
 A lane that builds a \"Tangem\" scheme and uploads the archive to TestFlight for release.
 Using enviroment: Production
 Options:
@@ -102,9 +114,9 @@ lane :release do |options|
   increment_testflight_build_number(version: options[:version], build: options[:build])
 
   build(
-    scheme: PRODUCTION_SCHEME, 
-    version: options[:version], 
-    filename: PRODUCTION_SCHEME, 
+    scheme: PRODUCTION_SCHEME,
+    version: options[:version],
+    filename: PRODUCTION_SCHEME,
     path: BUILD_PATH,
     analyze_archive: options[:analyze_archive],
     code_sign_identity: options[:code_sign_identity],

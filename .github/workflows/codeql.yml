@@ -91,12 +91,7 @@ jobs:
             - if: matrix.build-mode == 'manual'
               shell: bash
               run: |
-                  xcodebuild \
-                    -project TangemApp.xcodeproj \
-                    -scheme Tangem \
-                    -destination 'generic/platform=iOS Simulator' \
-                    -configuration Debug\(beta\) \
-                    clean build
+                  bundle exec fastlane build_simulator
 
             - name: Perform CodeQL Analysis
               uses: github/codeql-action/analyze@v3
