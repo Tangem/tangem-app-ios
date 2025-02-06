@@ -152,13 +152,10 @@ enum AlertBuilder {
     }
 
     static func makeWalletRenamingAlert(
+        userWalletModel: UserWalletModel,
         userWalletRepository: UserWalletRepository,
         updateName: ((String) -> Void)? = nil
     ) -> UIAlertController? {
-        guard let userWalletModel = userWalletRepository.selectedModel else {
-            return nil
-        }
-
         let otherWalletNames = userWalletRepository.models.compactMap { model -> String? in
             guard model.userWalletId != userWalletModel.userWalletId else { return nil }
             return model.name

@@ -67,3 +67,9 @@ extension DefaultTokenItemInfoProvider: TokenItemInfoProvider {
             .eraseToAnyPublisher()
     }
 }
+
+extension DefaultTokenItemInfoProvider: Equatable {
+    static func == (lhs: DefaultTokenItemInfoProvider, rhs: DefaultTokenItemInfoProvider) -> Bool {
+        lhs.id == rhs.id
+    }
+}

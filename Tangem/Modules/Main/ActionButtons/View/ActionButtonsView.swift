@@ -13,7 +13,9 @@ struct ActionButtonsView: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            ActionButtonView(viewModel: viewModel.buyActionButtonViewModel)
+            if let buyActionButtonViewModel = viewModel.buyActionButtonViewModel {
+                ActionButtonView(viewModel: buyActionButtonViewModel)
+            }
             ActionButtonView(viewModel: viewModel.swapActionButtonViewModel)
             ActionButtonView(viewModel: viewModel.sellActionButtonViewModel)
         }

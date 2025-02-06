@@ -9,18 +9,12 @@
 import SwiftUI
 
 struct ActionButtonsTokenSelectItemView: View {
-    private let model: ActionButtonsTokenSelectorItem
+    @StateObject private var viewModel: ActionButtonsTokenSelectItemViewModel
+
     private let action: () -> Void
-    private var isLoading: Bool {
-        // the model is loading if one of balances is loading
-        switch (model.balance, model.fiatBalance) {
-        case (.loading, _), (_, .loading): true
-        default: false
-        }
-    }
 
     init(model: ActionButtonsTokenSelectorItem, action: @escaping () -> Void) {
-        self.model = model
+        _viewModel = StateObject(wrappedValue: .init(model: model))
         self.action = action
     }
 
@@ -28,14 +22,14 @@ struct ActionButtonsTokenSelectItemView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            TokenIcon(tokenIconInfo: model.tokenIconInfo, size: iconSize)
-                .saturation(model.isDisabled ? 0 : 1)
+            TokenIcon(tokenIconInfo: viewModel.tokenIconInfo, size: iconSize)
+                .saturation(viewModel.isDisabled ? 0 : 1)
 
             infoView
         }
         .contentShape(Rectangle())
         .onTapGesture(perform: action)
-        .disabled(model.isDisabled || isLoading)
+        .disabled(viewModel.isDisabled)
     }
 
     private var infoView: some View {
@@ -49,20 +43,17 @@ struct ActionButtonsTokenSelectItemView: View {
 
     private var topInfoView: some View {
         HStack(spacing: .zero) {
-            Text(model.name)
+            Text(viewModel.tokenName)
                 .style(
                     Fonts.Bold.subheadline,
-                    color: model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1
+                    color: viewModel.getDisabledTextColor(for: .tokenName)
                 )
 
             Spacer(minLength: 4)
 
             LoadableTokenBalanceView(
-                state: model.fiatBalance,
-                style: .init(
-                    font: Fonts.Regular.subheadline,
-                    textColor: model.isDisabled ? Colors.Text.tertiary : Colors.Text.primary1
-                ),
+                state: viewModel.fiatBalanceState,
+                style: .init(font: Fonts.Regular.subheadline, textColor: viewModel.getDisabledTextColor(for: .fiatBalance)),
                 loader: .init(size: .init(width: 40, height: 12))
             )
         }
@@ -70,7 +61,7 @@ struct ActionButtonsTokenSelectItemView: View {
 
     private var bottomInfoView: some View {
         HStack(spacing: .zero) {
-            Text(model.symbol)
+            Text(viewModel.currencySymbol)
                 .style(
                     Fonts.Regular.caption1,
                     color: Colors.Text.tertiary
@@ -79,11 +70,8 @@ struct ActionButtonsTokenSelectItemView: View {
             Spacer(minLength: 4)
 
             LoadableTokenBalanceView(
-                state: model.balance,
-                style: .init(
-                    font: Fonts.Bold.caption1,
-                    textColor: model.isDisabled ? Colors.Text.disabled : Colors.Text.tertiary
-                ),
+                state: viewModel.balanceState,
+                style: .init(font: Fonts.Bold.caption1, textColor: viewModel.getDisabledTextColor(for: .balance)),
                 loader: .init(size: .init(width: 40, height: 12))
             )
         }

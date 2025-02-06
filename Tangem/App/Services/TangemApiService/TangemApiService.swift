@@ -47,6 +47,10 @@ protocol TangemApiService: AnyObject {
     func loadTokens(for key: String) -> AnyPublisher<UserTokenList?, TangemAPIError>
     func saveTokens(list: UserTokenList, for key: String) -> AnyPublisher<Void, TangemAPIError>
 
+    // MARK: - Action Buttons
+
+    func loadHotCrypto(requestModel: HotCryptoDTO.Request) async throws -> HotCryptoDTO.Response
+
     // MARK: - BSDK
 
     func createAccount(networkId: String, publicKey: String) -> AnyPublisher<BlockchainAccountCreateResult, TangemAPIError>

@@ -19,7 +19,9 @@ public extension View {
         if #available(iOS 16.0, *) {
             modifier(ScreenCaptureProtectionIOS16AndAboveViewModifier())
         } else {
-            modifier(ScreenCaptureProtectionIOS15AndBelowViewModifier())
+            // https://tangem.atlassian.net/browse/IOS-9106
+            // modifier(ScreenCaptureProtectionIOS15AndBelowViewModifier())
+            self
         }
     }
 }

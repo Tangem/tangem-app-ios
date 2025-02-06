@@ -13,10 +13,6 @@ final class AdaptiveSizeSheetViewModel: ObservableObject {
 
     var containerHeight: CGFloat = 0
 
-    var scrollViewAxis: Axis.Set {
-        contentHeight > containerHeight ? .vertical : []
-    }
-
     var scrollableContentBottomPadding: CGFloat {
         contentHeight > containerHeight ? defaultBottomPadding : 0
     }

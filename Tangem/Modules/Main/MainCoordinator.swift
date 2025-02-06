@@ -452,13 +452,17 @@ extension MainCoordinator: ActionButtonsBuyFlowRoutable {
             self?.actionButtonsBuyCoordinator = nil
         }
 
-        let coordinator = ActionButtonsBuyCoordinator(
-            expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
-            dismissAction: dismissAction,
-            userWalletModel: userWalletModel
-        )
+        let coordinator = ActionButtonsBuyCoordinator(dismissAction: dismissAction)
 
-        coordinator.start(with: .default)
+        coordinator.start(
+            with: .default(
+                options: .init(
+                    userWalletModel: userWalletModel,
+                    expressTokensListAdapter: CommonExpressTokensListAdapter(userWalletModel: userWalletModel),
+                    tokenSorter: CommonBuyTokenAvailabilitySorter()
+                )
+            )
+        )
 
         actionButtonsBuyCoordinator = coordinator
     }

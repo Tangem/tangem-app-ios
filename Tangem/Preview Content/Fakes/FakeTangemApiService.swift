@@ -129,6 +129,10 @@ class FakeTangemApiService: TangemApiService {
         throw "Not implemented"
     }
 
+    func loadHotCrypto(requestModel: HotCryptoDTO.Request) async throws -> HotCryptoDTO.Response {
+        throw "Not implemented"
+    }
+
     func getSeedNotifyStatus(userWalletId: String) async throws -> SeedNotifyDTO {
         throw "Not implemented"
     }
