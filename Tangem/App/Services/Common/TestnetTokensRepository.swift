@@ -38,7 +38,7 @@ class TestnetTokensRepository {
                         type: CoinsList.Response.self
                     )
                 } catch {
-                    AppLog.error("Unable to read testnet mock file due to error", error: error)
+                    AppLogger.error("Unable to read testnet mock file due to error", error: error)
                     throw error
                 }
             }

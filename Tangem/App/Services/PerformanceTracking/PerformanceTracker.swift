@@ -69,7 +69,7 @@ final class PerformanceMetricToken {
 
     deinit {
         if !isStopped, let trace {
-            AppLog.error(error: "The trace '\(trace.name)' is still running; it must be stopped by calling 'PerformanceTracker.endTracking(token:)'")
+            AppLogger.error(error: "The trace '\(trace.name)' is still running; it must be stopped by calling 'PerformanceTracker.endTracking(token:)'")
         }
     }
 

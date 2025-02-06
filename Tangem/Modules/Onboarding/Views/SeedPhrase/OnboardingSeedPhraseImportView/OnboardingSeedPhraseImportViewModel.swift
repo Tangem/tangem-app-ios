@@ -68,7 +68,7 @@ class OnboardingSeedPhraseImportViewModel: ObservableObject {
             Analytics.log(.onboardingSeedButtonImport)
             delegate?.importSeedPhrase(mnemonic: mnemonic, passphrase: passphrase)
         } catch {
-            AppLog.error("Failed to generate seed phrase using input", error: error)
+            AppLogger.error("Failed to generate seed phrase using input", error: error)
             errorAlert = error.alertBinder
         }
     }

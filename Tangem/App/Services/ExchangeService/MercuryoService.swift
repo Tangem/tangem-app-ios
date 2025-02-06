@@ -68,7 +68,7 @@ class MercuryoService {
     private let darkThemeName = "1inch"
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 }
 

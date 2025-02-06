@@ -33,7 +33,7 @@ final class WalletConnectSolanaSignTransactionHandler {
             transaction = parameters.transaction
         } catch {
             let stringRepresentation = request.stringRepresentation
-            WCLog.error("Failed to create sign handler", error: error)
+            WCLogger.error("Failed to create sign handler", error: error)
             throw WalletConnectV2Error.dataInWrongFormat(stringRepresentation)
         }
 

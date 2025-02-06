@@ -363,7 +363,7 @@ class TwinsOnboardingViewModel: OnboardingTopupViewModel<TwinsOnboardingStep, On
                         }
                     }
                 default:
-                    AppLog.info(
+                    AppLogger.info(
                         "Wrong state while twinning cards: current - \(viewModel.currentStep), new - \(newStep)"
                     )
                 }

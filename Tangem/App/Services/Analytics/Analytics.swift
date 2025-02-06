@@ -230,7 +230,7 @@ class Analytics {
         if let data = try? JSONSerialization.data(withJSONObject: printableParams, options: .sortedKeys),
            let paramsString = String(data: data, encoding: .utf8)?.replacingOccurrences(of: ",\"", with: ", \"") {
             let logMessage = "Analytics event: \(event). Params: \(paramsString)"
-            AnalyticsLog.info(logMessage)
+            AnalyticsLogger.info(logMessage)
         }
     }
 

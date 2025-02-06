@@ -65,7 +65,7 @@ class CommonUserWalletRepository: UserWalletRepository {
     init() {}
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 
     private func scanPublisher(_ scanner: CardScanner) -> AnyPublisher<UserWalletRepositoryResult?, Never> {
@@ -119,7 +119,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                     return Just(nil)
                 }
 
-                AppLog.error(error: error)
+                AppLogger.error(error: error)
                 Analytics.error(error: error)
 
                 sendEvent(.scan(isScanning: false))
@@ -233,7 +233,7 @@ class CommonUserWalletRepository: UserWalletRepository {
             encryptionKeyStorage.add(userWalletModel.userWalletId, encryptionKey: UserWalletEncryptionKey(userWalletIdSeed: userWalletIdSeed))
             save()
         } else {
-            AppLog.error(error: "Failed to get encryption key for UserWallet")
+            AppLogger.error(error: "Failed to get encryption key for UserWallet")
         }
 
         sendEvent(.updated(userWalletId: userWalletModel.userWalletId))
@@ -305,7 +305,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                 try accessCodeRepository.deleteAccessCode(for: Array(userWallet.associatedCardIds))
             } catch {
                 Analytics.error(error: error)
-                AppLog.error(error: error)
+                AppLogger.error(error: error)
             }
         }
 
@@ -451,7 +451,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                 }
             } catch {
                 Analytics.error(error: error)
-                AppLog.error(error: error)
+                AppLogger.error(error: error)
                 completion(.error(error))
             }
         }
@@ -600,12 +600,12 @@ extension CommonUserWalletRepository {
             selectedUserWalletId = UserWalletId(value: savedSelectedUserWalletId)
         }
 
-        AppLog.info(self)
+        AppLogger.info(self)
     }
 
     func initialClean() {
         // Removing UserWallet-related data from Keychain
-        AppLog.info(self)
+        AppLogger.info(self)
         clearUserWalletStorage()
     }
 }

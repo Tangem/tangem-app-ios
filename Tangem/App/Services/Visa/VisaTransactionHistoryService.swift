@@ -48,25 +48,25 @@ extension VisaTransactionHistoryService {
     func reloadHistory() async {
         stateSubject.send(.loading)
         let firstItemsInStorage = Array(items.prefix(numberOfItemsOnPage))
-        AppLog.info("Attempting to reload history. Is storage empty: \(firstItemsInStorage.isEmpty)")
+        AppLogger.info("Attempting to reload history. Is storage empty: \(firstItemsInStorage.isEmpty)")
 
         do {
             let itemsOnServer = try await loadRecordsPage(offset: 0)
             if firstItemsInStorage == itemsOnServer {
-                AppLog.info("First \(firstItemsInStorage.count) items in storage are the same as first items on server, no need to update history")
+                AppLogger.info("First \(firstItemsInStorage.count) items in storage are the same as first items on server, no need to update history")
                 stateSubject.send(.loaded)
                 return
             }
 
-            AppLog.info("History on server is not same as history on device. Clearing storage and saving new loaded history. New number of items in storage: \(itemsOnServer.count)")
+            AppLogger.info("History on server is not same as history on device. Clearing storage and saving new loaded history. New number of items in storage: \(itemsOnServer.count)")
             clearHistory()
             currentOffset = itemsOnServer.count
             reachEndOfHistoryList = currentOffset % numberOfItemsOnPage != 0
             saveRecordsInStorage(records: itemsOnServer)
-            AppLog.info("Reach end of history: \(reachEndOfHistoryList)")
+            AppLogger.info("Reach end of history: \(reachEndOfHistoryList)")
             stateSubject.send(.loaded)
         } catch {
-            AppLog.error("Failed to reload history", error: error)
+            AppLogger.error("Failed to reload history", error: error)
             stateSubject.send(.failedToLoad(error))
         }
     }
@@ -77,13 +77,13 @@ extension VisaTransactionHistoryService {
         }
 
         stateSubject.send(.loading)
-        AppLog.info("Attempting to load next page. Current history offset: \(currentOffset)")
+        AppLogger.info("Attempting to load next page. Current history offset: \(currentOffset)")
         do {
             let loadedRecords = try await loadRecordsPage(offset: currentOffset)
             reachEndOfHistoryList = loadedRecords.count != numberOfItemsOnPage
             currentOffset += loadedRecords.count
             saveRecordsInStorage(records: loadedRecords)
-            AppLog.info("History loaded sucessfully. Number of new items: \(loadedRecords.count). New offset: \(currentOffset)")
+            AppLogger.info("History loaded sucessfully. Number of new items: \(loadedRecords.count). New offset: \(currentOffset)")
             stateSubject.send(.loaded)
         } catch {
             stateSubject.send(.failedToLoad(error))
@@ -110,7 +110,7 @@ private extension VisaTransactionHistoryService {
             offset: offset,
             numberOfItems: numberOfItemsOnPage
         )
-        AppLog.info("Attempting to load history page with request: \(request)")
+        AppLogger.info("Attempting to load history page with request: \(request)")
         let response = try await apiService.loadHistoryPage(request: request)
         return response.transactions
     }

@@ -87,15 +87,15 @@ enum CardMock: String, CaseIterable {
     }
 
     private func decodeFromURL(_ url: URL) -> Card? {
-        AppLog.info("Attempt to decode file at url: \(url)")
+        AppLogger.info("Attempt to decode file at url: \(url)")
         let dataStr = try! String(contentsOf: url)
         let decoder = JSONDecoder.tangemSdkDecoder
         decoder.keyDecodingStrategy = .useDefaultKeys
         do {
-            AppLog.info(dataStr)
+            AppLogger.info(dataStr)
             return try decoder.decode(Card.self, from: dataStr.data(using: .utf8)!)
         } catch {
-            AppLog.error("Failed to decode card", error: error)
+            AppLogger.error("Failed to decode card", error: error)
         }
         return nil
     }

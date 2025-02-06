@@ -80,7 +80,7 @@ final class TokenDetailsViewModel: SingleTokenBaseViewModel, ObservableObject {
     }
 
     deinit {
-        AppLog.debug("TokenDetailsViewModel deinit")
+        AppLogger.debug("TokenDetailsViewModel deinit")
     }
 
     func onAppear() {
@@ -236,7 +236,7 @@ private extension TokenDetailsViewModel {
         walletModel.stakingManagerStatePublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
-                AppLog.info("Token details receive new StakingManager state: \(state)")
+                AppLogger.info("Token details receive new StakingManager state: \(state)")
                 self?.updateStaking(state: state)
             }
             .store(in: &bag)

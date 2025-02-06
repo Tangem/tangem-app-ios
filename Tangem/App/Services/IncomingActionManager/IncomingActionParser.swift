@@ -40,7 +40,7 @@ public class IncomingActionParser {
         case AppIntent.scanCard.rawValue:
             return .start
         default:
-            AppLog.warning("Received unknown intent: \(intent)")
+            AppLogger.warning("Received unknown intent: \(intent)")
             return nil
         }
     }

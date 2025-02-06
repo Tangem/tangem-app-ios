@@ -220,7 +220,7 @@ class WalletModel {
     lazy var fiatTotalTokenBalanceProvider = makeFiatTotalTokenBalanceProvider()
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 
     init(
@@ -360,7 +360,7 @@ class WalletModel {
     }
 
     private func updateState(_ state: State) {
-        AppLog.info(self, "Updating state. New state is \(state)")
+        AppLogger.info(self, "Updating state. New state is \(state)")
         DispatchQueue.main.async { [weak self] in // captured as weak at call stack
             self?._state.value = state
         }
@@ -403,7 +403,7 @@ class WalletModel {
 
     func startUpdatingTimer() {
         walletManager.setNeedsUpdate()
-        AppLog.info(self, "⏰ Starting updating timer")
+        AppLogger.info(self, "⏰ Starting updating timer")
         updateTimer = Timer.TimerPublisher(
             interval: 10.0,
             tolerance: 0.1,
@@ -413,7 +413,7 @@ class WalletModel {
         .autoconnect()
         .withWeakCaptureOf(self)
         .flatMap { root, _ in
-            AppLog.info(root, "⏰ Updating timer alarm ‼️. WalletModel will be updated")
+            AppLogger.info(root, "⏰ Updating timer alarm ‼️. WalletModel will be updated")
             return root.generalUpdate(silent: false)
         }
         .sink { [weak self] in
@@ -521,7 +521,7 @@ extension WalletModel {
 extension WalletModel {
     func updateTransactionsHistory() -> AnyPublisher<Void, Never> {
         guard let _transactionHistoryService else {
-            AppLog.info(self, "TransactionsHistory not supported")
+            AppLogger.info(self, "TransactionsHistory not supported")
             return .just(output: ())
         }
 
@@ -556,19 +556,19 @@ extension WalletModel {
 
     private func insertPendingTransactionRecordIfNeeded(into items: inout [TransactionRecord]) {
         guard !pendingTransactions.isEmpty else {
-            AppLog.info(self, "has not local pending transactions")
+            AppLogger.info(self, "has not local pending transactions")
             return
         }
 
-        AppLog.info(self, "has pending local transactions. Try to insert it to transaction history")
+        AppLogger.info(self, "has pending local transactions. Try to insert it to transaction history")
         let mapper = PendingTransactionRecordMapper(formatter: formatter)
 
         pendingTransactions.forEach { pending in
             if items.contains(where: { $0.hash == pending.hash }) {
-                AppLog.info(self, "Transaction history already contains pending transaction")
+                AppLogger.info(self, "Transaction history already contains pending transaction")
             } else {
                 let record = mapper.mapToTransactionRecord(pending: pending)
-                AppLog.info(self, "Inserted to transaction history transaction")
+                AppLogger.info(self, "Inserted to transaction history transaction")
                 items.insert(record, at: 0)
             }
         }

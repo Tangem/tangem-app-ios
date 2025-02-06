@@ -56,7 +56,7 @@ final class PolkadotAccountHealthBackgroundTaskManager {
             let message = "Can't register background task (BackgroundTasks) with identifier '\(identifier)'"
             assertionFailure(message)
             Analytics.error(error: message)
-            AppLog.error(error: message)
+            AppLogger.error(error: message)
         }
     }
 
@@ -72,12 +72,12 @@ final class PolkadotAccountHealthBackgroundTaskManager {
 
         do {
             try BGTaskScheduler.shared.submit(taskRequest)
-            AppLog.info("Scheduled background task (BackgroundTasks) with identifier '\(identifier)'")
+            AppLogger.info("Scheduled background task (BackgroundTasks) with identifier '\(identifier)'")
         } catch {
             let message = "Can't submit background task (BackgroundTasks) with identifier '\(identifier)'"
             assertionFailure(message)
             Analytics.error(error: message)
-            AppLog.error(error: message)
+            AppLogger.error(error: message)
         }
     }
 
@@ -85,7 +85,7 @@ final class PolkadotAccountHealthBackgroundTaskManager {
         let identifier = backgroundTaskIdentifier
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
         pendingAccountsForBackgroundTask.removeAll()
-        AppLog.info("Cancelled background task (BackgroundTasks) with identifier '\(identifier)'")
+        AppLogger.info("Cancelled background task (BackgroundTasks) with identifier '\(identifier)'")
     }
 
     func cancelBackgroundTaskForAccount(_ account: String) {
@@ -93,13 +93,13 @@ final class PolkadotAccountHealthBackgroundTaskManager {
     }
 
     private func handleBackgroundTask(_ backgroundTask: BGProcessingTask) {
-        AppLog.info("Processing background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)'")
+        AppLogger.info("Processing background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)'")
 
         let accounts = pendingAccountsForBackgroundTask.toSet()
         pendingAccountsForBackgroundTask.removeAll()
 
         backgroundTask.expirationHandler = { [weak self] in
-            AppLog.info("Background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)' has expired'")
+            AppLogger.info("Background task (BackgroundTasks) with identifier '\(backgroundTask.identifier)' has expired'")
             self?.onResourcesCleanup?()
             backgroundTask.setTaskCompleted(success: false)
         }

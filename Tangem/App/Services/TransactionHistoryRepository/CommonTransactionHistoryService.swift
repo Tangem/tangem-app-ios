@@ -56,7 +56,7 @@ extension CommonTransactionHistoryService: TransactionHistoryService {
         cancellable = nil
         transactionHistoryProvider.reset()
         cleanStorage()
-        AppLog.info(self, "was reset")
+        AppLogger.info(self, "was reset")
     }
 
     func update() -> AnyPublisher<Void, Never> {
@@ -76,12 +76,12 @@ private extension CommonTransactionHistoryService {
         cancellable = nil
 
         guard canFetchHistory else {
-            AppLog.info(self, "reached the end of list")
+            AppLogger.info(self, "reached the end of list")
             result(.success(()))
             return
         }
 
-        AppLog.info(self, "start loading")
+        AppLogger.info(self, "start loading")
         _state.send(.loading)
 
         let request = TransactionHistory.Request(address: address, amountType: tokenItem.amountType, limit: pageSize)
@@ -90,18 +90,18 @@ private extension CommonTransactionHistoryService {
             .loadTransactionHistory(request: request)
             .handleEvents(receiveCancel: { [weak self] in
                 // Resolves conflicting requests for tracking history from different consumers so as not to lose output from the update process
-                AppLog.info(self, "canceled")
+                AppLogger.info(self, "canceled")
                 result(.success(()))
             })
             .sink { [weak self] completion in
                 switch completion {
                 case .failure(let error):
                     self?._state.send(.failedToLoad(error))
-                    AppLog.error(self, error: error)
+                    AppLogger.error(self, error: error)
                     result(.success(()))
                 case .finished:
                     self?._state.send(.loaded)
-                    AppLog.info(self, "loaded")
+                    AppLogger.info(self, "loaded")
                     result(.success(()))
                 }
             } receiveValue: { [weak self] response in

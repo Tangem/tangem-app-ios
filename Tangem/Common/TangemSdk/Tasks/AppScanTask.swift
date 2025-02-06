@@ -64,7 +64,7 @@ final class AppScanTask: CardSessionRunnable {
     }
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 
     /// read ->  readTwinData or note Data or derive wallet's keys -> appendWallets(createwallets+ scan)  -> attestation

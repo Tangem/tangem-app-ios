@@ -42,11 +42,11 @@ class FakeTokenItemInfoProvider: ObservableObject {
         guard let tappedWalletManager = walletModels.first(where: { $0.id == id }) else {
             return
         }
-        AppLog.debug("Tapped wallet model: \(tappedWalletManager)")
+        AppLogger.debug("Tapped wallet model: \(tappedWalletManager)")
         var updateSubscription: AnyCancellable?
         updateSubscription = tappedWalletManager.update(silent: true)
             .sink { newState in
-                AppLog.debug("Receive new state \(newState) for \(tappedWalletManager)")
+                AppLogger.debug("Receive new state \(newState) for \(tappedWalletManager)")
                 withExtendedLifetime(updateSubscription) {}
             }
     }

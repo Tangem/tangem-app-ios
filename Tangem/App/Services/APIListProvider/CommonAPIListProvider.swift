@@ -22,7 +22,7 @@ class CommonAPIListProvider {
 
     func initialize() {
         runTask(withTimeout: remoteListRequestTimeout) { [weak self] in
-            AppLog.info(self, "onTimeout while file load")
+            AppLogger.info(self, "onTimeout while file load")
             await self?.loadRemoteList()
         } onTimeout: { [weak self] in
             self?.loadLocalFile()
@@ -33,7 +33,7 @@ class CommonAPIListProvider {
         let startTime = CFAbsoluteTimeGetCurrent()
 
         do {
-            AppLog.info(self, "Attempting to load API list from server")
+            AppLogger.info(self, "Attempting to load API list from server")
 
             let loadedList = try await tangemApiService.loadAPIList()
 
@@ -50,14 +50,14 @@ class CommonAPIListProvider {
 
             await updateAPIListSubject(with: convertedRemoteAPIList)
             let remoteFileParseTime = CFAbsoluteTimeGetCurrent()
-            AppLog.info(self, "Remote API list loading and parsing time: \(remoteFileParseTime - startTime) seconds")
+            AppLogger.info(self, "Remote API list loading and parsing time: \(remoteFileParseTime - startTime) seconds")
         } catch {
             if error is CancellationError || Task.isCancelled {
-                AppLog.info(self, "Loading API list from server was cancelled. No action required")
+                AppLogger.info(self, "Loading API list from server was cancelled. No action required")
                 return
             }
 
-            AppLog.error(self, "Failed to load API list from server. Attempting to read local API list.", error: error)
+            AppLogger.error(self, "Failed to load API list from server. Attempting to read local API list.", error: error)
             loadLocalFile()
         }
     }
@@ -68,7 +68,7 @@ class CommonAPIListProvider {
         do {
             apiList = try APIListUtils().parseLocalAPIListJson()
         } catch {
-            AppLog.error(self, "Failed to parse local file. Publishing empty list", error: error)
+            AppLogger.error(self, "Failed to parse local file. Publishing empty list", error: error)
             apiList = [:]
         }
 

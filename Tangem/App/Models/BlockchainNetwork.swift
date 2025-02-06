@@ -35,7 +35,7 @@ struct BlockchainNetwork: Codable, Hashable, Equatable {
             let extendedPath = try CardanoUtil().extendedDerivationPath(for: derivationPath)
             return [derivationPath, extendedPath]
         } catch {
-            AppLog.error(error: error)
+            AppLogger.error(error: error)
             Analytics.error(error: error)
             return [derivationPath]
         }

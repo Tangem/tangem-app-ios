@@ -25,7 +25,7 @@ class TwinsCreateWalletTask: CardSessionRunnable {
     var requiresPin2: Bool { true }
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 
     private let firstTwinCardId: String?

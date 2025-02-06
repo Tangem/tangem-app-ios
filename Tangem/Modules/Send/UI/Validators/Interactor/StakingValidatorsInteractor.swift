@@ -49,7 +49,7 @@ class CommonStakingValidatorsInteractor {
 private extension CommonStakingValidatorsInteractor {
     func setupValidators() {
         guard let yield = manager.state.yieldInfo else {
-            AppLog.error(error: "StakingManager.Yields not found")
+            AppLogger.error(error: "StakingManager.Yields not found")
             return
         }
 
@@ -57,7 +57,7 @@ private extension CommonStakingValidatorsInteractor {
             .filter { actionType == .restake ? $0 != currentValidator : true }
 
         guard !validators.isEmpty else {
-            AppLog.error(error: "Yield.Validators is empty")
+            AppLogger.error(error: "Yield.Validators is empty")
             return
         }
 

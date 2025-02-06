@@ -60,7 +60,7 @@ final class BackgroundTaskWrapper {
 
             expirationHandler = nil
 
-            AppLog.warning("Background task '\(taskName)' finished (expired: \(isExpired))")
+            AppLogger.warning("Background task '\(taskName)' finished (expired: \(isExpired))")
         }
     }
 }

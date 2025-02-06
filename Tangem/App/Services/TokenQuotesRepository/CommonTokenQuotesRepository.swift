@@ -57,7 +57,7 @@ extension CommonTokenQuotesRepository: TokenQuotesRepository {
     }
 
     func loadQuotes(currencyIds: [String]) -> AnyPublisher<[String: TokenQuote], Never> {
-        AppLog.info(self, "Request loading quotes for ids: \(currencyIds)")
+        AppLogger.info(self, "Request loading quotes for ids: \(currencyIds)")
 
         let outputPublisher = PassthroughSubject<[String: TokenQuote], Never>()
         let item = QueueItem(ids: currencyIds, didLoadPublisher: outputPublisher)
@@ -181,7 +181,7 @@ private extension CommonTokenQuotesRepository {
     }
 
     func loadAndSaveQuotes(currencyIds: [String]) -> AnyPublisher<[String: TokenQuote], Never> {
-        AppLog.info(self, "Start loading quotes for ids: \(currencyIds)")
+        AppLogger.info(self, "Start loading quotes for ids: \(currencyIds)")
 
         let currencyCode = AppSettings.shared.selectedCurrencyCode
 
@@ -197,7 +197,7 @@ private extension CommonTokenQuotesRepository {
         return tangemApiService
             .loadQuotes(requestModel: request)
             .map { [weak self] quotes in
-                AppLog.info(self, "Finish loading quotes for ids: \(currencyIds)")
+                AppLogger.info(self, "Finish loading quotes for ids: \(currencyIds)")
                 let quotes = quotes.compactMap {
                     self?.mapToTokenQuote(quote: $0, currencyCode: currencyCode)
                 }
@@ -205,7 +205,7 @@ private extension CommonTokenQuotesRepository {
                 return quotes.reduce(into: [:]) { $0[$1.currencyId] = $1 }
             }
             .catch { [weak self] error -> AnyPublisher<[String: TokenQuote], Never> in
-                AppLog.error(self, "Loading quotes catch error", error: error)
+                AppLogger.error(self, "Loading quotes catch error", error: error)
                 return Just([:]).eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
@@ -223,7 +223,7 @@ private extension CommonTokenQuotesRepository {
     }
 
     func clearRepository() {
-        AppLog.info(self, "Start repository cleanup")
+        AppLogger.info(self, "Start repository cleanup")
         _quotes.value.removeAll()
     }
 }

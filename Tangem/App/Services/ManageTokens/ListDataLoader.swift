@@ -56,7 +56,7 @@ class TokensListDataLoader {
     }
 
     func reset(_ searchText: String?) {
-        AppLog.info("Reset Tokens loader list tokens")
+        AppLogger.info("Reset Tokens loader list tokens")
 
         canFetchMore = true
         items = []
@@ -101,7 +101,7 @@ class TokensListDataLoader {
                 canFetchMore = false
             }
 
-            AppLog.info("Loaded new items for manage tokens list. New total tokens count: \(self.items.count + items.count)")
+            AppLogger.info("Loaded new items for manage tokens list. New total tokens count: \(self.items.count + items.count)")
 
             self.items.append(contentsOf: items)
         } catch {
@@ -109,7 +109,7 @@ class TokensListDataLoader {
                 return
             }
 
-            AppLog.error("Failed to load next page", error: error)
+            AppLogger.error("Failed to load next page", error: error)
         }
     }
 }

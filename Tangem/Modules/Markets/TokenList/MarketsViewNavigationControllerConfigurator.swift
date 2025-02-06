@@ -36,7 +36,7 @@ extension MarketsViewNavigationControllerConfigurator: UINavigationControllerDel
         }
 
         if !viewController.isViewLoaded {
-            AppLog.info("Configurator will force load the root view of the view controller \(viewController)")
+            AppLogger.info("Configurator will force load the root view of the view controller \(viewController)")
         }
 
         // Applying rounded corners in SwiftUI still leaves a white background underneath, so we're left with UIKit

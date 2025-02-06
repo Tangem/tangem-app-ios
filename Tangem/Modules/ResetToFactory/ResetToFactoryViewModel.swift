@@ -43,7 +43,7 @@ class ResetToFactoryViewModel: ObservableObject {
     }
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 
     func didTapMainButton() {
@@ -109,7 +109,7 @@ private extension ResetToFactoryViewModel {
                 }
 
                 if !error.isUserCancelled {
-                    AppLog.error(error: error)
+                    AppLogger.error(error: error)
                     Analytics.error(error: error, params: [.action: .purgeWallet])
                 }
             }

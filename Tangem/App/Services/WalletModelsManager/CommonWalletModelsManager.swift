@@ -44,7 +44,7 @@ class CommonWalletModelsManager {
     }
 
     private func updateWalletModels(with walletManagers: [BlockchainNetwork: WalletManager]) {
-        AppLog.info("🔄 Updating Wallet models")
+        AppLogger.info("🔄 Updating Wallet models")
 
         let existingWalletModelIds = Set(walletModels.map { $0.walletModelId })
 
@@ -152,6 +152,6 @@ extension CommonWalletModelsManager: WalletModelsManager {
 
 private extension CommonWalletModelsManager {
     func log(walletModels: [WalletModel]) {
-        AppLog.info("✅ Actual List of WalletModels [\(walletModels.map(\.name))]")
+        AppLogger.info("✅ Actual List of WalletModels [\(walletModels.map(\.name))]")
     }
 }

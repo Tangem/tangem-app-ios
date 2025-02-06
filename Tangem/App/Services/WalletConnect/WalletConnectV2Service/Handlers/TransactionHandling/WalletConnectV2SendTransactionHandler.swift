@@ -40,7 +40,7 @@ class WalletConnectV2SendTransactionHandler {
             self.wcTransaction = wcTransaction
             walletModel = try walletModelProvider.getModel(with: wcTransaction.from, blockchainId: blockchainId)
         } catch {
-            WCLog.error("Failed to create Send transaction handler", error: error)
+            WCLogger.error("Failed to create Send transaction handler", error: error)
             throw error
         }
 

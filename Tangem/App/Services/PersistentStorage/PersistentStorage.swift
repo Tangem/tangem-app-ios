@@ -20,7 +20,7 @@ class PersistentStorage {
     }
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 
     private func documentPath(for key: String) -> URL {
@@ -40,7 +40,7 @@ class PersistentStorage {
             do {
                 try fileManager.createDirectory(at: containerUrl, withIntermediateDirectories: true, attributes: nil)
             } catch {
-                AppLog.error(error: error)
+                AppLogger.error(error: error)
             }
         }
     }

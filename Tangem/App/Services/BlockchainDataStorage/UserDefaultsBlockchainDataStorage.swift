@@ -28,7 +28,7 @@ extension UserDefaultsBlockchainDataStorage: BlockchainDataStorage {
             }
 
             guard let value = try? JSONDecoder().decode(BlockchainData.self, from: data) else {
-                AppLog.warning("Unable to deserialize stored value for key '\(key)'")
+                AppLogger.warning("Unable to deserialize stored value for key '\(key)'")
                 return nil
             }
 
@@ -45,7 +45,7 @@ extension UserDefaultsBlockchainDataStorage: BlockchainDataStorage {
             }
 
             guard let data = try? JSONEncoder().encode(value) else {
-                AppLog.warning("Unable to serialize given value of type '\(BlockchainData.self)' for key '\(key)'")
+                AppLogger.warning("Unable to serialize given value of type '\(BlockchainData.self)' for key '\(key)'")
                 return
             }
 

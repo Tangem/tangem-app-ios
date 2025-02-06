@@ -53,7 +53,7 @@ public extension EIP712TypedData {
         let sorted = [primaryType] + Array(depSet).sorted()
         let fullType = sorted.compactMap { searchingType -> String? in
             guard let type = types[searchingType] else {
-                WCLog.error(error: "EIP712TypedData type: \(searchingType) not found in \(types)")
+                WCLogger.error(error: "EIP712TypedData type: \(searchingType) not found in \(types)")
                 return nil
             }
 
@@ -100,7 +100,7 @@ public extension EIP712TypedData {
                 }
             }
         } catch {
-            WCLog.error(error: error)
+            WCLogger.error(error: error)
         }
         return encodedData
     }

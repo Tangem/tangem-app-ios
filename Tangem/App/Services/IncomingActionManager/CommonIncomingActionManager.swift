@@ -42,7 +42,7 @@ extension CommonIncomingActionManager: IncomingActionManaging {
         for responder in responders.allDelegates.reversed() {
             if responder.didReceiveIncomingAction(pendingAction) {
                 self.pendingAction = nil // handled
-                AppLog.info("Incoming action handled: \(pendingAction)")
+                AppLogger.info("Incoming action handled: \(pendingAction)")
                 break
             }
         }
@@ -53,7 +53,7 @@ extension CommonIncomingActionManager: IncomingActionManaging {
 
 extension CommonIncomingActionManager: IncomingActionHandler {
     public func handleIntent(_ intent: String) -> Bool {
-        AppLog.info("Received intent: \(intent)")
+        AppLogger.info("Received intent: \(intent)")
 
         guard let action = parser.parseIntent(intent) else {
             return false
@@ -65,7 +65,7 @@ extension CommonIncomingActionManager: IncomingActionHandler {
     }
 
     public func handleDeeplink(_ url: URL) -> Bool {
-        AppLog.info("Received deeplink: \(url.absoluteString)")
+        AppLogger.info("Received deeplink: \(url.absoluteString)")
 
         guard let action = parser.parseDeeplink(url) else {
             return false

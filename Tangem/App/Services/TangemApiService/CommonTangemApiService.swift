@@ -36,7 +36,7 @@ class CommonTangemApiService {
     }()
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 
     private func request<D: Decodable>(for type: TangemApiTarget.TargetType, decoder: JSONDecoder = .init()) async throws -> D {

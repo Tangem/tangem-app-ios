@@ -57,7 +57,7 @@ actor CommonWalletConnectSessionsStorage {
         do {
             try storage.store(value: sessions, for: .allWalletConnectSessions)
         } catch {
-            WCLog.error("Failed to save session file to disk", error: error)
+            WCLogger.error("Failed to save session file to disk", error: error)
         }
     }
 }
@@ -66,7 +66,7 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
     func save(_ session: WalletConnectSavedSession) {
         allSessions.value.append(session)
         saveCachedSessions()
-        WCLog.info("Session with topic: \(session.topic) saved to disk.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
+        WCLogger.info("Session with topic: \(session.topic) saved to disk.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
     }
 
     func session(with id: Int) -> WalletConnectSavedSession? {
@@ -80,7 +80,7 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
     func remove(_ session: WalletConnectSavedSession) {
         allSessions.value.remove(session)
         saveCachedSessions()
-        WCLog.info(self, "Session with topic: \(session.topic) was removed from storage.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
+        WCLogger.info(self, "Session with topic: \(session.topic) was removed from storage.\nSession URL: \(session.sessionInfo.dAppInfo.url)")
     }
 
     func removeSessions(for userWalletId: String) -> [WalletConnectSavedSession] {
@@ -105,7 +105,7 @@ extension CommonWalletConnectSessionsStorage: WalletConnectSessionsStorage {
 
         saveSessionsToFile(sessions)
         allSessions.value = sessions
-        WCLog.info(self, "All sessions for \(userWalletId) was removed. Number of removed sessions: \(removedSessions.count)")
+        WCLogger.info(self, "All sessions for \(userWalletId) was removed. Number of removed sessions: \(removedSessions.count)")
         return removedSessions
     }
 }

@@ -21,7 +21,7 @@ struct UserWalletFinder {
 
             try userWalletModel.userTokensManager.update(itemsToRemove: [], itemsToAdd: [tokenItem])
         } catch {
-            AppLog.error("Failed to add token after transaction to other wallet", error: error)
+            AppLogger.error("Failed to add token after transaction to other wallet", error: error)
         }
     }
 

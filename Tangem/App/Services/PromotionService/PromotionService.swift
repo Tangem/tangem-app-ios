@@ -135,7 +135,7 @@ extension PromotionService: PromotionServiceProtocol {
                 try secureStorage.delete(promoCodeStorageKey)
             }
         } catch {
-            AppLog.error("Failed to update promo code", error: error)
+            AppLogger.error("Failed to update promo code", error: error)
         }
     }
 
@@ -178,7 +178,7 @@ extension PromotionService: PromotionServiceProtocol {
             guard let data = try storage.get(awardedPromotionNamesStorageKey) else { return [] }
             return try JSONDecoder().decode(Set<String>.self, from: data)
         } catch {
-            AppLog.error("Failed to get awarded promotions", error: error)
+            AppLogger.error("Failed to get awarded promotions", error: error)
             return []
         }
     }
@@ -194,14 +194,14 @@ extension PromotionService: PromotionServiceProtocol {
             guard let data = try storage.get(finishedPromotionNamesStorageKey) else { return [] }
             return try JSONDecoder().decode(Set<String>.self, from: data)
         } catch {
-            AppLog.error("Failed to get finished promotions", error: error)
+            AppLogger.error("Failed to get finished promotions", error: error)
             return []
         }
     }
 
     func resetFinishedPromotions() {
         if AppEnvironment.current.isProduction {
-            AppLog.error(error: "Trying to reset finished promotions in production. Not allowed")
+            AppLogger.error(error: "Trying to reset finished promotions in production. Not allowed")
             fatalError("Trying to reset finished promotions in production. Not allowed")
         }
 
@@ -305,7 +305,7 @@ extension PromotionService {
             let storage = SecureStorage()
             try storage.store(data, forKey: finishedPromotionNamesStorageKey)
         } catch {
-            AppLog.error("Failed to set finished programs", error: error)
+            AppLogger.error("Failed to set finished programs", error: error)
         }
     }
 
@@ -331,7 +331,7 @@ extension PromotionService {
             let storage = SecureStorage()
             try storage.store(data, forKey: awardedPromotionNamesStorageKey)
         } catch {
-            AppLog.error("Failed to set awarded promotions", error: error)
+            AppLogger.error("Failed to set awarded promotions", error: error)
         }
     }
 }

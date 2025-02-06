@@ -28,7 +28,7 @@ extension TronSendTransactionSummaryDescriptionBuilder: SendTransactionSummaryDe
         }
 
         guard let feeParameters = fee.parameters as? TronFeeParameters else {
-            AppLog.error(error: "Fee parameters must be set for TronSendTransactionSummaryDescriptionBuilder")
+            AppLogger.error(error: "Fee parameters must be set for TronSendTransactionSummaryDescriptionBuilder")
             return nil
         }
 

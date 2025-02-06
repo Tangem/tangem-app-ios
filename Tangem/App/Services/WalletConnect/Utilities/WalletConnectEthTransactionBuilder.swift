@@ -75,7 +75,7 @@ extension CommonWalletConnectEthTransactionBuilder: WalletConnectEthTransactionB
     func buildTx(from wcTransaction: WalletConnectEthTransaction, for walletModel: WalletModel) async throws -> Transaction {
         guard let ethereumNetworkProvider = walletModel.ethereumNetworkProvider else {
             let error = WalletConnectV2Error.missingGasLoader
-            WCLog.error(error: error)
+            WCLogger.error(error: error)
             throw error
         }
 
@@ -83,7 +83,7 @@ extension CommonWalletConnectEthTransactionBuilder: WalletConnectEthTransactionB
         let rawValue = wcTransaction.value ?? zeroString
         guard let value = EthereumUtils.parseEthereumDecimal(rawValue, decimalsCount: blockchain.decimalCount) else {
             let error = ETHError.failedToParseBalance(value: rawValue, address: "", decimals: blockchain.decimalCount)
-            WCLog.error(error: error)
+            WCLogger.error(error: error)
             throw error
         }
 

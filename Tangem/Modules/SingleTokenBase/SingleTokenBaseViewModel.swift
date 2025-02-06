@@ -143,7 +143,7 @@ class SingleTokenBaseViewModel: NotificationTapDelegate {
                     return
                 }
 
-                AppLog.info(self, "♻️ loading state changed")
+                AppLogger.info(self, "♻️ loading state changed")
                 isReloadingTransactionHistory = false
                 updateSubscription = nil
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -284,7 +284,7 @@ extension SingleTokenBaseViewModel {
             .removeDuplicates()
             .filter { !$0.isLoading }
             .receiveValue { [weak self] newState in
-                AppLog.info(String(describing: self), "Token details receive new wallet model state: \(newState)")
+                AppLogger.info(String(describing: self), "Token details receive new wallet model state: \(newState)")
                 self?.updateActionButtons()
             }
             .store(in: &bag)
@@ -292,7 +292,7 @@ extension SingleTokenBaseViewModel {
         walletModel.transactionHistoryPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newState in
-                AppLog.info(String(describing: self), "New transaction history state: \(newState)")
+                AppLogger.info(String(describing: self), "New transaction history state: \(newState)")
                 self?.updateHistoryState(to: newState)
             }
             .store(in: &bag)
@@ -423,7 +423,7 @@ extension SingleTokenBaseViewModel {
                 .map(\.price.doubleValue)
             miniChartData = .loaded(chartPoints)
         } catch {
-            AppLog.error(error: error)
+            AppLogger.error(error: error)
             miniChartData = .failedToLoad(error: error)
         }
     }

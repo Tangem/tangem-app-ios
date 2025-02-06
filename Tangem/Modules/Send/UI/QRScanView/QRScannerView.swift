@@ -263,7 +263,7 @@ extension UIQRScannerView {
         do {
             videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
         } catch {
-            AppLog.error(error: error)
+            AppLogger.error(error: error)
             return
         }
 

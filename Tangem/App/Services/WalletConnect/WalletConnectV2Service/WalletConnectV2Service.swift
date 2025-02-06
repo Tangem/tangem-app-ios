@@ -64,7 +64,7 @@ final class WalletConnectV2Service {
         do {
             try configureWalletKit()
         } catch {
-            WCLog.error("WalletConnect redirect configure failure", error: error)
+            WCLogger.error("WalletConnect redirect configure failure", error: error)
         }
 
         setupSessionSubscriptions()
@@ -107,12 +107,12 @@ final class WalletConnectV2Service {
 
     func disconnectSession(with id: Int) async {
         guard let session = await sessionsStorage.session(with: id) else {
-            WCLog.error(error: "Failed to find session with id: \(id). Attempt to disconnect session failed")
+            WCLogger.error(error: "Failed to find session with id: \(id). Attempt to disconnect session failed")
             return
         }
 
         do {
-            WCLog.info("Attempt to disconnect session with topic: \(session.topic)")
+            WCLogger.info("Attempt to disconnect session with topic: \(session.topic)")
             try await WalletKit.instance.disconnect(topic: session.topic)
 
             Analytics.log(
@@ -123,19 +123,19 @@ final class WalletConnectV2Service {
                 ]
             )
 
-            WCLog.info("Session with topic: \(session.topic) was disconnected from SignAPI. Removing from storage")
+            WCLogger.info("Session with topic: \(session.topic) was disconnected from SignAPI. Removing from storage")
             await sessionsStorage.remove(session)
         } catch {
             let internalError = WalletConnectV2ErrorMappingUtils().mapWCv2Error(error)
             switch internalError {
             case .sessionForTopicNotFound, .symmetricKeyForTopicNotFound:
-                WCLog.error("Failed to remove session with \(session.topic) from SignAPI. Removing anyway from storage", error: internalError)
+                WCLogger.error("Failed to remove session with \(session.topic) from SignAPI. Removing anyway from storage", error: internalError)
                 await sessionsStorage.remove(session)
                 return
             default:
                 break
             }
-            WCLog.error("Failed to disconnect session with topic: \(session.topic)", error: error)
+            WCLogger.error("Failed to disconnect session with topic: \(session.topic)", error: error)
         }
     }
 
@@ -148,7 +148,7 @@ final class WalletConnectV2Service {
                 do {
                     try await WalletKit.instance.disconnect(topic: session.topic)
                 } catch {
-                    WCLog.error("Failed to disconnect session while disconnecting all sessions for user wallet with id: \(userWalletId)", error: error)
+                    WCLogger.error("Failed to disconnect session while disconnecting all sessions for user wallet with id: \(userWalletId)", error: error)
                 }
             }
         }
@@ -177,7 +177,7 @@ final class WalletConnectV2Service {
 
             return newState == .connected
         } catch {
-            WCLog.error("Failed to get new connection state", error: error)
+            WCLogger.error("Failed to get new connection state", error: error)
             return false
         }
     }
@@ -190,11 +190,11 @@ final class WalletConnectV2Service {
             return
         }
 
-        WCLog.info("Trying to pair client: \(url)")
+        WCLogger.info("Trying to pair client: \(url)")
         do {
             try await WalletKit.instance.pair(uri: url)
             try Task.checkCancellation()
-            WCLog.info("Established pair for \(url)")
+            WCLogger.info("Established pair for \(url)")
             DispatchQueue.main.async {
                 Toast(view: SuccessToast(text: Localization.walletConnectToastAwaitingSessionProposal))
                     .present(
@@ -204,7 +204,7 @@ final class WalletConnectV2Service {
             }
         } catch {
             displayErrorUI(WalletConnectV2Error.pairClientError(error.localizedDescription))
-            WCLog.error("Failed to connect to \(url)", error: error)
+            WCLogger.error("Failed to connect to \(url)", error: error)
 
             // Hack to delete the topic from the user default storage inside the WC 2.0 SDK
             await disconnect(topic: url.topic)
@@ -215,9 +215,9 @@ final class WalletConnectV2Service {
     private func disconnect(topic: String) async {
         do {
             try await WalletKit.instance.disconnect(topic: topic)
-            WCLog.info("Success disconnect/delete topic \(topic)")
+            WCLogger.info("Success disconnect/delete topic \(topic)")
         } catch {
-            WCLog.error("Failed to disconnect/delete topic \(topic)", error: error)
+            WCLogger.error("Failed to disconnect/delete topic \(topic)", error: error)
         }
     }
 
@@ -227,7 +227,7 @@ final class WalletConnectV2Service {
         WalletKit.instance.sessionProposalPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] sessionProposal, context in
-                WCLog.info("Session proposal: \(sessionProposal) with verify context: \(String(describing: context))")
+                WCLogger.info("Session proposal: \(sessionProposal) with verify context: \(String(describing: context))")
                 Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.receiveSessionProposal(name: sessionProposal.proposer.name, dAppURL: sessionProposal.proposer.url))
                 self?.validateProposal(sessionProposal)
             }
@@ -239,10 +239,10 @@ final class WalletConnectV2Service {
                 guard let self else { return }
 
                 if infoProvider == nil {
-                    WCLog.info("Info provider is not setup. Saved session will miss some info")
+                    WCLogger.info("Info provider is not setup. Saved session will miss some info")
                 }
 
-                WCLog.info("Session established: \(session)")
+                WCLogger.info("Session established: \(session)")
                 let savedSession = WalletConnectV2Utils().createSavedSession(
                     from: session,
                     with: infoProvider?.userWalletId.stringValue ?? ""
@@ -258,7 +258,7 @@ final class WalletConnectV2Service {
 
                 canEstablishNewSessionSubject.send(true)
 
-                WCLog.info("Saving session with topic: \(savedSession.topic).\ndApp url: \(savedSession.sessionInfo.dAppInfo.url)")
+                WCLogger.info("Saving session with topic: \(savedSession.topic).\ndApp url: \(savedSession.sessionInfo.dAppInfo.url)")
                 await sessionsStorage.save(savedSession)
             }
             .sink()
@@ -269,10 +269,10 @@ final class WalletConnectV2Service {
             .asyncMap { [weak self] topic, reason in
                 guard let self else { return }
 
-                WCLog.info("Receive Delete session message with topic: \(topic). Delete reason: \(reason)")
+                WCLogger.info("Receive Delete session message with topic: \(topic). Delete reason: \(reason)")
 
                 guard let session = await sessionsStorage.session(with: topic) else {
-                    WCLog.info("Receive Delete session message with topic: \(topic). Delete reason: \(reason). But session not found.")
+                    WCLogger.info("Receive Delete session message with topic: \(topic). Delete reason: \(reason). But session not found.")
                     return
                 }
 
@@ -284,7 +284,7 @@ final class WalletConnectV2Service {
                     ]
                 )
 
-                WCLog.info("Session with topic (\(topic)) was found. Deleting session from storage...")
+                WCLogger.info("Session with topic (\(topic)) was found. Deleting session from storage...")
                 await sessionsStorage.remove(session)
             }
             .sink()
@@ -298,7 +298,7 @@ final class WalletConnectV2Service {
                 guard let self else { return }
 
                 Analytics.debugLog(eventInfo: Analytics.WalletConnectDebugEvent.receiveRequestFromDApp(method: request.method))
-                WCLog.info("Receive message request: \(request) with verify context: \(String(describing: context))")
+                WCLogger.info("Receive message request: \(request) with verify context: \(String(describing: context))")
                 await handle(request)
             }
             .sink()
@@ -307,7 +307,7 @@ final class WalletConnectV2Service {
 
     private func validateProposal(_ proposal: Session.Proposal) {
         let utils = WalletConnectV2Utils()
-        WCLog.info("Attemping to approve session proposal: \(proposal)")
+        WCLogger.info("Attemping to approve session proposal: \(proposal)")
 
         guard let infoProvider else {
             displayErrorUI(.missingActiveUserWalletModel)
@@ -337,7 +337,7 @@ final class WalletConnectV2Service {
         } catch let error as WalletConnectV2Error {
             displayErrorUI(error)
         } catch {
-            AppLog.error(error: error)
+            AppLogger.error(error: error)
             displayErrorUI(.unknown(error.localizedDescription))
         }
         canEstablishNewSessionSubject.send(true)
@@ -346,7 +346,7 @@ final class WalletConnectV2Service {
     // MARK: - UI Related
 
     private func displaySessionConnectionUI(for proposal: Session.Proposal, namespaces: [String: SessionNamespace]) {
-        WCLog.info("Did receive session proposal")
+        WCLogger.info("Did receive session proposal")
 
         guard let infoProvider else {
             displayErrorUI(.missingActiveUserWalletModel)
@@ -384,14 +384,14 @@ final class WalletConnectV2Service {
             guard let self else { return }
 
             do {
-                WCLog.info("Namespaces to approve for session connection: \(namespaces)")
+                WCLogger.info("Namespaces to approve for session connection: \(namespaces)")
                 _ = try await WalletKit.instance.approve(proposalId: id, namespaces: namespaces)
             } catch let error as WalletConnectV2Error {
                 self.displayErrorUI(error)
             } catch {
                 let mappedError = WalletConnectV2ErrorMappingUtils().mapWCv2Error(error)
                 displayErrorUI(mappedError)
-                AppLog.error("Failed to approve Session", error: error)
+                AppLogger.error("Failed to approve Session", error: error)
             }
         }
     }
@@ -400,9 +400,9 @@ final class WalletConnectV2Service {
         runTask { [weak self] in
             do {
                 try await WalletKit.instance.rejectSession(proposalId: proposal.id, reason: .userRejected)
-                WCLog.info("User reject WC connection")
+                WCLogger.info("User reject WC connection")
             } catch {
-                AppLog.error("Failed to reject WC connection", error: error)
+                AppLogger.error("Failed to reject WC connection", error: error)
             }
             self?.canEstablishNewSessionSubject.send(true)
         }
@@ -416,7 +416,7 @@ final class WalletConnectV2Service {
             session: WalletConnectSavedSession?,
             blockchainCurrencySymbol: String?
         ) async {
-            AppLog.error(error: error)
+            AppLogger.error(error: error)
 
             logAnalytics(
                 request: request,
@@ -436,31 +436,31 @@ final class WalletConnectV2Service {
         let utils = WalletConnectV2Utils()
 
         guard let targetBlockchain = utils.createBlockchain(for: request.chainId) else {
-            WCLog.warning("Failed to create blockchain \(logSuffix)")
+            WCLogger.warning("Failed to create blockchain \(logSuffix)")
             await respond(with: .missingBlockchains([request.chainId.absoluteString]), session: nil, blockchainCurrencySymbol: nil)
             return
         }
 
         if userWalletRepository.models.isEmpty {
-            WCLog.warning("User wallet repository is locked")
+            WCLogger.warning("User wallet repository is locked")
             await respond(with: .userWalletRepositoryIsLocked, session: nil, blockchainCurrencySymbol: targetBlockchain.currencySymbol)
             return
         }
 
         guard let session = await sessionsStorage.session(with: request.topic) else {
-            WCLog.warning("Failed to find session in storage \(logSuffix)")
+            WCLogger.warning("Failed to find session in storage \(logSuffix)")
             await respond(with: .wrongCardSelected, session: nil, blockchainCurrencySymbol: targetBlockchain.currencySymbol)
             return
         }
 
         guard let userWallet = userWalletRepository.models.first(where: { $0.userWalletId.stringValue == session.userWalletId }) else {
-            WCLog.warning("Failed to find target user wallet")
+            WCLogger.warning("Failed to find target user wallet")
             await respond(with: .missingActiveUserWalletModel, session: session, blockchainCurrencySymbol: targetBlockchain.currencySymbol)
             return
         }
 
         if userWallet.isUserWalletLocked {
-            WCLog.warning("Attempt to handle message with locked user wallet")
+            WCLogger.warning("Attempt to handle message with locked user wallet")
             await respond(with: .userWalletIsLocked, session: session, blockchainCurrencySymbol: targetBlockchain.currencySymbol)
             return
         }
@@ -474,7 +474,7 @@ final class WalletConnectV2Service {
                 walletModelProvider: CommonWalletConnectWalletModelProvider(walletModelsManager: userWallet.walletModelsManager) // Actuallty don't know where this generation should be...
             )
 
-            WCLog.info("Receive result from user \(result) for \(logSuffix)")
+            WCLogger.info("Receive result from user \(result) for \(logSuffix)")
             try await WalletKit.instance.respond(topic: session.topic, requestId: request.id, response: result)
 
             logAnalytics(

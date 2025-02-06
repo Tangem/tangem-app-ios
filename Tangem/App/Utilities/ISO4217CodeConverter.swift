@@ -28,7 +28,7 @@ class ISO4217CodeConverter {
             let data = try Data(contentsOf: url)
             currencies = try decoder.decode([ISO4217Currency].self, from: data)
         } catch {
-            AppLog.error("Failed to decode currencies", error: error)
+            AppLogger.error("Failed to decode currencies", error: error)
         }
     }
 

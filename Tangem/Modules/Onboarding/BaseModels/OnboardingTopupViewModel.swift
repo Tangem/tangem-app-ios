@@ -63,7 +63,7 @@ class OnboardingTopupViewModel<Step: OnboardingStep, Coordinator: OnboardingTopu
                 viewModel.updateCardBalanceText(for: walletModel)
                 switch walletModelState {
                 case .noAccount(let message, _):
-                    AppLog.info(viewModel, message)
+                    AppLogger.info(viewModel, message)
                     fallthrough
                 case .loaded:
                     if shouldGoToNextStep,

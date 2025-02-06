@@ -173,7 +173,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
             do {
                 let baseCurrencyCode = await AppSettings.shared.selectedCurrencyCode
                 let currencyId = viewModel.tokenInfo.id
-                AppLog.info(viewModel, "Attempt to load token markets data for token with id: \(currencyId)")
+                AppLogger.info(viewModel, "Attempt to load token markets data for token with id: \(currencyId)")
                 let result = try await viewModel.dataProvider.loadTokenDetails(for: currencyId, baseCurrencyCode: baseCurrencyCode)
                 viewModel.marketsQuotesUpdateHelper.updateQuote(marketToken: result, for: baseCurrencyCode)
                 await viewModel.handleLoadDetailedInfo(.success(result))
@@ -194,7 +194,7 @@ class MarketsTokenDetailsViewModel: MarketsBaseViewModel {
         )
 
         guard let url = URL(string: info.link) else {
-            AppLog.error(self, error: "Failed to create link from: \(info.link)")
+            AppLogger.error(self, error: "Failed to create link from: \(info.link)")
             return
         }
 
@@ -269,7 +269,7 @@ private extension MarketsTokenDetailsViewModel {
 
             sendBlocksAnalyticsErrors(error)
 
-            AppLog.error(self, "Failed to load detailed info", error: error)
+            AppLogger.error(self, "Failed to load detailed info", error: error)
         }
     }
 

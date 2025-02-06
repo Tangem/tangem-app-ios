@@ -32,7 +32,7 @@ struct WalletConnectSolanaSignMessageHandler {
             self.walletModel = walletModel
         } catch {
             let stringRepresentation = request.stringRepresentation
-            WCLog.error("Failed to create sign handler", error: error)
+            WCLogger.error("Failed to create sign handler", error: error)
             throw WalletConnectV2Error.dataInWrongFormat(stringRepresentation)
         }
 
@@ -57,7 +57,7 @@ extension WalletConnectSolanaSignMessageHandler: WalletConnectMessageHandler {
                 AnyCodable(WalletConnectSolanaSignMessageDTO.Body(signature: signature))
             )
         } catch {
-            WCLog.error("Failed to sign message", error: error)
+            WCLogger.error("Failed to sign message", error: error)
             return .error(.internalError)
         }
     }

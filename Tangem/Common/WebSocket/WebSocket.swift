@@ -158,7 +158,7 @@ class WebSocket {
     }
 
     private func log(_ message: String) {
-        WCLog.info(self, message)
+        WCLogger.info(self, message)
     }
 
     private func receive() {

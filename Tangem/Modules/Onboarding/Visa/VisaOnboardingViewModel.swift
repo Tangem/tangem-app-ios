@@ -246,7 +246,7 @@ private extension VisaOnboardingViewModel {
 
     func goToStep(_ step: VisaOnboardingStep) {
         guard let stepIndex = steps.firstIndex(of: step) else {
-            AppLog.error(self, error: "Failed to find step \(step)")
+            AppLogger.error(self, error: "Failed to find step \(step)")
             return
         }
 

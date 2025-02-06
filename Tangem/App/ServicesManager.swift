@@ -33,7 +33,7 @@ class ServicesManager {
             userWalletRepository.initialClean()
         }
 
-        AppLog.info("Start services initializing")
+        AppLogger.info("Start services initializing")
 
         if !AppEnvironment.current.isDebug {
             configureFirebase()
@@ -74,7 +74,7 @@ class ServicesManager {
         let sessionMessage = "New session. Session id: \(AppConstants.sessionId)"
         let launchNumberMessage = "Current launch number: \(currentLaunches)"
         let deviceInfoMessage = "\(DeviceInfoProvider.Subject.allCases.map { $0.description }.joined(separator: ", "))"
-//        AppLog.info(sessionMessage, launchNumberMessage, deviceInfoMessage)
+//        AppLogger.info(sessionMessage, launchNumberMessage, deviceInfoMessage)
 
         return initialLaunches
     }

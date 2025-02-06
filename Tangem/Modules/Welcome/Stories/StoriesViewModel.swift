@@ -38,7 +38,7 @@ class StoriesViewModel: ObservableObject {
     weak var delegate: StoriesDelegate?
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 
     func setDelegate(delegate: StoriesDelegate) {

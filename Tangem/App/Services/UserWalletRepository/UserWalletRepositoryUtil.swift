@@ -26,14 +26,14 @@ class UserWalletRepositoryUtil {
             let secureStorage = SecureStorage()
             try secureStorage.delete(publicDataEncryptionKeyStorageKey)
         } catch {
-            AppLog.error("Failed to erase public data encryption key", error: error)
+            AppLogger.error("Failed to erase public data encryption key", error: error)
         }
     }
 
     func savedUserWallets(encryptionKeyByUserWalletId: [UserWalletId: UserWalletEncryptionKey]) -> [StoredUserWallet] {
         do {
             guard fileManager.fileExists(atPath: userWalletListPath().path) else {
-                AppLog.warning("Detected empty saved user wallets")
+                AppLogger.warning("Detected empty saved user wallets")
                 return []
             }
 
@@ -61,7 +61,7 @@ class UserWalletRepositoryUtil {
 
             return userWallets
         } catch {
-            AppLog.error(error: error)
+            AppLogger.error(error: error)
             return []
         }
     }
@@ -95,7 +95,7 @@ class UserWalletRepositoryUtil {
 
             for userWallet in userWallets {
                 guard let encryptionKey = UserWalletEncryptionKeyFactory().encryptionKey(for: userWallet) else {
-                    AppLog.error(error: "User wallet failed to generate encryption key")
+                    AppLogger.error(error: "User wallet failed to generate encryption key")
                     continue
                 }
 
@@ -105,9 +105,9 @@ class UserWalletRepositoryUtil {
                 try sensitiveDataEncoded.write(to: sensitiveDataPath, options: .atomic)
                 try excludeFromBackup(url: sensitiveDataPath)
             }
-            AppLog.info("User wallets were saved successfully")
+            AppLogger.info("User wallets were saved successfully")
         } catch {
-            AppLog.error("Failed to save user wallets", error: error)
+            AppLogger.error("Failed to save user wallets", error: error)
         }
     }
 

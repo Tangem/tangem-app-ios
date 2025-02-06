@@ -42,7 +42,7 @@ class FakeWalletManager: WalletManager {
     }
 
     func scheduleSwitchFromLoadingState() {
-        AppLog.debug("Scheduling switch from loading state")
+        AppLogger.debug("Scheduling switch from loading state")
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             self.state = .loaded
         }
@@ -53,7 +53,7 @@ class FakeWalletManager: WalletManager {
     func update() {}
 
     func updatePublisher() -> AnyPublisher<WalletManagerState, Never> {
-        AppLog.debug("Receive update request")
+        AppLogger.debug("Receive update request")
 
         return .just(output: nextState())
             .delay(for: 5, scheduler: DispatchQueue.main)

@@ -271,7 +271,7 @@ private extension CommonSendNotificationManager {
                 hideAllValidationErrorEvent()
             }
         case .some(let error):
-            AppLog.error("Transaction error will not show to user", error: error)
+            AppLogger.error("Transaction error will not show to user", error: error)
             hideAllValidationErrorEvent()
         }
     }

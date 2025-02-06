@@ -55,7 +55,7 @@ class QRScanViewModel: ObservableObject, Identifiable {
             camera.torchMode = camera.isTorchActive ? .off : .on
             camera.unlockForConfiguration()
         } catch {
-            AppLog.error("Failed to toggle the flash", error: error)
+            AppLogger.error("Failed to toggle the flash", error: error)
         }
     }
 

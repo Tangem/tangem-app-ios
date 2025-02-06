@@ -43,11 +43,11 @@ final class MailZipFileManager {
                 do {
                     try fileManager.removeItem(at: file)
                 } catch {
-                    AppLog.error("Failed to remove zip file at path '\(file.path)'.", error: error)
+                    AppLogger.error("Failed to remove zip file at path '\(file.path)'.", error: error)
                 }
             }
         } catch {
-            AppLog.error("Failed to fetch content of the directory at path '\(destinationURL)'", error: error)
+            AppLogger.error("Failed to fetch content of the directory at path '\(destinationURL)'", error: error)
         }
     }
 }

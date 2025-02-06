@@ -1,5 +1,5 @@
 //
-//  AppLog.swift
+//  AppLogger.swift
 //  Tangem
 //
 //  Created by Alexander Osokin on 30.12.2022.
@@ -10,9 +10,9 @@ import Foundation
 import TangemSdk
 import TangemLogger
 
-let AppLog = Logger(category: .app)
-let WCLog = Logger(category: .app).tag("Wallet Connect")
-let AnalyticsLog = Logger(category: .analytics)
+let AppLogger = Logger(category: .app)
+let WCLogger = Logger(category: .app).tag("Wallet Connect")
+let AnalyticsLogger = Logger(category: .analytics)
 
 extension Logger.Category {
     static let app = OSLogCategory(name: "App")

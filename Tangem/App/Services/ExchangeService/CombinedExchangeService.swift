@@ -72,6 +72,6 @@ extension CommonCombinedExpressService: ExchangeService, CombinedExchangeService
         buyService.initialize()
         sellService.initialize()
         utorgService?.initialize()
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 }

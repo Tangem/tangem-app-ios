@@ -22,7 +22,7 @@ class CommonTokenItemsRepository {
     }
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 }
 

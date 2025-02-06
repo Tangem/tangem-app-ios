@@ -24,7 +24,7 @@ class CardImageLoader {
     }
 
     deinit {
-        AppLog.debug(self)
+        AppLogger.debug(self)
     }
 
     private func loadImage(at endpoint: NetworkEndpoint) -> AnyPublisher<UIImage, Error> {
