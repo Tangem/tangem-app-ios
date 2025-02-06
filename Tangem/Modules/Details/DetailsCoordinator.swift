@@ -34,6 +34,7 @@ class DetailsCoordinator: CoordinatorObject {
     @Published var supportChatViewModel: SupportChatViewModel?
     @Published var tosViewModel: TOSViewModel?
     @Published var environmentSetupCoordinator: EnvironmentSetupCoordinator?
+    @Published var logsViewModel: LogsViewModel?
 
     // MARK: - Helpers
 
@@ -129,5 +130,9 @@ extension DetailsCoordinator: DetailsRoutable {
         coordinator.start(with: .init())
 
         environmentSetupCoordinator = coordinator
+    }
+
+    func openLogs() {
+        logsViewModel = .init()
     }
 }

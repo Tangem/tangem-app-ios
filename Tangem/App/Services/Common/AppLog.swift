@@ -8,9 +8,9 @@
 
 import Foundation
 import TangemSdk
-import TangemExpress
-import TangemVisa
-import TangemStaking
+import protocol TangemExpress.Logger
+import protocol TangemVisa.VisaLogger
+import protocol TangemStaking.Logger
 
 class AppLog {
     static let shared = AppLog()

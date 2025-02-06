@@ -38,6 +38,13 @@ var serviceModules: [PackageDescription.Target] {
             ]
         ),
         .tangemTarget(
+            name: "TangemLogger",
+            swiftSettings: [
+                // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
+                .swiftLanguageMode(.v5),
+            ]
+        ),
+        .tangemTarget(
             name: "TangemNetworkUtils",
             dependencies: [
                 "Moya",
