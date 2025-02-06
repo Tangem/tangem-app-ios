@@ -55,6 +55,7 @@ final class PolkadotAccountHealthBackgroundTaskManager {
         if !isRegistered {
             let message = "Can't register background task (BackgroundTasks) with identifier '\(identifier)'"
             assertionFailure(message)
+            Analytics.error(error: message)
             AppLog.error(error: message)
         }
     }
@@ -75,6 +76,7 @@ final class PolkadotAccountHealthBackgroundTaskManager {
         } catch {
             let message = "Can't submit background task (BackgroundTasks) with identifier '\(identifier)'"
             assertionFailure(message)
+            Analytics.error(error: message)
             AppLog.error(error: message)
         }
     }

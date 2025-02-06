@@ -274,6 +274,8 @@ extension MoonPayService: ExchangeService {
                     initializeState = canSellCrypto ? .initialized : .failed(.countryNotSupported)
                 } catch {
                     AppLog.error("Failed to load currencies", error: error)
+                    Analytics.error(error: error)
+
                     initializeState = .failed(.networkError)
                 }
             }
@@ -291,6 +293,7 @@ extension MoonPayService: ExchangeService {
             return (decodedResponse.countryCode, decodedResponse.stateCode)
         } catch {
             AppLog.error("Failed to check IP address", error: error)
+            Analytics.error(error: error)
 
             return ("", "")
         }

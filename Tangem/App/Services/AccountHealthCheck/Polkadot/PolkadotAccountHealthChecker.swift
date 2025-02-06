@@ -175,6 +175,7 @@ final class PolkadotAccountHealthChecker {
             AppLog.info("Finished checking account '\(account)' for reset")
         } catch {
             AppLog.error("Failed to check account '\(account)' for reset due to error:", error: error)
+            Analytics.error(error: error)
         }
     }
 
@@ -226,6 +227,7 @@ final class PolkadotAccountHealthChecker {
             AppLog.info("Finished checking account '\(account)' for immortal transactions")
         } catch {
             AppLog.error("Failed to check account '\(account)' for immortal transactions due to error:", error: error)
+            Analytics.error(error: error)
         }
     }
 

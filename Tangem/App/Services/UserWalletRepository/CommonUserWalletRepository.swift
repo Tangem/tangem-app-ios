@@ -120,6 +120,8 @@ class CommonUserWalletRepository: UserWalletRepository {
                 }
 
                 AppLog.error(error: error)
+                Analytics.error(error: error)
+
                 sendEvent(.scan(isScanning: false))
 
                 switch error.toTangemSdkError() {
@@ -302,6 +304,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                 let accessCodeRepository = AccessCodeRepository()
                 try accessCodeRepository.deleteAccessCode(for: Array(userWallet.associatedCardIds))
             } catch {
+                Analytics.error(error: error)
                 AppLog.error(error: error)
             }
         }
@@ -447,6 +450,7 @@ class CommonUserWalletRepository: UserWalletRepository {
                     completion(nil) // TODO: throw error?
                 }
             } catch {
+                Analytics.error(error: error)
                 AppLog.error(error: error)
                 completion(.error(error))
             }

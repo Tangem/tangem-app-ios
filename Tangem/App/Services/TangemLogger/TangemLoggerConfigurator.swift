@@ -28,11 +28,7 @@ struct TangemLoggerConfigurator: Initializable {
 // MARK: - TangemLogger.Configuration
 
 struct TangemLoggerConfiguration: Logger.Configuration {
-    func shouldStore(category: TangemLogger.Logger.Category, level: TangemLogger.Logger.Level) -> Bool {
-        !AppEnvironment.current.isProduction
-    }
-
-    func shouldPrint(category: Logger.Category, level: Logger.Level) -> Bool {
+    func isLoggable() -> Bool {
         !AppEnvironment.current.isProduction
     }
 }
