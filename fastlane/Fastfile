@@ -86,7 +86,19 @@ desc """
 A lane for building for CodeQL analysis
  """
 lane :build_simulator do |options|
-    sh "xcodebuild -project ../#{PROJECT_NAME} -scheme Tangem -destination 'generic/platform=iOS Simulator' clean build"
+    # clear_derived_data  # Required otherwise raw xcodebuild doesn't work reliably
+    build_app(
+      project: PROJECT_NAME,
+      xcargs: "-allowProvisioningUpdates -disableAutomaticPackageResolution -onlyUsePackageVersionsFromResolvedFile",
+      disable_package_automatic_updates: true,  # Probably redundant because of `disableAutomaticPackageResolution` xcarg, but won't harm
+      scheme: ALPHA_SCHEME,
+      clean: true,
+      silent: false,
+      export_method: "development",
+      destination: "generic/platform=iOS Simulator",
+      skip_package_ipa: true,
+      skip_archive: true
+    )
 end
 
 desc """
