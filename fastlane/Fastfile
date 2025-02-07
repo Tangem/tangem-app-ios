@@ -94,7 +94,7 @@ lane :build_simulator do |options|
       scheme: ALPHA_SCHEME,
       clean: true,
       silent: false,
-      export_method: "development",
+      export_method: "ad-hoc",
       destination: "generic/platform=iOS Simulator",
       skip_package_ipa: true,
       skip_archive: true
