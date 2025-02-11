@@ -40,6 +40,16 @@ Options:
 - xcode_version_override: Xcode version to use, optional (uses https://github.com/XcodesOrg/xcodes under the hood)
 
 
+### build_simulator
+
+```sh
+[bundle exec] fastlane build_simulator
+```
+
+
+A lane for building for CodeQL analysis
+ 
+
 ### release
 
 ```sh
