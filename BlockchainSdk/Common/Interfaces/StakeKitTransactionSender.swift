@@ -26,6 +26,31 @@ protocol StakeKitTransactionSenderProvider {
     func prepareDataForSign(transaction: StakeKitTransaction) throws -> Data
     func prepareDataForSend(transaction: StakeKitTransaction, signature: SignatureInfo) throws -> RawTransaction
     func broadcast(transaction: StakeKitTransaction, rawTransaction: RawTransaction) async throws -> String
+
+    func buildRawTransactions(
+        from transactions: [StakeKitTransaction],
+        wallet: Wallet,
+        signer: TransactionSigner
+    ) async throws -> [RawTransaction]
+}
+
+extension StakeKitTransactionSenderProvider {
+    func buildRawTransactions(
+        from transactions: [StakeKitTransaction],
+        wallet: Wallet,
+        signer: TransactionSigner
+    ) async throws -> [RawTransaction] {
+        let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
+
+        let signatures: [SignatureInfo] = try await signer.sign(
+            hashes: preparedHashes,
+            walletPublicKey: wallet.publicKey
+        ).async()
+
+        return try zip(transactions, signatures).map { transaction, signature in
+            try prepareDataForSend(transaction: transaction, signature: signature)
+        }
+    }
 }
 
 public protocol StakeKitTransactionStatusProvider {
@@ -49,20 +74,17 @@ extension StakeKitTransactionSender where Self: StakeKitTransactionSenderProvide
                 }
 
                 do {
-                    let preparedHashes = try transactions.map { try self.prepareDataForSign(transaction: $0) }
-                    let signatures: [SignatureInfo] = try await signer.sign(
-                        hashes: preparedHashes,
-                        walletPublicKey: wallet.publicKey
-                    ).async()
+                    let rawTransactions = try await buildRawTransactions(
+                        from: transactions,
+                        wallet: wallet,
+                        signer: signer
+                    )
 
-                    _ = try await withThrowingTaskGroup(of: (TransactionSendResult, StakeKitTransaction).self) { group in
+                    _ = try await withThrowingTaskGroup(
+                        of: (TransactionSendResult, StakeKitTransaction).self
+                    ) { group in
                         var results = [TransactionSendResult]()
-                        for (index, (transaction, signature)) in zip(transactions, signatures).enumerated() {
-                            let rawTransaction = try self.prepareDataForSend(
-                                transaction: transaction,
-                                signature: signature
-                            )
-
+                        for (index, (transaction, rawTransaction)) in zip(transactions, rawTransactions).enumerated() {
                             group.addTask {
                                 try Task.checkCancellation()
                                 if transactions.count > 1, let second {

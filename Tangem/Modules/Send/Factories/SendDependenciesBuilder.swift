@@ -22,7 +22,7 @@ struct SendDependenciesBuilder {
 
     func sendFlowActionType(actionType: StakingAction.ActionType) -> SendFlowActionType {
         switch actionType {
-        case .stake: .stake
+        case .stake, .pending(.stake): .stake
         case .unstake: .unstake
         case .pending(.claimRewards): .claimRewards
         case .pending(.withdraw): .withdraw
@@ -74,6 +74,14 @@ struct SendDependenciesBuilder {
         case .unstake: amount?.crypto ?? 0
         default: walletModel.availableBalanceProvider.balanceType.value ?? 0
         }
+    }
+
+    func makeStakeAction() -> StakingAction {
+        StakingAction(
+            amount: (try? walletModel.getBalance()) ?? 0,
+            validatorType: .empty,
+            type: .stake
+        )
     }
 
     func formattedBalance(for amount: SendAmount?, actionType: SendFlowActionType) -> String {
@@ -302,6 +310,7 @@ struct SendDependenciesBuilder {
             stakingManager: stakingManager,
             transactionDispatcher: makeStakingTransactionDispatcher(stakingManger: stakingManager),
             transactionValidator: walletModel.transactionValidator,
+            sendAmountValidator: makeStakingSendAmountValidator(stakingManager: stakingManager),
             action: action,
             tokenItem: walletModel.tokenItem,
             feeTokenItem: walletModel.feeTokenItem

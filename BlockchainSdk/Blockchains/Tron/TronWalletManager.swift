@@ -254,6 +254,13 @@ private class DummySigner: TransactionSigner {
     func sign(hashes: [Data], walletPublicKey: Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
         fatalError()
     }
+
+    func sign(
+        dataToSign: [SignData],
+        seedKey: Data
+    ) -> AnyPublisher<[(Data, Data)], Error> {
+        fatalError()
+    }
 }
 
 // MARK: - TronNetworkprovider

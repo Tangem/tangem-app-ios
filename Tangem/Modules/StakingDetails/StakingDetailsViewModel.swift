@@ -317,7 +317,7 @@ private extension StakingDetailsViewModel {
                 openFlow(for: action)
             case .multiple(let actions):
                 var buttons: [Alert.Button] = actions.map { action in
-                    .default(Text(action.type.title)) { [weak self] in
+                    .default(Text(action.displayType.title)) { [weak self] in
                         self?.openFlow(for: action)
                     }
                 }
@@ -332,13 +332,14 @@ private extension StakingDetailsViewModel {
 
     private func openFlow(for action: StakingAction) {
         switch action.type {
-        case .stake:
+        case .stake,
+             .pending(.stake) where tokenItem.blockchain.isStakeAmountEditable:
             coordinator?.openStakingFlow()
         case .pending(.voteLocked):
             coordinator?.openRestakingFlow(action: action)
         case .unstake:
             coordinator?.openUnstakingFlow(action: action)
-        case .pending(.restake):
+        case .pending(.restake), .pending(.stake):
             coordinator?.openRestakingFlow(action: action)
         case .pending:
             coordinator?.openStakingSingleActionFlow(action: action)
@@ -347,7 +348,7 @@ private extension StakingDetailsViewModel {
 
     func shouldShowMinimumRequirement() -> Bool {
         switch tokenItem.blockchain {
-        case .polkadot, .binance: true
+        case .polkadot, .binance, .cardano, .polygon: true
         default: false
         }
     }
@@ -444,7 +445,7 @@ private extension RewardRateValues {
 extension StakingAction.ActionType {
     var title: String {
         switch self {
-        case .stake: Localization.commonStake
+        case .stake, .pending(.stake): Localization.commonStake
         case .unstake: Localization.commonUnstake
         case .pending(.withdraw): Localization.stakingWithdraw
         case .pending(.claimRewards): Localization.commonClaimRewards

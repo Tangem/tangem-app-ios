@@ -262,4 +262,95 @@ class CardanoTests: XCTestCase {
             "83a40082825820554f2fd942a23d06835d26bbd78f0106fa94c8a551114a0bef81927f66467af000825820f074134aabbfb13b8aec7cf5465b1e5a862bde5cb88532cc7e64619179b3e76701018282583901558dd902616f5cd01edcc62870cb4748c45403f1228218bee5b628b526f0ca9e7a2c04d548fbd6ce86f358be139fe680652536437d1d6fd51a006acfc082583901df58ee97ce7a46cd8bdeec4e5f3a03297eb197825ed5681191110804df22424b6880b39e4bac8c58de9fe6d23d79aaf44756389d827aa09b1a000ca96c021a000298d4031a0b532b80a100818258206d8a0b425bd2ec9692af39b1c0cf0e51caa07a603550e22f54091e872c7df2905840f0a916cf55df99f595b49b3ead2052a17fdf3357b2e04c97c0144b1ee7a88f9a33883d9483e9c9c54cf7d496ac8c7aa31b4eb23a8a2c277fab8e406ba7af2c05f6"
         )
     }
+
+    func testSignStakingRegisterAndDelegate() throws {
+        let ownAddress = "addr1q8043m5heeaydnvtmmkyuhe6qv5havvhsf0d26q3jygsspxlyfpyk6yqkw0yhtyvtr0flekj84u64az82cufmqn65zdsylzk23"
+        let stakingAddress = Cardano.getStakingAddress(baseAddress: ownAddress)
+        let poolIdNufi = "7d7ac07a2f2a25b7a4db868a40720621c4939cf6aefbb9a11464f1a6"
+
+        var input = CardanoSigningInput.with {
+            $0.transferMessage.toAddress = ownAddress
+            $0.transferMessage.changeAddress = ownAddress
+            $0.transferMessage.amount = 4000000 // not relevant as we use MaxAmount
+            $0.transferMessage.useMaxAmount = true
+            $0.ttl = 69885081
+            // Register staking key, 2 ADA desposit
+            $0.registerStakingKey.stakingAddress = stakingAddress
+            $0.registerStakingKey.depositAmount = 2000000
+            // Delegate
+            $0.delegate.stakingAddress = stakingAddress
+            $0.delegate.poolID = Data(hexString: poolIdNufi)
+            $0.delegate.depositAmount = 0
+        }
+
+        let privateKey = Data(hexString: "089b68e458861be0c44bf9f7967f05cc91e51ede86dc679448a3566990b7785bd48c330875b1e0d03caaed0e67cecc42075dce1c7a13b1c49240508848ac82f603391c68824881ae3fc23a56a1a75ada3b96382db502e37564e84a5413cfaf1290dbd508e5ec71afaea98da2df1533c22ef02a26bb87b31907d0b2738fb7785b38d53aa68fc01230784c9209b2b2a2faf28491b3b1f1d221e63e704bbd0403c4154425dfbb01a2c5c042da411703603f89af89e57faae2946e2a5c18b1c5ca0e")
+
+        var bytes = privateKey.bytes[privateKey.bytes.count / 2 ..< privateKey.bytes.count]
+        bytes.append(contentsOf: Data(repeating: 0, count: 96))
+
+        let stakingSignature = Data(bytes)
+
+        let prKey = PrivateKey(data: stakingSignature)!
+        let publicKey = prKey.getPublicKeyByType(pubkeyType: .ed25519Cardano)
+
+        let testAddress = AnyAddress(publicKey: publicKey, coin: .cardano).description
+
+        let utxo1 = CardanoTxInput.with {
+            $0.outPoint.txHash = Data(hexString: "9b06de86b253549b99f6a050b61217d8824085ca5ed4eb107a5e7cce4f93802e")
+            $0.outPoint.outputIndex = 0
+            $0.address = ownAddress
+            $0.amount = 4000000
+        }
+        let utxo2 = CardanoTxInput.with {
+            $0.outPoint.txHash = Data(hexString: "9b06de86b253549b99f6a050b61217d8824085ca5ed4eb107a5e7cce4f93802e")
+            $0.outPoint.outputIndex = 1
+            $0.address = ownAddress
+            $0.amount = 26651312
+        }
+        input.utxos.append(utxo1)
+        input.utxos.append(utxo2)
+
+        let txInputData = try input.serializedData()
+
+        let signatures = DataVector()
+        signatures.add(data: stakingSignature)
+        signatures.add(data: prKey.data)
+
+        let publicKeys = DataVector()
+        // WalletCore used here `.ed25519Cardano` curve with 128 bytes publicKey.
+        // For more info see CardanoUtil
+        let pKey = publicKey.data.trailingZeroPadding(toLength: CardanoUtil.extendedPublicKeyCount)
+        let sKey = stakingSignature.trailingZeroPadding(toLength: CardanoUtil.extendedPublicKeyCount)
+        publicKeys.add(data: sKey)
+        publicKeys.add(data: pKey)
+
+        let compileWithSignatures = TransactionCompiler.tangemCompileWithSignatures(
+            coinType: .cardano,
+            txInputData: txInputData,
+            signatures: signatures,
+            publicKeys: publicKeys
+        )
+
+        let output = try CardanoSigningOutput(serializedData: compileWithSignatures)
+
+        XCTAssertEqual(output.error, TW_Common_Proto_SigningError.ok)
+
+        let encoded = output.encoded
+        XCTAssertEqual(
+            encoded.hexString,
+            "83a500828258209b06de86b253549b99f6a050b61217d8824085ca5ed4eb107a5e7cce4f93802e008258209b06de86b253549b99f6a050b61217d8824085ca5ed4eb107a5e7cce4f93802e01018182583901df58ee97ce7a46cd8bdeec4e5f3a03297eb197825ed5681191110804df22424b6880b39e4bac8c58de9fe6d23d79aaf44756389d827aa09b1a01b27ef5021a0002b03b031a042a5c99048282008200581cdf22424b6880b39e4bac8c58de9fe6d23d79aaf44756389d827aa09b83028200581cdf22424b6880b39e4bac8c58de9fe6d23d79aaf44756389d827aa09b581c7d7ac07a2f2a25b7a4db868a40720621c4939cf6aefbb9a11464f1a6a100828258206d8a0b425bd2ec9692af39b1c0cf0e51caa07a603550e22f54091e872c7df2905840677c901704be027d9a1734e8aa06f0700009476fa252baaae0de280331746a320a61456d842d948ea5c0e204fc36f3bd04c88ca7ee3d657d5a38014243c37c07825820e554163344aafc2bbefe778a6953ddce0583c2f8e0a0686929c020ca33e0693258401fa21bdc62b85ca217bf08cbacdeba2fadaf33dc09ee3af9cc25b40f24822a1a42cfbc03585cc31a370ef75aaec4d25db6edcf329e40a4e725ec8718c94f220af6".uppercased()
+        )
+
+        let txid = output.txID
+        XCTAssertEqual(txid.hexString, "96a781fd6481b6a7fd3926da110265e8c44b53947b81daa84da5b148825d02aa".uppercased())
+    }
+}
+
+private extension Data {
+    public func trailingZeroPadding(toLength newLength: Int) -> Data {
+        guard count < newLength else { return self }
+
+        let suffix = Data(repeating: UInt8(0), count: newLength - count)
+        return self + suffix
+    }
 }

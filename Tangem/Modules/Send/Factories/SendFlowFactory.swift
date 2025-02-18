@@ -110,7 +110,7 @@ struct SendFlowFactory {
         return baseBuilder.makeSendViewModel(manager: manager, action: action, router: router)
     }
 
-    func makeRestakingViewModel(manager: some StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
+    func makeRestakingViewModel(manager: some StakingManager, action: RestakingModel.Action? = nil, router: SendRoutable) -> SendViewModel {
         let builder = SendDependenciesBuilder(userWalletModel: userWalletModel, walletModel: walletModel)
         let stakingValidatorsStepBuilder = StakingValidatorsStepBuilder()
         let sendAmountStepBuilder = SendAmountStepBuilder(walletModel: walletModel, builder: builder)

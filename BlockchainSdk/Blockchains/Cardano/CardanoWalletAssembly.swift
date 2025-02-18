@@ -12,7 +12,7 @@ import TangemSdk
 struct CardanoWalletAssembly: WalletManagerAssembly {
     func make(with input: WalletManagerAssemblyInput) throws -> WalletManager {
         return CardanoWalletManager(wallet: input.wallet).then {
-            $0.transactionBuilder = CardanoTransactionBuilder()
+            $0.transactionBuilder = CardanoTransactionBuilder(address: input.wallet.address)
             let cardanoResponseMapper = CardanoResponseMapper()
             let networkConfig = input.networkConfig
 

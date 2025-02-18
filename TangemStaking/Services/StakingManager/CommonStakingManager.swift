@@ -353,7 +353,8 @@ private extension CommonStakingManager {
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
              .unlockLocked(let passthrough),
-             .restake(let passthrough):
+             .restake(let passthrough),
+             .stake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             let action = try await getPendingTransactionAction(request: request)
             return action
@@ -406,7 +407,8 @@ private extension CommonStakingManager {
              .restakeRewards(let passthrough),
              .voteLocked(let passthrough),
              .unlockLocked(let passthrough),
-             .restake(let passthrough):
+             .restake(let passthrough),
+             .stake(let passthrough):
             let request = PendingActionRequest(request: request, passthrough: passthrough, type: type)
             return try await execute(try await provider.estimatePendingFee(request: request))
         case .withdraw(let passthroughs), .claimUnstaked(let passthroughs):

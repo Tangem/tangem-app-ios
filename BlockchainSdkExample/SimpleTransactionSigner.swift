@@ -60,4 +60,8 @@ extension CommonSigner: TransactionSigner {
             .map { $0.first ?? Data() }
             .eraseToAnyPublisher()
     }
+
+    func sign(dataToSign: [BlockchainSdk.SignData], seedKey: Data) -> AnyPublisher<[(Data, Data)], any Error> {
+        Fail(error: WalletError.empty).eraseToAnyPublisher()
+    }
 }

@@ -12,15 +12,22 @@ public struct StakingAction: Hashable {
     public let amount: Decimal
     public let validatorType: StakingValidatorType
     public let type: ActionType
+    public let displayType: ActionType
 
     public var validatorInfo: ValidatorInfo? {
         validatorType.validator
     }
 
-    public init(amount: Decimal, validatorType: StakingValidatorType, type: ActionType) {
+    public init(
+        amount: Decimal,
+        validatorType: StakingValidatorType,
+        type: ActionType,
+        displayType: ActionType? = nil
+    ) {
         self.amount = amount
         self.validatorType = validatorType
         self.type = type
+        self.displayType = displayType ?? type
     }
 }
 
@@ -38,6 +45,7 @@ public extension StakingAction {
         case voteLocked(passthrough: String)
         case unlockLocked(passthrough: String)
         case restake(passthrough: String)
+        case stake(passthrough: String)
         case claimUnstaked(passthroughs: Set<String>) // this case is handled exactly as withdraw on UI
     }
 }

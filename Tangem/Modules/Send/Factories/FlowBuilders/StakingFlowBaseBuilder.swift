@@ -8,6 +8,7 @@
 
 import Foundation
 import TangemStaking
+import BlockchainSdk
 
 struct StakingFlowBaseBuilder {
     let userWalletModel: UserWalletModel
@@ -101,5 +102,14 @@ struct StakingFlowBaseBuilder {
         stakingModel.router = viewModel
 
         return viewModel
+    }
+}
+
+extension Blockchain {
+    var isStakeAmountEditable: Bool {
+        switch self {
+        case .cardano: false
+        default: true
+        }
     }
 }

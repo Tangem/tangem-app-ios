@@ -65,6 +65,7 @@ extension StakingFeatureProvider {
             StakingItem(network: .tron, contractAddress: nil),
             StakingItem(network: .ethereum, contractAddress: StakingConstants.polygonContractAddress),
             StakingItem(network: .binance, contractAddress: nil),
+            StakingItem(network: .cardano, contractAddress: nil),
         ]
     }
 
@@ -85,6 +86,8 @@ extension StakingFeatureProvider {
             return "tron-trx-native-staking"
         case (.binance, .none):
             return "bsc-bnb-native-staking"
+        case (.cardano, .none):
+            return "cardano-ada-native-staking"
         default:
             return nil
         }

@@ -761,6 +761,8 @@
 "staking_migrate" = "Migrate";
 "staking_native" = "Native staking";
 "staking_no_validators_error_message" = "No active validators available for staking at the moment. Please try again later.";
+"staking_notification_additional_ada_deposit_text" = "When staking in the Cardano network, the entire balance is used. An additional 2 ADA will be reserved and returned after unstaking. Your ADA is not locked while staking.";
+"staking_notification_additional_ada_deposit_title" = "ADA Staking Details";
 "staking_notification_claim_rewards_text" = "Earned rewards will be sent to your wallet and available for use immediately";
 "staking_notification_earn_rewards_text" = "Stake securely and start earning your rewards";
 "staking_notification_earn_rewards_text_daily" = "Stake securely and start earning daily rewards";
@@ -774,6 +776,8 @@
 "staking_notification_earn_rewards_title" = "Earn staking rewards";
 "staking_notification_low_staked_balance_text" = "Your remaining staked balance will be too low to unstake. You’ll need to stake more to meet the minimum unstake amount.";
 "staking_notification_low_staked_balance_title" = "Low staked balance";
+"staking_notification_minimum_balance_error_text" = "A minimum of %1$@ %2$@ is required for restaking. Please top up your balance.";
+"staking_notification_minimum_balance_error_title" = "Not enough %@";
 "staking_notification_network_error_text" = "Staking is currently unavailable due to network conditions. Please try again later.";
 "staking_notification_new_validator_funds_transfer" = "Staking in the %1$@ network with a new validator will automatically transfer all previously staked funds to this validator";
 "staking_notification_restake_rewards_text" = "Reinvests your earned rewards in your staked amount, increasing potential earnings.";

@@ -20,7 +20,10 @@ struct RestakingFlowBaseBuilder {
     let sendFinishStepBuilder: SendFinishStepBuilder
     let builder: SendDependenciesBuilder
 
-    func makeSendViewModel(manager: some StakingManager, action: UnstakingModel.Action, router: SendRoutable) -> SendViewModel {
+    func makeSendViewModel(manager: some StakingManager, action: RestakingModel.Action? = nil, router: SendRoutable) -> SendViewModel {
+        // no pending action == full balance staking
+        let action = action ?? builder.makeStakeAction()
+
         let restakingModel = builder.makeRestakingModel(stakingManager: manager, action: action)
         let notificationManager = builder.makeStakingNotificationManager()
         notificationManager.setup(provider: restakingModel, input: restakingModel)
@@ -29,7 +32,7 @@ struct RestakingFlowBaseBuilder {
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: restakingModel)
         sendFeeCompactViewModel.bind(input: restakingModel)
 
-        let actionType = builder.sendFlowActionType(actionType: action.type)
+        let actionType = builder.sendFlowActionType(actionType: action.displayType)
         let sendFinishAnalyticsLogger = builder.makeStakingFinishAnalyticsLogger(
             actionType: actionType,
             stakingValidatorsInput: restakingModel

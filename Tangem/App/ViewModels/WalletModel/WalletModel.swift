@@ -269,7 +269,11 @@ class WalletModel {
 
     private func performHealthCheckIfNeeded(shouldPerform: Bool) {
         if shouldPerform {
-            accountHealthChecker.performAccountCheckIfNeeded(wallet.address)
+            Task {
+                await MainActor.run {
+                    accountHealthChecker.performAccountCheckIfNeeded(wallet.address)
+                }
+            }
         }
     }
 

@@ -8,13 +8,26 @@
 
 import Combine
 import BlockchainSdk
+import TangemSdk
 
 class TransactionSignerMock: TransactionSigner {
-    func sign(hashes: [Data], walletPublicKey: BlockchainSdk.Wallet.PublicKey) -> AnyPublisher<[Data], Error> {
+    func sign(hashes: [Data], walletPublicKey: BlockchainSdk.Wallet.PublicKey) -> AnyPublisher<[Data], any Error> {
+        .anyFail(error: "Error")
+    }
+
+    func sign(hash: Data, walletPublicKeys: [BlockchainSdk.Wallet.PublicKey]) -> AnyPublisher<[Data], any Error> {
+        .anyFail(error: "Error")
+    }
+
+    func sign(hashes: [Data], walletPublicKeys: [BlockchainSdk.Wallet.PublicKey]) -> AnyPublisher<[Data], Error> {
         .anyFail(error: "Error")
     }
 
     func sign(hash: Data, walletPublicKey: BlockchainSdk.Wallet.PublicKey) -> AnyPublisher<Data, Error> {
+        .anyFail(error: "Error")
+    }
+
+    func sign(dataToSign: [SignData], seedKey: Data) -> AnyPublisher<[(Data, Data)], any Error> {
         .anyFail(error: "Error")
     }
 }

@@ -35,6 +35,7 @@ public enum StakeKitNetworkType: String, Hashable, Codable {
     case bandProtocol = "band-protocol"
     case bitsong
     case canto
+    case cardano
     case chihuahua
     case comdex
     case coreum

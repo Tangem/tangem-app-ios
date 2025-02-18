@@ -183,4 +183,11 @@ private class Ed25519DummyTransactionSigner: TransactionSigner {
             }
             .eraseToAnyPublisher()
     }
+
+    func sign(
+        dataToSign: [SignData],
+        seedKey: Data
+    ) -> AnyPublisher<[(Data, Data)], Error> {
+        Fail(error: WalletError.failedToGetFee).eraseToAnyPublisher()
+    }
 }

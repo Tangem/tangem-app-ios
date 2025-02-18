@@ -65,6 +65,7 @@ struct StakeKitMapper {
         case .unlockLocked: .unlockLocked
         case .restake: .restake
         case .claimUnstaked: .claimUnstaked
+        case .stake: .stake
         }
     }
 

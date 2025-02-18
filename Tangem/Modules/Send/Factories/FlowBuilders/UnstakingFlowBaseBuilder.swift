@@ -25,7 +25,7 @@ struct UnstakingFlowBaseBuilder {
         notificationManager.setup(provider: unstakingModel, input: unstakingModel)
         notificationManager.setupManager(with: unstakingModel)
 
-        let actionType = builder.sendFlowActionType(actionType: action.type)
+        let actionType = builder.sendFlowActionType(actionType: action.displayType)
         let sendFinishAnalyticsLogger = builder.makeStakingFinishAnalyticsLogger(
             actionType: actionType,
             stakingValidatorsInput: unstakingModel
@@ -51,12 +51,14 @@ struct UnstakingFlowBaseBuilder {
         let sendFeeCompactViewModel = sendFeeStepBuilder.makeSendFeeCompactViewModel(input: unstakingModel)
         sendFeeCompactViewModel.bind(input: unstakingModel)
 
+        let isAmountEditable = walletModel.tokenItem.blockchain.isStakeAmountEditable
+
         let summary = sendSummaryStepBuilder.makeSendSummaryStep(
             io: io,
             actionType: actionType,
             descriptionBuilder: builder.makeStakingTransactionSummaryDescriptionBuilder(),
             notificationManager: notificationManager,
-            editableType: .editable,
+            editableType: isAmountEditable ? .editable : .noEditable,
             sendDestinationCompactViewModel: .none,
             sendAmountCompactViewModel: amount.compact,
             stakingValidatorsCompactViewModel: .none,
@@ -78,8 +80,13 @@ struct UnstakingFlowBaseBuilder {
             amountStep: amount.step,
             summaryStep: summary.step,
             finishStep: finish,
-            action: action
+            action: action,
+            initialStepIsSummary: !isAmountEditable
         )
+
+        if !isAmountEditable {
+            unstakingModel.updateFees()
+        }
 
         summary.step.set(router: stepsManager)
 

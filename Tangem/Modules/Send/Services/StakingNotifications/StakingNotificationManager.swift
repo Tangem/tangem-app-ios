@@ -156,6 +156,10 @@ private extension CommonStakingNotificationManager {
                 break
             }
 
+            if case .cardano = tokenItem.blockchain, case .stake = action.type {
+                show(notification: .cardanoAdditionalDeposit)
+            }
+
             if case .pending(.restake) = action.type {
                 show(notification: .restake)
             }
@@ -168,6 +172,11 @@ private extension CommonStakingNotificationManager {
             let validationErrorEvent = factory.mapToValidationErrorEvent(validationError)
 
             show(error: .validationErrorEvent(validationErrorEvent))
+        case .stakingValidationError(let error):
+            guard case .amountRequirementError(let minAmount) = error else {
+                return
+            }
+            show(error: .amountRequirementError(minAmount: minAmount.stringValue, currency: tokenItem.currencySymbol))
         }
     }
 }
